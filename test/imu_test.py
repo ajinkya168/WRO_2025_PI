@@ -15,8 +15,10 @@ while True:
 	esp_data = ser.readline().decode().strip()
 	esp_data = esp_data.split(" ")
 	esp_data.append(1)
-	angle = float(esp_data[0])
-	count = int(esp_data[1])
+	print(esp_data)
+	if(esp_data[0].isdigit() and esp_data[1].isidigit()):
+		angle = float(esp_data[0])
+		count = int(esp_data[1])
 	#esp_data = esp_data + 1   
 	# if esp_data.startswith("X: "):
 	#x, y = esp_data.split(" ")
@@ -25,4 +27,4 @@ while True:
 
 	#print(f"Received X: {x}, Y: {y
 	# }")
-	print(f" angle: {angle} count: {count}  type:{type(esp_data)}")
+		print(f" angle: {angle} count: {count}  type:{type(esp_data)}")

@@ -23,7 +23,7 @@ import serial
 import RPi.GPIO as GPIO
 from TFmini import TFmini
 
-log_file = open('/home/pi/WRO_CODE/logs/log_8.txt', 'w')
+log_file = open('/home/pi/WRO_2025_FE/logs/log_8.txt', 'w')
 sys.stdout = log_file
 time.sleep(5)
 GPIO.setmode(GPIO.BCM)
@@ -315,7 +315,7 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 	GPIO.output(green_led, GPIO.HIGH)
 
 	while True:
-		print(f"fps:{1/(time.time() - fps_time)}")
+		#print(f"fps:{1/(time.time() - fps_time)}")
 		fps_time = time.time() 
 		prev_b.value = centroid_y_b
 		img = picam2.capture_array()
@@ -329,22 +329,22 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 
 		# predefined mask for green colour detection
 		# For Green Color
-		lower = np.array([55, 54, 50])  # green
-		upper = np.array([73, 130, 122])
+		lower = np.array([85, 66, 2])  # green
+		upper = np.array([110, 186, 50])
 		mask = cv2.inRange(hsv_img, lower, upper)
 
 		# For Red Color
-		lower1 = np.array([0, 125, 83])  # red
-		upper1 = np.array([4, 228, 163])
-		r1lower = np.array([171, 125, 83])
-		r1upper = np.array([179, 228, 163])
+		lower1 = np.array([0, 152, 9])  # red
+		upper1 = np.array([2, 254, 123])
+		r1lower = np.array([171, 152, 9])
+		r1upper = np.array([179, 254, 123])
 		mask1 = cv2.inRange(hsv_img1, lower1, upper1)
 		mask_red = cv2.inRange(hsv_img1, r1lower, r1upper)
 		mask1 = mask1 + mask_red
 
 		# For Pink Color
-		lower2 = np.array([160, 74, 79])  # pink
-		upper2 = np.array([174, 180, 210])
+		lower2 = np.array([131, 94, 21])  # pink
+		upper2 = np.array([162, 175, 84])
 		mask2 = cv2.inRange(hsv_img2, lower2, upper2)
 		
 		# For white color
@@ -518,7 +518,7 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 			pink_red = True
 			pink_green = False
 			
-		if (cv2.contourArea(max_cnt_b) > 10000 and cv2.contourArea(max_cnt_b) < 80000):
+		'''if (cv2.contourArea(max_cnt_b) > 10000 and cv2.contourArea(max_cnt_b) < 80000):
 			# Draw a rectange on the contour
 			rect_b = cv2.minAreaRect(max_cnt_b)
 			box = cv2.boxPoints(rect_b)
@@ -535,7 +535,7 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 		else:
 			blue_b.value = False
 			centroid_y_b = 0
-			centr_y_b.value = centroid_y_b
+			centr_y_b.value = centroid_y_b'''
 			
 		'''if (cv2.contourArea(max_cnt_o) > 10000 and cv2.contourArea(max_cnt_o) < 35000):
 			# Draw a rectange on the contour
@@ -917,7 +917,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 	setPointL = -70
 	setPointR = 70
 	setPointC = 0
-	power = 100
+	power = 70
 	prev_power = 0
 	last_counter = 12
 	change_counter = 7 # 3
@@ -966,14 +966,15 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 	fps_time2 = 0
 	color_s = ""
 	while True:
-		print(f"fps 2222:{1/(time.time() - fps_time2)}")
+		#print(f"fps 2222:{1/(time.time() - fps_time2)}")
 		fps_time2 = time.time()
 		if centr_y_b.value > 400 and (counter == 0 or blue_flag):
 			power = 50
 
 		else:
 			power = 100
-			
+		
+		#print(f"blue:{blue_c.value} orange:{orange_c.value}")
 		#print(f"c_time:{c}")
 		#color_sensor = imu.get_color()
 		#color_sensor="None"
@@ -1065,7 +1066,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 				continue_parking = True
 			pb_time = time.time()
 		elif not pink_b.value and time.time() - pb_time > 1 and not lap_finish:  ### IF DOES NOT SEE PINK, KEEP THE SAME SETPOINT FOR 1 SECOND AND THEN CHANGE
-			print(f"Resetting setPoints...{pink_detected}")
+			#print(f"Resetting setPoints...{pink_detected}")
 			if g_flag and not continue_parking:
 				print(f"away from green {g_past}")
 				setPointL = setPointL - 1
@@ -1083,13 +1084,13 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 			avg_left = (tfmini.distance_left* 0.15) + (avg_left*0.85)
 			avg_right = (tfmini.distance_right* 0.15) + (avg_right*0.85)
 
-			print(f"average ::: r_pass:{avg_right_pass} l_pass:{avg_left_pass} h:{avg_head} l:{avg_left} r:{avg_right}")
+			#print(f"average ::: r_pass:{avg_right_pass} l_pass:{avg_left_pass} h:{avg_head} l:{avg_left} r:{avg_right}")
 			previous_state = button_state
 			time.sleep(0.05)
 			button_state = GPIO.input(5)
 			if previous_state == 1 and button_state == 0:
 				button = not (button)
-				power = 100
+				power = 70
 
 			if button:  ##### THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
 				if not reset_servo:
@@ -1124,7 +1125,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 					color_s = "Orange"
 				elif white_c.value:
 					color_s = "White"
-					
+				print(f"Color Sensor: {color_s}")	
 				if not blue_flag and not orange_flag:
 					if color_s == "Orange":
 						orange_flag = True
@@ -1137,6 +1138,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 						color_n = "Blue"
 						
 
+				
 
 				################        PARKING         ################
 
@@ -1157,7 +1159,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 						pink_r = True
 					while time.time() - c_time < time_p and not reverse_complete:
 						print("Reversing backward...")
-						power = 100
+						power = 70
 						prev_power = 0
 						pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
 						pwm.write(direction_pin, 0)  # Set pin 20 hig '''
@@ -1263,7 +1265,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 									while (time.time() - current_time < time_g):
 										servo.setAngle(100)
 										x, y = enc.get_position(imu_head, counts.value)
-										power = 100
+										power = 70
 										prev_power = 95
 										pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
 										pwm.write(direction_pin, 0)  # Set pin 20 hig
@@ -1301,7 +1303,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 											print("Green is not there breaking the loop...")
 											break
 										x, y = enc.get_position(imu_head, counts.value)
-										power = 100
+										power = 70
 										prev_power = 0
 										pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
 										pwm.write(direction_pin, 0)  # Set pin 20 hig
@@ -1331,7 +1333,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 									enc.y = (50 - abs(turn_trigger_distance * turn_cos_theta)) - 10
 								print(f'Resuming Motor...{x} {y}')
 
-								power = 100
+								power = 70
 								if reverse == True:
 									print("In blue reverse...")
 									offset = 180
@@ -1389,8 +1391,8 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 										servo.setAngle(70)
 										# getTFminiData()
 										x, y = enc.get_position(imu_head, counts.value)
-										power = 100
-										prev_power = 95
+										power = 70
+										prev_power = 65
 										pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
 										pwm.write(direction_pin, 0)  # Set pin 20 hig
 									print('reversing diection green complete')
@@ -1433,7 +1435,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 										# getTFminiData()
 										x, y = enc.get_position(imu_head, counts.value)
 										# print(f"x: {x}, y: {y},  count:{counts.value} distance_head : {distance_head}")
-										power = 100
+										power = 70
 										prev_power = 0
 										pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
 										pwm.write(direction_pin, 0)  # Set pin 20 hig
@@ -1465,7 +1467,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 									enc.y = ((turn_trigger_distance * turn_cos_theta) - 50) + 10
 								print(f'Resuming Motor...{offset}')
 
-								power = 100
+								power = 70
 								if reverse == True:
 									offset = -180
 									heading_angle = ((90 * counter) % 360) + offset
@@ -1486,7 +1488,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 						if avg_head < 10:
 							prev_restore = time.time()
 							print(f"counter: {counter} Trigger detected...")
-							power = 100
+							power = 70
 							prev_power = 0
 							while time.time() - prev_restore < 2:
 								tfmini.getTFminiData()
@@ -1769,9 +1771,9 @@ def runEncoder(counts, head):
 def color_SP(blue_c, orange_c, white_c):
 	fps3 = 0
 	while True:
-			#color_sensor = imu.get_color()
-			color_sensor = "None"
-			print(f" fps33:{(1/(time.time() - fps3))} color: {color_sensor}")
+			color_sensor = imu.get_color()
+			#color_sensor = "None"
+			#print(f" fps33:{(1/(time.time() - fps3))} color: {color_sensor}")
 			fps3 = time.time()
 
 			if color_sensor == "Orange":
@@ -1786,7 +1788,7 @@ def color_SP(blue_c, orange_c, white_c):
 				white_c.value = True
 				blue_c.value = False
 				orange_c.value = False
-			print(f"color:{color_sensor}")
+			#print(f"color:{color_sensor}")
 
 if __name__ == '__main__':
 	try:

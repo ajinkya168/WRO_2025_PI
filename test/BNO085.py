@@ -38,11 +38,11 @@ class IMUandColorSensor:
 			pass
 		else:
 			print(f"r:{self.r_norm} g:{self.g_norm} b:{self.b_norm}")
-			print(f"hsv_r:{hsv_r} hsv_g: {hsv_g} hsv_b:{hsv_b}")
+			#print(f"hsv_r:{hsv_r} hsv_g: {hsv_g} hsv_b:{hsv_b}")
 		
-			if self.r_norm > 65 and self.b_norm < 10 and self.g_norm < 17:
+			if self.r_norm > self.g_norm and self.b_norm < 12:
 				return "Orange"
-			elif  self.r_norm < 60 and self.b_norm > 13 and self.g_norm > 20:
+			elif  self.r_norm < self.b_norm and self.g_norm < self.b_norm:
 				return "Blue"
 			else:
 				return "White"

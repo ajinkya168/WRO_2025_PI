@@ -63,9 +63,9 @@ while True:
     r1upper = np.array([r1_max, s_max, v_max])
     r1lower = np.array([r1_min, s_min, v_min])
     mask1 = cv2.inRange(hsv_img, lower, upper)
-    mask2 = cv2.inRange(hsv_img, r1lower, r1upper)
-    mask = mask1 + mask2
-    #mask = mask1
+    #mask2 = cv2.inRange(hsv_img, r1lower, r1upper)
+    #mask = mask1 + mask2
+    mask = mask1
     kernel = np.ones((3,3),'uint8')
    #mask = cv2.
     #mask = cv2.dilate(mask, kernel, iterations=1)
