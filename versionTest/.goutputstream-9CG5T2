@@ -1,0 +1,1431 @@
+import os
+
+os.system('sudo pkill pigpiod')
+os.system('sudo pigpiod')
+import sys
+import logging
+
+import numpy as np
+import RPi.GPIO as GPIO
+import cv2
+from picamera2 import Picamera2
+import time
+
+import multiprocessing
+import pigpio
+import board
+
+import math
+from Encoder import EncoderCounter
+from BNO085 import IMUandColorSensor
+from Servo import Servo
+import serial
+import RPi.GPIO as GPIO
+
+log_file = open('/home/pi/WRO_CODE/logs/log_8.txt', 'w')
+sys.stdout = log_file
+time.sleep(5)
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(14, GPIO.OUT)
+
+# print("Resetting....")
+print("Resetting....")
+GPIO.output(14, GPIO.LOW)
+time.sleep(1)
+GPIO.output(14, GPIO.HIGH)
+
+time.sleep(1)
+
+# print("Reset COmplete")
+print("Reset Complete")
+
+ser = serial.Serial('/dev/UART_USB', 115200)
+# log_file = open('/home/pi/WRO_CODE/logs/log_8.txt', 'w')
+# sys.stdout = log_file
+
+
+imu = IMUandColorSensor(board.SCL, board.SDA)
+
+GPIO.setwarnings(False)
+
+glob = 0
+GPIO.setmode(GPIO.BCM)
+
+GPIO.setup(5, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Button to GPIO23
+
+# pwm = pigpio.pi()
+# Parameters for servo
+servo = Servo(8)
+
+RX_Head = 23
+RX_Left = 24
+RX_Right = 25
+# pi = pigpio.pi()
+
+# Define object specific variables for gree
+
+currentAngle = 0
+error_gyro = 0
+prevErrorGyro = 0
+totalErrorGyro = 0
+correcion = 0
+totalError = 0
+prevError = 0
+kp = 0.6
+ki = 0
+kd = 0.1
+
+kp_b = 0.02
+ki_b = 0
+kd_b = 0.003
+
+kp_us = 0.55
+ki_us = 0
+kd_us = 0.2
+
+kp_e = 3  # 12
+ki_e = 0
+kd_e = 40  # 40if
+
+setPoint_flag = 0
+
+distance_head = 0
+distance_left = 0
+distance_right = 0
+
+corr = 0
+corr_pos = 0
+
+
+def getTFminiData():
+	# while True:
+	global distance_head
+	global distance_right
+	global distance_left
+
+	# while True:
+	# time.sleep(0.01)  # change the value if needed
+	# (count, recv) = pi.bb_serial_read(RX)
+	(count_head, recv_head) = pwm.bb_serial_read(RX_Head)
+	(count_left, recv_left) = pwm.bb_serial_read(RX_Left)
+	(count_right, recv_right) = pwm.bb_serial_read(RX_Right)
+
+	if count_head > 8:
+		for i in range(0, count_head - 9):
+			if recv_head[i] == 89 and recv_head[i + 1] == 89:  # 0x59 is 89
+				checksum = 0
+				for j in range(0, 8):
+					checksum = checksum + recv_head[i + j]
+				checksum = checksum % 256
+				if checksum == recv_head[i + 8]:
+					global distance_head
+					distance_head = recv_head[i + 2] + recv_head[i + 3] * 256
+					strength_head = recv_head[i + 4] + recv_head[i + 5] * 256
+	# print("DDDD : ", distance_head)
+
+	if count_left > 8:
+		for i in range(0, count_left - 9):
+			if recv_left[i] == 89 and recv_left[i + 1] == 89:  # 0x59 is 89
+				checksum = 0
+				for j in range(0, 8):
+					checksum = checksum + recv_left[i + j]
+				checksum = checksum % 256
+				if checksum == recv_left[i + 8]:
+					global distance_left
+					distance_left = recv_left[i + 2] + recv_left[i + 3] * 256
+					strength_left = recv_left[i + 4] + recv_left[i + 5] * 256
+	# print("distance_left : ", distance_left)
+
+	if count_right > 8:
+		for i in range(0, count_right - 9):
+			if recv_right[i] == 89 and recv_right[i + 1] == 89:  # 0x59 is 89
+				checksum = 0
+				for j in range(0, 8):
+					checksum = checksum + recv_right[i + j]
+				checksum = checksum % 256
+				if checksum == recv_right[i + 8]:
+					global distance_right
+					distance_right = recv_right[i + 2] + recv_right[i + 3] * 256
+					strength_right = recv_right[i + 4] + recv_right[i + 5] * 256
+
+
+# print("distance_right : ", distance_right)
+
+
+def correctPosition(setPoint, head, x, y, trigger, counter, green, red, blue, orange, reset, reverse, heading):
+	# print("INSIDE CORRECT")
+	# getTFminiData()
+	global glob, prevError, totalError, prevErrorGyro, totalErrorGyro, distance_left, distance_right, corr_pos
+
+	error = 0
+	correction = 0
+	pTerm_e = 0
+	dTerm_e = 0
+	iTerm_e = 0
+	lane = counter % 4
+	# if(time.time() - last_time > 0.001):
+	if lane == 0:
+		if not reverse:
+			error = setPoint - y
+			print(f"lane:{lane}, error:{error} target:{(setPoint - y)}, x:{x}")
+
+		else:
+			error = y + setPoint
+			print(f"lane:{lane}, error:{error} target:{(y + setPoint)}, x:{x}")
+
+	# print(f"lane:{lane} error: {error} tagret:{setPoint}")
+	# print(f"trigger : {flag_t} setPoint: {setPoint} lane: {lane} correction:{correction}, error:{error} x:{x}, y:{y}, prevError :{prevError} angle:{head - correction}")
+	elif lane == 1:
+		if orange:
+			error = x - (100 - setPoint)
+			print(f"lane:{lane}, error:{error} target:{(100 - setPoint)}, x:{x}")
+
+		elif blue:
+			error = (100 + setPoint) - x
+			print(f"lane:{lane}, error:{error} target:{(100 + setPoint)}, x:{x}")
+	# print(f" trigger : {flag_t} setPoint: {setPoint} lane: {lane} correction:{correction}, error:{error} x:{x}, y:{y}, prevError :{prevError} angle:{head - correction}")
+	elif lane == 2:
+		if orange:
+			error = y - (200 - setPoint)
+			print(f"lane:{lane} error:{error} target:{(200 - setPoint)},  y{y}")
+
+		elif blue:
+			error = y - (-200 - setPoint)
+			print(f"lane:{lane} error:{error} target:{(-200 - setPoint)},  y{y}")
+	# print(f"setPoint: {flag_t} lane: {lane} correction:{correction}, error:{error} x:{x}, y:{y}, prevError :{prevError} angle:{head - correction}")
+	elif lane == 3:
+		if orange:
+			error = (setPoint - 100) - x
+			print(f"lane:{lane} error:{error} target:{(setPoint - 100)},  y{y}")
+
+		elif blue:
+			error = x + (100 + setPoint)
+			print(f"lane:{lane} error:{error} target:{(100 + setPoint)},  y{y}")
+
+	# print(f"lane:{lane} error: {error} target:{-100 - setPoint}")
+	# print(f"setPoint: {flag_t} lane: {lane} correction:{correction}, error:{error} x:{x}, y:{y}, prevError :{prevError} angle:{head - correction}")
+	# last_time = time.time()
+
+	corr_pos = error
+	pTerm_e = kp_e * error
+	dTerm_e = kd_e * (error - prevError)
+	totalError += error
+	iTerm_e = ki_e * totalError
+	correction = pTerm_e + iTerm_e + dTerm_e
+
+	# print("correction: {}, x:{}, y:{}, heading:{} ".format(correction, x, y, glob))
+
+	# if (setPoint_flag == 0)
+
+	if setPoint == 0:
+		if abs(error) < 10:
+			correction = 0
+	if setPoint == -10 or setPoint == 10:
+		if abs(error) < 10:
+			correction = 0
+	# print("In the  correct Position")
+
+	if not reset:
+		getTFminiData()
+		if setPoint == -70 and (orange or not reverse):
+			if distance_left < 15 or (distance_head < 50 and distance_right < 30):
+				print(f"Correcting Green Wall")
+				correction = 10
+			else:
+				pass
+
+		# print(f"Correction : {correction}")
+
+		elif setPoint == 70 and (blue or not reverse):
+			# print(f"distance_left: {distance_left}")
+			if (distance_right < 15) or (distance_head < 50 and distance_left < 30):
+				print(f"Correcting Red Wall")
+				correction = -10
+			else:
+				pass
+
+	if setPoint == 0:
+		if correction > 25:
+			correction = 25
+		elif correction < -25:
+			correction = -25
+	else:
+		if correction > 45:
+			correction = 45
+		elif correction < -45:
+			correction = -45
+
+	# print(f"Correction in position:{correction}")
+
+	# print(f"lane: {lane} correction:{correction}, error:{error} x:{x}, y:{y}, prevError :{prevError} angle:{head - correction}")
+	# print("correction: ", correction)
+
+	prevError = error
+	# print(f"Correction: {head - correction}")
+	correctAngle(head + correction, heading)
+
+
+def correctAngle(setPoint_gyro, heading):
+	# print("INSIDE CORRECT")
+	# time.sleep(0.001)
+	global glob, corr
+
+	error_gyro = 0
+	prevErrorGyro = 0
+	totalErrorGyro = 0
+	correction = 0
+	totalError = 0
+	prevError = 0
+
+	error_gyro = heading - setPoint_gyro
+
+	if error_gyro > 180:
+		error_gyro = error_gyro - 360
+	corr = error_gyro
+	# print("Error : ", error_gyro)
+	pTerm = 0
+	dTerm = 0
+	iTerm = 0
+
+	pTerm = kp * error_gyro
+	dTerm = kd * (error_gyro - prevErrorGyro)
+	totalErrorGyro += error_gyro
+	iTerm = ki * totalErrorGyro
+	correction = pTerm + iTerm + dTerm
+	# print(f"correction in imu: {correction}")
+
+	if correction > 30:
+		correction = 30
+	elif correction < -30:
+		correction = -30
+
+	# print("correction: ", e)
+
+	prevErrorGyro = error_gyro
+	servo.setAngle(90 - correction)
+
+
+# Extract Frames
+
+# basic constants for opencv Functs
+kernel = np.ones((3, 3), 'uint8')
+font = cv2.FONT_HERSHEY_SIMPLEX
+org = (0, 20)
+fontScale = 0.6
+color = (0, 0, 255)
+thickness = 2
+
+
+# loop to capture video frames
+def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_y_red, centr_x_pink, ):
+	print('Image Process started')
+	both_flag = False
+	all_flag = False
+	only_red = False
+	only_green = False
+	only_pink = False
+	pink_red = False
+	pink_green = False
+	while True:
+		try:
+			picam2 = Picamera2()
+			break
+		except RuntimeError:
+			picam2.uninit()
+			picam2 = Picamera2()
+	picam2.preview_configuration.main.size = (1600, 1000) #(1300, 800)
+	picam2.preview_configuration.main.format = 'RGB888'
+
+	picam2.preview_configuration.align()
+	picam2.configure('preview')
+
+	picam2.start()
+	# picam2.set_controls({"AfMode":0, "LensPosition": 1})
+
+	# color_b.value = False
+	cv2.namedWindow('Object Dist Measure ', cv2.WINDOW_NORMAL)
+	cv2.resizeWindow('Object Dist Measure ', 1280, 720)
+
+	while True:
+		img = picam2.capture_array()
+
+		hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # green
+		hsv_img1 = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # red
+		hsv_img2 = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # pink
+
+		# predefined mask for green colour detection
+		# For Green Color
+		lower = np.array([58, 67, 60])  # green
+		upper = np.array([68, 138, 147])
+		mask = cv2.inRange(hsv_img, lower, upper)
+		mask = cv2.dilate(mask, kernel, iterations=5)
+		mask = cv2.erode(mask, kernel, iterations=5)
+
+		# For Red Color
+		lower1 = np.array([0, 177, 78])  # red
+		upper1 = np.array([2, 210, 172])
+		mask1 = cv2.inRange(hsv_img1, lower1, upper1)
+		mask1 = cv2.dilate(mask1, kernel, iterations=5)
+		mask1 = cv2.erode(mask1, kernel, iterations=5)
+
+		# For Pink Color
+		lower2 = np.array([154, 168, 59])  # pink
+		upper2 = np.array([171, 217, 192])
+		mask2 = cv2.inRange(hsv_img2, lower2, upper2)
+		mask2 = cv2.dilate(mask2, kernel, iterations=5)
+		mask2 = cv2.erode(mask2, kernel, iterations=5)
+
+		# Remove Extra garbage from image
+		d_img = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=2)  # green
+		d_img1 = cv2.morphologyEx(mask1, cv2.MORPH_OPEN, kernel, iterations=2)  # red
+		d_img2 = cv2.morphologyEx(mask2, cv2.MORPH_OPEN, kernel, iterations=5)  # pink
+
+		# find the histogram
+		cont, hei = cv2.findContours(d_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+		cont = sorted(cont, key=cv2.contourArea, reverse=True)[:1]
+
+		cont1, hei1 = cv2.findContours(d_img1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+		cont1 = sorted(cont1, key=cv2.contourArea, reverse=True)[:1]
+
+		cont2, hei2 = cv2.findContours(d_img2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+		cont2 = sorted(cont2, key=cv2.contourArea, reverse=True)[:1]
+
+		# ----------------------------------------------
+		if len(cont) == 0:
+			green_present = False
+		else:
+			max_cnt = max(cont, key=cv2.contourArea)
+			if cv2.contourArea(max_cnt) > 2000:
+				green_present = True
+			else:
+				green_present = False
+
+		# ---------------------------------------
+		if len(cont1) == 0:
+			red_present = False
+
+		else:
+			max_cnt1 = max(cont1, key=cv2.contourArea)
+			if cv2.contourArea(max_cnt1) > 2000:
+				red_present = True
+			else:
+				red_present = False
+		# ----------------------------------------------------
+		if len(cont2) == 0:
+			pink_present = False
+
+		else:
+			max_cnt2 = max(cont2, key=cv2.contourArea)
+			if cv2.contourArea(max_cnt2) > 2000:
+				pink_present = True
+			else:
+				pink_present = False
+		# --------------------------------------------------------
+
+		if not red_present and not green_present and not pink_present:
+			color_b.value = False
+			red_b.value = False
+			green_b.value = False
+			pink_b.value = False
+			all_flag = False
+			both_flag = False
+			pink_red = False
+			pink_green = False
+			only_red = False
+			only_green = False
+			only_pink = False
+
+		if (red_present and green_present and pink_present):
+			all_flag = True
+			both_flag = False
+			pink_red = False
+			pink_green = False
+			only_red = False
+			only_green = False
+			only_pink = False
+		elif (red_present and green_present) and not pink_present:
+			both_flag = True
+			all_flag = False
+			only_red = False
+			only_green = False
+			only_pink = False
+			pink_red = False
+			pink_green = False
+		elif red_present and (not pink_present and not green_present):
+			only_red = True
+			both_flag = False
+			all_flag = False
+			only_green = False
+			only_pink = False
+			pink_red = False
+			pink_green = False
+		elif green_present and (not pink_present and not red_present):
+			only_green = True
+			both_flag = False
+			all_flag = False
+			only_red = False
+			only_pink = False
+			pink_red = False
+			pink_green = False
+		elif pink_present and (not green_present and not red_present):
+			only_pink = True
+			both_flag = False
+			all_flag = False
+			only_red = False
+			only_green = False
+			pink_red = False
+			pink_green = False
+		elif (pink_present and green_present) and not red_present:
+			only_pink = False
+			both_flag = False
+			all_flag = False
+			only_red = False
+			only_green = False
+			pink_red = False
+			pink_green = True
+
+		elif (pink_present and red_present) and not green_present:
+			only_pink = False
+			both_flag = False
+			all_flag = False
+			only_red = False
+			only_green = False
+			pink_red = True
+			pink_green = False
+		if all_flag:
+			color_b.value = True
+			# print("ITS THE FIRST LOOP")
+			### FOR GREEN BOX
+			if cv2.contourArea(max_cnt) > cv2.contourArea(max_cnt1) and cv2.contourArea(max_cnt) > cv2.contourArea(max_cnt2):
+				if cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000:
+					# Draw a rectange on the contour
+					rect = cv2.minAreaRect(max_cnt)
+					box = cv2.boxPoints(rect)
+					box = np.intp(box)
+					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+					(x, y, w, h) = cv2.boundingRect(box)
+					centroid_y = y + h // 2
+					centr_y.value = centroid_y
+					green_b.value = True
+					red_b.value = False
+					pink_b.value = False
+
+
+			### FOR RED BOX
+			elif cv2.contourArea(max_cnt1) > cv2.contourArea(max_cnt) and cv2.contourArea(max_cnt1) > cv2.contourArea(max_cnt2):
+				if (cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000):
+					# Draw a rectange on the contour
+					rect1 = cv2.minAreaRect(max_cnt1)
+					box = cv2.boxPoints(rect1)
+					box = np.intp(box)
+					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+
+					(x, y, w, h) = cv2.boundingRect(box)
+
+					centroid_y_red = y + h // 2
+
+					centr_y_red.value = centroid_y_red
+					red_b.value = True
+					green_b.value = False
+					pink_b.value = False
+
+			#### FOR PINK BOX
+			elif cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt) and cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt1):
+				if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
+					# Draw a rectange on the contour
+					rect2 = cv2.minAreaRect(max_cnt2)
+					box = cv2.boxPoints(rect2)
+					box = np.intp(box)
+					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+
+					(x, y, w, h) = cv2.boundingRect(box)
+
+					centroid_x = x + w // 2
+					centr_x_pink.value = centroid_x
+					# if centroid_y > 500:
+					pink_b.value = True
+					red_b.value = False
+					green_b.value = False
+
+
+		### FOR RED BOX
+		elif only_red:
+			color_b.value = True
+			# print(cv2.contourArea(max_cnt1))
+			if cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000:
+				# Draw a rectange on the contour
+				rect1 = cv2.minAreaRect(max_cnt1)
+				box = cv2.boxPoints(rect1)
+				box = np.intp(box)
+				cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+				(x, y, w, h) = cv2.boundingRect(box)
+
+				centroid_y_red = y + h // 2
+				centr_y_red.value = centroid_y_red
+				red_b.value = True
+				pink_b.value = False
+				green_b.value = False
+
+
+
+		### FOR GREEN BOX
+		elif only_green:
+			color_b.value = True
+			# print(cv2.contourArea(max_cnt))
+			if cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000:
+				# Draw a rectange on the contour
+				rect = cv2.minAreaRect(max_cnt)
+				box = cv2.boxPoints(rect)
+				box = np.intp(box)
+				cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+				(x, y, w, h) = cv2.boundingRect(box)
+
+				centroid_y = y + h // 2
+				centr_y.value = centroid_y
+				# if(centroid_y > 100):
+				# if(counter_green >= max_count):
+				green_b.value = True
+				pink_b.value = False
+				red_b.value = False
+
+		### FOR PINK BOX
+		elif only_pink:
+			if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
+				# Draw a rectange on the contour
+				rect2 = cv2.minAreaRect(max_cnt2)
+				box = cv2.boxPoints(rect2)
+				box = np.intp(box)
+				cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+
+				(x, y, w, h) = cv2.boundingRect(box)
+
+				centroid_y = y + h // 2
+				centroid_x = x + w // 2
+				centr_x_pink.value = centroid_x
+				red_b.value = False
+				green_b.value = False
+				pink_b.value = True
+
+		elif both_flag:
+			color_b.value = True
+			# print("BOTH ARE PRESENT...")
+			### FOR GREEN BOX
+			if cv2.contourArea(max_cnt) > cv2.contourArea(max_cnt1):
+				if cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000:
+					# Draw a rectange on the contour
+					rect = cv2.minAreaRect(max_cnt)
+					box = cv2.boxPoints(rect)
+					box = np.intp(box)
+					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+					(x, y, w, h) = cv2.boundingRect(box)
+					centroid_y = y + h // 2
+					centr_y.value = centroid_y
+					green_b.value = True
+
+					red_b.value = False
+					pink_b.value = False
+
+			### FOR RED BOX
+			elif cv2.contourArea(max_cnt1) > cv2.contourArea(max_cnt):
+				if (cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000):
+					# Draw a rectange on the contour
+					rect1 = cv2.minAreaRect(max_cnt1)
+					box = cv2.boxPoints(rect1)
+					box = np.intp(box)
+					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+
+					(x, y, w, h) = cv2.boundingRect(box)
+
+					centroid_y_red = y + h // 2
+
+					centr_y_red.value = centroid_y_red
+					red_b.value = True
+
+					green_b.value = False
+					pink_b.value = False
+
+		elif pink_red:
+			### FOR RED BOX
+			if cv2.contourArea(max_cnt1) > cv2.contourArea(max_cnt2):
+				if (cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000):
+					# Draw a rectange on the contour
+					rect1 = cv2.minAreaRect(max_cnt1)
+					box = cv2.boxPoints(rect1)
+					box = np.intp(box)
+					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+
+					(x, y, w, h) = cv2.boundingRect(box)
+
+					centroid_y_red = y + h // 2
+
+					centr_y_red.value = centroid_y_red
+					red_b.value = True
+					green_b.value = False
+					pink_b.value = False
+			elif cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt1):
+				if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
+					# Draw a rectange on the contour
+					rect2 = cv2.minAreaRect(max_cnt2)
+					box = cv2.boxPoints(rect2)
+					box = np.intp(box)
+					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+
+					(x, y, w, h) = cv2.boundingRect(box)
+
+					centroid_x = x + w // 2
+					centr_x_pink.value = centroid_x
+					# if centroid_y > 500:
+					pink_b.value = False
+					red_b.value = True
+					green_b.value = False
+
+		elif pink_green:
+			if cv2.contourArea(max_cnt) > cv2.contourArea(max_cnt2):
+				if (cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000):
+					# Draw a rectange on the contour
+					rect = cv2.minAreaRect(max_cnt)
+					box = cv2.boxPoints(rect)
+					box = np.intp(box)
+					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+
+					(x, y, w, h) = cv2.boundingRect(box)
+
+					centroid_y = y + h // 2
+
+					centr_y.value = centroid_y
+					red_b.value = False
+					green_b.value = True
+					pink_b.value = False
+			elif cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt):
+				if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
+					# Draw a rectange on the contour
+					rect2 = cv2.minAreaRect(max_cnt2)
+					box = cv2.boxPoints(rect2)
+					box = np.intp(box)
+					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+					(x, y, w, h) = cv2.boundingRect(box)
+					centroid_x = x + w // 2
+					centr_x_pink.value = centroid_x
+					# if centroid_y > 500:
+					pink_b.value = True
+
+					red_b.value = False
+					green_b.value = False
+		else:
+			centr_x_pink.value = 0
+		# print(f"Green:{green_present}, red:{red_present}, pink:{pink_present}")
+		# print(f"all:{all_flag}, only_red:{only_red}, only_green:{only_green}, only_pink:{only_pink}, pink_green:{pink_green}, pink_red:{pink_red}, both:{both_flag}")
+		# print(f"g_next:{g_next.value}, r_next:{r_next.value}")
+		# print(f"green:{green_b.value}  red:{red_b.value}, pink:{pink_b.value}")
+		# print(f"area: {cv2.contourArea(max_cnt2)}")
+		print(f"{centr_x_pink.value}")
+		cv2.imshow('Object Dist Measure ', img)
+
+		if cv2.waitKey(1) & 0xFF == ord('q'):
+			stop_b.value = True
+			break
+	# print(dist2)
+
+	cv2.destroyAllWindows()
+	picam2.stop()
+
+
+# pwm.set_PWM_dutycycle(12, power.value)
+
+
+def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_y_red, centr_x_pink, head):
+	# print("ServoProcess started")
+	global heading, glob, distance_head, imu, corr, corr_pos
+
+	pb_time = 0
+	pwm.set_mode(RX_Head, pigpio.INPUT)
+	pwm.set_mode(RX_Left, pigpio.INPUT)
+	pwm.set_mode(RX_Right, pigpio.INPUT)
+	pwm.set_mode(12, pigpio.OUTPUT)  # Set pin 12 as an output
+	pwm.set_mode(20, pigpio.OUTPUT)  # Set pin 20 as an output
+	pwm.hardware_PWM(12, 100, 0)
+	try:
+		pwm.bb_serial_read_open(RX_Head, 115200)
+		pwm.bb_serial_read_open(RX_Left, 115200)
+		pwm.bb_serial_read_open(RX_Right, 115200)
+	except pigpio.error as e:
+		if e == 'GPIO already in use':
+			pwm.stop()
+			pwm.bb_serial_read_open(RX_Head, 115200)
+			pwm.bb_serial_read_open(RX_Left, 115200)
+			pwm.bb_serial_read_open(RX_Right, 115200)
+	x = 0
+	y = 0
+
+	previous_state = 0
+	button_state = 0
+	button = False
+	pwm.set_PWM_dutycycle(12, 0)  # Set duty cycle to 50% (128/255)
+
+	heading_angle = 0
+
+	red_stored = False
+	green_stored = False
+
+	trigger = False
+	counter = 0
+	correctAngle(heading_angle, head.value)
+	enc = EncoderCounter()
+	past_time = 0
+	setPointL = -70
+	setPointR = 70
+	setPointC = 0
+	reset_f = False
+	change_path = False
+	green_turn = False
+	turn_t = 0
+	current_time = 0
+	timer_started = False
+	power = 0
+	prev_power = 0
+
+	g_flag = False
+	r_flag = False
+	p_flag = False
+
+	gp_time = 0
+	rp_time = 0
+
+	g_past = False
+	r_past = False
+	p_past = False
+
+	green_stored = False
+	prev_time = 0
+	red_turn = False
+	buff = 0
+
+	blue_flag = False
+	orange_flag = False
+
+	color_n = ""
+	parking_flag = False
+
+	green_count = 0
+	red_count = 0
+
+	reverse = False
+
+	parking_heading = False
+	last_counter = 12
+	c_time = 0
+	stop_flag = False
+	calc_time = False
+	start_parking = False
+	continue_parking = False
+	adjust = False
+	p_count = 0
+	parking_counter_store = True
+	lap_finish = False
+	change_counter = -1
+	pink_run = 1
+	pink_avoid = False
+	prev_distance = 0
+	p_time = 0
+	counter_reset = False
+	prev_distance_store = False
+	turn_flag = False
+	change_heading = False
+	reset_flags = False
+	offset = 0
+	finished = False
+	target_count = 0
+	counter_heading = 0
+	change_off = False
+	i = 0
+	while True:
+		# print(f"Pink detetcted at counter: {parking_counter}")
+		# print(f"pink:{pink_b.value}, green:{green_b.value}, red:{red_b.value}")
+		# print(f"distance_left:{distance_left} imu: {glob} heading:{heading_angle} last_counter:{last_counter}, coutner: {counter}, parking_counter:{parking_counter}")
+		##### STOP CONDITION ######
+		if counter == last_counter and not lap_finish:
+			if ((green_count == 1 or red_count == 1) or (green_count == 0 and red_count == 0)) and not lap_finish:
+				if not finished:
+					target_count = counts.value + 30000
+					finished = True
+				if counts.value >= target_count:
+					power = 0
+					pwm.set_PWM_dutycycle(12, power)  # Set duty cycle to 50% (128/255)
+					time.sleep(3)
+					power = 100
+					prev_power = 0
+					lap_finish = True
+
+		if lap_finish:
+			if not counter_reset:
+				counter = counter % 12
+				counter_reset = True
+
+		if lap_finish and not continue_parking:
+			if orange_flag:
+				setPointR = -70
+				setPointC = -70
+			elif blue_flag:
+				setPointL = 70
+				setPointC = 70
+
+		if continue_parking:  ### THIS SETPOINT IS WHEN THE ROBOT IS IN THE PARKING MODE
+			green_b.value = False
+			red_b.value = False
+			g_past = False
+			r_past = False
+			g_flag = False
+			r_flag = False
+			if orange_flag:
+				setPointR = -35
+				setPointC = -35
+			elif blue_flag:
+				setPointL = 35
+				setPointC = 35
+
+		if pink_b.value:  ### DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
+			# print(f"Pink detected while green is there :{counter}")
+			if orange_flag:
+				setPointL = -35
+			elif blue_flag:
+				setPointR = 35
+			pb_time = time.time()
+
+			if lap_finish and not continue_parking:
+				print("Starting Parking...")
+				if orange_flag and centr_x_pink.value < 150:
+					continue_parking = True
+				elif blue_flag and centr_x_pink.value > 1000:
+					continue_parking = True
+				'''if not prev_distance_store and not continue_parking:
+					getTFminiData()
+					if orange_flag and centr_x_pink.value < 150 and centr_x_pink.value > 0:
+						prev_distance = distance_left
+						print(f"Previous Distance stored Orange...{prev_distance}")
+						prev_distance_store = True
+						continue_parking = True
+					elif blue_flag and centr_x_pink.value > 1000 and centr_x_pink.value > 0:
+						prev_distance = distance_right
+						print(f"Previous Distance stored Blue...{prev_distance}")
+						prev_distance_store = True
+						continue_parking = True'''
+				#continue_parking = True
+		elif not pink_b.value and time.time() - pb_time > pink_run and not lap_finish:  ### IF DOES NOT SEE PINK, KEEP THE SAME SETPOINT FOR 1 SECOND AND THEN CHANGE
+			print("Resetting setPoints...")
+			setPointL = -70
+			setPointR = 70
+			setPoinC = 0
+		else:
+			pass
+
+		try:
+			color_sensor = imu.get_color()
+
+			if (imu.color_rgb[0] == 0 and imu.color_rgb[1] == 0 and imu.color_rgb[2] == 0):
+				continue
+
+			previous_state = button_state
+			button_state = GPIO.input(5)
+
+			if previous_state == 1 and button_state == 0:
+				button = not (button)
+				power = 100
+
+			if button:  ##### THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
+
+				imu_head = head.value
+
+				if reset_flags:
+					if orange_flag:
+						blue_flag = True
+						orange_flag = False
+						color_n = "Blue"
+						reset_flags = False
+					elif blue_flag:
+						orange_flag = True
+						blue_flag = False
+						color_n = "Orange"
+						reset_flags = False
+				x, y = enc.get_position(head.value, counts.value)
+				total_power = (power * 0.1) + (prev_power * 0.9)
+
+				prev_power = total_power
+				pwm.set_PWM_dutycycle(12, 2.55 * total_power)  # Set duty cycle to 50% (128/255)
+
+				pwm.write(20, 1)  # Set pin 20 high
+
+				if stop_b.value:
+					power = 0
+					prev_power = 0
+
+				######      DIRECTION DECISION (CLOCKWISE OR ANTICLOCKWISE)     #####
+
+				if not blue_flag and not orange_flag:
+					if color_sensor == "Orange":
+						orange_flag = True
+						blue_flag = False
+						color_n = "Orange"
+
+					elif color_sensor == "Blue":
+						blue_flag = True
+						orange_flag = False
+						color_n = "Blue"
+
+				################        PARKING         ################
+
+				if parking_flag and not stop_flag:
+					p_flag = False
+					p_past = False
+					print(f"PARKING ------> distance_head : {distance_head}")
+					print("Inside Parking Loop")
+
+					if not calc_time:
+						c_time = time.time()
+						calc_time = True
+					while time.time() - c_time < 0.3:
+						print("Reversing backward...")
+						power = 100
+						prev_power = 0
+						pwm.set_PWM_dutycycle(12, power)  # Set duty cycle to 50% (128/255)
+						# GPIO.output(20, GPIO.LOW) # Set AIN
+						pwm.write(20, 0)  # Set pin 20 hig
+
+					power = 70
+					pwm.set_PWM_dutycycle(12, power)
+					if orange_flag:
+						# print(f"time111: {time.time() - c_time}")
+						if not parking_heading:
+							heading_angle = heading_angle - 90
+							parking_heading = True
+
+					elif blue_flag:
+						if not parking_heading:
+							heading_angle = heading_angle + 90
+							parking_heading = True
+
+					print(f"Correcting angle..{abs(corr)}")
+					correctAngle(heading_angle, head.value)
+					getTFminiData()
+					if (abs(corr) < 10) or ((distance_head < 5 and distance_head >= 0)) and not stop_flag:
+						power = 0
+						prev_power = 0
+						correctAngle(imu_head, head.value)
+						pwm.set_PWM_dutycycle(12, power)
+						stop_flag = True
+						print("Succesfully Parked...")
+
+				else:
+					if reset_f:
+						if blue_flag:  ### BLUE RESET BLOCK
+							print("BLUE RESET...")
+							getTFminiData()
+							x, y = enc.get_position(head.value, counts.value)
+							if (red_b.value or red_turn) and distance_head > 20:  # red after trigger
+								print(f"Red Detected after trigger...")
+								red_turn = True
+								setPointR = 10
+								correctPosition(setPointR, heading_angle, x, y, trigger, counter, g_flag, r_flag, blue_flag, orange_flag, reset_f, reverse, head.value)
+
+							else:
+								setPointR = 70
+								if red_turn:
+									time_g = 1.3
+									if not red_stored:
+										red_stored = True
+								else:
+									time_g = 0.6
+
+								while 1:
+									correctAngle(heading_angle, head.value)
+									if (abs(corr) < 15):
+										break
+
+								if not timer_started:
+									current_time = time.time()
+									timer_started = True
+								# getTFminiData()
+								if not green_b.value and not g_past:
+									# .g_past = True
+									print('reversing diection red')
+									while time.time() - current_time < time_g:
+										#  (heading_angle)
+										getTFminiData()
+										x, y = enc.get_position(head.value, counts.value)
+
+										power = 100
+										prev_power = 0
+										pwm.set_PWM_dutycycle(12, power)  # Set duty cycle to 50% (128/255)
+										pwm.write(20, 0)  # Set pin 20 hig
+									print('reversing diection red complete')
+									print('Stopping Motor...')
+
+								elif ((green_b.value or green_turn) or g_past):
+									green_turn = True
+									print('reversing diection Green')
+									while 1:
+										buff = 4
+										if (green_b.value and centr_y.value < 350) or (g_past and (time.time() - current_time > 1.3)):
+											print(f"Breaking the loop...")
+											break
+										getTFminiData()
+										x, y = enc.get_position(head.value, counts.value)
+										power = 100
+										prev_power = 0
+										pwm.set_PWM_dutycycle(12, power)  # Set duty cycle to 50% (128/255)
+										pwm.write(20, 0)  # Set pin 20 hig
+									print('Green reversing diection complete')
+									print('Stopping Motor...')
+
+								power = 0
+								prev_power = 0
+								pwm.set_PWM_dutycycle(12, power)  # Set duty cycle to 50% (128/255)
+
+								getTFminiData()
+								print(f"head : {distance_head}")
+								time.sleep(1)
+								counter = counter + 1
+								lane_reset = counter % 4
+								print(f"in Lane {lane_reset}")
+								if lane_reset == 1:
+									enc.x = (150 - distance_head * math.cos(math.radians(abs(corr)))) - 10
+								if lane_reset == 2:
+									enc.y = (distance_head * math.cos(math.radians(abs(corr))) - 250) + 10
+								if lane_reset == 3:
+									enc.x = (distance_head * math.cos(math.radians(abs(corr))) - 150) + 10
+								if lane_reset == 0:
+									enc.y = (50 - distance_head * math.cos(math.radians(abs(corr)))) - 10
+								print(f'Resuming Motor...{offset}')
+
+								power = 100
+								if reverse == True:
+									offset = 180
+								else:
+									offset = 0
+								heading_angle = -((90 * counter) % 360) - offset
+								heading_angle = heading_angle % 360
+								green_turn = False
+								red_turn = False
+								reset_f = False
+
+						if orange_flag:  ### ORANGE RESET BLOCK
+							print("ORANGE RESET...")
+							getTFminiData()
+							x, y = enc.get_position(head.value, counts.value)
+							if ((green_b.value or green_turn) and distance_head > 20):  # green after trigger
+								# if((green_b.value or green_turn) and centr_y.value < 700):
+								print(f"Green Detected after trigger... ")
+								green_turn = True
+								setPointL = -10
+
+								correctPosition(setPointL, heading_angle, x, y, trigger, counter, g_flag, r_flag, blue_flag, orange_flag, reset_f, reverse, head.value)
+							else:
+								setPointL = -70
+								if green_turn:
+									time_g = 1.3
+									if not green_stored:
+										green_stored = True
+								else:
+									time_g = 0.6
+								# print(f"IN ELSE ORANGE {time_g}")
+								while 1:
+									correctAngle(heading_angle, head.value)
+									if (abs(corr) < 15):
+										break
+
+								# print("Heading is under 5")
+								if not timer_started:
+									current_time = time.time()
+									timer_started = True
+								# getTFminiData()
+								if not red_b.value and not r_past:
+									# .g_past = True
+									print('reversing diection green')
+									while time.time() - current_time < time_g:
+										# correctAngle(heading_angle, head.value)
+										getTFminiData()
+										x, y = enc.get_position(head.value, counts.value)
+										# print(f"distance_head : {distance_head} x: {x}, y: {y}, count:{counts.value}")
+										# print(f"x: {x}, y: {y},  count:{counts.value} distance_head : {distance_head}")
+										power = 100
+										prev_power = 0
+										pwm.set_PWM_dutycycle(12, power)  # Set duty cycle to 50% (128/255)
+										pwm.write(20, 0)  # Set pin 20 hig
+									print('reversing diection green complete')
+									print('Stopping Motor...')
+
+								elif ((red_b.value or red_turn) or r_past):
+									red_turn = True
+									print(f'reversing diection red pink color: {pink_b.value} pink flag: {p_flag} {p_past}  red color:{red_b.value} red flag: {r_past} {r_flag}')
+									while 1:
+										buff = 4
+										if (red_b.value and centr_y_red.value < 350) or (r_past and (time.time() - current_time > 1.3)):
+											print(f"Breaking the loop...")
+											break
+										getTFminiData()
+										x, y = enc.get_position(head.value, counts.value)
+										# print(f"x: {x}, y: {y},  count:{counts.value} distance_head : {distance_head}")
+										power = 100
+										prev_power = 0
+										pwm.set_PWM_dutycycle(12, power)  # Set duty cycle to 50% (128/255)
+										pwm.write(20, 0)  # Set pin 20 hig
+									print('red reversing diection complete')
+								print('Stopping Motor...')
+
+								power = 0
+								prev_power = 0
+								pwm.set_PWM_dutycycle(12, power)  # Set duty cycle to 50% (128/255)
+
+								getTFminiData()
+								time.sleep(1)
+
+								counter = counter + 1
+								lane_reset = counter % 4
+
+								if lane_reset == 1:
+									print(f"head: {distance_head}, corr:{corr}")
+									enc.x = (150 - distance_head * math.cos(math.radians(abs(corr)))) - 10
+									print(f"x:{enc.x}")
+								if lane_reset == 2:
+									enc.y = (250 - distance_head * math.cos(math.radians(abs(corr)))) - 10
+								if lane_reset == 3:
+									enc.x = (distance_head * math.cos(math.radians(abs(corr))) - 150) + 10
+								if lane_reset == 0:
+									enc.y = (distance_head * math.cos(math.radians(abs(corr))) - 50) + 10
+								print(f'Resuming Motor...{offset}')
+
+								power = 100
+								if reverse == True:
+									offset = -180
+								else:
+									offset = 0
+								heading_angle = ((90 * counter) % 360) + offset
+								heading_angle = heading_angle % 360
+								green_turn = False
+								red_turn = False
+
+								reset_f = False
+						green_count = 0
+						red_count = 0
+					else:
+						if (color_sensor == color_n and not trigger and (time.time() - turn_t) > (4 + buff)):
+							buff = 0
+
+							reset_done = False
+							timer_started = False
+							correct_heading = False
+							trigger = True
+							reset_f = True
+							setPointL = -70
+							# lane = counter % 4
+							# counter = counter + 1
+							turn_t = time.time()
+
+						elif color_sensor == 'White':
+							trigger = False
+
+					if counter == change_counter and green_count == 1 and not turn_flag:
+						change_path = False
+						power = 100
+						turn_flag = True
+					elif counter == change_counter and red_count == 1 and not turn_flag:
+						print("Changing path...")
+						reset_f = False
+						trigger = False
+						while time.time() - past_time < 0.5:
+							print("going 0")
+							correctPosition(setPointC, heading_angle, x, y, trigger, counter, g_flag, r_flag, blue_flag, orange_flag, reset_f, reverse, head.value)
+						change_path = True
+						power = 100
+						change_time = time.time()
+						reverse = True
+						turn_flag = True
+
+					###################### PANDAV #####################
+
+					if (green_b.value and not r_flag):
+						g_flag = True
+						g_past = True  # print('1')
+					elif not green_b.value and (g_past or time.time() - gp_time < 0.5):
+						g_flag = True
+						getTFminiData()
+						# print(f"distance_right:{distance_right}")
+						if distance_right < 50 and g_past:
+							g_past = False
+							g_flag = False
+							red_count = 0
+							green_count = 1
+							buff = 0
+							gp_time = time.time()  # print('2')
+					elif (red_b.value and not g_flag):
+						r_flag = True
+						r_past = True  # getTFminiData()  # print('3')
+					elif not red_b.value and (r_past or time.time() - rp_time < 0.5):
+						r_flag = True
+						past_time = time.time()
+						getTFminiData()
+						# print(f"distance_left:{distance_left}")
+						if distance_left < 50 and r_past:
+							print(f"red Avoid complete")
+							r_past = False
+							r_flag = False
+							red_stored = False
+							red_count = 1
+							green_count = 0
+							buff = 0
+							rp_time = time.time()
+
+					# print('4')
+					elif pink_b.value and not p_past and continue_parking:
+						p_flag = True
+						p_past = True
+						print('5')
+					elif p_past and continue_parking and not parking_flag:
+						p_flag = True
+						getTFminiData()
+						if orange_flag:
+							if distance_left <= 30 and (abs(prev_distance - distance_left) > 10) and p_past:
+								p_past = False
+								p_flag = False
+								parking_flag = True
+								print("Pink Avoidance Complete...")
+							prev_distance = distance_left
+							print(f"prev_distance:{prev_distance}, distance_left:{distance_left} diff:{abs(prev_distance - distance_left)}")
+
+						elif blue_flag:
+							if distance_right <= 30 and (abs(prev_distance - distance_right) > 10) and p_past:
+								p_past = False
+								p_flag = False
+								parking_flag = True
+								print("Pink Avoidance Complete Blue...")
+							prev_distance = distance_right
+							print(f"prev_distance:{prev_distance}, distance_right:{distance_right} diff:{abs(prev_distance - distance_right)}")
+						print('6')
+					else:
+						g_flag = False
+						r_flag = False
+						p_flag = False
+						r_past = False
+						g_past = False
+						p_past = False
+						if green_stored:
+							g_flag = True
+							g_past = True
+							green_stored = False
+						if red_stored:
+							r_flag = True
+							r_past = True
+							red_stored = False  # print('7')
+
+					if not change_path:
+						if g_flag:
+							red_stored = False
+							correctPosition(setPointL, heading_angle, x, y, trigger, counter, g_flag, r_flag, blue_flag, orange_flag, reset_f, reverse, head.value)
+						elif r_flag:
+							green_stored = False
+							print("avoiding red...")
+							correctPosition(setPointR, heading_angle, x, y, trigger, counter, g_flag, r_flag, blue_flag, orange_flag, reset_f, reverse, head.value)
+						elif p_flag:
+							if orange_flag:
+								correctPosition(setPointR, heading_angle, x, y, trigger, counter, g_flag, r_flag, blue_flag, orange_flag, reset_f, reverse, head.value)
+							elif blue_flag:
+								correctPosition(setPointL, heading_angle, x, y, trigger, counter, g_flag, r_flag, blue_flag, orange_flag, reset_f, reverse, head.value)
+						else:
+							correctPosition(setPointC, heading_angle, x, y, trigger, counter, g_flag, r_flag, blue_flag, orange_flag, reset_f, reverse, head.value)
+					else:
+						print(f"Turning 180...")
+						if heading_angle == -180:
+							reset_flags = True
+							change_path = False
+							change_off = True
+							print("Change path is false")
+						offset = -90
+						correctAngle(heading_angle, head.value)
+						if abs(corr) < 10:
+							heading_angle = heading_angle + offset
+
+				# print(f"x:{x}, y:{y}, prev_distance:{prev_distance}, distance_right:{distance_right}, distance_left:{distance_left}, imu:{glob}, heading:{heading_angle}, cp: {continue_parking}, counter:{counter}, last_c:{last_counter}, pink_b:{pink_b.value} p_flag = {p_flag}, p_past:{p_past}, g_past:{g_past}, r_past: {r_past}")
+				# print(f"sp:{setPointL} {setPointR} x:{x}, y:{y}, heading:{heading_angle} {imu_head} color: {color_sensor}, orange:{orange_flag}, blue:{blue_flag}, corr:{corr}")
+				# print(f"x:{x} y:{y} offset:{offset} imu:{imu_head} heading_angle:{heading_angle} counter:{counter}, change_counter:{change_counter} g_count:{green_count}, r_count:{red_count}, change_path:{change_path}, turn_f:{turn_flag}")
+				# print(f"resewt:{reset_flags} color_n:{color_n} offset:{offset} imu: {imu_head}, counter:{counter} heading:{heading_angle} x:{x} y:{y}, green_count: {green_count}, red_count:{red_count}, change_path:{change_path}, last_counter:{last_counter}, blue:{blue_flag}, orange:{orange_flag}")
+				print(f"reset_flags:{reset_flags} color_n:{color_n} trigger:{trigger} reset:{reset_f} offset:{offset} imu: {head.value}, counter:{counter} heading:{heading_angle} x:{x} y:{y}, green_count: {green_count}, red_count:{red_count}, change_path:{change_path}, last_counter:{last_counter}, blue:{blue_flag}, orange:{orange_flag}, centroid:{centr_x_pink.value}")  # print(f"red_count: {red_count} green_count:{green_count} counter:{counter} change_counter:{change_counter}, imu:{imu_head}, offset:{offset}, heading_angle:{heading_angle}")
+			else:
+				power = 0
+				pwm.hardware_PWM(12, 100, 0)
+				heading_angle = 0
+				counter = 0
+				correctAngle(heading_angle, head.value)
+				color_b.Value = False
+				stop_b.value = False
+				red_b.value = False
+				green_b.value = False
+
+		except Exception as e:
+			print(f"Exception: {e}")
+			if isinstance(e, KeyboardInterrupt):
+				power = 0
+				pwm.hardware_PWM(12, 100, 0)
+				heading_angle = 0
+				counter = 0
+				x = 0
+				y = 0
+				correctAngle(heading_angle, head.value)
+				color_b.Value = False
+				stop_b.value = False
+				red_b.value = False
+				green_b.value = False
+
+
+def runEncoder(counts, head):
+	print("Encoder Process Started")
+
+	try:
+		while True:
+			line = ser.readline().decode().strip()
+			# print(f"Line:{line}")
+			data = line.split(" ")
+			try:
+				if data[0].isdigit() or data[1].isdigit():
+					counts.value = int(data[1])
+					head.value = float(data[0])
+				else:
+					pass
+			except ValueError:
+				continue
+
+
+	except KeyboardInterrupt:
+		ser.close()
+
+
+if __name__ == '__main__':
+	try:
+		pwm = pigpio.pi()
+		counts = multiprocessing.Value('i', 0)
+		color_b = multiprocessing.Value('b', False)
+		stop_b = multiprocessing.Value('b', False)
+		red_b = multiprocessing.Value('b', False)
+		green_b = multiprocessing.Value('b', False)
+		pink_b = multiprocessing.Value('b', False)
+		centr_y = multiprocessing.Value('f', 0.0)
+		centr_y_red = multiprocessing.Value('f', 0.0)
+		centr_x_pink = multiprocessing.Value('f', 0.0)
+		head = multiprocessing.Value('f', 0.0)
+
+		P = multiprocessing.Process(target=Live_Feed, args=(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_y_red, centr_x_pink,))
+		S = multiprocessing.Process(target=servoDrive, args=(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_y_red, centr_x_pink, head))
+		E = multiprocessing.Process(target=runEncoder, args=(counts, head,))
+
+		E.start()
+		S.start()
+		P.start()
+
+
+	except KeyboardInterrupt:
+		pwm.hardware_PWM(12, 100, 0)
+		pwm.bb_serial_read_close(RX_Head)
+		pwm.bb_serial_read_close(RX_Left)
+		pwm.bb_serial_read_close(RX_Right)
+		pwm.stop()
+		imu.close()
+		GPIO.cleanup()

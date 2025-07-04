@@ -1,0 +1,148 @@
+ServoProcess started
+before correction: -0.07681877262741636
+Inside Left
+time : 1726239147.4697552 imu: 359.9359843561438 correction : -20.076818772627416 error: -0.0640156438561803 left: 0, right:0
+before correction: -0.07775370201891292
+inside right
+time : 0.04804491996765137 imu: 359.9352052483176 correction : 19.922246297981086 error: -0.06479475168242743 left: 53, right:14
+heading:359.9352052483176 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:53 8 14
+before correction: -0.15430307974102106
+inside right
+time : 0.04641914367675781 imu: 359.8714141002158 correction : 19.84569692025898 error: -0.12858589978418422 left: 52, right:14
+heading:359.8714141002158 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.1306608135806755
+inside right
+time : 0.04438376426696777 imu: 359.89111598868277 correction : 19.869339186419325 error: -0.10888401131722958 left: 52, right:14
+heading:359.89111598868277 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.11471702966509838
+inside right
+time : 0.045563697814941406 imu: 359.9044024752791 correction : 19.885282970334902 error: -0.09559752472091532 left: 53, right:14
+heading:359.9044024752791 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:53 8 14
+before correction: -0.10618163021256351
+inside right
+time : 0.04444289207458496 imu: 359.9115153081562 correction : 19.893818369787436 error: -0.08848469184380292 left: 53, right:14
+heading:359.9115153081562 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:53 8 14
+before correction: -0.09915903024591444
+inside right
+time : 0.04554939270019531 imu: 359.91736747479507 correction : 19.900840969754086 error: -0.0826325252049287 left: 52, right:14
+heading:359.91736747479507 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.09915903024591444
+inside right
+time : 0.0438687801361084 imu: 359.91736747479507 correction : 19.900840969754086 error: -0.0826325252049287 left: 52, right:14
+heading:359.91736747479507 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.09983870106098039
+inside right
+time : 0.04515361785888672 imu: 359.9168010824492 correction : 19.900161298939018 error: -0.08319891755081699 left: 53, right:14
+heading:359.9168010824492 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:53 8 14
+before correction: -0.10081659868360475
+inside right
+time : 0.0447077751159668 imu: 359.91598616776366 correction : 19.899183401316396 error: -0.0840138322363373 left: 53, right:14
+heading:359.91598616776366 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:53 8 14
+before correction: -0.10165949552233541
+inside right
+time : 0.0452580451965332 imu: 359.9152837537314 correction : 19.898340504477666 error: -0.08471624626861285 left: 53, right:14
+heading:359.9152837537314 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:53 8 14
+before correction: -0.10251060559944562
+inside right
+time : 0.04569363594055176 imu: 359.9145744953338 correction : 19.897489394400555 error: -0.08542550466620469 left: 52, right:14
+heading:359.9145744953338 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.10361411073279214
+inside right
+time : 0.044971466064453125 imu: 359.9136549077227 correction : 19.896385889267208 error: -0.08634509227732678 left: 52, right:14
+heading:359.9136549077227 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.10414267374139854
+inside right
+time : 0.044905662536621094 imu: 359.91321443854883 correction : 19.8958573262586 error: -0.08678556145116545 left: 52, right:14
+heading:359.91321443854883 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.10482576357098879
+inside right
+time : 0.04523587226867676 imu: 359.9126451970242 correction : 19.89517423642901 error: -0.08735480297582399 left: 52, right:14
+heading:359.9126451970242 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.10545784339522016
+inside right
+time : 0.04472494125366211 imu: 359.9121184638373 correction : 19.89454215660478 error: -0.08788153616268346 left: 52, right:14
+heading:359.9121184638373 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.10590034049027963
+inside right
+time : 0.04524564743041992 imu: 359.9117497162581 correction : 19.89409965950972 error: -0.0882502837418997 left: 52, right:14
+heading:359.9117497162581 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.10634489125202436
+inside right
+time : 0.04535174369812012 imu: 359.91137925729 correction : 19.893655108747975 error: -0.0886207427100203 left: 53, right:14
+heading:359.91137925729 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:53 8 14
+before correction: -0.10634489125202436
+inside right
+time : 0.04496645927429199 imu: 359.91137925729 correction : 19.893655108747975 error: -0.0886207427100203 left: 52, right:14
+heading:359.91137925729 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.1067914957175617
+inside right
+time : 0.044286251068115234 imu: 359.91100708690203 correction : 19.893208504282438 error: -0.08899291309796808 left: 52, right:14
+heading:359.91100708690203 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.11562719166688566
+inside right
+time : 0.045580148696899414 imu: 359.90364400694426 correction : 19.884372808333115 error: -0.09635599305573805 left: 52, right:14
+heading:359.90364400694426 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.11617682178768973
+inside right
+time : 0.04488706588745117 imu: 359.9031859818436 correction : 19.88382317821231 error: -0.09681401815640811 left: 52, right:14
+heading:359.9031859818436 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.10823945178053691
+inside right
+time : 0.04520106315612793 imu: 359.90980045684955 correction : 19.891760548219462 error: -0.09019954315044743 left: 52, right:14
+heading:359.90980045684955 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.11718540045515055
+inside right
+time : 0.04405474662780762 imu: 359.9023454996207 correction : 19.88281459954485 error: -0.09765450037929213 left: 53, right:14
+heading:359.9023454996207 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:53 8 14
+before correction: -0.11754289142688776
+inside right
+time : 0.04550027847290039 imu: 359.9020475904776 correction : 19.882457108573114 error: -0.09795240952240647 left: 53, right:14
+heading:359.9020475904776 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:53 8 14
+before correction: -0.11815950167249412
+inside right
+time : 0.044435977935791016 imu: 359.90153374860625 correction : 19.881840498327506 error: -0.0984662513937451 left: 52, right:14
+heading:359.90153374860625 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.10230398601040633
+inside right
+time : 0.04523205757141113 imu: 359.91474667832466 correction : 19.897696013989595 error: -0.08525332167533861 left: 52, right:14
+heading:359.91474667832466 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:52 8 14
+before correction: -0.10230398601040633
+inside right
+time : 0.04405331611633301 imu: 359.91474667832466 correction : 19.897696013989595 error: -0.08525332167533861 left: 53, right:14
+heading:359.91474667832466 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:53 8 14
+before correction: -0.1036970422981085
+inside right
+time : 0.04518723487854004 imu: 359.9135857980849 correction : 19.89630295770189 error: -0.08641420191509042 left: 53, right:14
+heading:359.9135857980849 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:53 8 14
+Button is pressed
+before correction: -0.0421352743354646
+inside right
+time : 0.04525256156921387 imu: 359.9648872713871 correction : 19.957864725664535 error: -0.03511272861288717 left: 52, right:14
+heading:359.9648872713871 0  counter:0 False,  target_count:0, encoder_c:7,    L C R:52 8 14
+before correction: -0.056715555849564225
+inside right
+time : 0.045644521713256836 imu: 359.95273703679203 correction : 19.943284444150436 error: -0.04726296320797019 left: 52, right:14
+heading:359.95273703679203 0  counter:0 False,  target_count:0, encoder_c:58,    L C R:52 8 14
+before correction: -0.15504272745290565
+inside right
+time : 0.04568052291870117 imu: 359.8707977271226 correction : 19.844957272547095 error: -0.12920227287742136 left: 52, right:14
+heading:359.8707977271226 0  counter:0 False,  target_count:0, encoder_c:188,    L C R:52 8 14
+before correction: -1.0175969898858057
+time : 0.04481935501098633 imu: 359.1520025084285 correction : -1.0175969898858057 error: -0.8479974915715047 left: 51, right:15
+heading:359.1520025084285 0  counter:0 False,  target_count:0, encoder_c:344,    L C R:51 8 15
+before correction: -2.215984987095635
+time : 0.04508233070373535 imu: 358.15334584408697 correction : -2.215984987095635 error: -1.8466541559130292 left: 50, right:15
+heading:358.15334584408697 0  counter:0 False,  target_count:0, encoder_c:540,    L C R:50 8 15
+before correction: -3.783257870122247
+inside right
+time : 0.04459786415100098 imu: 356.84728510823146 correction : 16.21674212987775 error: -3.1527148917685395 left: 50, right:14
+heading:356.84728510823146 0  counter:0 False,  target_count:0, encoder_c:772,    L C R:50 8 14
+before correction: -4.5953958009899
+inside right
+time : 0.04442238807678223 imu: 356.1705034991751 correction : 15.4046041990101 error: -3.8294965008249164 left: 49, right:14
+heading:356.1705034991751 0  counter:0 False,  target_count:0, encoder_c:975,    L C R:49 9 14
+before correction: -5.137892604952777
+inside right
+time : 0.04561567306518555 imu: 355.718422829206 correction : 14.862107395047223 error: -4.28157717079398 left: 48, right:14
+heading:355.718422829206 0  counter:0 False,  target_count:0, encoder_c:1260,    L C R:48 9 14
+Exception: 'dutycycle not 0-range (default 255)'

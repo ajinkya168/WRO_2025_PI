@@ -1,0 +1,15 @@
+[Unit]
+Description=Obstacle Challenge Service
+After=udev.service systemd-udevd.service
+
+[Service]
+User=ajinkya
+ExecStart=/usr/bin/python /home/ajinkya/WRO_CODE/versionTest/Obstacle_Challenge_7.py > /home/ajinkya/WRO_CODE/logs/output-7.txt
+Restart=always
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/ajinkya/.Xauthority
+
+
+
+[Install]
+WantedBy=multi-user.target

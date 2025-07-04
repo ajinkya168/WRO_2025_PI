@@ -1,0 +1,38 @@
+ServoProcess started
+before correction: -3.7156291946696456
+time : 1726240448.591988 imu: 356.9036423377753 correction : -3.7156291946696456 error: -3.0963576622247047 left: 46, right:99
+before correction: -7.650650649470344
+time : 0.05478048324584961 imu: 353.62445779210805 correction : -7.650650649470344 error: -6.375542207891954 left: 41, right:97
+heading:353.62445779210805 0  counter:0 False,  target_count:0, encoder_c:130,    L C R:41 16 97
+before correction: -10.748960286509668
+time : 0.045946359634399414 imu: 351.0425330945753 correction : -10.748960286509668 error: -8.957466905424724 left: 37, right:102
+heading:351.0425330945753 0  counter:0 False,  target_count:0, encoder_c:130,    L C R:37 17 102
+before correction: -11.368693776926694
+time : 0.04520153999328613 imu: 350.52608851922776 correction : -11.368693776926694 error: -9.473911480772244 left: 37, right:101
+heading:350.52608851922776 0  counter:0 False,  target_count:0, encoder_c:130,    L C R:37 17 101
+before correction: -11.985271679202857
+time : 0.04492545127868652 imu: 350.0122736006643 correction : -11.985271679202857 error: -9.987726399335713 left: 37, right:102
+heading:350.0122736006643 0  counter:0 False,  target_count:0, encoder_c:130,    L C R:37 17 102
+before correction: -11.879976615461464
+time : 0.04509615898132324 imu: 350.10001948711545 correction : -11.879976615461464 error: -9.899980512884554 left: 38, right:99
+heading:350.10001948711545 0  counter:0 False,  target_count:0, encoder_c:130,    L C R:38 16 99
+before correction: -11.931126630236259
+time : 0.044976234436035156 imu: 350.0573944748031 correction : -11.931126630236259 error: -9.942605525196882 left: 38, right:99
+heading:350.0573944748031 0  counter:0 False,  target_count:0, encoder_c:130,    L C R:38 17 99
+before correction: -11.923281024452649
+time : 0.045815229415893555 imu: 350.0639324796228 correction : -11.923281024452649 error: -9.936067520377208 left: 38, right:99
+heading:350.0639324796228 0  counter:0 False,  target_count:0, encoder_c:130,    L C R:38 17 99
+before correction: -11.923643433840038
+time : 0.04607248306274414 imu: 350.06363047179997 correction : -11.923643433840038 error: -9.936369528200032 left: 38, right:99
+heading:350.06363047179997 0  counter:0 False,  target_count:0, encoder_c:130,    L C R:38 17 99
+before correction: -11.923643433840038
+time : 0.04488205909729004 imu: 350.06363047179997 correction : -11.923643433840038 error: -9.936369528200032 left: 38, right:100
+heading:350.06363047179997 0  counter:0 False,  target_count:0, encoder_c:130,    L C R:38 17 100
+before correction: -11.9230739911598
+time : 0.0483403205871582 imu: 350.06410500736683 correction : -11.9230739911598 error: -9.935894992633166 left: 38, right:100
+heading:350.06410500736683 0  counter:0 False,  target_count:0, encoder_c:130,    L C R:38 17 100
+before correction: -11.932038391168202
+time : 0.05100297927856445 imu: 350.0566346740265 correction : -11.932038391168202 error: -9.943365325973502 left: 38, right:100
+heading:350.0566346740265 0  counter:0 False,  target_count:0, encoder_c:130,    L C R:38 17 100
+before correction: -11.923376770026106
+Exception: unpack requires a buffer of 16 bytes

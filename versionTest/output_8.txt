@@ -1,0 +1,450 @@
+37
+20837
+20837
+20837
+20837
+20837
+20837
+20837
+20837
+0
+ESP32 is ready.
+7
+resewt:False color_n: offset:0 imu: 0.29646402538747907, counter:0 heading:0 x:0.0 y:0.0, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 0.30354574290432956, counter:0 heading:0 x:0.0183002829054664 y:9.695347526481315e-05, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 0.3036319989249483, counter:0 heading:0 x:0.13420207371555012 y:0.0007111666364743788, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 0.2965502814676887, counter:0 heading:0 x:0.3111049215782643 y:0.0016267848238358895, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 0.14790318561773813, counter:0 heading:0 x:0.5612114645745043 y:0.00227241067853889, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 0.14790318561773813, counter:0 heading:0 x:0.8723196034234858 y:0.0030755062539011583, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 0.18193516402178664, counter:0 heading:0 x:1.2322284036260136 y:0.00421835285155135, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 0.6281482201054792, counter:0 heading:0 x:1.6348160823657927 y:0.008632200924259831, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 0.6281482201054792, counter:0 heading:0 x:2.098401894247962 y:0.013714813856469589, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 2.281299693081584, counter:0 heading:0 x:2.7993665867774444 y:0.041639315914646466, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 4.648213360943298, counter:0 heading:0 x:3.5776215192350973 y:0.1049153926470461, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 7.136113422312546, counter:0 heading:0 x:4.188967137120231 y:0.1814538535904094, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 7.136113422312546, counter:0 heading:0 x:4.830577389554133 y:0.2617813472537412, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 9.718663088429844, counter:0 heading:0 x:5.503992328953272 y:0.3771160455577212, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 12.31145681593969, counter:0 heading:0 x:6.219179586560507 y:0.5332018988263529, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 14.797467419854936, counter:0 heading:0 x:7.14514446755269 y:0.7778085873514311, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 14.797467419854936, counter:0 heading:0 x:7.86468405660394 y:0.9678851223836574, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 17.101710140399096, counter:0 heading:0 x:8.820878808904402 y:1.2620802797017963, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 19.574049938433163, counter:0 heading:0 x:9.562325163894219 y:1.5257191208299452, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 21.720785929221474, counter:0 heading:0 x:10.571061347061436 y:1.9275679693097507, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 21.720785929221474, counter:0 heading:0 x:11.092430610271457 y:2.135265126950998, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 23.72839047443353, counter:0 heading:0 x:12.097638973995112 y:2.5771149445670183, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 25.74895407679008, counter:0 heading:0 x:13.108621395527788 y:3.064732227896464, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 27.544210778924864, counter:0 heading:0 x:13.876663978333545 y:3.4653034320848, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 27.544210778924864, counter:0 heading:0 x:14.6447065611393 y:3.865874636273135, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 29.206021193229155, counter:0 heading:0 x:15.406134219435176 y:4.291527188674473, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 30.683672275492423, counter:0 heading:0 x:16.41339326440641 y:4.889205672753988, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 31.98573507968846, counter:0 heading:0 x:17.179152756020997 y:5.367440258300991, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 31.98573507968846, counter:0 heading:0 x:18.188092626729407 y:5.997546637906838, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 33.07957851804949, counter:0 heading:0 x:18.959917336163432 y:6.5003009263749565, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 34.27448451282909, counter:0 heading:0 x:19.705967367242494 y:7.008735060691366, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 34.27448451282909, counter:0 heading:0 x:20.472180912675043 y:7.530910658097408, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 35.315811378555644, counter:0 heading:0 x:21.477658773053975 y:8.243245322655822, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 36.24646334859193, counter:0 heading:0 x:22.215610745504655 y:8.784264058327082, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 37.119419702382274, counter:0 heading:0 x:22.95496276121729 y:9.343825626514477, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 37.119419702382274, counter:0 heading:0 x:23.689450618931815 y:9.899705868595378, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 37.96983338154705, counter:0 heading:0 x:24.680101338310088 y:10.67284741861685, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 38.69001989179809, counter:0 heading:0 x:25.651433095084972 y:11.45075314723048, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 39.40799230766876, counter:0 heading:0 x:26.608227649216634 y:12.236896596084167, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 40.00148476727181, counter:0 heading:0 x:27.34187409660618 y:12.852531457942048, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 40.00148476727181, counter:0 heading:0 x:28.05682891476287 y:13.452481355166606, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 40.45543435161265, counter:0 heading:0 x:28.78557476425199 y:14.073909452177395, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 40.82926282869649, counter:0 heading:0 x:29.50101906095742 y:14.69210233597304, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 40.82926282869649, counter:0 heading:0 x:30.447251840471065 y:15.509712279057608, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 41.16841816835982, counter:0 heading:0 x:31.159024307390393 y:16.13212929248148, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 41.59184341815634, counter:0 heading:0 x:32.1034161445876 y:16.970359212322617, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 41.93772718098195, counter:0 heading:0 x:32.80676752527948 y:17.602276784908423, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 42.24912831695334, counter:0 heading:0 x:33.74599696442645 y:18.455386661898732, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 42.24912831695334, counter:0 heading:0 x:34.69425745587292 y:19.3166995184755, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 42.52611069800985, counter:0 heading:0 x:35.40007384922768 y:19.96405306312769, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 42.75939909527879, counter:0 heading:0 x:36.3451048860811 y:20.837918310172807, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 42.94711050813601, counter:0 heading:0 x:37.046145622949325 y:21.490440553589323, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 43.05025893685601, counter:0 heading:0 x:37.74601050186519 y:22.144223808316873, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 43.05025893685601, counter:0 heading:0 x:38.655389070647594 y:22.99372561700745, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 43.14020248393253, counter:0 heading:0 x:39.3497755759283 y:23.644435504109303, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 43.22851235889464, counter:0 heading:0 x:40.283175422255674 y:24.52183081035315, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 43.41815318282872, counter:0 heading:0 x:41.20923520029497 y:25.39811796326801, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 43.41815318282872, counter:0 heading:0 x:42.135294978334265 y:26.27440511618287, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 43.55231907543222, counter:0 heading:0 x:42.61277139869567 y:26.728342677634537, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 43.657676150353765, counter:0 heading:0 x:43.53515980811335 y:27.608493522113903, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 43.68259298006737, counter:0 heading:0 x:44.23217836662628 y:28.27417389841661, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 43.68259298006737, counter:0 heading:0 x:44.91596239554718 y:28.927214773903437, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n: offset:0 imu: 43.86540994263279, counter:0 heading:0 x:45.597659251876955 y:29.582434110716694, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+Correcting Red Wall
+resewt:False color_n: offset:0 imu: 44.0059003847576, counter:0 heading:0 x:46.29529811222083 y:30.256274982612876, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:False
+3
+avoiding red...
+resewt:False color_n:Orange offset:0 imu: 44.0059003847576, counter:0 heading:0 x:46.97099864362306 y:30.908925889984015, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+reversing diection red pink color: 1 pink flag: False False  red color:0 red flag: True True
+Breaking the loop...
+red reversing diection complete
+Stopping Motor...
+Resuming Motor...0
+3
+avoiding red...
+lane:1, error:38.640281899692795 target:30, x:68.6402818996928
+resewt:False color_n:Orange offset:0 imu: 44.09360616298109, counter:1 heading:90 x:68.6402818996928 y:51.90323373731261, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:108.4824259566258 target:30, x:138.4824259566258
+resewt:False color_n:Orange offset:0 imu: 328.731582557612, counter:1 heading:90 x:138.4824259566258 y:52.23569381107389, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:108.4980682527277 target:30, x:138.4980682527277
+resewt:False color_n:Orange offset:0 imu: 328.731582557612, counter:1 heading:90 x:138.4980682527277 y:52.22619495182356, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:108.57105984245595 target:30, x:138.57105984245595
+resewt:False color_n:Orange offset:0 imu: 328.72409686005864, counter:1 heading:90 x:138.57105984245595 y:52.18185740525411, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:108.75881375810079 target:30, x:138.75881375810079
+resewt:False color_n:Orange offset:0 imu: 328.7548946674604, counter:1 heading:90 x:138.75881375810079 y:52.067947476832, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:108.95699844683699 target:30, x:138.956998446837
+resewt:False color_n:Orange offset:0 imu: 328.7548946674604, counter:1 heading:90 x:138.956998446837 y:51.947709219053124, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:109.29659102557264 target:30, x:139.29659102557264
+resewt:False color_n:Orange offset:0 imu: 328.92033431767123, counter:1 heading:90 x:139.29659102557264 y:51.743018222525784, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:109.7075437677207 target:30, x:139.7075437677207
+resewt:False color_n:Orange offset:0 imu: 329.73271950422765, counter:1 heading:90 x:139.7075437677207 y:51.5031915399131, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:110.08252139796295 target:30, x:140.08252139796295
+resewt:False color_n:Orange offset:0 imu: 331.419022220321, counter:1 heading:90 x:140.08252139796295 y:51.29890856952806, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:110.66150460835743 target:30, x:140.66150460835743
+resewt:False color_n:Orange offset:0 imu: 333.55995329066957, counter:1 heading:90 x:140.66150460835743 y:51.01099423444239, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:111.12874965805705 target:30, x:141.12874965805705
+resewt:False color_n:Orange offset:0 imu: 335.76209030217365, counter:1 heading:90 x:141.12874965805705 y:50.800634278704514, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:111.8129299094029 target:30, x:141.8129299094029
+resewt:False color_n:Orange offset:0 imu: 335.76209030217365, counter:1 heading:90 x:141.8129299094029 y:50.49260720065977, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:112.36781617622023 target:30, x:142.36781617622023
+resewt:False color_n:Orange offset:0 imu: 338.15386847263005, counter:1 heading:90 x:142.36781617622023 y:50.270150123825864, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:112.966964991216 target:30, x:142.966964991216
+resewt:False color_n:Orange offset:0 imu: 340.8051568247886, counter:1 heading:90 x:142.966964991216 y:50.06156489452177, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:113.57763589880787 target:30, x:143.57763589880787
+resewt:False color_n:Orange offset:0 imu: 340.8051568247886, counter:1 heading:90 x:143.57763589880787 y:49.84896841080799, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:114.23937440534309 target:30, x:144.23937440534309
+resewt:False color_n:Orange offset:0 imu: 343.73712082101696, counter:1 heading:90 x:144.23937440534309 y:49.65592782940792, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:114.93455689817722 target:30, x:144.93455689817722
+resewt:False color_n:Orange offset:0 imu: 346.9125241221349, counter:1 heading:90 x:144.93455689817722 y:49.49431397451303, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:115.89711727287059 target:30, x:145.8971172728706
+resewt:False color_n:Orange offset:0 imu: 346.9125241221349, counter:1 heading:90 x:145.8971172728706 y:49.27054094465856, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:116.642557641552 target:30, x:146.642557641552
+resewt:False color_n:Orange offset:0 imu: 350.2248858030592, counter:1 heading:90 x:146.642557641552 y:49.14211444416498, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:117.68560366318076 target:30, x:147.68560366318076
+resewt:False color_n:Orange offset:0 imu: 353.7758106375209, counter:1 heading:90 x:147.68560366318076 y:49.028357810685655, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:118.74583281591168 target:30, x:148.74583281591168
+resewt:False color_n:Orange offset:0 imu: 357.27282944357177, counter:1 heading:90 x:148.74583281591168 y:48.977854766330076, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:119.56927475112721 target:30, x:149.5692747511272
+resewt:False color_n:Orange offset:0 imu: 0.8102923713633218, counter:1 heading:90 x:149.5692747511272 y:48.98950088076214, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:120.67939647119553 target:30, x:150.67939647119553
+resewt:False color_n:Orange offset:0 imu: 0.8102923713633218, counter:1 heading:90 x:150.67939647119553 y:49.005201568366836, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:121.51876046197506 target:30, x:151.51876046197506
+resewt:False color_n:Orange offset:0 imu: 4.382016632983742, counter:1 heading:90 x:151.51876046197506 y:49.069522103856045, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:122.64253470836402 target:30, x:152.64253470836402
+resewt:False color_n:Orange offset:0 imu: 7.933340105773063, counter:1 heading:90 x:152.64253470836402 y:49.2261252297921, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:123.48528542618516 target:30, x:153.48528542618516
+resewt:False color_n:Orange offset:0 imu: 11.535822573581456, counter:1 heading:90 x:153.48528542618516 y:49.398133587361706, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+3
+avoiding red...
+lane:1, error:124.33999005489736 target:30, x:154.33999005489736
+resewt:False color_n:Orange offset:0 imu: 11.535822573581456, counter:1 heading:90 x:154.33999005489736 y:49.57258177979045, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+4
+avoiding red...
+lane:1, error:125.45858297499134 target:30, x:155.45858297499134
+resewt:False color_n:Orange offset:0 imu: 15.180036284266912, counter:1 heading:90 x:155.45858297499134 y:49.87607826444032, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+4
+avoiding red...
+lane:1, error:126.57196107086747 target:30, x:156.57196107086747
+resewt:False color_n:Orange offset:0 imu: 18.972140432157975, counter:1 heading:90 x:156.57196107086747 y:50.25883963224056, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+4
+avoiding red...
+lane:1, error:127.66734677383297 target:30, x:157.66734677383297
+resewt:False color_n:Orange offset:0 imu: 22.949048967648334, counter:1 heading:90 x:157.66734677383297 y:50.7226541146189, green_count: 0, red_count:0, change_path:False, last_counter:12, blue:False, orange:True
+red Avoid complete
+4
+lane:1, error:58.467038609168554 target:100, x:158.46703860916855
+resewt:False color_n:Orange offset:0 imu: 26.900931298524505, counter:1 heading:90 x:158.46703860916855 y:51.128377282312776, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+1
+lane:1, error:-10.466705610384025 target:170, x:159.53329438961597
+Correcting Green Wall
+resewt:False color_n:Orange offset:0 imu: 26.900931298524505, counter:1 heading:90 x:159.53329438961597 y:51.669341505904605, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+1
+lane:1, error:-9.942591581858693 target:170, x:160.0574084181413
+Correcting Green Wall
+Image Process started
+resewt:False color_n:Orange offset:0 imu: 30.77558795479018, counter:1 heading:90 x:160.0574084181413 y:51.981473584410416, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+1
+lane:1, error:-8.938166399692932 target:170, x:161.06183360030707
+Correcting Green Wall
+resewt:False color_n:Orange offset:0 imu: 34.58600463477253, counter:1 heading:90 x:161.06183360030707 y:52.67401806005724, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+1
+lane:1, error:-8.184847513068604 target:170, x:161.8151524869314
+Correcting Green Wall
+resewt:False color_n:Orange offset:0 imu: 34.58600463477253, counter:1 heading:90 x:161.8151524869314 y:53.19342641679236, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+1
+lane:1, error:-7.45733510602156 target:170, x:162.54266489397844
+Correcting Green Wall
+resewt:False color_n:Orange offset:0 imu: 38.31532189304943, counter:1 heading:90 x:162.54266489397844 y:53.76829705382587, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+1
+lane:1, error:-6.545902815261655 target:170, x:163.45409718473834
+resewt:False color_n:Orange offset:0 imu: 41.98354797488828, counter:1 heading:90 x:163.45409718473834 y:54.58848061062633, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:-5.908333117254301 target:170, x:164.0916668827457
+resewt:False color_n:Orange offset:0 imu: 45.8310144611451, counter:1 heading:90 x:164.0916668827457 y:55.24481837898496, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:-5.066741115884611 target:170, x:164.9332588841154
+resewt:False color_n:Orange offset:0 imu: 45.8310144611451, counter:1 heading:90 x:164.9332588841154 y:56.11118423321835, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:-4.267644787334206 target:170, x:165.7323552126658
+resewt:False color_n:Orange offset:0 imu: 50.04879604756081, counter:1 heading:90 x:165.7323552126658 y:57.065158950926616, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:-3.8986998953797922 target:170, x:166.1013001046202
+resewt:False color_n:Orange offset:0 imu: 54.44050995570566, counter:1 heading:90 x:166.1013001046202 y:57.58126627222272, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:-3.2545712058867196 target:170, x:166.74542879411328
+resewt:False color_n:Orange offset:0 imu: 58.65725570352524, counter:1 heading:90 x:166.74542879411328 y:58.638893603735816, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:-2.7659218552367975 target:170, x:167.2340781447632
+resewt:False color_n:Orange offset:0 imu: 58.65725570352524, counter:1 heading:90 x:167.2340781447632 y:59.44123157936643, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:-2.3388529128782807 target:170, x:167.66114708712172
+resewt:False color_n:Orange offset:0 imu: 62.76915251575179, counter:1 heading:90 x:167.66114708712172 y:60.27111855339242, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:-1.970348578295841 target:170, x:168.02965142170416
+resewt:False color_n:Orange offset:0 imu: 66.74471969261623, counter:1 heading:90 x:168.02965142170416 y:61.12861772340903, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:-1.5970271935881613 target:170, x:168.40297280641184
+resewt:False color_n:Orange offset:0 imu: 66.74471969261623, counter:1 heading:90 x:168.40297280641184 y:61.997326032902976, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:-1.181574740897645 target:170, x:168.81842525910236
+resewt:False color_n:Orange offset:0 imu: 70.49751162934673, counter:1 heading:90 x:168.81842525910236 y:63.17036565878213, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:-0.9215499054799068 target:170, x:169.0784500945201
+resewt:False color_n:Orange offset:0 imu: 74.14271882952545, counter:1 heading:90 x:169.0784500945201 y:64.08577980596037, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:-0.6513902007621937 target:170, x:169.3486097992378
+resewt:False color_n:Orange offset:0 imu: 77.39881654870585, counter:1 heading:90 x:169.3486097992378 y:65.29428759449068, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:-0.4424489513007188 target:170, x:169.55755104869928
+resewt:False color_n:Orange offset:0 imu: 77.39881654870585, counter:1 heading:90 x:169.55755104869928 y:66.22894632749194, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:-0.22918576716807593 target:170, x:169.77081423283192
+resewt:False color_n:Orange offset:0 imu: 80.32393294113352, counter:1 heading:90 x:169.77081423283192 y:67.47973296632065, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:-0.06735766322822201 target:170, x:169.93264233677178
+resewt:False color_n:Orange offset:0 imu: 82.60097546014259, counter:1 heading:90 x:169.93264233677178 y:68.72590645703112, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:0.023599870520428112 target:170, x:170.02359987052043
+resewt:False color_n:Orange offset:0 imu: 84.51524088517318, counter:1 heading:90 x:170.02359987052043 y:69.67317764467616, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:0.11339128204153326 target:170, x:170.11339128204153
+resewt:False color_n:Orange offset:0 imu: 84.51524088517318, counter:1 heading:90 x:170.11339128204153 y:70.60830432991547, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:0.17916760314406588 target:170, x:170.17916760314407
+resewt:False color_n:Orange offset:0 imu: 86.08681689876892, counter:1 heading:90 x:170.17916760314407 y:71.56988568886965, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:0.22081805588550196 target:170, x:170.2208180558855
+resewt:False color_n:Orange offset:0 imu: 87.47530704685423, counter:1 heading:90 x:170.2208180558855 y:72.51449577935689, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:0.2515839361362282 target:170, x:170.25158393613623
+resewt:False color_n:Orange offset:0 imu: 88.60388251565901, counter:1 heading:90 x:170.25158393613623 y:73.77685816840926, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:0.2725404052925171 target:170, x:170.27254040529252
+resewt:False color_n:Orange offset:0 imu: 88.60388251565901, counter:1 heading:90 x:170.27254040529252 y:74.63672820153188, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:0.2716309095072802 target:170, x:170.27163090950728
+resewt:False color_n:Orange offset:0 imu: 90.50250145746736, counter:1 heading:90 x:170.27163090950728 y:74.74042727169666, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:0.27156925818789546 target:170, x:170.2715692581879
+resewt:False color_n:Orange offset:0 imu: 90.57906825548658, counter:1 heading:90 x:170.2715692581879 y:74.74652714005981, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:0.27156925818789546 target:170, x:170.2715692581879
+resewt:False color_n:Orange offset:0 imu: 90.57906825548658, counter:1 heading:90 x:170.2715692581879 y:74.74652714005981, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+Encoder Process Started
+lane:1, error:0.27156925818789546 target:170, x:170.2715692581879
+resewt:False color_n:Orange offset:0 imu: 90.54882170644353, counter:1 heading:90 x:170.2715692581879 y:74.74652714005981, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:0.27156925818789546 target:170, x:170.2715692581879
+resewt:False color_n:Orange offset:0 imu: 90.54882170644353, counter:1 heading:90 x:170.2715692581879 y:74.74652714005981, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:0.27156925818789546 target:170, x:170.2715692581879
+resewt:False color_n:Orange offset:0 imu: 90.58217647683574, counter:1 heading:90 x:170.2715692581879 y:74.74652714005981, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:0.27156925818789546 target:170, x:170.2715692581879
+resewt:False color_n:Orange offset:0 imu: 90.5750275373794, counter:1 heading:90 x:170.2715692581879 y:74.74652714005981, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:0.27156925818789546 target:170, x:170.2715692581879
+resewt:False color_n:Orange offset:0 imu: 90.5750275373794, counter:1 heading:90 x:170.2715692581879 y:74.74652714005981, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True
+2
+lane:1, error:0.27156925818789546 target:170, x:170.2715692581879
+resewt:False color_n:Orange offset:0 imu: 90.57454676202973, counter:1 heading:90 x:170.2715692581879 y:74.74652714005981, green_count: 0, red_count:1, change_path:False, last_counter:12, blue:False, orange:True

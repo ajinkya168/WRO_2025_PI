@@ -1,0 +1,108 @@
+import time
+import board
+import busio
+from math import atan2, sqrt, pi
+import math
+import adafruit_tcs34725
+import RPi.GPIO as GPIO
+from adafruit_extended_bus import ExtendedI2C as I2C
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(14, GPIO.OUT)
+GPIO.output(14, GPIO.LOW)
+time.sleep(1)  
+GPIO.output(14, GPIO.HIGH)
+
+import serial
+from adafruit_bno08x_rvc import BNO08x_RVC  # pylint:disable=wrong-import-position
+
+uart = serial.Serial("/dev/ttyS0", 115200)
+rvc = BNO08x_RVC(uart, timeout = 1)
+
+
+i2c1 = busio.I2C(board.SCL, board.SDA)
+sensor = adafruit_tcs34725.TCS34725(i2c1)
+
+
+
+
+
+
+
+
+sensor.gain = 60
+prev_time = 0
+prev_heading = 0
+current_time = 0
+
+def quaternion_to_heading(w, x, y, z):
+    # Compute the yaw (heading) from the quaternion
+    heading = math.atan2(2.0 * (w * z + x * y), 1.0 - 2.0 * (y * y + z * z))
+    
+    # Convert from radians to degrees
+    heading_degrees = math.degrees(heading)
+    
+    # Normalize the heading to 0-360 degrees
+    if heading_degrees > 0:
+        heading_degrees = 360 - heading_degrees
+    else:
+        heading_degrees = abs(heading_degrees)
+    
+
+    return heading_degrees
+
+
+def find_heading(dqw, dqx, dqy, dqz):
+	norm = sqrt(dqw * dqw + dqx * dqx + dqy * dqy + dqz * dqz)
+	dqw = dqw / norm
+	dqx = dqx / norm
+	dqy = dqy / norm
+	dqz = dqz / norm
+
+	ysqr = dqy * dqy
+
+	t3 = +2.0 * (dqw * dqz + dqx * dqy)
+	t4 = +1.0 - 2.0 * (ysqr + dqz * dqz)
+	yaw_raw = atan2(t3, t4)
+
+	yaw = yaw_raw * 180.0 / pi
+	#yaw = yaw - 180
+
+	if yaw > 0:
+		yaw = 360 - yaw
+	else:
+		yaw = abs(yaw)
+	return yaw  # heading in 360 clockwise
+
+
+while True:
+	#print(1 / (time.time() - prev_time))
+	#prev_time = time.time()
+	try:
+		color_rgb = sensor.color_rgb_bytes
+		time.sleep(0.01)
+		try:
+			yaw, pitch, roll, x_accel, y_accel, z_accel = rvc.heading
+		except:
+			pass
+		#gyro_x, gyro_y, gyro_z = bno.gyro  # pylint:disable=no-member
+		#, quat_j, quat_k, quat_real = bno.quaternion
+		# print("Rotation Vector Quaternion:")
+
+		#heading = quaternion_to_heading(quat_real, quat_i, quat_j, quat_k)
+		print(f"Heading: {yaw} ")
+		if (color_rgb[0] == 0 and color_rgb[1] == 0 and color_rgb[2] == 0):
+			continue
+		elif color_rgb[2] < 20 and (color_rgb[0] <= 30 and color_rgb[0] >= 20) and color_rgb[1]< 20 :
+			color_n = "Blue"
+		elif color_rgb[2] < 30 and (color_rgb[0] >= 125 and color_rgb[0] <= 255) and color_rgb[1]< 50:
+			color_n = "Orange"
+		else:
+			color_n = "White"
+		print(f"Color: {color_n}, {color_rgb}".format(color_n))
+		prev_time = time.time()
+		#print(f"r: {color_rgb[0]} g:{color_rgb[1]} b:{color_rgb[2]}")
+	except Exception as e:
+		pass	
+
+GPIO.cleanup()

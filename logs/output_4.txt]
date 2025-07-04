@@ -1,0 +1,3075 @@
+Connection Established...
+Command sent: b'1'
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+pink:0, green:0, red:0
+
+p_count: 0 x: 0.0, y: 0.0, imu: 359.92312735447194 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:0 right:0, head:0
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 0.018300523159269954, y: -2.4627088660209365e-05, imu: 359.92289688235184 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:38 right:45, head:115
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 0.07320209263707982, y: -9.850835464083746e-05, imu: 359.92289688235184 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:38 right:45, head:115
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 0.2989085044133601, y: -0.0004309933510996831, imu: 359.9155984399414 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:38 right:46, head:115
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 0.5551156804722222, y: -0.000872352220715419, imu: 359.90129872295523 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:38 right:45, head:115
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 0.84792388168235, y: -0.001376762357419117, imu: 359.90129872295523 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:39 right:45, head:114
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 1.2322226325304515, y: -0.004486711783503583, imu: 359.53634226859197 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:39 right:45, head:112
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 1.677356157314356, y: -0.017133130687728104, imu: 358.37264206559763 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:39 right:46, head:112
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 2.170605141055705, y: -0.04636754522187045, imu: 356.6080997402486 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:40 right:46, head:49
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 2.7186595674349823, y: -0.07885022803758421, imu: 356.6080997402486 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:40 right:46, head:49
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 3.125593229917339, y: -0.11693614922467119, imu: 354.65312301021225 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 228)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:40 right:46, head:30
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 3.7268832685106714, y: -0.17321236112797883, imu: 354.65312301021225 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 235)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:44 right:46, head:28
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 4.385892756615805, y: -0.2616690317960852, imu: 352.35507031637036 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 230)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:43 right:46, head:28
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 5.070277652700344, y: -0.3850667601376508, imu: 349.7791239360152 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:43 right:47, head:28
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 5.778676053910658, y: -0.5127942333333064, imu: 349.7791239360152 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 237)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:39 right:47, head:27
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 6.521951019168856, y: -0.6830377995777621, imu: 347.0992035397265 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 77)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:40 right:49, head:76
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 7.256956709764376, y: -0.8860333182953275, imu: 344.56079286985977 0
+reset_f :False counter:0 trigger:False
+color:White (255, 233, 74)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:40 right:49, head:76
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 7.780280761468385, y: -1.0305661276222338, imu: 344.56079286985977 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 85)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:38 right:49, head:126
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 8.541457828011097, y: -1.2738929666960124, imu: 342.27238802665306 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 119)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:37 right:51, head:132
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 9.320618425322625, y: -1.5588236970092346, imu: 339.91307223943875 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 108)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:37 right:52, head:124
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 10.099779022634152, y: -1.8437544273224566, imu: 339.91307223943875 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 98)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:37 right:52, head:124
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 10.907375224381543, y: -2.173512746560814, imu: 337.78878528256877 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 120)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:36 right:52, head:114
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 11.959546110666958, y: -2.6448865273897475, imu: 335.8675649043823 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 174)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:35 right:55, head:102
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 12.508260599594724, y: -2.911409244939585, imu: 334.09313280803684 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:35 right:55, head:94
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 13.298409463650712, y: -3.295201958211352, imu: 334.09313280803684 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:35 right:59, head:89
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 14.095286661224947, y: -3.7064258051513956, imu: 332.7042665328892 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 214)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:35 right:59, head:84
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 14.892163858799178, y: -4.117649652091437, imu: 332.7042665328892 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 133)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:35 right:63, head:81
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 15.688202320494534, y: -4.556364487956278, imu: 331.1398448096096 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 99)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:35 right:69, head:79
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 16.493153273537278, y: -5.028756522585146, imu: 329.5931105658166 0
+reset_f :False counter:0 trigger:False
+color:White (255, 223, 69)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:35 right:84, head:75
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 17.287581991899724, y: -5.494973497937821, imu: 329.5931105658166 0
+reset_f :False counter:0 trigger:False
+color:White (255, 190, 60)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:35 right:84, head:71
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 18.08120776184662, y: -5.986154125061306, imu: 328.24634069013655 0
+reset_f :False counter:0 trigger:False
+color:White (255, 176, 55)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:36 right:84, head:70
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 18.880290044183255, y: -6.5029359764683905, imu: 327.10847556970856 0
+reset_f :False counter:0 trigger:False
+color:White (255, 162, 51)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:36 right:285, head:66
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 19.428378532709022, y: -6.8573953232668385, imu: 327.10847556970856 0
+reset_f :False counter:0 trigger:False
+color:White (255, 176, 55)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:37 right:276, head:65
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 20.212524368788678, y: -7.385730719604108, imu: 326.02901925150235 0
+reset_f :False counter:0 trigger:False
+color:White (255, 192, 61)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:37 right:269, head:65
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 21.227961340973675, y: -8.09450790357051, imu: 325.0848765612675 0
+reset_f :False counter:0 trigger:False
+color:White (255, 176, 55)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:38 right:260, head:60
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 21.773195971358724, y: -8.47508284471503, imu: 325.0848765612675 0
+reset_f :False counter:0 trigger:False
+color:White (255, 205, 66)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:39 right:247, head:57
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 22.540306585734076, y: -9.027861542365896, imu: 324.223538137924 0
+reset_f :False counter:0 trigger:False
+color:White (255, 221, 71)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:39 right:236, head:56
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 23.571178408581133, y: -9.788362088981547, imu: 323.58285365826714 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 96)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:43 right:232, head:55
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 24.34453359924054, y: -10.373753623921916, imu: 322.8760845183095 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 122)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:44 right:226, head:51
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 25.108161051652658, y: -10.951781743328446, imu: 322.8760845183095 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 115)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:44 right:219, head:51
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 25.88469732842566, y: -11.553087585402425, imu: 322.2478220693939 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 114)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:43 right:213, head:48
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 26.63741834378652, y: -12.145248430052067, imu: 321.8080950934328 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 89)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:43 right:207, head:47
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 27.150419290561125, y: -12.548823018443864, imu: 321.8080950934328 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 95)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:42 right:204, head:46
+setPointL: -70 setPointR: 70
+1
+pink:0, green:1, red:0
+
+p_count: 0 x: 27.907407388581767, y: -13.155230900611285, imu: 321.30248686286296 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 117)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:41 right:204, head:46
+setPointL: -70 setPointR: 70
+2
+pink:0, green:0, red:0
+
+p_count: 0 x: 28.673917349470596, y: -13.76926655488144, imu: 321.30248686286296 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 140)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:41 right:182, head:44
+setPointL: -70 setPointR: 70
+2
+pink:0, green:0, red:0
+
+p_count: 0 x: 29.436502701057456, y: -14.38816952498412, imu: 320.93772776563765 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 120)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:41 right:175, head:43
+setPointL: -70 setPointR: 70
+2
+pink:0, green:0, red:0
+
+p_count: 0 x: 30.18139063488828, y: -14.999812558410634, imu: 320.60986766126206 0
+reset_f :False counter:0 trigger:False
+color:White (255, 250, 78)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:39 right:163, head:40
+setPointL: -70 setPointR: 70
+2
+pink:0, green:0, red:0
+
+p_count: 0 x: 30.69055453902581, y: -15.417897669866734, imu: 320.60986766126206 0
+reset_f :False counter:0 trigger:False
+color:White (255, 233, 73)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:39 right:127, head:40
+setPointL: -70 setPointR: 70
+2
+pink:0, green:0, red:0
+
+p_count: 0 x: 31.441134728658753, y: -16.041805971794084, imu: 320.26546502902204 0
+reset_f :False counter:0 trigger:False
+color:White (255, 221, 69)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:39 right:127, head:40
+setPointL: -70 setPointR: 70
+2
+pink:0, green:0, red:0
+
+p_count: 0 x: 32.439396989690486, y: -16.883020651497663, imu: 319.87986322752226 0
+reset_f :False counter:0 trigger:False
+color:White (255, 199, 62)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:37 right:90, head:37
+setPointL: -70 setPointR: 70
+2
+pink:0, green:0, red:0
+
+p_count: 0 x: 33.42380206545081, y: -17.721716982647038, imu: 319.5695690813643 0
+reset_f :False counter:0 trigger:False
+color:White (255, 192, 63)
+green: True, red: False, pink: False, green_stored: False, g_past:True, r_past:False, p_past:False
+left:35 right:90, head:36
+setPointL: -70 setPointR: 70
+2
+pink:0, green:0, red:0
+
+p_count: 0 x: 33.92993486383701, y: -18.152933492530444, imu: 319.5695690813643 0
+reset_f :False counter:0 trigger:False
+color:White (255, 201, 63)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:35 right:10, head:34
+setPointL: -70 setPointR: 70
+2
+Correcting Green Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 34.67994882108842, y: -18.79642079446281, imu: 319.37149215837985 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 79)
+green: True, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:35 right:8, head:33
+setPointL: -70 setPointR: 70
+2
+Correcting Green Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 35.43265477807577, y: -19.446131922187334, imu: 319.200315181007 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 105)
+green: True, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:33 right:7, head:32
+setPointL: -70 setPointR: 70
+2
+Correcting Green Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 36.16227159527824, y: -20.075913260717858, imu: 319.200315181007 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 172)
+green: True, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:33 right:5, head:31
+setPointL: -70 setPointR: 70
+2
+Correcting Green Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 36.91246214761185, y: -20.7097834682889, imu: 319.804008547301 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 142)
+green: True, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:31 right:5, head:30
+setPointL: -70 setPointR: 70
+2
+Correcting Green Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 37.66859852430562, y: -21.307464833354224, imu: 321.6757019694238 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 117)
+green: True, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:31 right:5, head:30
+setPointL: -70 setPointR: 70
+2
+Correcting Green Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 38.42952057426962, y: -21.90892899186933, imu: 321.6757019694238 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 138)
+green: True, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:29 right:5, head:31
+setPointL: -70 setPointR: 70
+2
+Correcting Green Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 39.48736388434909, y: -22.65285937865712, imu: 324.88312116625247 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 172)
+green: True, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:27 right:5, head:32
+setPointL: -70 setPointR: 70
+2
+Correcting Green Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 40.33587043166815, y: -23.159449432820054, imu: 329.16122314844574 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 87)
+green: True, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:25 right:5, head:34
+setPointL: -70 setPointR: 70
+2
+Correcting Green Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 41.48926555246551, y: -23.730767055452443, imu: 333.64914947593695 0
+reset_f :False counter:0 trigger:False
+color:White (255, 228, 72)
+green: True, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:23 right:5, head:38
+setPointL: -70 setPointR: 70
+2
+Correcting Green Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 42.090561587004416, y: -24.028610365829515, imu: 333.64914947593695 0
+reset_f :False counter:0 trigger:False
+color:White (255, 221, 69)
+green: True, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:23 right:5, head:38
+setPointL: -70 setPointR: 70
+2
+Correcting Green Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 43.00140262211094, y: -24.39596021763682, imu: 338.03536504202015 0
+reset_f :False counter:0 trigger:False
+color:White (255, 240, 75)
+green: True, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:23 right:4, head:51
+setPointL: -70 setPointR: 70
+2
+Correcting Green Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 43.919686824824154, y: -24.68873890086579, imu: 342.3160375246149 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 92)
+green: True, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:21 right:4, head:61
+setPointL: -70 setPointR: 70
+2
+Correcting Green Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 44.553186686189605, y: -24.890719131700966, imu: 342.3160375246149 0
+reset_f :False counter:0 trigger:False
+color:White (255, 247, 78)
+green: True, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:21 right:4, head:71
+setPointL: -70 setPointR: 70
+2
+Correcting Green Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 45.50143994574202, y: -25.121907249975933, imu: 346.2983522741734 0
+reset_f :False counter:0 trigger:False
+color:White (255, 237, 74)
+green: True, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:21 right:4, head:80
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 46.46809063775334, y: -25.295584377113588, imu: 349.81439913146716 0
+reset_f :False counter:0 trigger:False
+color:White (255, 250, 79)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:21 right:4, head:94
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 47.428737288199386, y: -25.468182764331136, imu: 349.81439913146716 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 92)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:21 right:4, head:98
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 48.40959459967747, y: -25.58866420829701, imu: 352.9972775144633 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 96)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:21 right:2, head:97
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 49.38942922272328, y: -25.65575680354752, imu: 356.08287823086096 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 105)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:21 right:3, head:95
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 50.35100605776202, y: -25.72159922621572, imu: 356.08287823086096 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 125)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:21 right:3, head:93
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 51.33920414372131, y: -25.729434194403545, imu: 359.5457376308665 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 137)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:16 right:101, head:91
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 52.307850643686095, y: -25.679579824427915, imu: 2.9463037194473087 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 132)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:16 right:85, head:90
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 53.276497143650886, y: -25.629725454452284, imu: 2.9463037194473087 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 91)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:17 right:70, head:88
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 53.92517791860095, y: -25.557229440786585, imu: 6.376866364815403 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 95)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:17 right:70, head:88
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 54.8648556767062, y: -25.45221185089702, imu: 6.376866364815403 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 108)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:19 right:70, head:88
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 55.51419587326129, y: -25.340854988353158, imu: 9.73112725710411 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 98)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:19 right:71, head:88
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 56.74607627045348, y: -25.06340944830028, imu: 12.692444224306266 0
+reset_f :False counter:0 trigger:False
+color:White (255, 242, 77)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:19 right:71, head:88
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 57.37689425162436, y: -24.92133588672731, imu: 12.692444224306266 0
+reset_f :False counter:0 trigger:False
+color:White (255, 226, 72)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:19 right:72, head:89
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 58.31840600901988, y: -24.66406598765382, imu: 15.283094174880784 0
+reset_f :False counter:0 trigger:False
+color:White (255, 212, 68)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:25 right:72, head:89
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 58.95392644526186, y: -24.490408805779214, imu: 15.283094174880784 0
+reset_f :False counter:0 trigger:False
+color:White (255, 201, 64)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:26 right:72, head:89
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 60.164473529607456, y: -24.110245474879015, imu: 17.43450933241684 0
+reset_f :False counter:0 trigger:False
+color:White (255, 190, 60)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:26 right:73, head:89
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 61.08060677283988, y: -23.79171544372946, imu: 19.172033285819527 0
+reset_f :False counter:0 trigger:False
+color:White (255, 194, 62)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:26 right:73, head:88
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 61.69712411262522, y: -23.57735875610051, imu: 19.172033285819527 0
+reset_f :False counter:0 trigger:False
+color:White (255, 199, 63)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:27 right:73, head:86
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 62.88422301662959, y: -23.12931345293309, imu: 20.677950478571116 0
+reset_f :False counter:0 trigger:False
+color:White (255, 199, 63)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:28 right:74, head:86
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 63.495142256152945, y: -22.88269487196639, imu: 21.983162367659247 0
+reset_f :False counter:0 trigger:False
+color:White (255, 207, 66)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:28 right:74, head:86
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 64.3832378173119, y: -22.524184527412945, imu: 21.983162367659247 0
+reset_f :False counter:0 trigger:False
+color:White (255, 235, 79)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:29 right:74, head:84
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 65.26350124388281, y: -22.146852190150806, imu: 23.202801626247663 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 84)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:29 right:74, head:85
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 66.41886732858282, y: -21.622373771239452, imu: 24.41567273744978 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 108)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:30 right:74, head:85
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 67.01876894948474, y: -21.350048438343173, imu: 24.41567273744978 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 100)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:30 right:74, head:81
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 68.16517426236885, y: -20.806262395703364, imu: 25.376862374907006 0
+reset_f :False counter:0 trigger:False
+color:White (255, 203, 64)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:31 right:74, head:82
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 69.04186073378428, y: -20.377248385302227, imu: 26.07520934378957 0
+reset_f :False counter:0 trigger:False
+color:White (255, 233, 75)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:31 right:74, head:82
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 69.90793123276195, y: -19.940575291443366, imu: 26.75725976500951 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 100)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:33 right:74, head:82
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 70.75766077892871, y: -19.51214131256299, imu: 26.75725976500951 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 99)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:35 right:73, head:80
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 71.61321310582814, y: -19.068299617537683, imu: 27.41928956726319 0
+reset_f :False counter:0 trigger:False
+color:White (255, 240, 77)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:35 right:73, head:79
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 72.7280045576679, y: -18.475218375559326, imu: 28.01346571741078 0
+reset_f :False counter:0 trigger:False
+color:White (255, 207, 66)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:35 right:73, head:82
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 73.03497611687015, y: -18.31190614950732, imu: 28.01346571741078 0
+reset_f :False counter:0 trigger:False
+color:White (255, 247, 79)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:36 right:73, head:79
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 74.15536765715356, y: -17.70347481950598, imu: 28.50427947698194 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 151)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:36 right:72, head:78
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 74.99322019348817, y: -17.239528141255438, imu: 28.974750271714996 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:37 right:72, head:78
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 75.56957735224064, y: -16.9203801078092, imu: 28.974750271714996 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 205)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:38 right:72, head:79
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 76.40989892376537, y: -16.448336793338832, imu: 29.324719973677762 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 109)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:34 right:72, head:78
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 77.23958351337205, y: -15.982268710697205, imu: 29.324719973677762 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 84)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:39 right:72, head:76
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 78.0718238725514, y: -15.508328442883746, imu: 29.660441075709905 0
+reset_f :False counter:0 trigger:False
+color:White (255, 235, 75)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:40 right:71, head:76
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 79.17624785747941, y: -14.871371969974039, imu: 29.97341768868848 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 102)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:40 right:71, head:75
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 79.73110201258677, y: -14.551369914206008, imu: 29.97341768868848 0
+reset_f :False counter:0 trigger:False
+color:White (255, 79, 23)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:42 right:70, head:75
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 80.55878191215162, y: -14.069509585108053, imu: 30.207193414136178 0
+reset_f :True counter:0 trigger:True
+color:Orange (255, 32, 9)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:42 right:69, head:75
+setPointL: -70 setPointR: 70
+5
+Avoiding Pink...
+pink:1, green:0, red:0
+Pink detected in red..
+IN ELSE ORANGE 1.2
+Heading is under 5
+reversing diection red pink color: 0 pink flag: False False  red color:0 red flag: True True
+Breaking the else loop..
+red reversing diection complete
+Stopping Motor...
+head : 31
+Resuming Motor...
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 108.58798475210934, y: -12.637473637859879, imu: 4.632598066205687 90
+reset_f :False counter:1 trigger:False
+color:White (255, 240, 77)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:39 right:48, head:50
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 108.61219213546471, y: -12.63440806939498, imu: 7.217389953690211 90
+reset_f :False counter:1 trigger:False
+color:White (255, 237, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:39 right:49, head:50
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 108.7332328254736, y: -12.619110052028564, imu: 7.203271801778643 90
+reset_f :False counter:1 trigger:False
+color:White (255, 235, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:41 right:49, head:51
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 108.83006537748074, y: -12.606871638135429, imu: 7.203271801778643 90
+reset_f :False counter:1 trigger:False
+color:White (255, 233, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:41 right:48, head:50
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 109.04792530643718, y: -12.579230075441144, imu: 7.230919857005525 90
+reset_f :False counter:1 trigger:False
+color:White (255, 235, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:41 right:48, head:50
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 109.33817898834054, y: -12.540633478867818, imu: 7.5744920162547285 90
+reset_f :False counter:1 trigger:False
+color:White (255, 235, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:40 right:48, head:50
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 109.68285523560077, y: -12.494800020436996, imu: 7.5744920162547285 90
+reset_f :False counter:1 trigger:False
+color:White (255, 245, 78)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:40 right:51, head:50
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 110.0928035791116, y: -12.431463261578875, imu: 8.782719578397085 90
+reset_f :False counter:1 trigger:False
+color:White (255, 252, 85)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:40 right:55, head:50
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 110.55420509511353, y: -12.343487442239054, imu: 10.795060179648944 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 87)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:40 right:72, head:50
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 111.07552888592095, y: -12.244086191816134, imu: 10.795060179648944 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 88)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:41 right:104, head:51
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 111.62785983603857, y: -12.114553201743357, imu: 13.198518747562499 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 82)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:41 right:181, head:52
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 112.21464765306979, y: -11.947813862914384, imu: 15.862822537578268 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 83)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:42 right:246, head:51
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 112.8249069827823, y: -11.774404950532244, imu: 15.862822537578268 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 92)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:43 right:252, head:51
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 113.46016124883947, y: -11.558257833630943, imu: 18.791021699467247 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 92)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:45 right:252, head:50
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 114.0991383577655, y: -11.299663998887588, imu: 22.03316378084882 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 95)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:47 right:271, head:50
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 114.5515115322264, y: -11.116588717653357, imu: 22.03316378084882 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 84)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:47 right:257, head:50
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 115.21792311163848, y: -10.799225593080477, imu: 25.465046493419926 90
+reset_f :False counter:1 trigger:False
+color:White (255, 235, 75)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:47 right:220, head:50
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 115.89446676640766, y: -10.421754832272423, imu: 29.158895264433134 90
+reset_f :False counter:1 trigger:False
+color:White (255, 210, 67)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:51 right:180, head:50
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 116.58166465196057, y: -10.03833965003434, imu: 29.158895264433134 90
+reset_f :False counter:1 trigger:False
+color:White (255, 233, 75)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:56 right:131, head:50
+setPointL: -70 setPointR: 70
+7
+pink:0, green:0, red:0
+
+p_count: 0 x: 117.25161808265484, y: -9.602724133844678, imu: 33.032631489580595 90
+reset_f :False counter:1 trigger:False
+color:White (255, 235, 75)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:62 right:107, head:50
+setPointL: -70 setPointR: 70
+5
+Avoiding Pink...
+pink:1, green:0, red:0
+Pink detected in red..
+
+p_count: 0 x: 117.93691395832685, y: -9.157132689803344, imu: 33.032631489580595 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 84)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:62 right:95, head:52
+setPointL: -70 setPointR: 70
+4
+pink:1, green:0, red:0
+Pink detected in red..
+
+p_count: 0 x: 118.60836989528637, y: -8.649376877404558, imu: 37.09661674547041 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 98)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:70 right:90, head:52
+setPointL: -70 setPointR: 70
+4
+pink:1, green:0, red:0
+Pink detected in red..
+
+p_count: 0 x: 119.26265728925308, y: -8.081702054355233, imu: 40.945660896082885 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 96)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:69 right:79, head:52
+setPointL: -70 setPointR: 70
+4
+pink:1, green:0, red:0
+Pink detected in red..
+
+p_count: 0 x: 119.70038477113222, y: -7.701919602315195, imu: 40.945660896082885 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 95)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:70 right:75, head:61
+setPointL: -70 setPointR: 70
+4
+pink:1, green:0, red:0
+Pink detected in red..
+
+p_count: 0 x: 120.3257865530912, y: -7.093787391931439, imu: 44.19790704376172 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 89)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:70 right:72, head:64
+setPointL: -70 setPointR: 70
+4
+pink:1, green:0, red:0
+Pink detected in red..
+
+p_count: 0 x: 120.91256855640202, y: -6.448311555997737, imu: 47.727001663708464 90
+reset_f :False counter:1 trigger:False
+color:White (255, 221, 71)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:66 right:70, head:65
+setPointL: -70 setPointR: 70
+4
+pink:1, green:0, red:0
+Pink detected in red..
+
+p_count: 0 x: 121.50755730101785, y: -5.793808085995059, imu: 47.727001663708464 90
+reset_f :False counter:1 trigger:False
+color:White (255, 199, 63)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:66 right:72, head:65
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 122.06032699942325, y: -5.09548093650468, imu: 51.63617793048898 90
+reset_f :False counter:1 trigger:False
+color:White (255, 188, 60)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:64 right:75, head:78
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 122.56935488825594, y: -4.342461316510099, imu: 55.94200508029584 90
+reset_f :False counter:1 trigger:False
+color:White (255, 194, 62)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:61 right:80, head:80
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 123.07155018797678, y: -3.599549342421491, imu: 55.94200508029584 90
+reset_f :False counter:1 trigger:False
+color:White (255, 199, 63)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:55 right:89, head:98
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 123.51886365752405, y: -2.808310693423742, imu: 60.51908288083749 90
+reset_f :False counter:1 trigger:False
+color:White (255, 201, 64)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:53 right:101, head:106
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 124.02502866013334, y: -1.7116503630184712, imu: 65.22425295863837 90
+reset_f :False counter:1 trigger:False
+color:White (255, 233, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:51 right:101, head:108
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 124.28833671704625, y: -1.1411654436662495, imu: 65.22425295863837 90
+reset_f :False counter:1 trigger:False
+color:White (255, 247, 79)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:51 right:164, head:107
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 124.61079542117045, y: -0.26531120047290446, imu: 69.7880690297595 90
+reset_f :False counter:1 trigger:False
+color:White (255, 250, 80)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:47 right:214, head:107
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:1
+
+p_count: 0 x: 124.86676426263747, y: 0.6322300093794606, imu: 74.08243544764298 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 85)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:46 right:214, head:105
+setPointL: -70 setPointR: 70
+pink counter is stored when red is present
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 125.04075615487649, y: 1.242323380782363, imu: 74.08243544764298 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 83)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:45 right:276, head:101
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 125.28828481397944, y: 2.4432144875895077, imu: 78.3532590855733 90
+reset_f :False counter:1 trigger:False
+color:White (255, 235, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:44 right:276, head:101
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 125.36827680388551, y: 3.0787187996807317, imu: 82.82581420456297 90
+reset_f :False counter:1 trigger:False
+color:White (158, 72, 25)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:44 right:257, head:129
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 125.48483656060577, y: 4.0047393687279484, imu: 82.82581420456297 90
+reset_f :False counter:1 trigger:False
+color:Blue (23, 14, 12)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:44 right:257, head:129
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 125.52616895015467, y: 4.9432573752701, imu: 87.47831986495584 90
+reset_f :False counter:1 trigger:False
+color:Blue (23, 13, 13)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:42 right:257, head:129
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 125.56696455542372, y: 5.869586836272724, imu: 87.47831986495584 90
+reset_f :False counter:1 trigger:False
+color:Blue (24, 15, 9)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:42 right:123, head:233
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 125.54234982105066, y: 6.515737234491483, imu: 92.18159545873303 90
+reset_f :False counter:1 trigger:False
+color:White (170, 77, 29)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:41 right:123, head:232
+setPointL: -70 setPointR: 70
+3
+pink:1, green:0, red:1
+Pink detected in red..
+
+p_count: 0 x: 125.39168184356427, y: 7.757164498819541, imu: 96.91995757133562 90
+reset_f :False counter:1 trigger:False
+color:White (255, 186, 62)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:40 right:116, head:232
+setPointL: -70 setPointR: 70
+3
+pink:1, green:0, red:1
+Pink detected in red..
+
+p_count: 0 x: 125.31304050897381, y: 8.40512897337124, imu: 96.91995757133562 90
+reset_f :False counter:1 trigger:False
+color:White (255, 221, 72)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:45 right:117, head:128
+setPointL: -70 setPointR: 70
+3
+pink:1, green:0, red:1
+Pink detected in red..
+
+p_count: 0 x: 125.1218248135346, y: 9.343574470307388, imu: 101.51681334091646 90
+reset_f :False counter:1 trigger:False
+color:White (255, 252, 82)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:45 right:120, head:177
+setPointL: -70 setPointR: 70
+3
+pink:1, green:0, red:1
+Pink detected in red..
+
+p_count: 0 x: 124.86315386239933, y: 10.259372108940978, imu: 105.77255930290967 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 89)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:47 right:120, head:215
+setPointL: -70 setPointR: 70
+3
+pink:1, green:0, red:1
+Pink detected in red..
+
+p_count: 0 x: 124.6077992055094, y: 11.163428752207452, imu: 105.77255930290967 90
+reset_f :False counter:1 trigger:False
+color:White (255, 223, 73)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:48 right:118, head:218
+setPointL: -70 setPointR: 70
+3
+pink:1, green:0, red:1
+Pink detected in red..
+
+p_count: 0 x: 124.28555803647647, y: 12.058837376729452, imu: 109.79287518659903 90
+reset_f :False counter:1 trigger:False
+color:White (255, 216, 71)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:51 right:118, head:208
+setPointL: -70 setPointR: 70
+3
+pink:1, green:0, red:1
+Pink detected in red..
+
+p_count: 0 x: 123.90808849987971, y: 12.93240061132066, imu: 113.36933100169024 90
+reset_f :False counter:1 trigger:False
+color:White (255, 214, 69)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:53 right:118, head:101
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 123.52577961024964, y: 13.817163374560492, imu: 113.36933100169024 90
+reset_f :False counter:1 trigger:False
+color:White (255, 201, 65)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:59 right:112, head:23
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 122.95726886102894, y: 14.951510733000259, imu: 116.61905392463441 90
+reset_f :False counter:1 trigger:False
+color:White (255, 216, 69)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:62 right:112, head:18
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 122.4844505348397, y: 15.791396478042738, imu: 119.37757642416169 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 89)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:66 right:90, head:11
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 122.16724330334566, y: 16.354864129780086, imu: 119.37757642416169 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 108)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:68 right:73, head:11
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 121.64856775184919, y: 17.196037427085685, imu: 121.65838322234457 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 100)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:73 right:61, head:11
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 121.11681692265702, y: 17.99990699981459, imu: 123.48419500960708 90
+reset_f :False counter:1 trigger:False
+color:White (255, 245, 78)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:76 right:57, head:10
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 120.59179711661918, y: 18.79360100833177, imu: 123.48419500960708 90
+reset_f :False counter:1 trigger:False
+color:White (255, 223, 72)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:79 right:56, head:10
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 120.03143051591732, y: 19.592738958313582, imu: 125.03867052039077 90
+reset_f :False counter:1 trigger:False
+color:White (255, 199, 65)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:83 right:54, head:10
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 119.46704276926373, y: 20.358938963087375, imu: 126.37559418832309 90
+reset_f :False counter:1 trigger:False
+color:White (255, 219, 71)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:84 right:54, head:8
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 118.90989076295186, y: 21.115315890876875, imu: 126.37559418832309 90
+reset_f :False counter:1 trigger:False
+color:White (255, 205, 65)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:87 right:54, head:8
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 118.32090682423434, y: 21.878246526150324, imu: 127.66821061209914 90
+reset_f :False counter:1 trigger:False
+color:White (255, 214, 69)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:87 right:54, head:6
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 117.92203795434337, y: 22.394914741177267, imu: 127.66821061209914 90
+reset_f :False counter:1 trigger:False
+color:White (255, 214, 69)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:93 right:53, head:6
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 117.13088699731253, y: 23.3790821577639, imu: 128.79505069050956 90
+reset_f :False counter:1 trigger:False
+color:White (255, 212, 68)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:95 right:53, head:5
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:0
+
+p_count: 0 x: 116.49816902619771, y: 24.138203236939304, imu: 129.81078548347264 90
+reset_f :False counter:1 trigger:False
+color:White (255, 226, 73)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:97 right:54, head:5
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 115.8779966887551, y: 24.859994236993373, imu: 130.66960597412375 90
+reset_f :False counter:1 trigger:False
+color:White (255, 237, 77)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:100 right:54, head:22
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 115.24589796020784, y: 25.595665833202318, imu: 130.66960597412375 90
+reset_f :False counter:1 trigger:False
+color:White (255, 245, 78)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:100 right:54, head:22
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 114.40365489786302, y: 26.552793050868708, imu: 131.3468025813844 90
+reset_f :False counter:1 trigger:False
+color:White (255, 230, 74)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:105 right:56, head:44
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 113.76283439343928, y: 27.264546149922154, imu: 131.99800539602657 90
+reset_f :False counter:1 trigger:False
+color:White (255, 240, 78)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:107 right:57, head:44
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 113.12609554827938, y: 27.971765789745962, imu: 131.99800539602657 90
+reset_f :False counter:1 trigger:False
+color:White (255, 221, 72)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:108 right:59, head:44
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 112.47890010533548, y: 28.67772715663135, imu: 132.51327785585096 90
+reset_f :False counter:1 trigger:False
+color:White (255, 210, 67)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:107 right:61, head:58
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 111.81995504876227, y: 29.38111655570108, imu: 133.1314644084605 90
+reset_f :False counter:1 trigger:False
+color:White (255, 216, 69)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:107 right:69, head:58
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 111.15840865222104, y: 30.07364796879756, imu: 133.68914408114807 90
+reset_f :False counter:1 trigger:False
+color:White (255, 219, 71)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:105 right:82, head:55
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 110.50528959831092, y: 30.757357325676235, imu: 133.68914408114807 90
+reset_f :False counter:1 trigger:False
+color:White (255, 226, 73)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:104 right:133, head:55
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 109.82947050979523, y: 31.45308001446647, imu: 134.16859094727084 90
+reset_f :False counter:1 trigger:False
+color:White (255, 226, 72)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:102 right:142, head:55
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 108.92656225639838, y: 32.37040264939777, imu: 134.54628505188074 90
+reset_f :False counter:1 trigger:False
+color:White (255, 210, 67)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:101 right:145, head:50
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 108.4644101646123, y: 32.839932718462144, imu: 134.54628505188074 90
+reset_f :False counter:1 trigger:False
+color:White (255, 210, 68)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:97 right:144, head:50
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 107.78472662606819, y: 33.523303424403004, imu: 134.84501085282818 90
+reset_f :False counter:1 trigger:False
+color:White (255, 197, 64)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:50 right:142, head:48
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 106.8854223212579, y: 34.41840127879014, imu: 135.1343129316166 90
+reset_f :False counter:1 trigger:False
+color:White (255, 210, 68)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:9 right:142, head:48
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 106.43144659046425, y: 34.87025356105288, imu: 135.1343129316166 90
+reset_f :False counter:1 trigger:False
+color:White (255, 245, 79)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:4 right:128, head:45
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 105.75007278725275, y: 35.54328634866369, imu: 135.35284747758547 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 115)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:2 right:128, head:45
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 105.29437693160175, y: 35.99340381808493, imu: 135.35284747758547 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 145)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:2 right:128, head:45
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 104.4008124198015, y: 36.885618928880966, imu: 135.043294797812 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 166)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:2 right:113, head:43
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 103.94840601129997, y: 37.364546358920784, imu: 133.36886409071286 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 133)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:1 right:110, head:43
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 103.29074113968197, y: 38.06076493777499, imu: 133.36886409071286 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 106)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:5 right:108, head:44
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 102.66580984444808, y: 38.794540183026044, imu: 130.41990143622047 90
+reset_f :False counter:1 trigger:False
+color:White (255, 242, 80)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:1 right:108, head:44
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 101.9073121475732, y: 39.80408789587428, imu: 126.91842678429518 90
+reset_f :False counter:1 trigger:False
+color:White (255, 197, 64)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:10 right:107, head:48
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 101.51890269893195, y: 40.32105435752603, imu: 126.91842678429518 90
+reset_f :False counter:1 trigger:False
+color:White (255, 205, 67)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:10 right:109, head:52
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 101.00054958739484, y: 41.111834374359844, imu: 123.24467972411485 90
+reset_f :False counter:1 trigger:False
+color:White (255, 212, 71)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:10 right:109, head:52
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 100.5295200270762, y: 41.945725582017126, imu: 119.460251500636 90
+reset_f :False counter:1 trigger:False
+color:White (255, 210, 68)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:94 right:109, head:61
+setPointL: -70 setPointR: 70
+3
+pink:0, green:0, red:1
+
+p_count: 0 x: 100.06749103160442, y: 42.76368256277648, imu: 119.460251500636 90
+reset_f :False counter:1 trigger:False
+color:White (255, 228, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:102 right:105, head:61
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 99.63592261408503, y: 43.625491088671744, imu: 116.60036437831266 90
+reset_f :False counter:1 trigger:False
+color:White (255, 245, 79)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:103 right:102, head:75
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 99.22462721925153, y: 44.49715692630375, imu: 115.26027454506219 90
+reset_f :False counter:1 trigger:False
+color:White (255, 242, 79)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:104 right:99, head:75
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 98.81593495982837, y: 45.36330589154569, imu: 115.26027454506219 90
+reset_f :False counter:1 trigger:False
+color:White (255, 242, 79)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:103 right:99, head:82
+setPointL: -70 setPointR: 70
+4
+pink:0, green:1, red:0
+
+p_count: 0 x: 98.39940513097312, y: 46.23924219161177, imu: 115.43226765105733 90
+reset_f :False counter:1 trigger:False
+color:White (255, 214, 69)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:104 right:98, head:80
+setPointL: -70 setPointR: 70
+4
+pink:0, green:1, red:0
+
+p_count: 0 x: 97.83773154044663, y: 47.3565448675962, imu: 116.68890294486754 90
+reset_f :False counter:1 trigger:False
+color:White (255, 228, 74)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:104 right:98, head:75
+setPointL: -70 setPointR: 70
+4
+pink:0, green:1, red:0
+
+p_count: 0 x: 97.3802618866289, y: 48.20488840068987, imu: 118.33578674459203 90
+reset_f :False counter:1 trigger:False
+color:White (255, 237, 77)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:109 right:98, head:66
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 97.07335186571322, y: 48.77403026466409, imu: 118.33578674459203 90
+reset_f :False counter:1 trigger:False
+color:White (255, 230, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:110 right:98, head:60
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 96.59108995003655, y: 49.601476237274966, imu: 120.23499699814694 90
+reset_f :False counter:1 trigger:False
+color:White (255, 230, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:108 right:101, head:57
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 96.10882803435987, y: 50.42892220988584, imu: 120.23499699814694 90
+reset_f :False counter:1 trigger:False
+color:White (255, 242, 78)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:105 right:101, head:54
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 95.4357498686604, y: 51.50452166341741, imu: 122.03710867107226 90
+reset_f :False counter:1 trigger:False
+color:White (255, 230, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:98 right:102, head:50
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 94.8999457108118, y: 52.30569526429185, imu: 123.7735805353217 90
+reset_f :False counter:1 trigger:False
+color:White (255, 233, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:96 right:102, head:46
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 94.34517540821881, y: 53.08638297667299, imu: 125.39826512195839 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 91)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:95 right:106, head:40
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 93.78687153681948, y: 53.87204322225404, imu: 125.39826512195839 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 137)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:92 right:108, head:38
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 93.02955001946759, y: 54.88247355633821, imu: 126.85170317301251 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 240)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:92 right:109, head:35
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 92.61956300102744, y: 55.405951094260175, imu: 128.06800721921434 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 240)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:87 right:109, head:35
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 92.03279258931495, y: 56.15514830449709, imu: 128.06800721921434 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 166)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:79 right:110, head:30
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 91.42816336695583, y: 56.89789112430183, imu: 129.147285907321 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 112)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:78 right:110, head:30
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 90.80807384495112, y: 57.63576253518989, imu: 130.04289222779053 90
+reset_f :False counter:1 trigger:False
+color:White (255, 252, 82)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:80 right:110, head:27
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 90.39598903602396, y: 58.12612011837499, imu: 130.04289222779053 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 84)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:92 right:109, head:27
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 89.57752164517538, y: 59.0716113251952, imu: 130.88120289502956 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 85)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:100 right:109, head:25
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 89.15830664010657, y: 59.555887309176306, imu: 130.88120289502956 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 84)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:100 right:74, head:24
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 88.51839352213362, y: 60.27663444635553, imu: 131.60017183695842 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 89)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:110 right:31, head:22
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 87.86438490966083, y: 60.99289852817948, imu: 132.39867514027722 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 117)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:112 right:31, head:21
+setPointL: -70 setPointR: 70
+4
+pink:0, green:0, red:0
+
+p_count: 0 x: 86.99141241517378, y: 61.93043616497697, imu: 132.95762359056943 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 87)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:114 right:31, head:19
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 86.55076915605176, y: 62.403669448312826, imu: 132.95762359056943 90
+reset_f :False counter:1 trigger:False
+color:White (255, 250, 82)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:116 right:12, head:19
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 85.88436630982788, y: 63.108416741067046, imu: 133.3981312878757 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 133)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:116 right:11, head:17
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 85.23472831508133, y: 63.79543454217966, imu: 133.3981312878757 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 186)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:116 right:11, head:18
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 84.78401461940767, y: 64.26755696731897, imu: 133.6710426318316 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 192)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:116 right:10, head:16
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 83.92885716036731, y: 65.18834055993011, imu: 132.8837189526784 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 102)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:114 right:10, head:15
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 83.48882468144363, y: 65.66214182603099, imu: 132.8837189526784 90
+reset_f :False counter:1 trigger:False
+color:White (255, 240, 78)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:116 right:9, head:15
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 82.85694678430268, y: 66.3980031058959, imu: 130.65240933832047 90
+reset_f :False counter:1 trigger:False
+color:White (255, 233, 77)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:116 right:9, head:14
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 82.1029920392128, y: 67.38804095703384, imu: 127.29077105979933 90
+reset_f :False counter:1 trigger:False
+color:White (255, 235, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:115 right:9, head:16
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 81.72231881007428, y: 67.88791300932407, imu: 127.29077105979933 90
+reset_f :False counter:1 trigger:False
+color:White (255, 252, 82)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:110 right:5, head:15
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 81.18609379266549, y: 68.6518259637175, imu: 125.066750984261 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 93)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:108 right:5, head:17
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 80.67061123947241, y: 69.41520856374163, imu: 124.02962498476415 90
+reset_f :False counter:1 trigger:False
+color:White (255, 247, 79)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:106 right:5, head:17
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 80.16195626976537, y: 70.1684801359508, imu: 124.02962498476415 90
+reset_f :False counter:1 trigger:False
+color:White (255, 221, 72)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:106 right:4, head:17
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 79.5138884009252, y: 71.17324464463971, imu: 122.8218050877493 90
+reset_f :False counter:1 trigger:False
+color:White (255, 233, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:105 right:4, head:18
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 79.03698369235006, y: 71.98261867064282, imu: 120.50772350921319 90
+reset_f :False counter:1 trigger:False
+color:White (255, 221, 71)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:105 right:4, head:18
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 78.4841095233702, y: 73.04962299417079, imu: 117.39118124017389 90
+reset_f :False counter:1 trigger:False
+color:White (255, 207, 67)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:87 right:4, head:20
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 78.20065626922315, y: 73.59666581993893, imu: 117.39118124017389 90
+reset_f :False counter:1 trigger:False
+color:White (255, 242, 79)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:87 right:3, head:23
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 77.81857087988112, y: 74.46822002429994, imu: 113.67242609260934 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 108)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:79 right:3, head:23
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 77.55894875635384, y: 75.0604299323914, imu: 113.67242609260934 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 96)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:79 right:3, head:29
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 77.23627832659996, y: 75.97511309822654, imu: 109.43118211137113 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 98)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:91 right:2, head:34
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 76.88930100268973, y: 77.19558642373221, imu: 105.87031017206643 90
+reset_f :False counter:1 trigger:False
+color:White (255, 250, 82)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:94 right:2, head:37
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 76.70747153967909, y: 77.83516138757894, imu: 105.87031017206643 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 89)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:104 right:2, head:50
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 76.49527102457955, y: 78.77534018743428, imu: 102.71867747894554 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 95)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:117 right:2, head:69
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 76.32303296685589, y: 79.72365410475147, imu: 100.2941635236582 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 111)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:117 right:2, head:126
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 76.15188502342161, y: 80.66596603525024, imu: 100.2941635236582 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 127)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:116 right:2, head:158
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 76.01417540068084, y: 81.60757743901117, imu: 98.32045741262456 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 151)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:116 right:2, head:173
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 75.90346911831531, y: 82.5466019873105, imu: 96.72384744060288 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 155)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:113 right:1, head:173
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 75.82776030585889, y: 83.18877361388937, imu: 96.72384744060288 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 145)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:112 right:1, head:168
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.7181603826647, y: 84.43449844261067, imu: 95.02798451878323 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 151)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:112 right:1, head:164
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.66041993532338, y: 85.09078274261995, imu: 95.02798451878323 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 132)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:109 right:1, head:164
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.6027264675718, y: 86.05899396124866, imu: 93.41009077101191 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 127)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:109 right:1, head:160
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.56632548036117, y: 87.02213476218903, imu: 92.16440914752462 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 137)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:106 right:1, head:160
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.53015487914556, y: 87.97917973527528, imu: 92.16440914752462 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 128)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:104 right:1, head:160
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.5130509380345, y: 88.94895752183164, imu: 91.01041914873005 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 133)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:104 right:1, head:157
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.51144281909482, y: 89.9249849826322, imu: 90.09440138574436 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 120)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:104 right:1, head:155
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.50987490312865, y: 90.87661175691275, imu: 90.09440138574436 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 108)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:101 right:1, head:156
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.51765801258325, y: 91.5353852118311, imu: 89.3231078558881 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 92)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:100 right:1, head:156
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.54815747474039, y: 92.79775406580751, imu: 88.61597460057637 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 88)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:99 right:1, head:153
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.57128991705281, y: 93.75520290674615, imu: 88.61597460057637 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 103)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:99 right:1, head:153
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.61639193509941, y: 95.02934249675735, imu: 87.97268935051646 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 100)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:98 right:1, head:152
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.66166082723572, y: 96.01042762673414, imu: 87.35815169155867 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 115)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:98 right:1, head:149
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.71531984057158, y: 96.97276121993028, imu: 86.80853426306344 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 122)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:99 right:1, head:150
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.76897885390744, y: 97.93509481312636, imu: 86.80853426306344 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 127)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:98 right:1, head:148
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.83076627935436, y: 98.90305339393254, imu: 86.34761007946149 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 140)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:99 right:2, head:148
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.9203003559743, y: 100.16872793768484, imu: 85.95362542225247 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 135)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:99 right:2, head:148
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 75.96635875115861, y: 100.81982013086512, imu: 85.95362542225247 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 115)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:99 right:2, head:147
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 76.0407568506142, y: 101.78689118456133, imu: 85.60082237584717 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 95)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:99 right:2, head:145
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 76.1446640605566, y: 103.03922500423414, imu: 85.25698407590185 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 93)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:99 right:2, head:146
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 76.22435988177455, y: 103.99975288534242, imu: 85.25698407590185 90
+reset_f :False counter:1 trigger:False
+color:White (255, 240, 79)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:99 right:2, head:145
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 76.31029119441534, y: 104.95974301227797, imu: 84.8849322806605 90
+reset_f :False counter:1 trigger:False
+color:White (255, 212, 69)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:99 right:2, head:145
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 76.40284648136894, y: 105.93137345083998, imu: 84.55855443974419 90
+reset_f :False counter:1 trigger:False
+color:White (255, 205, 67)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:101 right:2, head:145
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 76.49838324905726, y: 106.89045528276343, imu: 84.31137646777812 90
+reset_f :False counter:1 trigger:False
+color:White (255, 216, 71)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:100 right:2, head:142
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 76.59331535365892, y: 107.84346697651014, imu: 84.31137646777812 90
+reset_f :False counter:1 trigger:False
+color:White (255, 212, 69)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:101 right:3, head:142
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 76.69243243651006, y: 108.80218541181482, imu: 84.09744729763072 90
+reset_f :False counter:1 trigger:False
+color:White (255, 235, 78)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:99 right:3, head:142
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 76.76081067721115, y: 109.46357977541105, imu: 84.09744729763072 90
+reset_f :False counter:1 trigger:False
+color:White (255, 223, 74)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:101 right:3, head:139
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 76.86180268019241, y: 110.41596835589483, imu: 83.94693290650949 90
+reset_f :False counter:1 trigger:False
+color:White (255, 237, 78)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:101 right:3, head:141
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 76.96574731827525, y: 111.37417540372937, imu: 83.8088623131603 90
+reset_f :False counter:1 trigger:False
+color:White (255, 223, 73)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:100 right:3, head:141
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 77.10061219680044, y: 112.61741872528684, imu: 83.8088623131603 90
+reset_f :False counter:1 trigger:False
+color:White (255, 226, 74)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:100 right:3, head:139
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 77.20717068190888, y: 113.57533861941019, imu: 83.65254458004414 90
+reset_f :False counter:1 trigger:False
+color:White (255, 235, 77)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:100 right:3, head:139
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 77.31660384049043, y: 114.5390740000529, imu: 83.52175248918313 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 99)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:100 right:3, head:139
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 77.39162405612181, y: 115.19974794024195, imu: 83.52175248918313 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 98)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:100 right:3, head:139
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 77.53712043610409, y: 116.46635628155265, imu: 83.44710672918684 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 83)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:82 right:3, head:135
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 77.64971624671594, y: 117.42972728149623, imu: 83.33369182730529 90
+reset_f :False counter:1 trigger:False
+color:White (255, 233, 77)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:72 right:3, head:134
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 77.76387147062286, y: 118.39291474245827, imu: 83.24093805665836 90
+reset_f :False counter:1 trigger:False
+color:White (255, 207, 67)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:66 right:3, head:134
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+Image Process started
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:1
+green:0  red:0, pink:1
+green:0  red:0, pink:1
+green:0  red:0, pink:1
+green:0  red:0, pink:1
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:1
+green:0  red:0, pink:1
+green:0  red:0, pink:1
+green:0  red:0, pink:1
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:1, pink:0
+green:0  red:1, pink:0
+green:0  red:1, pink:0
+green:0  red:1, pink:0
+green:0  red:1, pink:1
+green:0  red:1, pink:1
+green:0  red:1, pink:1
+green:0  red:1, pink:1
+green:0  red:1, pink:0
+green:0  red:1, pink:0
+green:0  red:1, pink:0
+green:0  red:1, pink:0
+green:0  red:1, pink:0
+green:0  red:1, pink:0
+green:0  red:1, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:1, pink:0
+green:0  red:1, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:1  red:0, pink:0
+green:0  red:0, pink:0
+green:0  red:0, pink:0
+Encoder Process Started
+
+p_count: 0 x: 77.84141086799359, y: 119.04715528197966, imu: 83.24093805665836 90
+reset_f :False counter:1 trigger:False
+color:White (255, 207, 68)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:65 right:4, head:131
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:1, red:0
+
+p_count: 0 x: 77.99324682153947, y: 120.3068751892565, imu: 83.12720700922875 90
+reset_f :False counter:1 trigger:False
+color:White (255, 205, 67)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:66 right:4, head:131
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 78.14821057240911, y: 121.5785056514817, imu: 83.05206539244415 90
+reset_f :False counter:1 trigger:False
+color:White (255, 214, 71)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:66 right:4, head:128
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 78.26545726319924, y: 122.53517615264957, imu: 83.01284355972385 90
+reset_f :False counter:1 trigger:False
+color:White (255, 221, 72)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:68 right:4, head:128
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 78.38196188632614, y: 123.48579177722772, imu: 83.01284355972385 90
+reset_f :False counter:1 trigger:False
+color:White (255, 219, 71)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:68 right:4, head:128
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 78.48337412148796, y: 124.3091946652717, imu: 82.9786767073497 90
+reset_f :False counter:1 trigger:False
+color:White (255, 221, 73)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:68 right:4, head:124
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 78.49312116928274, y: 124.38789571992127, imu: 82.93992506008051 90
+reset_f :False counter:1 trigger:False
+color:White (255, 216, 71)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:79 right:5, head:124
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 78.49537048800462, y: 124.40605750176347, imu: 82.93992506008051 90
+reset_f :False counter:1 trigger:False
+color:White (255, 247, 84)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:79 right:5, head:124
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 78.49537048800462, y: 124.40605750176347, imu: 82.81242505809978 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 87)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:82 right:5, head:124
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 78.49537048800462, y: 124.40605750176347, imu: 82.81242505809978 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 89)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:86 right:5, head:122
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 78.49537048800462, y: 124.40605750176347, imu: 82.77402554463026 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 98)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:86 right:5, head:122
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 78.49537048800462, y: 124.40605750176347, imu: 82.77402554463026 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 100)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:86 right:6, head:121
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0
+
+p_count: 0 x: 78.49537048800462, y: 124.40605750176347, imu: 82.82011794450894 90
+reset_f :False counter:1 trigger:False
+color:White (255, 255, 108)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:86 right:6, head:120
+setPointL: -70 setPointR: 70
+4
+Correcting Red Wall
+pink:0, green:0, red:0

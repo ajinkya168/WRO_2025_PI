@@ -1,0 +1,727 @@
+Connection Established...
+Command sent: b'1'
+Change path is False
+7
+offset:0 imu:0.11647444641744506 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+7
+offset:0 imu:0.11647444641744506 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+7
+offset:0 imu:0.11647444641744506 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+7
+offset:0 imu:0.11647444641744506 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+7
+offset:0 imu:0.11647444641744506 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+7
+offset:0 imu:0.11647444641744506 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+7
+offset:0 imu:0.09492460196540727 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+7
+offset:0 imu:359.9818846329361 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:359.9818846329361 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:359.93841974972486 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:359.85315566933775 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:359.77098071791204 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+red Avoid complete
+4
+offset:0 imu:359.77098071791204 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+offset:0 imu:0.37153598764745743 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+offset:0 imu:1.7335490527867656 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+offset:0 imu:3.8798253094967663 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+offset:0 imu:3.8798253094967663 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+offset:0 imu:5.7463929653892825 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+offset:0 imu:8.033642094912604 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+offset:0 imu:10.727146243050576 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:10.727146243050576 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+offset:0 imu:13.82924310875738 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+offset:0 imu:16.819440957261783 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+offset:0 imu:19.49517138197471 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+offset:0 imu:19.49517138197471 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+offset:0 imu:21.863852621366476 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+offset:0 imu:23.932318088071675 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+offset:0 imu:25.677847708186896 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+offset:0 imu:25.677847708186896 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:27.299965753120784 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:28.926544755970628 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:28.926544755970628 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:30.40005260450276 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:31.75567905853327 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:32.95116651156789 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:32.95116651156789 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:33.971953298574434 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:34.856440810290124 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:34.856440810290124 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:35.67417599126195 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:36.49304861745294 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:36.49304861745294 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:37.2491960928102 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:37.882257104362616 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:38.460326708159194 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:39.009623902349624 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:39.009623902349624 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:39.48129051782079 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:39.835759652054485 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:39.835759652054485 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:40.16775057312526 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:40.45381715384252 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:40.45381715384252 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:40.76468975153953 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:41.06852195676788 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:41.06852195676788 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:41.33495588801218 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:41.56662464529713 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:41.76827802881558 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:41.76827802881558 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:41.897575098360704 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:42.06658099918198 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:42.06658099918198 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:42.156985818516986 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:42.25515918551274 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+offset:0 imu:42.25515918551274 heading_angle:0 counter:0, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+reversing diection red pink color: 0 pink flag: False False  red color:1 red flag: True True
+Breaking the loop...
+red reversing diection complete
+Stopping Motor...
+Resuming Motor...0
+3
+avoiding red...
+lane:1, error:26.014605126629874 target:30, x:56.014605126629874
+offset:0 imu:42.36353477362085 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:41.40569464078257 target:30, x:71.40569464078257
+offset:0 imu:8.154785217963019 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:41.42355361459077 target:30, x:71.42355361459077
+offset:0 imu:12.611901967838232 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:41.5009423818351 target:30, x:71.5009423818351
+offset:0 imu:12.612296581232192 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:41.71524973728093 target:30, x:71.71524973728093
+offset:0 imu:12.612296581232192 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:41.941481326524766 target:30, x:71.94148132652477
+offset:0 imu:12.591599086481429 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:42.221241286150544 target:30, x:72.22124128615054
+offset:0 imu:12.639905344958846 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:42.542667622741845 target:30, x:72.54266762274185
+offset:0 imu:12.639905344958846 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:42.92862505969269 target:30, x:72.92862505969269
+offset:0 imu:13.249257222881841 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:43.370573310817676 target:30, x:73.37057331081768
+offset:0 imu:14.988309225603716 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:43.84851502398875 target:30, x:73.84851502398875
+offset:0 imu:17.16223831494112 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:44.530456248879204 target:30, x:74.5304562488792
+offset:0 imu:17.16223831494112 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:45.083144273828296 target:30, x:75.0831442738283
+offset:0 imu:19.305361065022193 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:45.83668875656738 target:30, x:75.83668875656738
+offset:0 imu:21.753988845276815 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:46.42057035000835 target:30, x:76.42057035000835
+offset:0 imu:24.275952176208378 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:47.02669505177086 target:30, x:77.02669505177086
+offset:0 imu:24.275952176208378 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:47.63528280630736 target:30, x:77.63528280630736
+offset:0 imu:27.030621043111502 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:48.44411343394171 target:30, x:78.44411343394171
+offset:0 imu:29.93298403612541 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:49.073203922101754 target:30, x:79.07320392210175
+offset:0 imu:29.93298403612541 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:49.707265389688686 target:30, x:79.70726538968869
+offset:0 imu:33.045541465150556 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:50.331761692356565 target:30, x:80.33176169235657
+offset:0 imu:36.28435063071391 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:51.12607469011884 target:30, x:81.12607469011884
+offset:0 imu:39.602836324307596 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:51.737084688397516 target:30, x:81.73708468839752
+offset:0 imu:39.602836324307596 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:52.33043473763313 target:30, x:82.33043473763313
+offset:0 imu:43.001523049444984 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:52.89301803198113 target:30, x:82.89301803198113
+offset:0 imu:46.50911450135403 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:53.58927569592272 target:30, x:83.58927569592272
+offset:0 imu:50.11711671621388 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:54.13689408329252 target:30, x:84.13689408329252
+offset:0 imu:50.11711671621388 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:54.808244658555424 target:30, x:84.80824465855542
+offset:0 imu:53.72301609546054 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+3
+avoiding red...
+lane:1, error:55.41590801522746 target:30, x:85.41590801522746
+offset:0 imu:57.22233731542319 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+lane:1, error:55.83282197943102 target:30, x:85.83282197943102
+offset:0 imu:60.779283171303554 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+lane:1, error:56.249735943634576 target:30, x:86.24973594363458
+offset:0 imu:60.779283171303554 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+lane:1, error:56.624161967970366 target:30, x:86.62416196797037
+offset:0 imu:64.19461979012316 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+lane:1, error:56.948358974074736 target:30, x:86.94835897407474
+offset:0 imu:67.69043614244792 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+lane:1, error:57.22146158317098 target:30, x:87.22146158317098
+offset:0 imu:71.35020686464176 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+lane:1, error:57.50041639103357 target:30, x:87.50041639103357
+offset:0 imu:71.35020686464176 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+4
+avoiding red...
+lane:1, error:57.794684771166345 target:30, x:87.79468477116635
+offset:0 imu:75.21252708007286 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:0, change_path:False, turn_f:False
+Change path is False
+red Avoid complete
+4
+lane:1, error:-12.034721743587284 target:100, x:87.96527825641272
+offset:0 imu:79.03319333687554 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:1, change_path:False, turn_f:False
+Change path is False
+Changing path...
+4
+avoiding red...
+lane:1, error:58.13471124175945 target:30, x:88.13471124175945
+offset:0 imu:79.03319333687554 heading_angle:90 counter:1, change_counter:1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+offset is 0 else
+Path Change Complete...
+4
+avoiding red...
+lane:1, error:58.28154056128119 target:30, x:88.28154056128119
+offset:-90 imu:82.83579944174237 heading_angle:90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+offset is -90 else
+Path Change Complete...
+4
+avoiding red...
+lane:1, error:59.176489293720024 target:30, x:89.17648929372002
+offset:-90 imu:-3.6083644795684506 heading_angle:0 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+offset is -90
+Path Change Complete...
+4
+avoiding red...
+lane:1, error:0 target:30, x:90.06704399053278
+offset:-180 imu:-0.7263708196200866 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+4
+avoiding red...
+lane:1, error:0 target:30, x:90.05575332291235
+offset:-180 imu:-90.72637081962009 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+4
+avoiding red...
+lane:1, error:0 target:30, x:90.09220323871368
+offset:-180 imu:-87.63826314107632 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+4
+avoiding red...
+lane:1, error:0 target:30, x:90.1723578852062
+offset:-180 imu:-84.87172410201681 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+4
+avoiding red...
+lane:1, error:0 target:30, x:90.25305780140273
+offset:-180 imu:-84.87172410201681 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+4
+avoiding red...
+lane:1, error:0 target:30, x:90.37960316901005
+offset:-180 imu:-81.88738215464858 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+4
+avoiding red...
+lane:1, error:0 target:30, x:90.61845436562774
+offset:-180 imu:-78.29489730909657 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+4
+avoiding red...
+lane:1, error:0 target:30, x:90.8040900106674
+offset:-180 imu:-78.29489730909657 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+4
+avoiding red...
+lane:1, error:0 target:30, x:91.04030242271497
+offset:-180 imu:-74.8328106780166 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+4
+avoiding red...
+lane:1, error:0 target:30, x:91.32874180947779
+offset:-180 imu:-71.36822919037978 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+4
+avoiding red...
+lane:1, error:0 target:30, x:91.78497338194289
+offset:-180 imu:-67.80706967050185 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:92.01539336803637
+offset:-180 imu:-67.80706967050185 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:92.40803343119995
+offset:-180 imu:-64.22101531565515 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:92.84893850657883
+offset:-180 imu:-60.54874501350669 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:93.28984358195773
+offset:-180 imu:-60.54874501350669 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:93.78270483955912
+offset:-180 imu:-56.658863958872004 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+Image Process started
+Encoder Process Started
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:94.33330554627724
+offset:-180 imu:-52.71572001019905 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:94.88390625299539
+offset:-180 imu:-52.71572001019905 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:95.48261317420634
+offset:-180 imu:-48.79946266280234 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:96.12483487911274
+offset:-180 imu:-45.04336304647691 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:96.75843615844994
+offset:-180 imu:-45.04336304647691 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:97.43130079362979
+offset:-180 imu:-41.378720216598936 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:98.16178416049044
+offset:-180 imu:-37.53022882230019 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:98.87291697458656
+offset:-180 imu:-37.53022882230019 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:99.63205732822547
+offset:-180 imu:-33.93852053463738 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:100.40619630929001
+offset:-180 imu:-30.311477264138716 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:101.19086779349827
+offset:-180 imu:-30.311477264138716 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:102.00986998705702
+offset:-180 imu:-26.48412365228046 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:102.84240097373808
+offset:-180 imu:-22.759287692958168 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:103.69180758852752
+offset:-180 imu:-22.759287692958168 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:104.82215796985291
+offset:-180 imu:-19.02132662082215 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:105.42242493579043
+offset:-180 imu:-15.264490817705678 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:106.58176407588547
+offset:-180 imu:-15.264490817705678 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:107.7598360248976
+offset:-180 imu:-11.389059315427659 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:108.661396623318
+offset:-180 imu:-7.299429333999427 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:109.57455709510668
+offset:-180 imu:-3.6602456874165057 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:110.48771756689534
+offset:-180 imu:-3.6602456874165057 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:111.0951411492976
+offset:-180 imu:-5.2861506553217055 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:111.21651949319372
+offset:-180 imu:-5.803170157947449 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:111.22258841038851
+offset:-180 imu:-5.803170157947449 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:111.22258841038851
+offset:-180 imu:-5.655409434691364 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:111.22258841038851
+offset:-180 imu:-5.639016414686182 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:111.22258841038851
+offset:-180 imu:-5.639016414686182 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:111.22258841038851
+offset:-180 imu:-5.621356231143608 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:111.22258841038851
+offset:-180 imu:-5.621356231143608 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:111.22258841038851
+offset:-180 imu:-5.624746073914878 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:111.22258841038851
+offset:-180 imu:-5.624746073914878 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:111.22258841038851
+offset:-180 imu:-5.622600411589758 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True
+in else of change path...
+Path Change Complete...
+7
+lane:1, error:0 target:100, x:111.22258841038851
+offset:-180 imu:-5.599219352517281 heading_angle:-90 counter:1, change_counter:-1 g_count:0, r_count:1, change_path:True, turn_f:True

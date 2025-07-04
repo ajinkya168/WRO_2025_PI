@@ -1,0 +1,586 @@
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:247
+Color: White
+r: 255 g:255 b:247
+Color: White
+r: 255 g:255 b:242
+Color: White
+r: 255 g:255 b:237
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:230
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:230
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:230
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:237
+Color: White
+r: 255 g:255 b:237
+Color: White
+r: 255 g:255 b:240
+Color: White
+r: 255 g:255 b:245
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:237
+Color: White
+r: 255 g:255 b:228
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:240
+Color: White
+r: 255 g:255 b:242
+Color: White
+r: 255 g:255 b:242
+Color: White
+r: 255 g:255 b:242
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:230
+Color: White
+r: 255 g:255 b:228
+Color: White
+r: 255 g:255 b:226
+Color: White
+r: 255 g:255 b:223
+Color: White
+r: 255 g:255 b:226
+Color: White
+r: 255 g:255 b:230
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:230
+Color: White
+r: 255 g:255 b:230
+Color: White
+r: 255 g:255 b:230
+Color: White
+r: 255 g:255 b:228
+Color: White
+r: 255 g:255 b:230
+Color: White
+r: 255 g:255 b:228
+Color: White
+r: 255 g:255 b:230
+Color: White
+r: 255 g:255 b:230
+Color: White
+r: 255 g:255 b:230
+Color: White
+r: 255 g:255 b:226
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:216
+Color: White
+r: 255 g:255 b:216
+Color: White
+r: 255 g:255 b:226
+Color: White
+r: 255 g:255 b:223
+Color: White
+r: 255 g:255 b:216
+Color: White
+r: 255 g:255 b:205
+Color: White
+r: 255 g:255 b:216
+Color: White
+r: 255 g:255 b:210
+Color: White
+r: 255 g:255 b:216
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:221
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:216
+Color: White
+r: 255 g:255 b:230
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:207
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:230
+Color: White
+r: 255 g:255 b:228
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:240
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:252
+Color: White
+r: 255 g:255 b:252
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:252
+Color: White
+r: 255 g:255 b:250
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:237
+Color: White
+r: 255 g:255 b:245
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:252
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:255
+Color: White
+r: 255 g:255 b:245
+Color: White
+r: 255 g:255 b:233
+Color: White
+r: 255 g:255 b:240
+Color: White
+r: 255 g:255 b:247
+Color: White
+r: 255 g:255 b:237
+Color: White
+r: 255 g:255 b:235
+Color: White
+r: 255 g:255 b:230
+Color: White
+r: 255 g:255 b:228
+Color: White
+r: 255 g:255 b:226
+Color: White
+r: 255 g:255 b:223
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:216
+Color: White
+r: 255 g:255 b:216
+Color: White
+r: 255 g:255 b:216
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:216
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:219
+Color: White
+r: 255 g:255 b:216
+Color: White
+r: 255 g:255 b:216
+Color: White
+r: 255 g:255 b:216
+Color: White
+r: 255 g:255 b:216
+Color: White
+r: 255 g:255 b:216
+Color: White
+r: 255 g:255 b:214
+Color: White
+r: 255 g:255 b:214
+Color: White
+r: 255 g:255 b:214
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:214
+Color: White
+r: 255 g:255 b:214
+Color: White
+r: 255 g:255 b:214
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:212
+Color: White
+r: 255 g:255 b:210
+Color: White
+r: 255 g:255 b:210
+Color: White
+r: 255 g:255 b:210
+Color: White
+r: 255 g:255 b:210

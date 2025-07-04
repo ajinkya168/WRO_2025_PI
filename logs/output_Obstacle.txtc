@@ -1,0 +1,1271 @@
+Connection Established...
+Command sent: b'1'
+
+ lane: 0 x: 0.0, y: 0.0, imu: 359.9758878382598 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 135)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:0 right:0, head:0
+6
+error: 0.0 tagret:0
+Correction in position:0
+
+ lane: 0 x: 0.01220035873940327, y: -5.134357941896874e-06, imu: 359.9758878382598 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 135)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:16 right:44, head:58
+3
+error: 90.00000513435795 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 0.12810376684436964, y: -5.371877343168036e-05, imu: 359.97598274425104 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 135)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:16 right:44, head:58
+3
+error: 90.00005371877343 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 0.32330950681062876, y: -0.0001355451574144736, imu: 359.97598274425104 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 127)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:16 right:44, head:58
+3
+error: 90.00013554515742 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 0.5856172202444916, y: -0.0002446511011225627, imu: 359.9761680293274 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 111)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:16 right:44, head:58
+3
+error: 90.00024465110113 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 0.8845260099714516, y: -0.00036898112999922243, imu: 359.9761680293274 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 100)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:16 right:44, head:59
+3
+error: 90.00036898113 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 1.2505367341062006, y: -0.00014187554793966174, imu: 0.03555138914770938 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 83)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:16 right:44, head:59
+3
+error: 90.00014187554794 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 1.6592408629355742, y: 0.002403341888089478, imu: 0.35680660307170525 0
+reset_f :False counter:0 trigger:False
+color:White (255, 223, 71)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:16 right:44, head:63
+3
+error: 89.99759665811192 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 2.122845546383818, y: 0.005290454203585214, imu: 0.35680660307170525 0
+reset_f :False counter:0 trigger:False
+color:White (255, 199, 63)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:18 right:44, head:81
+3
+error: 89.99470954579641 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 2.659413009097924, y: 0.021618207179554736, imu: 1.7429732571052166 0
+reset_f :False counter:0 trigger:False
+color:White (255, 197, 62)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:18 right:44, head:100
+3
+error: 89.97838179282044 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 3.0548058687311297, y: 0.051384129687571986, imu: 4.305213863196173 0
+reset_f :False counter:0 trigger:False
+color:White (255, 203, 63)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:23 right:44, head:125
+3
+error: 89.94861587031242 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 3.6570196087878575, y: 0.09671991935362899, imu: 4.305213863196173 0
+reset_f :False counter:0 trigger:False
+color:White (255, 212, 66)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:23 right:44, head:135
+3
+error: 89.90328008064637 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 4.280705796731118, y: 0.1728757793538917, imu: 6.961698725159639 0
+reset_f :False counter:0 trigger:False
+color:White (255, 205, 61)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:38 right:44, head:137
+3
+error: 89.82712422064611 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 4.966327687806962, y: 0.2892042274054608, imu: 9.62958508089067 0
+reset_f :False counter:0 trigger:False
+color:White (255, 188, 59)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:45 right:44, head:137
+3
+error: 89.71079577259454 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 5.633906897538706, y: 0.40247140050830454, imu: 9.62958508089067 0
+reset_f :False counter:0 trigger:False
+color:White (255, 237, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:47 right:44, head:139
+3
+error: 89.5975285994917 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 6.360825725886408, y: 0.5620186548735941, imu: 12.37923093003759 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 127)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:48 right:44, head:140
+3
+error: 89.4379813451264 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 7.079058621322403, y: 0.7569745916786208, imu: 15.186357954142904 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 158)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:49 right:44, head:138
+3
+error: 89.24302540832137 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 7.579466786175351, y: 0.892804547649336, imu: 15.186357954142904 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 158)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:49 right:44, head:138
+3
+error: 89.10719545235067 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 8.31684514187143, y: 1.1304358852804588, imu: 17.862321654864058 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 135)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:52 right:45, head:138
+3
+error: 88.86956411471954 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 9.065835755137527, y: 1.371809448701048, imu: 17.862321654864058 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 99)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:52 right:45, head:143
+3
+error: 88.62819055129896 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 9.832455368537124, y: 1.6554933230523226, imu: 20.306749375437413 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 89)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:54 right:45, head:143
+3
+error: 88.34450667694767 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 10.609228289136386, y: 1.9799819517076662, imu: 22.672214336240987 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 93)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:56 right:45, head:143
+3
+error: 88.02001804829233 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 11.127076902869229, y: 2.1963077041445627, imu: 22.672214336240987 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 98)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:58 right:45, head:139
+3
+error: 87.80369229585544 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 11.913600885424382, y: 2.5592494673703032, imu: 24.77097833301916 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 119)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:59 right:46, head:139
+3
+error: 87.44075053262969 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 12.704908699853032, y: 2.9544941274091805, imu: 26.54134056948463 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 151)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:59 right:46, head:133
+4
+error: 87.04550587259082 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 13.94989874683207, y: 3.6274792409100436, imu: 28.393643410879882 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 184)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:60 right:46, head:105
+4
+error: 86.37252075908995 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 14.475799714952524, y: 3.9117574354060975, imu: 28.393643410879882 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 219)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:67 right:46, head:96
+4
+error: 86.0882425645939 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 15.226983400553465, y: 4.3431154875099365, imu: 29.866070375968707 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 128)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:67 right:46, head:96
+4
+error: 85.65688451249007 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 16.22519057981632, y: 4.955792222237178, imu: 31.540650499549944 0
+reset_f :False counter:0 trigger:False
+color:White (255, 230, 73)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:70 right:46, head:92
+4
+error: 85.04420777776282 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 16.74509015234906, y: 5.274894688240951, imu: 31.540650499549944 0
+reset_f :False counter:0 trigger:False
+color:White (255, 190, 61)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:72 right:46, head:92
+4
+error: 84.72510531175905 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 17.51548426853354, y: 5.7798384102677955, imu: 33.24225999499631 0
+reset_f :False counter:0 trigger:False
+color:White (255, 186, 59)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:72 right:46, head:96
+4
+error: 84.2201615897322 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 17.38329795806453, y: 6.679101841655295, imu: 98.36224945238412 0
+reset_f :False counter:0 trigger:False
+color:White (255, 168, 52)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:74 right:47, head:103
+4
+error: 83.3208981583447 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 17.24933733470332, y: 7.590435923128535, imu: 98.36224945238412 0
+reset_f :False counter:0 trigger:False
+color:White (255, 164, 51)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:74 right:46, head:108
+4
+error: 82.40956407687146 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 17.095931789714466, y: 8.498699098333093, imu: 99.58677266039783 0
+reset_f :False counter:0 trigger:False
+color:White (255, 184, 57)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:74 right:47, head:128
+4
+error: 81.50130090166691 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 16.932414763573224, y: 9.405196444621495, imu: 100.22524720583968 0
+reset_f :False counter:0 trigger:False
+color:White (255, 210, 66)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:75 right:46, head:128
+4
+error: 80.5948035553785 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 16.81979376543621, y: 10.029538987760532, imu: 100.22524720583968 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 98)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:75 right:46, head:128
+3
+error: 79.97046101223947 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 16.609285144216877, y: 11.237469452596192, imu: 99.88577614885476 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 135)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:77 right:46, head:128
+3
+error: 78.76253054740381 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 16.43341340042437, y: 12.450926916713144, imu: 98.2467066503825 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 233)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:79 right:46, head:116
+3
+error: 77.54907308328686 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 16.3777877736953, y: 13.076778309373235, imu: 95.07909846433311 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 133)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:79 right:43, head:89
+3
+error: 76.92322169062676 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 16.295159415544347, y: 14.006441057693563, imu: 95.07909846433311 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 92)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:79 right:40, head:83
+3
+error: 75.99355894230644 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 16.280663571316577, y: 14.93965600704089, imu: 90.88991706165652 0
+reset_f :False counter:0 trigger:False
+color:White (255, 242, 77)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:73 right:40, head:83
+3
+error: 75.0603439929591 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 16.350306187317024, y: 16.18214246989105, imu: 86.79187079328346 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 82)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:73 right:37, head:103
+3
+error: 73.81785753010895 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 16.3854688806898, y: 16.809476321232065, imu: 86.79187079328346 0
+reset_f :False counter:0 trigger:False
+color:White (255, 252, 80)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:69 right:36, head:103
+3
+error: 73.19052367876793 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 16.506962570962706, y: 17.76561674895689, imu: 82.75841721530361 0
+reset_f :False counter:0 trigger:False
+color:White (255, 223, 71)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:66 right:35, head:117
+3
+error: 72.23438325104311 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 16.745062341824262, y: 18.987063106127344, imu: 78.96950875381197 0
+reset_f :False counter:0 trigger:False
+color:White (255, 210, 66)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:66 right:34, head:118
+3
+error: 71.01293689387265 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 16.87228231743166, y: 19.63969865971351, imu: 78.96950875381197 0
+reset_f :False counter:0 trigger:False
+color:White (255, 207, 66)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:62 right:34, head:114
+3
+error: 70.3603013402865 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 17.18340256035766, y: 20.84461645722957, imu: 75.52196153622165 0
+reset_f :False counter:0 trigger:False
+color:White (255, 216, 69)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:62 right:33, head:112
+3
+error: 69.15538354277044 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 17.464937432669444, y: 21.73446947141653, imu: 72.4434844403148 0
+reset_f :False counter:0 trigger:False
+color:White (255, 230, 74)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:60 right:33, head:110
+3
+error: 68.26553052858347 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 17.65814763915792, y: 22.345152912525222, imu: 72.4434844403148 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 83)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:58 right:33, head:109
+3
+error: 67.65484708747478 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 17.990846263805, y: 23.230214836020895, imu: 69.39854119581275 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 109)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:58 right:33, head:109
+3
+error: 66.76978516397911 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 18.49411626805531, y: 24.388327370925637, imu: 66.51213614109082 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 147)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:58 right:34, head:109
+3
+error: 65.61167262907436 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 18.88068598146497, y: 25.27789207164957, imu: 66.51213614109082 0
+reset_f :False counter:0 trigger:False
+color:White (255, 250, 80)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:58 right:34, head:106
+3
+error: 64.72210792835043 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 19.3009507855338, y: 26.138485406136343, imu: 63.971749782534395 0
+reset_f :False counter:0 trigger:False
+color:White (255, 201, 64)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:56 right:34, head:106
+3
+error: 63.86151459386366 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 19.748641081971186, y: 26.97822904223242, imu: 61.93670239629787 0
+reset_f :False counter:0 trigger:False
+color:White (255, 199, 63)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:56 right:34, head:106
+3
+error: 63.02177095776758 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 20.22526537228362, y: 27.8089351748607, imu: 60.154606457653735 0
+reset_f :False counter:0 trigger:False
+color:White (255, 205, 65)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:56 right:34, head:104
+3
+error: 62.1910648251393 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 20.692782192080536, y: 28.623767941897366, imu: 60.154606457653735 0
+reset_f :False counter:0 trigger:False
+color:White (255, 205, 65)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:57 right:34, head:103
+3
+error: 61.37623205810263 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 21.188497641572397, y: 29.43608694882946, imu: 58.60648499757122 0
+reset_f :False counter:0 trigger:False
+color:White (255, 203, 64)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:57 right:34, head:102
+3
+error: 60.563913051170545 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 21.70730159272509, y: 30.24112474494243, imu: 57.200377412432644 0
+reset_f :False counter:0 trigger:False
+color:White (255, 203, 64)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:58 right:34, head:102
+3
+error: 59.758875255057575 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 22.054272388081987, y: 30.779525818775937, imu: 57.200377412432644 0
+reset_f :False counter:0 trigger:False
+color:White (255, 197, 61)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:58 right:34, head:101
+3
+error: 59.22047418122406 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 22.755966947995628, y: 31.81464283469465, imu: 55.867081942395615 0
+reset_f :False counter:0 trigger:False
+color:White (255, 201, 63)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:58 right:36, head:100
+3
+error: 58.18535716530535 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 23.309438711574995, y: 32.59625168816448, imu: 54.696980287278144 0
+reset_f :False counter:0 trigger:False
+color:White (255, 192, 62)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:58 right:48, head:101
+3
+error: 57.40374831183552 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 23.68664558229469, y: 33.1289405246057, imu: 54.696980287278144 0
+reset_f :False counter:0 trigger:False
+color:White (255, 199, 63)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:58 right:191, head:98
+3
+error: 56.8710594753943 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 24.257372454509852, y: 33.90562326011452, imu: 53.69057705476735 0
+reset_f :False counter:0 trigger:False
+color:White (255, 194, 62)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:59 right:191, head:98
+3
+error: 56.09437673988548 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 25.011559243013643, y: 34.903142573262485, imu: 52.90844661857528 0
+reset_f :False counter:0 trigger:False
+color:White (255, 194, 62)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:59 right:274, head:98
+3
+error: 55.096857426737515 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 25.40520795701318, y: 35.42379899524703, imu: 52.90844661857528 0
+reset_f :False counter:0 trigger:False
+color:White (255, 190, 61)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:59 right:279, head:98
+4
+error: 54.57620100475297 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 25.996243625890294, y: 36.185141278599886, imu: 52.17754482131249 0
+reset_f :False counter:0 trigger:False
+color:White (255, 201, 64)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:True, p_past:False
+left:56 right:279, head:98
+4
+error: -36.185141278599886 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 26.595838022165825, y: 36.93976157667099, imu: 51.53059778730289 0
+reset_f :False counter:0 trigger:False
+color:White (255, 210, 65)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:47 right:282, head:98
+4
+error: 53.06023842332901 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 27.180252813472357, y: 37.675277563398524, imu: 51.53059778730289 0
+reset_f :False counter:0 trigger:False
+color:White (255, 221, 72)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:10 right:284, head:96
+4
+error: 52.324722436601476 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 27.77881056828385, y: 38.41509145218616, imu: 51.024879456227175 0
+reset_f :False counter:0 trigger:False
+color:White (255, 237, 77)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:3 right:286, head:96
+4
+error: 51.58490854781384 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 28.383969473058663, y: 39.14159381504238, imu: 50.2065197988964 0
+reset_f :False counter:0 trigger:False
+color:White (255, 235, 77)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:3 right:286, head:95
+4
+error: 50.85840618495762 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 28.797820078904664, y: 39.638427688995655, imu: 50.2065197988964 0
+reset_f :False counter:0 trigger:False
+color:White (255, 230, 74)
+green: False, red: True, pink: False, green_stored: False, g_past:f, r_past:False, p_past:False
+left:3 right:287, head:94
+4
+error: 50.361572311004345 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 29.634343466288055, y: 40.60055788248634, imu: 48.99469644152378 0
+reset_f :False counter:0 trigger:False
+color:White (255, 223, 72)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:3 right:288, head:93
+4
+error: 49.39944211751366 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+
+ lane: 0 x: 30.482641600909226, y: 41.55232264421271, imu: 48.28971019539676 0
+reset_f :False counter:0 trigger:False
+color:White (255, 237, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:3 right:291, head:92
+4
+error: 48.44767735578729 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 31.11722558126354, y: 42.253269257830034, imu: 47.84469260652742 0
+reset_f :False counter:0 trigger:False
+color:White (255, 237, 75)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:3 right:291, head:92
+4
+error: 47.746730742169966 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 31.764091832205356, y: 42.96778258009802, imu: 47.84469260652742 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 82)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:3 right:291, head:92
+4
+error: 47.03221741990198 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 32.40215121274996, y: 43.66556708133241, imu: 47.55996975860676 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 85)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:4 right:291, head:90
+4
+error: 46.33443291866759 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 33.24472973030535, y: 44.58136408180984, imu: 47.3844098879528 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 85)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:7 right:293, head:90
+4
+error: 45.41863591819016 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 33.67427956278458, y: 45.04824098401402, imu: 47.3844098879528 0
+reset_f :False counter:0 trigger:False
+color:White (255, 247, 78)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:40 right:294, head:90
+4
+error: 44.95175901598598 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 34.50650067703994, y: 45.948695260739555, imu: 47.255155922956 0
+reset_f :False counter:0 trigger:False
+color:White (255, 242, 78)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:40 right:294, head:89
+4
+error: 44.051304739260445 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 35.153819814112914, y: 46.646243761323674, imu: 47.13894170159135 0
+reset_f :False counter:0 trigger:False
+color:White (255, 219, 71)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:40 right:294, head:89
+4
+error: 43.353756238676326 tagret:90
+Correcting Red Wall
+Correction in position:45
+
+ lane: 0 x: 35.58536590549491, y: 47.11127609504643, imu: 47.13894170159135 0
+reset_f :False counter:0 trigger:False
+color:White (255, 203, 66)
+green: False, red: True, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:56 right:295, head:88
+6
+error: -47.11127609504643 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 36.4253365295043, y: 48.01286122848919, imu: 47.02622254812021 0
+reset_f :False counter:0 trigger:False
+color:White (255, 190, 62)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:55 right:295, head:87
+6
+error: -48.01286122848919 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 37.07055263706075, y: 48.704033535380624, imu: 46.96953149338607 0
+reset_f :False counter:0 trigger:False
+color:White (255, 203, 65)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:55 right:295, head:88
+6
+error: -48.704033535380624 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 37.92191506324181, y: 49.61167042512034, imu: 46.83239974749126 0
+reset_f :False counter:0 trigger:False
+color:White (255, 240, 78)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:55 right:296, head:88
+6
+error: -49.61167042512034 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 38.36011631201147, y: 50.07883647130989, imu: 46.83239974749126 0
+reset_f :False counter:0 trigger:False
+color:White (255, 242, 78)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:55 right:296, head:87
+6
+error: -50.07883647130989 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 39.006907818570895, y: 50.743224384184046, imu: 45.7688797437174 0
+reset_f :False counter:0 trigger:False
+color:White (255, 223, 72)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:55 right:297, head:87
+6
+error: -50.743224384184046 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 39.68503151526982, y: 51.38451099963817, imu: 43.40075439608029 0
+reset_f :False counter:0 trigger:False
+color:White (255, 216, 69)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:54 right:296, head:87
+6
+error: -51.38451099963817 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 40.35429084992039, y: 52.017414783517715, imu: 43.40075439608029 0
+reset_f :False counter:0 trigger:False
+color:White (255, 203, 64)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:54 right:272, head:87
+6
+error: -52.017414783517715 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 41.08422514290223, y: 52.627981654398525, imu: 39.911412029637646 0
+reset_f :False counter:0 trigger:False
+color:White (255, 221, 71)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:54 right:247, head:85
+6
+error: -52.627981654398525 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 42.0750116233571, y: 53.3399015568212, imu: 35.69876405490081 0
+reset_f :False counter:0 trigger:False
+color:White (255, 242, 79)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:54 right:247, head:86
+6
+error: -53.3399015568212 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 42.600128457998174, y: 53.71721910510521, imu: 35.69876405490081 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 83)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:57 right:113, head:82
+6
+error: -53.71721910510521 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 43.65642902515389, y: 54.36352124251317, imu: 31.460562268140094 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 87)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:57 right:113, head:80
+6
+error: -54.36352124251317 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 44.50049557580207, y: 54.803006889565424, imu: 27.504935306741526 0
+reset_f :False counter:0 trigger:False
+color:White (255, 228, 75)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:60 right:57, head:74
+6
+error: -54.803006889565424 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 45.32291939438235, y: 55.23122367387275, imu: 27.504935306741526 0
+reset_f :False counter:0 trigger:False
+color:White (255, 214, 68)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:65, head:66
+6
+error: -55.23122367387275 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 46.17709633673078, y: 55.60736463461155, imu: 23.76652602992192 0
+reset_f :False counter:0 trigger:False
+color:White (255, 219, 72)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:65, head:62
+6
+error: -55.60736463461155 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 47.06002792039283, y: 55.928232572557484, imu: 19.97175224048226 0
+reset_f :False counter:0 trigger:False
+color:White (255, 216, 69)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:66 right:137, head:57
+6
+error: -55.928232572557484 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 47.9142928941957, y: 56.238682720310365, imu: 19.97175224048226 0
+reset_f :False counter:0 trigger:False
+color:White (255, 216, 69)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:68 right:134, head:52
+6
+error: -56.238682720310365 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 48.81187137342596, y: 56.49452084258289, imu: 15.909220085769126 0
+reset_f :False counter:0 trigger:False
+color:White (255, 216, 69)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:68 right:128, head:49
+6
+error: -56.49452084258289 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 49.744109130051186, y: 56.68564577818896, imu: 11.586081460731812 0
+reset_f :False counter:0 trigger:False
+color:White (255, 221, 71)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:76 right:119, head:45
+6
+error: -56.68564577818896 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 50.965996865144504, y: 56.84500940287239, imu: 7.43080690329609 0
+reset_f :False counter:0 trigger:False
+color:White (255, 226, 72)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:84 right:111, head:43
+6
+error: -56.84500940287239 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 51.60113652942568, y: 56.927846930554374, imu: 7.43080690329609 0
+reset_f :False counter:0 trigger:False
+color:White (255, 228, 73)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:87 right:107, head:40
+6
+error: -56.927846930554374 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 52.538591253008136, y: 56.9886996729954, imu: 3.714014601740033 0
+reset_f :False counter:0 trigger:False
+color:White (255, 223, 71)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:87 right:107, head:40
+6
+error: -56.9886996729954 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 53.463871239920685, y: 57.048762120080056, imu: 3.714014601740033 0
+reset_f :False counter:0 trigger:False
+color:White (255, 245, 78)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:86 right:99, head:36
+6
+error: -57.048762120080056 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 54.397139921076594, y: 57.059242576116134, imu: 0.6433952729756449 0
+reset_f :False counter:0 trigger:False
+color:White (255, 250, 79)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:86 right:95, head:33
+6
+error: -57.059242576116134 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 55.342059313823924, y: 57.0253261424312, imu: 357.9443382844612 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 87)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:74 right:95, head:32
+6
+error: -57.0253261424312 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 55.96997349093991, y: 57.002788125208305, imu: 357.9443382844612 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 92)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:72 right:91, head:30
+6
+error: -57.002788125208305 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 56.90041851311273, y: 56.92949193227137, imu: 355.4958028428876 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 93)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:70 right:88, head:30
+6
+error: -56.92949193227137 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 57.83326224820606, y: 56.81846499442855, imu: 353.21259325177334 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 100)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:70 right:86, head:28
+6
+error: -56.81846499442855 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 58.75399112959688, y: 56.70887996486941, imu: 353.21259325177334 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 115)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:70 right:84, head:27
+6
+error: -56.70887996486941 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 59.676177220456076, y: 56.56509858564715, imu: 351.1381551924933 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 132)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:70 right:82, head:25
+6
+error: -56.56509858564715 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 60.61143031890719, y: 56.38932140360793, imu: 349.355654564279 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 172)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:65 right:80, head:23
+6
+error: -56.38932140360793 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 61.528697780849626, y: 56.21692455199254, imu: 349.355654564279 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 223)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:65 right:79, head:23
+6
+error: -56.21692455199254 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 62.757123728148954, y: 55.952148427358786, imu: 347.8364970866906 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:79, head:23
+6
+error: -55.952148427358786 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 63.95587299815961, y: 55.66683002680839, imu: 346.6119392512165 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:76, head:21
+6
+error: -55.66683002680839 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 64.883264657589, y: 55.42768968532903, imu: 345.5405114849706 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:75, head:20
+6
+error: -55.42768968532903 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 66.0712684858675, y: 55.100499670140074, imu: 344.60182707988577 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:74, head:19
+6
+error: -55.100499670140074 tagret:0
+Correction in position:-25
+Image Process started
+Encoder Process Started
+
+ lane: 0 x: 66.95933075354105, y: 54.85591703502358, imu: 344.60182707988577 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:73, head:19
+6
+error: -54.85591703502358 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 67.57982257203525, y: 54.67396614756137, imu: 343.6569339039435 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:71, head:16
+6
+error: -54.67396614756137 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 68.47543812137123, y: 54.41133892320554, imu: 343.6569339039435 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:63 right:71, head:15
+6
+error: -54.41133892320554 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 69.37278871119211, y: 54.13333472543559, imu: 342.7867284596985 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:70, head:15
+6
+error: -54.13333472543559 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 70.26068771653098, y: 53.84569671073043, imu: 342.0500854473294 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:70, head:14
+6
+error: -53.84569671073043 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 71.1485867218698, y: 53.558058696025284, imu: 342.0500854473294 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:70, head:14
+6
+error: -53.558058696025284 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 71.68637816318763, y: 53.37742470249054, imu: 341.4337718857863 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:68, head:14
+6
+error: -53.37742470249054 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 71.78437793570214, y: 53.34350761354228, imu: 340.9095932281781 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:68, head:11
+6
+error: -53.34350761354228 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 71.79590732070383, y: 53.339517367783664, imu: 340.9095932281781 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:67, head:10
+6
+error: -53.339517367783664 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 71.79590732070383, y: 53.339517367783664, imu: 340.4779605132131 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:67, head:10
+6
+error: -53.339517367783664 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 71.79590732070383, y: 53.339517367783664, imu: 340.4779605132131 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:67, head:9
+6
+error: -53.339517367783664 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 71.79590732070383, y: 53.339517367783664, imu: 340.24254991299705 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:67, head:9
+6
+error: -53.339517367783664 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 71.79590732070383, y: 53.339517367783664, imu: 340.24254991299705 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:66, head:9
+6
+error: -53.339517367783664 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 71.79590732070383, y: 53.339517367783664, imu: 340.28427943086666 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:66, head:9
+6
+error: -53.339517367783664 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 71.79590732070383, y: 53.339517367783664, imu: 340.28427943086666 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:66, head:9
+6
+error: -53.339517367783664 tagret:0
+Correction in position:-25
+
+ lane: 0 x: 71.79590732070383, y: 53.339517367783664, imu: 340.38388461850957 0
+reset_f :False counter:0 trigger:False
+color:White (255, 255, 255)
+green: False, red: False, pink: False, green_stored: False, g_past:False, r_past:False, p_past:False
+left:64 right:67, head:9
+6
+error: -53.339517367783664 tagret:0
+Correction in position:-25
