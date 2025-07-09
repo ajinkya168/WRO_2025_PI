@@ -1,21 +1,42 @@
 import os
+import time
+import subprocess
 
 os.system('sudo pkill pigpiod')
 os.system('sudo pigpiod')
+
+def kill_process_on_port(port):
+    try:
+        # Find PID using the port
+        result = subprocess.check_output(
+            f"lsof -t -i:{port}", shell=True
+        ).decode().strip()
+
+        if result:
+            pids = result.split('\n')
+            for pid in pids:
+                print(f"Killing PID {pid} using port {port}")
+                os.system(f"kill -9 {pid}")
+    except subprocess.CalledProcessError:
+        print(f"No process is using port {port}")
+
+kill_process_on_port(5003)
+time.sleep(5)
 import sys
 import logging
 
+
+from flask import Flask, Response
 import numpy as np
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 import cv2
 from picamera2 import Picamera2
-import time
+#import time
 from ctypes import c_float
 
 import multiprocessing
 import pigpio
 import board
-import subprocess
 import math
 from Encoder import EncoderCounter
 from BNO085 import IMUandColorSensor
@@ -24,9 +45,8 @@ import serial
 import RPi.GPIO as GPIO
 from TFmini import TFmini
 
-log_file = open('/home/pi/WRO_2025_FE/logs/log_9.txt', 'w')
-sys.stdout = log_file
-time.sleep(5)
+#log_file = open('/home/pi/WRO_2025_FE/logs/log_9.txt', 'w')
+#sys.stdout = log_file
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
@@ -44,8 +64,12 @@ green_led = 6
 reset_pin = 8
 
 #### INITIALIZATION
+pwm = pigpio.pi()
+process = None
+ser = serial.Serial('/dev/UART_USB', 115200)
+print("created uart")
 
-GPIO.setup(reset_pin, GPIO.OUT)
+'''GPIO.setup(reset_pin, GPIO.OUT)
 GPIO.setup(blue_led, GPIO.OUT)  # blue
 GPIO.setup(red_led, GPIO.OUT)  # red
 GPIO.setup(green_led, GPIO.OUT)  # green
@@ -68,14 +92,42 @@ GPIO.output(green_led, GPIO.LOW)
 time.sleep(1)
 print("Reset Complete")
 
-print("######################## LOGS ############################")
+print("######################## LOGS ############################")'''
+pwm = pigpio.pi()
+if not pwm.connected:
+    print("Could not connect to pigpio daemon")
+    exit(1)
 
+#### INITIALIZATION ####
+
+# Set pin modes for LEDs and reset
+for pin in [reset_pin, blue_led, red_led, green_led]:
+    pwm.set_mode(pin, pigpio.OUTPUT)
+    pwm.write(pin, 0)  # Set LOW
+
+# Set button pin as input with pull-up
+pwm.set_mode(button_pin, pigpio.INPUT)
+pwm.set_pull_up_down(button_pin, pigpio.PUD_UP)
+
+#### RESETTING ARDUINO ####
+
+print("Resetting....")
+
+pwm.write(reset_pin, 0)          # Pull reset LOW
+pwm.write(green_led, 1)          # Turn on green LED
+time.sleep(1)
+
+pwm.write(reset_pin, 1)          # Release reset (HIGH)
+pwm.write(green_led, 0)          # Turn off green LED
+time.sleep(1)
+
+print("Reset Complete")
 
 ########### IMPORTING CLASSES ###############
 servo = Servo(servo_pin)
 imu = IMUandColorSensor(board.SCL, board.SDA)
 tfmini = TFmini(RX_Head, RX_Left, RX_Right, RX_Back)
-
+app = Flask(__name__)
 
 rplidar = [None]*360
 previous_distance = 0
@@ -87,8 +139,41 @@ lidar_front = 0
 lidar_left = 0
 lidar_right = 0
 
+#########  MULTIPROCESSING VARIABLE ###########
+
+counts = multiprocessing.Value('i', 0)
+color_b = multiprocessing.Value('b', False)
+stop_b = multiprocessing.Value('b', False)
+red_b = multiprocessing.Value('b', False)
+green_b = multiprocessing.Value('b', False)
+pink_b = multiprocessing.Value('b', False)
+blue_b = multiprocessing.Value('b', False)
+orange_o = multiprocessing.Value('b', False)
+blue_c = multiprocessing.Value('b', False)
+orange_c = multiprocessing.Value('b', False)
+white_c = multiprocessing.Value('b', False)
+centr_y = multiprocessing.Value('f', 0.0)
+centr_x = multiprocessing.Value('f', 0.0)
+centr_y_red = multiprocessing.Value('f', 0.0)
+centr_x_red = multiprocessing.Value('f', 0.0)
+centr_x_pink = multiprocessing.Value('f', 0.0)
+centr_y_pink = multiprocessing.Value('f', 0.0)
+centr_y_b = multiprocessing.Value('f', 0.0)
+centr_y_o = multiprocessing.Value('f', 0.0)
+prev_b = multiprocessing.Value('f', 0.0)
+head = multiprocessing.Value('f', 0.0)
+sp_angle = multiprocessing.Value('i', 0)
+turn_trigger = multiprocessing.Value('b', False)
+# Shared memory for LIDAR and IMU
+previous_angle = multiprocessing.Value('d', 0.0)
+lidar_angle = multiprocessing.Value('d', 0.0)
+lidar_distance = multiprocessing.Value('d', 0.0)
+imu_shared = multiprocessing.Value('d', 0.0)
+specific_angle = multiprocessing.Array(c_float, 3)  # shared array of 3 integers
+
 
 ############ PID VARIABLES #############
+
 currentAngle = 0
 error_gyro = 0
 prevErrorGyro = 0
@@ -108,8 +193,7 @@ kd_e = 40  # 40if
 corr = 0
 corr_pos = 0
 
-
-##############################################
+###################################################
 
 
 def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse, heading, centr_x, finish):
@@ -123,6 +207,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
 	dTerm_e = 0
 	iTerm_e = 0
 	lane = counter % 4
+
 	# if(time.time() - last_time > 0.001):
 	if lane == 0:
 		error = setPoint - y
@@ -313,7 +398,7 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 	max_cnt_b = np.array([[[0, 0]]])
 	max_cnt_o = np.array([[[0, 0]]])
 	picam2 = Picamera2()
-
+	
 	picam2.preview_configuration.main.size = (1600, 1000)  # (1300, 800)
 	picam2.preview_configuration.main.format = 'RGB888'
 
@@ -322,11 +407,10 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 
 	picam2.start()
 
-	cv2.namedWindow('Object Frame', cv2.WINDOW_NORMAL)
-	cv2.resizeWindow('Object Frame', 400, 200)
+	#cv2.namedWindow('Object Frame', cv2.WINDOW_NORMAL)
+	#cv2.resizeWindow('Object Frame', 400, 200)
 	time.sleep(2)
-	GPIO.output(green_led, GPIO.HIGH)
-
+	pwm.write(green_led, 1)
 	while True:
 		#print(f"fps:{1/(time.time() - fps_time)}")
 		fps_time = time.time() 
@@ -850,14 +934,28 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 		# print(f"{centr_y_pink.value}")
 		#print(f"blue centr x:{centroid_x_b} centr_y = {centroid_y_b} blue: {blue_b.value} prev_b.value:{prev_b.value}")
 		#print(f"blue: {centr_y_b.value} {cv2.contourArea(max_cnt_b)} ")
-		cv2.imshow('Object Frame', img)
-
-		if cv2.waitKey(1) & 0xFF == ord('q'):
+		#cv2.imshow('Object Frame', img)
+		ret, buffer = cv2.imencode('.jpg', img)
+		if not ret:
+			continue
+		yield (b'--frame\r\n'
+			b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
+		'''if cv2.waitKey(1) & 0xFF == ord('q'):
 			stop_b.value = True
-			break
+			break'''
 
-	cv2.destroyAllWindows()
-	picam2.stop()
+	#cv2.destroyAllWindows()
+	#picam2.stop()
+
+
+@app.route('/video')
+def video():
+    return Response(Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, blue_b, prev_b, orange_o, centr_y_o),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/')
+def index():
+    return "<h2>PiCamera2 Stream</h2><img src='/video' width='640' height='480'>"
 
 
 def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, head, centr_y_b, blue_b, prev_b, orange_o, centr_y_o, blue_c, orange_c, white_c, sp_angle, turn_trigger, specific_angle):
@@ -979,799 +1077,808 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 	fps_time2 = 0
 	color_s = ""
 	orange_c.value = True
-	while True:
-		#print(f"turn_trigger: {turn_trigger.value}")
-		#print(f"angles:{specific_angle}")
-		#print(f"fps 2222:{1/(time.time() - fps_time2)}")
-		fps_time2 = time.time()
-		if centr_y_b.value > 400 and (counter == 0 or blue_flag):
-			power = 50
+	try:
+		while True:
+			#print(f"turn_trigger: {turn_trigger.value}")
+			#print(f"angles:{specific_angle}")
+			#print(f"fps 2222:{1/(time.time() - fps_time2)}")
+			fps_time2 = time.time()
+			if centr_y_b.value > 400 and (counter == 0 or blue_flag):
+				power = 50
 
-		else:
-			power = 100
-		
-		#print(f"blue:{blue_c.value} orange:{orange_c.value}")
-		#print(f"c_time:{c}")
-		#color_sensor = imu.get_color()
-		#color_sensor="None"
-		#print(color_sensor)		
-		'''if centr_y_b.value > 100 or centr_y_o.value > 100 or c > 10:
-			GPIO.output(blue_led, GPIO.HIGH)
-			c =  c + 1
-			
-			color_sensor = imu.get_color()
-		if time.time() - c_time > 1:
-			c = 0
-			GPIO.output(blue_led, GPIO.L OW)'''
-
-		tfmini.getTFminiData()		
-		##### STOP CONDITION ######
-		#print(f"rgb:{imu.color_rgb} color:{color_sensor}")
-		#print(f"pink detected:{pink_detected}")
-		if counter == last_counter and not lap_finish:
-			print(f"centr_y :{centr_y.value} centr_y_red:{centr_y_red.value}")
-			if not finished:
-				target_count = counts.value + 35000
-				finished = True
-			if counts.value >= target_count and not reverse_trigger:
-				power = 0
-				pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
-				time.sleep(3)
+			else:
 				power = 100
-				prev_power = 0
-				lap_finish = True
-				reverse_trigger = True
-				print(f"Vehicle is stopped,..reverse_trigger: {reverse_trigger}")
+			
+			#print(f"blue:{blue_c.value} orange:{orange_c.value}")
+			#print(f"c_time:{c}")
+			#color_sensor = imu.get_color()
+			#color_sensor="None"
+			#print(color_sensor)		
+			'''if centr_y_b.value > 100 or centr_y_o.value > 100 or c > 10:
+				GPIO.output(blue_led, GPIO.HIGH)
+				c =  c + 1
+				
+				color_sensor = imu.get_color()
+			if time.time() - c_time > 1:
+				c = 0
+				GPIO.output(blue_led, GPIO.L OW)'''
 
-		if lap_finish:
-			if not counter_reset:
-				counter = counter % 12
-				counter_reset = True
+			tfmini.getTFminiData()		
+			##### STOP CONDITION ######
+			#print(f"rgb:{imu.color_rgb} color:{color_sensor}")
+			#print(f"pink detected:{pink_detected}")
+			if counter == last_counter and not lap_finish:
+				print(f"centr_y :{centr_y.value} centr_y_red:{centr_y_red.value}")
+				if not finished:
+					target_count = counts.value + 35000
+					finished = True
+				if counts.value >= target_count and not reverse_trigger:
+					power = 0
+					pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
+					time.sleep(3)
+					power = 100
+					prev_power = 0
+					lap_finish = True
+					reverse_trigger = True
+					print(f"Vehicle is stopped,..reverse_trigger: {reverse_trigger}")
 
-		if lap_finish and not continue_parking:
-			if orange_flag:
-				if counter % 4 != 0:
-					setPointR = -100
-					setPointC = -100
-			elif blue_flag:
-				if counter % 4 != 0:
-					setPointL = 100
-					setPointC = 100
-
-		if continue_parking:  ### THIS SETPOINT IS WHEN THE ROBOT IS IN THE PARKING MODE
-			green_b.value = False
-			red_b.value = False
-			g_past = False
-			r_past = False
-			g_flag = False
-			r_flag = False
-			if orange_flag and (((centr_x_pink.value < centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value < centr_x_red.value and (centr_x_red.value > 0 and centr_x_pink.value > 0))):
-				setPointR = -35
-				setPointC = -35
-				finish = True
-			elif blue_flag and (((centr_x_pink.value > centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value > centr_x_red.value and (centr_x_red.value > 0 and centr_x_pink.value > 0))):
-				setPointL = 35
-				setPointC = 35
-				finish = True
-
-		if pink_b.value:  ### DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
-			if orange_flag:
-				if (centr_x_pink.value < centr_x.value) and (centr_x_pink.value > 0 and centr_x.value > 0) and not continue_parking:
-					setPointL = -35
-					setPointR = 70
-					#print(f"setPointL: {setPointL}")
-			elif blue_flag:
-				if (centr_x_red.value < centr_x_pink.value) and (centr_x_pink.value > 0 and centr_x_red.value > 0) and not continue_parking:
-					setPointR = 35
-					setPointL = -70
-					#print(f"setPointR: {setPointR}")
-
-			elif counter % 4 == 0 and not blue_flag and not orange_flag:
-				if ((centr_x_pink.value < 800 and centr_x_pink.value > 0) and ((centr_y.value or centr_y_red.value) <= centr_y_pink.value)) and not continue_parking:
-					#print(f"at 0 counter orange:{setPointR} {setPointL}")
-					setPointR = 35
-					setPointL = -70
-				if ((centr_x_pink.value > 800) and ((centr_y.value or centr_y_red.value) <= centr_y_pink.value)) and not continue_parking:
-					#print(f"at 0 counter blue:{setPointR} {setPointL}")
-					setPointL = -35
-					setPointR = 70
+			if lap_finish:
+				if not counter_reset:
+					counter = counter % 12
+					counter_reset = True
 
 			if lap_finish and not continue_parking:
-				pink_detected = False
-				print("Starting Parking...")
-				continue_parking = True
-			pb_time = time.time()
-		elif not pink_b.value and time.time() - pb_time > 1 and not lap_finish:  ### IF DOES NOT SEE PINK, KEEP THE SAME SETPOINT FOR 1 SECOND AND THEN CHANGE
-			#print(f"Resetting setPoints...{pink_detected}")
-			if g_flag and not continue_parking:
-				print(f"away from green {g_past}")
-				setPointL = setPointL - 1
-				setPointR = 70
-			elif r_flag and not continue_parking:
-				print(f"away from red {r_past}")
-				setPointR = setPointR + 1
-				setPointL = -70
+				if orange_flag:
+					if counter % 4 != 0:
+						setPointR = -100
+						setPointC = -100
+				elif blue_flag:
+					if counter % 4 != 0:
+						setPointL = 100
+						setPointC = 100
 
-		try:
+			if continue_parking:  ### THIS SETPOINT IS WHEN THE ROBOT IS IN THE PARKING MODE
+				green_b.value = False
+				red_b.value = False
+				g_past = False
+				r_past = False
+				g_flag = False
+				r_flag = False
+				if orange_flag and (((centr_x_pink.value < centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value < centr_x_red.value and (centr_x_red.value > 0 and centr_x_pink.value > 0))):
+					setPointR = -35
+					setPointC = -35
+					finish = True
+				elif blue_flag and (((centr_x_pink.value > centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value > centr_x_red.value and (centr_x_red.value > 0 and centr_x_pink.value > 0))):
+					setPointL = 35
+					setPointC = 35
+					finish = True
 
-			avg_right_pass = (tfmini.distance_right* 0.1) + (avg_right * 0.9)
-			avg_left_pass = (tfmini.distance_left* 0.1) + (avg_left * 0.9)
-			avg_head = (tfmini.distance_head* 0.10) + (avg_head*0.90)
-			avg_left = (tfmini.distance_left* 0.15) + (avg_left*0.85)
-			avg_right = (tfmini.distance_right* 0.15) + (avg_right*0.85)
-
-			#print(f"average ::: r_pass:{avg_right_pass} l_pass:{avg_left_pass} h:{avg_head} l:{avg_left} r:{avg_right}")
-			previous_state = button_state
-			time.sleep(0.05)
-			button_state = GPIO.input(5)
-			if previous_state == 1 and button_state == 0:
-				button = not (button)
-				power = 70
-
-			if button:  ##### THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
-				if not reset_servo:
-					time.sleep(0.5)
-					servo.setAngle(130)
-					time.sleep(0.5)
-					servo.setAngle(90)	
-					reset_servo = True
-
-				if not reverse:
-					imu_head = head.value
-				else:
-					#print(f"Changing imu..{imu_head} {cw} {ccw}")
-					imu_head = head.value - 180
-
-				x, y = enc.get_position(imu_head, counts.value)
-
-				total_power = (power * 0.1) + (prev_power * 0.9)
-				prev_power = total_power
-				pwm.set_PWM_dutycycle(pwm_pin, 2.55 * total_power)  # Set duty cycle to 50% (128/255)
-
-				pwm.write(direction_pin, 1)  # Set pin 20 high
-
-				if stop_b.value:
-					power = 0
-					prev_power = 0
-
-				######      DIRECTION DECISION (CLOCKWISE OR ANTICLOCKWISE)     #####
-				if blue_c.value:
-					color_s = "Blue"
-				elif orange_c.value:
-					color_s = "Orange"
-				elif white_c.value:
-					color_s = "White"
-				print(f"Color Sensor: {color_s}")	
-				if not blue_flag and not orange_flag:
-					if color_s == "Orange":
-						orange_flag = True
-						blue_flag = False
-						color_n = "Orange"
-
-					elif color_s == "Blue":
-						blue_flag = True
-						orange_flag = False
-						color_n = "Blue"
-						
-
-				
-
-				################        PARKING         ################
-
-				if parking_flag and not stop_flag:
-					print(f"PARKING ------> distance_head : {tfmini.distance_head}")
-					print("Inside Parking Loop")
-
-					if not calc_time:
-						c_time = time.time()
-						calc_time = True
-					if pink_b.value and not pink_r:
-						print("Time is same")
-						time_p = 0.7
-						pink_r = True
-					elif not pink_b.value and not pink_r:
-						print("increasing time..")
-						time_p = 2.5
-						pink_r = True
-					while time.time() - c_time < time_p and not reverse_complete:
-						print("Reversing backward...")
-						power = 70
-						prev_power = 0
-						pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
-						pwm.write(direction_pin, 0)  # Set pin 20 hig '''
-						prev_time = time.time()
-					reverse_complete = True	
-					while time.time() - prev_time < 0.5:
-						print("Robot is stopped")
-						power = 0
-						prev_power = 0
-						pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
-
-
-					if orange_flag:
-						if not parking_heading:
-							heading_angle = heading_angle - 90
-							calc_time = False
-							parking_heading = True
-
-					elif blue_flag:
-						if not parking_heading:
-							heading_angle = heading_angle + 90
-							calc_time = False
-							parking_heading = True
-
-					print(f"Correcting angle..{abs(corr)}")
-					if parking_heading:
-						print("Moving slowly..")
-						power = 85
-						pwm.set_PWM_dutycycle(pwm_pin, power)
-						correctAngle(heading_angle, head.value)
-					back_bot = False
-					#tfmini.getTFminiData()
-					stop_flag = False
-					if (abs(corr) < 15) and (tfmini.distance_head <= 5 and tfmini.distance_head >= 0) and not finish_flag:
-						finish_timer = time.time()
-						finish_flag = True
-					print(f"finish flag:{finish_flag}")
-					if time.time() - finish_timer > 1 and finish_flag and not stop_flag:
-						power = 0
-						prev_power = 0
-						servo.setAngle(90)
-						pwm.set_PWM_dutycycle(pwm_pin, power)
-						stop_flag = True
-						stop_time = time.time()
-						print("Succesfully Parked...")
-						sys.exit(0)
-
-						back_bot = True
-				else:
-					if reset_f:
-						
-						setPointL = -70
+			if pink_b.value:  ### DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
+				if orange_flag:
+					if (centr_x_pink.value < centr_x.value) and (centr_x_pink.value > 0 and centr_x.value > 0) and not continue_parking:
+						setPointL = -35
 						setPointR = 70
-						g_past = False
+						#print(f"setPointL: {setPointL}")
+				elif blue_flag:
+					if (centr_x_red.value < centr_x_pink.value) and (centr_x_pink.value > 0 and centr_x_red.value > 0) and not continue_parking:
+						setPointR = 35
+						setPointL = -70
+						#print(f"setPointR: {setPointR}")
 
-						if not last_red:
-							g_last_flag = False
-							r_last_flag = False
-						print(f"green: {green_count} red:{red_count}")
-						if counter == change_counter and green_count == 1:
-							last_red = False
-						elif counter == change_counter and red_count == 1:
-							print("Changing path...")
-							last_red = True
-						print(f"last_red: {last_red}")
-						if blue_flag:  ### BLUE RESET BLOCK
+				elif counter % 4 == 0 and not blue_flag and not orange_flag:
+					if ((centr_x_pink.value < 800 and centr_x_pink.value > 0) and ((centr_y.value or centr_y_red.value) <= centr_y_pink.value)) and not continue_parking:
+						#print(f"at 0 counter orange:{setPointR} {setPointL}")
+						setPointR = 35
+						setPointL = -70
+					if ((centr_x_pink.value > 800) and ((centr_y.value or centr_y_red.value) <= centr_y_pink.value)) and not continue_parking:
+						#print(f"at 0 counter blue:{setPointR} {setPointL}")
+						setPointL = -35
+						setPointR = 70
 
-							print(f"BLUE RESET...{reverse_trigger}")
+				if lap_finish and not continue_parking:
+					pink_detected = False
+					print("Starting Parking...")
+					continue_parking = True
+				pb_time = time.time()
+			elif not pink_b.value and time.time() - pb_time > 1 and not lap_finish:  ### IF DOES NOT SEE PINK, KEEP THE SAME SETPOINT FOR 1 SECOND AND THEN CHANGE
+				#print(f"Resetting setPoints...{pink_detected}")
+				if g_flag and not continue_parking:
+					print(f"away from green {g_past}")
+					setPointL = setPointL - 1
+					setPointR = 70
+				elif r_flag and not continue_parking:
+					print(f"away from red {r_past}")
+					setPointR = setPointR + 1
+					setPointL = -70
 
-							if (red_b.value or red_turn) or reverse_trigger:  # red after trigger
-								if counter != rev_counter:
-									green_count = 0
-									red_count = 1
-									GPIO.output(red_led, GPIO.HIGH)
-									GPIO.output(green_led, GPIO.LOW)
-								#tfmini.getTFminiData()
-								x, y = enc.get_position(imu_head, counts.value)
-								print(f"Red Detected after trigger...green: {g_flag} {g_past} red:{r_flag} {r_past} {setPointR} {setPointL}")
-								red_turn = True
-								if pink_b.value and not red_b.value:
-									red_turn = False
-									red_time = False
-									reverse_trigger = False
-								elif (tfmini.distance_head < 30 and time.time() - g_time > 0.8) and not red_b.value and not pink_b.value:
-									red_turn = False
-									reverse_trigger = False
-									red_time = True
-								correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, finish)
+		
 
-							else:
-								if red_time:
-									time_g = 1.2
+				avg_right_pass = (tfmini.distance_right* 0.1) + (avg_right * 0.9)
+				avg_left_pass = (tfmini.distance_left* 0.1) + (avg_left * 0.9)
+				avg_head = (tfmini.distance_head* 0.10) + (avg_head*0.90)
+				avg_left = (tfmini.distance_left* 0.15) + (avg_left*0.85)
+				avg_right = (tfmini.distance_right* 0.15) + (avg_right*0.85)
+
+				#print(f"average ::: r_pass:{avg_right_pass} l_pass:{avg_left_pass} h:{avg_head} l:{avg_left} r:{avg_right}")
+				previous_state = button_state
+				time.sleep(0.05)
+				button_state = pwm.read(5)
+				if previous_state == 1 and button_state == 0:
+					button = not (button)
+					power = 70
+
+				if button:  ##### THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
+					if not reset_servo:
+						time.sleep(0.5)
+						servo.setAngle(130)
+						time.sleep(0.5)
+						servo.setAngle(90)	
+						reset_servo = True
+
+					if not reverse:
+						imu_head = head.value
+					else:
+						#print(f"Changing imu..{imu_head} {cw} {ccw}")
+						imu_head = head.value - 180
+
+					x, y = enc.get_position(imu_head, counts.value)
+
+					total_power = (power * 0.1) + (prev_power * 0.9)
+					prev_power = total_power
+					pwm.set_PWM_dutycycle(pwm_pin, 2.55 * total_power)  # Set duty cycle to 50% (128/255)
+
+					pwm.write(direction_pin, 1)  # Set pin 20 high
+
+					if stop_b.value:
+						power = 0
+						prev_power = 0
+
+					######      DIRECTION DECISION (CLOCKWISE OR ANTICLOCKWISE)     #####
+					if blue_c.value:
+						color_s = "Blue"
+					elif orange_c.value:
+						color_s = "Orange"
+					elif white_c.value:
+						color_s = "White"
+					print(f"Color Sensor: {color_s}")	
+					if not blue_flag and not orange_flag:
+						if color_s == "Orange":
+							orange_flag = True
+							blue_flag = False
+							color_n = "Orange"
+
+						elif color_s == "Blue":
+							blue_flag = True
+							orange_flag = False
+							color_n = "Blue"
+							
+
+					
+
+					################        PARKING         ################
+
+					if parking_flag and not stop_flag:
+						print(f"PARKING ------> distance_head : {tfmini.distance_head}")
+						print("Inside Parking Loop")
+
+						if not calc_time:
+							c_time = time.time()
+							calc_time = True
+						if pink_b.value and not pink_r:
+							print("Time is same")
+							time_p = 0.7
+							pink_r = True
+						elif not pink_b.value and not pink_r:
+							print("increasing time..")
+							time_p = 2.5
+							pink_r = True
+						while time.time() - c_time < time_p and not reverse_complete:
+							print("Reversing backward...")
+							power = 70
+							prev_power = 0
+							pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
+							pwm.write(direction_pin, 0)  # Set pin 20 hig '''
+							prev_time = time.time()
+						reverse_complete = True	
+						while time.time() - prev_time < 0.5:
+							print("Robot is stopped")
+							power = 0
+							prev_power = 0
+							pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
+
+
+						if orange_flag:
+							if not parking_heading:
+								heading_angle = heading_angle - 90
+								calc_time = False
+								parking_heading = True
+
+						elif blue_flag:
+							if not parking_heading:
+								heading_angle = heading_angle + 90
+								calc_time = False
+								parking_heading = True
+
+						print(f"Correcting angle..{abs(corr)}")
+						if parking_heading:
+							print("Moving slowly..")
+							power = 85
+							pwm.set_PWM_dutycycle(pwm_pin, power)
+							correctAngle(heading_angle, head.value)
+						back_bot = False
+						#tfmini.getTFminiData()
+						stop_flag = False
+						if (abs(corr) < 15) and (tfmini.distance_head <= 5 and tfmini.distance_head >= 0) and not finish_flag:
+							finish_timer = time.time()
+							finish_flag = True
+						print(f"finish flag:{finish_flag}")
+						if time.time() - finish_timer > 1 and finish_flag and not stop_flag:
+							power = 0
+							prev_power = 0
+							servo.setAngle(90)
+							pwm.set_PWM_dutycycle(pwm_pin, power)
+							stop_flag = True
+							stop_time = time.time()
+							print("Succesfully Parked...")
+							sys.exit(0)
+
+							back_bot = True
+					else:
+						if reset_f:
+							
+							setPointL = -70
+							setPointR = 70
+							g_past = False
+
+							if not last_red:
+								g_last_flag = False
+								r_last_flag = False
+							print(f"green: {green_count} red:{red_count}")
+							if counter == change_counter and green_count == 1:
+								last_red = False
+							elif counter == change_counter and red_count == 1:
+								print("Changing path...")
+								last_red = True
+							print(f"last_red: {last_red}")
+							if blue_flag:  ### BLUE RESET BLOCK
+
+								print(f"BLUE RESET...{reverse_trigger}")
+
+								if (red_b.value or red_turn) or reverse_trigger:  # red after trigger
+									if counter != rev_counter:
+										green_count = 0
+										red_count = 1
+										pwm.write(red_led, 1)
+										pwm.write(green_led, 0)
+									#tfmini.getTFminiData()
+									x, y = enc.get_position(imu_head, counts.value)
+									print(f"Red Detected after trigger...green: {g_flag} {g_past} red:{r_flag} {r_past} {setPointR} {setPointL}")
+									red_turn = True
+									if pink_b.value and not red_b.value:
+										red_turn = False
+										red_time = False
+										reverse_trigger = False
+									elif (tfmini.distance_head < 30 and time.time() - g_time > 0.8) and not red_b.value and not pink_b.value:
+										red_turn = False
+										reverse_trigger = False
+										red_time = True
+									correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, finish)
 
 								else:
-									time_g = 0.5
+									if red_time:
+										time_g = 1.2
 
-								if not timer_started:
-									current_time = time.time()
-									timer_started = True
+									else:
+										time_g = 0.5
 
-								if not green_b.value and not red_b.value:
-									print('reversing diection red')
-									while (time.time() - current_time < time_g):
-										servo.setAngle(100)
-										x, y = enc.get_position(imu_head, counts.value)
-										power = 70
-										prev_power = 95
-										pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
-										pwm.write(direction_pin, 0)  # Set pin 20 hig
-									print('reversing diection red complete')
-									print('Stopping Motor...')
+									if not timer_started:
+										current_time = time.time()
+										timer_started = True
+
+									if not green_b.value and not red_b.value:
+										print('reversing diection red')
+										while (time.time() - current_time < time_g):
+											servo.setAngle(100)
+											x, y = enc.get_position(imu_head, counts.value)
+											power = 70
+											prev_power = 95
+											pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
+											pwm.write(direction_pin, 0)  # Set pin 20 hig
+										print('reversing diection red complete')
+										print('Stopping Motor...')
+										#tfmini.getTFminiData()
+										turn_trigger_distance = tfmini.distance_head
+										turn_cos_theta = math.cos(math.radians(abs(corr)))
+										timer_started = False
+
+									elif (green_b.value or green_turn) or g_past:
+										green_turn = True
+										if counter != rev_counter:
+											green_count = 1
+											red_count = 0
+											pwm.write(red_led, 0)
+											pwm.write(green_led, 1)
+										while 1 and green_b.value:
+											tfmini.getTFminiData()
+											correctAngle(heading_angle, head.value)
+											if abs(corr) < 15:
+												turn_trigger_distance = tfmini.distance_head
+												turn_cos_theta = math.cos(math.radians(abs(corr)))
+												break
+										print('reversing diection Green')
+										if not timer_started:
+											current_time = time.time()
+											timer_started = True
+										while 1:
+											servo.setAngle(110)
+											if (green_b.value and (centr_y.value < 500 and centr_y.value > 0)):
+												print(f"Breaking the loop...")
+												break
+											elif (time.time() - current_time > 1.5) and not green_b.value:
+												print("Green is not there breaking the loop...")
+												break
+											x, y = enc.get_position(imu_head, counts.value)
+											power = 70
+											prev_power = 0
+											pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
+											pwm.write(direction_pin, 0)  # Set pin 20 hig
+										print('Green reversing diection complete')
+										print('Stopping Motor...')
+										buff = 4
+										time_started = False
+									power = 0
+									prev_power = 0
+									pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
+
 									#tfmini.getTFminiData()
-									turn_trigger_distance = tfmini.distance_head
-									turn_cos_theta = math.cos(math.radians(abs(corr)))
-									timer_started = False
+									print(f"head: {tfmini.distance_head}")
+									print(f"before update: {x} {y}")
+									time.sleep(0.8)
+									counter = counter + 1
+									c_time = time.time()
+									lane_reset = counter % 4
+									print(f"in Lane {lane_reset}")
+									if lane_reset == 1:
+										enc.x = (150 - abs(turn_trigger_distance * turn_cos_theta)) - 10
+									if lane_reset == 2:
+										enc.y = (abs(turn_trigger_distance * turn_cos_theta) - 250) + 10
+									if lane_reset == 3:
+										enc.x = (abs(turn_trigger_distance * turn_cos_theta) - 150) + 10
+									if lane_reset == 0:
+										enc.y = (50 - abs(turn_trigger_distance * turn_cos_theta)) - 10
+									print(f'Resuming Motor...{x} {y}')
 
-								elif (green_b.value or green_turn) or g_past:
-									green_turn = True
+									power = 70
+									if reverse == True:
+										print("In blue reverse...")
+										offset = 180
+										heading_angle = -((90 * counter) % 360) - offset
+										if abs(heading_angle) >= 360:
+											heading_angle = (heading_angle % 360)
+									else:
+										print("In blue reverse else...")
+										heading_angle = -((90 * counter) % 360)
+									green_turn = False
+									red_turn = False
+									reset_f = False
+									red_time = False
+									r_flag = False
+									r_past = False
+
+							if orange_flag:  ### ORANGE RESET BLOCK
+								print(f"ORANGE RESET...reverse_trigger:{reverse_trigger}")
+
+								if (green_b.value or green_turn) or (reverse_trigger):  # green after trigger
+									#tfmini.getTFminiData()
 									if counter != rev_counter:
 										green_count = 1
 										red_count = 0
-										GPIO.output(red_led, GPIO.LOW)
-										GPIO.output(green_led, GPIO.HIGH)
-									while 1 and green_b.value:
-										tfmini.getTFminiData()
-										correctAngle(heading_angle, head.value)
-										if abs(corr) < 15:
-											turn_trigger_distance = tfmini.distance_head
-											turn_cos_theta = math.cos(math.radians(abs(corr)))
-											break
-									print('reversing diection Green')
+										pwm.write(red_led, 0)
+										pwm.write(green_led, 1)
+									x, y = enc.get_position(imu_head, counts.value)
+
+									print(f"Green Detected after trigger... ")
+									green_turn = True
+									if pink_b.value and not green_b.value:
+										green_turn = False
+										green_time = False
+										reverse_trigger = False
+									elif tfmini.distance_head < 30 and not green_b.value and not pink_b.value:
+										green_turn = False
+										reverse_trigger = False
+										green_time = True
+									correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, finish)
+								else:
+									print("ORANGE RESET ELSE..")
+									if green_time:
+										time_g = 1.2
+									else:
+										time_g = 0.5
 									if not timer_started:
 										current_time = time.time()
 										timer_started = True
-									while 1:
-										servo.setAngle(110)
-										if (green_b.value and (centr_y.value < 500 and centr_y.value > 0)):
-											print(f"Breaking the loop...")
-											break
-										elif (time.time() - current_time > 1.5) and not green_b.value:
-											print("Green is not there breaking the loop...")
-											break
-										x, y = enc.get_position(imu_head, counts.value)
-										power = 70
-										prev_power = 0
-										pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
-										pwm.write(direction_pin, 0)  # Set pin 20 hig
-									print('Green reversing diection complete')
+
+									if not red_b.value and not r_past:
+										print('reversing diection green')
+										#tfmini.getTFminiData()
+										turn_trigger_distance = tfmini.distance_head
+										while time.time() - current_time < time_g:
+											servo.setAngle(70)
+											# getTFminiData()
+											x, y = enc.get_position(imu_head, counts.value)
+											power = 70
+											prev_power = 65
+											pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
+											pwm.write(direction_pin, 0)  # Set pin 20 hig
+										print('reversing diection green complete')
+										print('Stopping Motor...')
+										#tfmini.getTFminiData()
+										turn_trigger_distance = tfmini.distance_head
+										turn_cos_theta = math.cos(math.radians(abs(corr)))
+										timer_started = False
+									elif (red_b.value or red_turn) or r_past:
+										red_turn = True
+										if counter != rev_counter:
+											red_count = 1
+											green_count = 0
+											pwm.write(red_led, 1)
+											pwm.write(green_led, 0)
+										while 1:
+											tfmini.getTFminiData()
+											print(f"correct red heading..")
+											correctAngle(heading_angle, head.value)
+											if abs(corr) < 15:
+												turn_trigger_distance = tfmini.distance_head
+												print(f"turn_trigger: {turn_trigger_distance}")
+												turn_cos_theta = math.cos(math.radians(corr))
+												break
+										if not timer_started:
+											current_time = time.time()
+											timer_started = True
+										print(f'reversing diection red pink color: {pink_b.value} pink flag: {p_flag} {p_past}  red color:{red_b.value} red flag: {r_past} {r_flag}')
+										while 1:
+											print("RED IS SEEN..")
+											servo.setAngle(80)
+											print(f"centr y: {centr_y_red.value}")
+											if (red_b.value and (centr_y_red.value < 475 and centr_y_red.value > 0)):
+												print(f"Breaking the loop...")
+												break
+											elif (time.time() - current_time > 1.5) and not red_b.value:
+												print("Green is not there breaking the loop...")
+												break
+
+											# getTFminiData()
+											x, y = enc.get_position(imu_head, counts.value)
+											# print(f"x: {x}, y: {y},  count:{counts.value} distance_head : {distance_head}")
+											power = 70
+											prev_power = 0
+											pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
+											pwm.write(direction_pin, 0)  # Set pin 20 hig
+										print('red reversing diection complete')
+										buff = 4
+										timer_started = False
 									print('Stopping Motor...')
-									buff = 4
-									time_started = False
-								power = 0
-								prev_power = 0
-								pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
 
-								#tfmini.getTFminiData()
-								print(f"head: {tfmini.distance_head}")
-								print(f"before update: {x} {y}")
-								time.sleep(0.8)
-								counter = counter + 1
-								c_time = time.time()
-								lane_reset = counter % 4
-								print(f"in Lane {lane_reset}")
-								if lane_reset == 1:
-									enc.x = (150 - abs(turn_trigger_distance * turn_cos_theta)) - 10
-								if lane_reset == 2:
-									enc.y = (abs(turn_trigger_distance * turn_cos_theta) - 250) + 10
-								if lane_reset == 3:
-									enc.x = (abs(turn_trigger_distance * turn_cos_theta) - 150) + 10
-								if lane_reset == 0:
-									enc.y = (50 - abs(turn_trigger_distance * turn_cos_theta)) - 10
-								print(f'Resuming Motor...{x} {y}')
+									power = 0
+									prev_power = 0
+									pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
 
-								power = 70
-								if reverse == True:
-									print("In blue reverse...")
-									offset = 180
-									heading_angle = -((90 * counter) % 360) - offset
-									if abs(heading_angle) >= 360:
-										heading_angle = (heading_angle % 360)
-								else:
-									print("In blue reverse else...")
-									heading_angle = -((90 * counter) % 360)
-								green_turn = False
-								red_turn = False
-								reset_f = False
-								red_time = False
-								r_flag = False
-								r_past = False
+									# getTFminiData()
+									x, y = enc.get_position(imu_head, counts.value)
 
-						if orange_flag:  ### ORANGE RESET BLOCK
-							print(f"ORANGE RESET...reverse_trigger:{reverse_trigger}")
+									time.sleep(0.8)
+									counter = counter + 1
+									c_time = time.time()
+									lane_reset = counter % 4
+									print(f"head: {turn_trigger_distance}, corr: {turn_cos_theta}")
+									if lane_reset == 1:
+										enc.x = (150 - (turn_trigger_distance * turn_cos_theta)) - 10
+										print(f"x: {enc.x}")
+									if lane_reset == 2:
+										enc.y = (250 - (turn_trigger_distance * turn_cos_theta)) - 10
+									if lane_reset == 3:
+										enc.x = ((turn_trigger_distance * turn_cos_theta) - 150) + 10
+									if lane_reset == 0:
+										enc.y = ((turn_trigger_distance * turn_cos_theta) - 50) + 10
+									print(f'Resuming Motor...{offset}')
 
-							if (green_b.value or green_turn) or (reverse_trigger):  # green after trigger
-								#tfmini.getTFminiData()
-								if counter != rev_counter:
-									green_count = 1
-									red_count = 0
-									GPIO.output(red_led, GPIO.LOW)
-									GPIO.output(green_led, GPIO.HIGH)
-								x, y = enc.get_position(imu_head, counts.value)
-
-								print(f"Green Detected after trigger... ")
-								green_turn = True
-								if pink_b.value and not green_b.value:
-									green_turn = False
+									power = 70
+									if reverse == True:
+										offset = -180
+										heading_angle = ((90 * counter) % 360) + offset
+										if abs(heading_angle) >= 360:
+											heading_angle = (heading_angle % 360)
+									else:
+										heading_angle = ((90 * counter) % 360)
+									sp_angle.value = heading_angle
+									red_turn = False
 									green_time = False
-									reverse_trigger = False
-								elif tfmini.distance_head < 30 and not green_b.value and not pink_b.value:
-									green_turn = False
-									reverse_trigger = False
-									green_time = True
-								correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, finish)
-							else:
-								print("ORANGE RESET ELSE..")
-								if green_time:
-									time_g = 1.2
-								else:
-									time_g = 0.5
-								if not timer_started:
-									current_time = time.time()
-									timer_started = True
-
-								if not red_b.value and not r_past:
-									print('reversing diection green')
-									#tfmini.getTFminiData()
-									turn_trigger_distance = tfmini.distance_head
-									while time.time() - current_time < time_g:
-										servo.setAngle(70)
-										# getTFminiData()
-										x, y = enc.get_position(imu_head, counts.value)
-										power = 70
-										prev_power = 65
-										pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
-										pwm.write(direction_pin, 0)  # Set pin 20 hig
-									print('reversing diection green complete')
-									print('Stopping Motor...')
-									#tfmini.getTFminiData()
-									turn_trigger_distance = tfmini.distance_head
-									turn_cos_theta = math.cos(math.radians(abs(corr)))
-									timer_started = False
-								elif (red_b.value or red_turn) or r_past:
-									red_turn = True
-									if counter != rev_counter:
-										red_count = 1
-										green_count = 0
-										GPIO.output(red_led, GPIO.HIGH)
-										GPIO.output(green_led, GPIO.LOW)
-									while 1:
-										tfmini.getTFminiData()
-										print(f"correct red heading..")
-										correctAngle(heading_angle, head.value)
-										if abs(corr) < 15:
-											turn_trigger_distance = tfmini.distance_head
-											print(f"turn_trigger: {turn_trigger_distance}")
-											turn_cos_theta = math.cos(math.radians(corr))
-											break
-									if not timer_started:
-										current_time = time.time()
-										timer_started = True
-									print(f'reversing diection red pink color: {pink_b.value} pink flag: {p_flag} {p_past}  red color:{red_b.value} red flag: {r_past} {r_flag}')
-									while 1:
-										print("RED IS SEEN..")
-										servo.setAngle(80)
-										print(f"centr y: {centr_y_red.value}")
-										if (red_b.value and (centr_y_red.value < 475 and centr_y_red.value > 0)):
-											print(f"Breaking the loop...")
-											break
-										elif (time.time() - current_time > 1.5) and not red_b.value:
-											print("Green is not there breaking the loop...")
-											break
-
-										# getTFminiData()
-										x, y = enc.get_position(imu_head, counts.value)
-										# print(f"x: {x}, y: {y},  count:{counts.value} distance_head : {distance_head}")
-										power = 70
-										prev_power = 0
-										pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
-										pwm.write(direction_pin, 0)  # Set pin 20 hig
-									print('red reversing diection complete')
-									buff = 4
-									timer_started = False
-								print('Stopping Motor...')
-
-								power = 0
-								prev_power = 0
-								pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
-
-								# getTFminiData()
-								x, y = enc.get_position(imu_head, counts.value)
-
-								time.sleep(0.8)
-								counter = counter + 1
-								c_time = time.time()
-								lane_reset = counter % 4
-								print(f"head: {turn_trigger_distance}, corr: {turn_cos_theta}")
-								if lane_reset == 1:
-									enc.x = (150 - (turn_trigger_distance * turn_cos_theta)) - 10
-									print(f"x: {enc.x}")
-								if lane_reset == 2:
-									enc.y = (250 - (turn_trigger_distance * turn_cos_theta)) - 10
-								if lane_reset == 3:
-									enc.x = ((turn_trigger_distance * turn_cos_theta) - 150) + 10
-								if lane_reset == 0:
-									enc.y = ((turn_trigger_distance * turn_cos_theta) - 50) + 10
-								print(f'Resuming Motor...{offset}')
-
-								power = 70
-								if reverse == True:
-									offset = -180
-									heading_angle = ((90 * counter) % 360) + offset
-									if abs(heading_angle) >= 360:
-										heading_angle = (heading_angle % 360)
-								else:
-									heading_angle = ((90 * counter) % 360)
-								sp_angle.value = heading_angle
-								red_turn = False
-								green_time = False
-								reset_f = False
-								g_flag = False
-								g_past = False
-								#centr_y_b.value = 0
-
-					else:
-						#tfmini.getTFminiData()
-						#print(f"power :{power} prev_power{prev_power}")
-						if avg_head < 10:
-							prev_restore = time.time()
-							#print(f"counter: {counter} Trigger detected...")
-							power = 70
-							prev_power = 0
-							while time.time() - prev_restore < 2:
-								tfmini.getTFminiData()
-								servo.setAngle(90)
-								GPIO.output(blue_led, GPIO.HIGH)
-								pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
-								pwm.write(direction_pin, 0)  # Set pin 20 hig
-								any_color = True
-						else:
-							blue_on = False
-							GPIO.output(blue_led, GPIO.LOW)
-							
-						avg_blue = (prev_b.value*0.1 + avg_blue*0.9)
-						avg_orange = (prev_b.value*0.1 + avg_blue*0.9)
-						
-						if(turn_trigger.value and not trigger and (time.time() - turn_t) > (4 + buff)):
-							buff = 0
-							timer_started = False
-							trigger = True
-							reset_f = True
-							GPIO.output(blue_led, GPIO.HIGH)
-							turn_t = time.time()
-						else:
-							trigger = False
-						'''if color_s == color_n and not trigger and (time.time() - turn_t) > (4 + buff):
-							buff = 0
-							timer_started = False
-							trigger = True
-							reset_f = True
-							GPIO.output(blue_led, GPIO.HIGH)
-							turn_t = time.time()
-
-						elif color_s == 'White':
-							trigger = False
-							GPIO.output(blue_led, GPIO.LOW)'''
-						
-						prev_blue = centr_y_b.value
-						prev_orange = centr_y_o.value
-
-						if last_red:
-					
-							print(f"tf mini back: {tfmini.distance_back} front:{tfmini.distance_head} sum:{tfmini.distance_head + tfmini.distance_back} corr:{abs(corr)}")
-
-						if g_last_flag:
-							if ((imu_head < 10 or imu_head > 350) and heading_angle == 0) and ((tfmini.distance_back*math.cos(math.radians(abs(imu_head))) > 150 and imu_head > 350) or (tfmini.distance_head*math.cos(math.radians(abs(imu_head))) < 160 and imu_head < 10)) and last_red:
-								u = u + 1
-								if u > 3:
-									print(f"Change path is true after 4.2 seconds")
-									reset_flags = True
-									change_path = True
-									reverse = True
-						elif r_last_flag:
-							if ((imu_head < 10 or imu_head > 350) and heading_angle == 0) and ((tfmini.distance_back*math.cos(math.radians(abs(imu_head)))) > 150 and imu_head < 10) or (tfmini.distance_head*math.cos(math.radians(abs(imu_head))) < 160 and imu_head > 350) and last_red:
-								u = u + 1
-								if u > 3:
-									print(f"Change path is true after 4.2 seconds")
-									reset_flags = True
-									change_path = True
-									reverse = True
-
-						if reset_flags:
-							if orange_flag:
-								blue_flag = True
-								orange_flag = False
-								color_n = "Blue"
-								reset_flags = False
-							elif blue_flag:
-								orange_flag = True
-								blue_flag = False
-								color_n = "Orange"
-								reset_flags = False
-								
-								
-
-				################### PANDAV 2.0 ####################
-
-						if green_b.value and not r_flag and not continue_parking and not g_past:
-							print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
-							g_flag = True
-							if (centr_x.value > 1500 or  centr_y.value > 900):
-								g_past = True
-							GPIO.output(red_led, GPIO.LOW)
-							GPIO.output(green_led, GPIO.LOW)
-							print('1')
-
-						elif (g_past or time.time() - gp_time < 0.5) and not continue_parking:
-							print("Avoiding green...")
-	
-							if tfmini.distance_right <= 50 : #and ((avg_left_pass < 60 or avg_left_pass > 120) or counter!=rev_counter):
-								print("Green Avoid Complete")
-								g_past = False
-								g_flag = False
-								red_count = 0
-								green_count = 1
-								GPIO.output(green_led, GPIO.HIGH)
-								GPIO.output(red_led, GPIO.LOW)
-								buff = 0
-								gp_time = time.time()
-							g_flag = True
-							print('2')
-
-						elif red_b.value and not g_flag and not continue_parking and not r_past:
-							r_flag = True
-							print(f"centr x red: {centr_x_red.value} centr y red: {centr_y_red.value}")
-							if ((centr_x_red.value < 100 and centr_x_red.value > 0) or  centr_y_red.value > 900):
-								r_past = True
-							#GPIO.output(blue_led, GPIO.LOW)
-							GPIO.output(green_led, GPIO.LOW)
-							GPIO.output(red_led, GPIO.LOW)
-							print('3')
-
-						elif (r_past or time.time() - rp_time < 0.5) and not continue_parking:
-							print("Avoiding red...")
-							if tfmini.distance_left <= 50 : #and ((avg_right_pass < 60 or avg_right_pass > 120) or counter!=rev_counter):
-								print(f"red Avoid complete")
-								r_past = False
-								r_flag = False
-								red_stored = False
-								red_count = 1
-								green_count = 0
-								GPIO.output(red_led, GPIO.HIGH)
-								GPIO.output(green_led, GPIO.LOW)
-								buff = 0
-								rp_time = time.time()
-							r_flag = True
-							print('4')
-
-						elif pink_b.value and not p_past and continue_parking and not p_flag:
-							if (centr_x_pink.value < 800 and orange_flag) or (centr_x_pink.value > 800 and blue_flag):
-								p_flag = True
-								p_past = True
-							print('5')
-
-						elif p_past and continue_parking and not parking_flag:
-
-							if orange_flag:
-								print(f"prev_distance: {prev_distance}, distance_left: {tfmini.distance_left} diff: {abs(prev_distance - tfmini.distance_left)}")
-								p_flag = True
-								if tfmini.distance_left <= 30 and (abs(prev_distance - tfmini.distance_left) >= 7 and prev_distance > 0) and p_past:
-									p_past = False
-									p_flag = False
-									parking_flag = True
-									print("Pink Avoidance Complete...")
-								prev_distance = tfmini.distance_left
-
-							elif blue_flag:
-								print(f"prev_distance: {prev_distance}, distance_right: {tfmini.distance_right}  diff: {abs(prev_distance - tfmini.distance_right)}")
-								if tfmini.distance_right <= 30 and (abs(prev_distance - tfmini.distance_right) >= 7 and prev_distance > 0) and p_past:
-									p_past = False
-									p_flag = False
-									parking_flag = True
-									print("Pink Avoidance Complete Blue...")
-								prev_distance = tfmini.distance_right
-
-						
-							print('6')
+									reset_f = False
+									g_flag = False
+									g_past = False
+									#centr_y_b.value = 0
 
 						else:
-							g_flag = False
-							r_flag = False
-							p_flag = False
-							r_past = False
-							g_past = False
-							p_past = False
-
-							print('7')
-
-							GPIO.output(red_led, GPIO.LOW)
-							GPIO.output(green_led, GPIO.LOW)
-
-						if not change_path:
-							if g_flag or g_last_flag:
-								if last_red:
-									g_last_flag = True
-									r_last_flag = False
-								print("avoiding green..")
-								correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, finish)
-							elif r_flag or r_last_flag:
-								if last_red:
-									r_last_flag = True
-									g_last_flag = False
-								print("avoiding red...")
-								correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, finish)
-							elif p_flag:
-								print("avoiding pink..")
-								if orange_flag:
-									correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, finish)
-								elif blue_flag:
-									correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, finish)
-							else:
-								correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, finish)
-
-							print(f"g_last:{g_last_flag} r_last:{r_last_flag}")
-						else:
-
-							print(f"Turning 180...{abs(corr)} {i}")
-							print(f"heading_angle:{heading_angle} prev_heading {previous_heading}")
-							if abs(heading_angle) == 180 and abs(corr) < 15:
-								power = 0
-								pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
-								time.sleep(0.5)
-								power = 100
-								prev_power = 0
-								heading_angle = -180
-								change_path = False
-								last_red = False
-								print("Change path is false")
 							#tfmini.getTFminiData()
-							if r_last_flag or cw:
-								r_flag = True
-								g_flag = True
-								g_past = False
-								print("Turning anticlockwise")
-								cw = True
-								offset = -90
-							elif g_last_flag or ccw:
-								g_flag = True
-								r_flag = False
-								r_past = False
-								print("Turning clockwise")
-								ccw = True
-								offset = 90
-							if abs(corr) < 15 and i < 2 and heading_angle != previous_heading:
-								print(f"off:{offset}")
-								print(f"heading_angle before change {heading_angle}")
-								previous_heading = heading_angle
-								heading_angle = heading_angle + offset
-								print(f"heading_angle after change {heading_angle}")
-								previous_heading_stored = True
-								i = i + 1
-							correctAngle(heading_angle, head.value)
-				#print(f"green:{green_count} r_count:{red_count}")
-				print(f"trigger:{trigger} reset_f:{reset_f}")
-				#print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
-			else:
-				power = 0
-				pwm.hardware_PWM(12, 100, 0)
-				heading_angle = 0
-				counter = 0
-				correctAngle(heading_angle, head.value)
-				color_b.Value = False
-				stop_b.value = False
-				red_b.value = False
-				green_b.value = False
+							#print(f"power :{power} prev_power{prev_power}")
+							if avg_head < 10:
+								prev_restore = time.time()
+								#print(f"counter: {counter} Trigger detected...")
+								power = 70
+								prev_power = 0
+								while time.time() - prev_restore < 2:
+									tfmini.getTFminiData()
+									servo.setAngle(90)
+									pwm.write(blue_led, 1)
+									pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
+									pwm.write(direction_pin, 0)  # Set pin 20 hig
+									any_color = True
+							else:
+								blue_on = False
+								pwm.write(blue_led, 0)
+								
+							avg_blue = (prev_b.value*0.1 + avg_blue*0.9)
+							avg_orange = (prev_b.value*0.1 + avg_blue*0.9)
+							
+							if(turn_trigger.value and not trigger and (time.time() - turn_t) > (4 + buff)):
+								buff = 0
+								timer_started = False
+								trigger = True
+								reset_f = True
+								pwm.write(blue_led, 1)
+								turn_t = time.time()
+							else:
+								trigger = False
+								pwm.write(blue_led, 0)
+									#pwm.write(green_led, 0)
+							'''if color_s == color_n and not trigger and (time.time() - turn_t) > (4 + buff):
+								buff = 0
+								timer_started = False
+								trigger = True
+								reset_f = True
+								GPIO.output(blue_led, GPIO.HIGH)
+								turn_t = time.time()
 
-		except Exception as e:
-			print(f"Exception: {e}")
-			if isinstance(e, KeyboardInterrupt):
-				power = 0
-				pwm.hardware_PWM(12, 100, 0)
-				heading_angle = 0
-				counter = 0
-				correctAngle(heading_angle, head.value)
-				color_b.Value = False
-				stop_b.value = False
-				red_b.value = False
-				green_b.value = False
+							elif color_s == 'White':
+								trigger = False
+								GPIO.output(blue_led, GPIO.LOW)'''
+							
+							prev_blue = centr_y_b.value
+							prev_orange = centr_y_o.value
+
+							if last_red:
+						
+								print(f"tf mini back: {tfmini.distance_back} front:{tfmini.distance_head} sum:{tfmini.distance_head + tfmini.distance_back} corr:{abs(corr)}")
+
+							if g_last_flag:
+								if ((imu_head < 10 or imu_head > 350) and heading_angle == 0) and ((tfmini.distance_back*math.cos(math.radians(abs(imu_head))) > 150 and imu_head > 350) or (tfmini.distance_head*math.cos(math.radians(abs(imu_head))) < 160 and imu_head < 10)) and last_red:
+									u = u + 1
+									if u > 3:
+										print(f"Change path is true after 4.2 seconds")
+										reset_flags = True
+										change_path = True
+										reverse = True
+							elif r_last_flag:
+								if ((imu_head < 10 or imu_head > 350) and heading_angle == 0) and ((tfmini.distance_back*math.cos(math.radians(abs(imu_head)))) > 150 and imu_head < 10) or (tfmini.distance_head*math.cos(math.radians(abs(imu_head))) < 160 and imu_head > 350) and last_red:
+									u = u + 1
+									if u > 3:
+										print(f"Change path is true after 4.2 seconds")
+										reset_flags = True
+										change_path = True
+										reverse = True
+
+							if reset_flags:
+								if orange_flag:
+									blue_flag = True
+									orange_flag = False
+									color_n = "Blue"
+									reset_flags = False
+								elif blue_flag:
+									orange_flag = True
+									blue_flag = False
+									color_n = "Orange"
+									reset_flags = False
+									
+									
+
+					################### PANDAV 2.0 ####################
+
+							if green_b.value and not r_flag and not continue_parking and not g_past:
+								print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
+								g_flag = True
+								if (centr_x.value > 1500 or  centr_y.value > 900):
+									g_past = True
+								pwm.write(red_led, 0)
+								pwm.write(green_led, 0)
+								print('1')
+
+							elif (g_past or time.time() - gp_time < 0.5) and not continue_parking:
+								print("Avoiding green...")
+		
+								if tfmini.distance_right <= 50 : #and ((avg_left_pass < 60 or avg_left_pass > 120) or counter!=rev_counter):
+									print("Green Avoid Complete")
+									g_past = False
+									g_flag = False
+									red_count = 0
+									green_count = 1
+									pwm.write(red_led, 0)
+									pwm.write(green_led, 1)
+									buff = 0
+									gp_time = time.time()
+								g_flag = True
+								print('2')
+
+							elif red_b.value and not g_flag and not continue_parking and not r_past:
+								r_flag = True
+								print(f"centr x red: {centr_x_red.value} centr y red: {centr_y_red.value}")
+								if ((centr_x_red.value < 100 and centr_x_red.value > 0) or  centr_y_red.value > 900):
+									r_past = True
+								#GPIO.output(blue_led, GPIO.LOW)
+								pwm.write(red_led, 0)
+								pwm.write(green_led, 0)
+								print('3')
+
+							elif (r_past or time.time() - rp_time < 0.5) and not continue_parking:
+								print("Avoiding red...")
+								if tfmini.distance_left <= 50 : #and ((avg_right_pass < 60 or avg_right_pass > 120) or counter!=rev_counter):
+									print(f"red Avoid complete")
+									r_past = False
+									r_flag = False
+									red_stored = False
+									red_count = 1
+									green_count = 0
+									pwm.write(red_led, 1)
+									pwm.write(green_led, 0)
+									buff = 0
+									rp_time = time.time()
+								r_flag = True
+								print('4')
+
+							elif pink_b.value and not p_past and continue_parking and not p_flag:
+								if (centr_x_pink.value < 800 and orange_flag) or (centr_x_pink.value > 800 and blue_flag):
+									p_flag = True
+									p_past = True
+								print('5')
+
+							elif p_past and continue_parking and not parking_flag:
+
+								if orange_flag:
+									print(f"prev_distance: {prev_distance}, distance_left: {tfmini.distance_left} diff: {abs(prev_distance - tfmini.distance_left)}")
+									p_flag = True
+									if tfmini.distance_left <= 30 and (abs(prev_distance - tfmini.distance_left) >= 7 and prev_distance > 0) and p_past:
+										p_past = False
+										p_flag = False
+										parking_flag = True
+										print("Pink Avoidance Complete...")
+									prev_distance = tfmini.distance_left
+
+								elif blue_flag:
+									print(f"prev_distance: {prev_distance}, distance_right: {tfmini.distance_right}  diff: {abs(prev_distance - tfmini.distance_right)}")
+									if tfmini.distance_right <= 30 and (abs(prev_distance - tfmini.distance_right) >= 7 and prev_distance > 0) and p_past:
+										p_past = False
+										p_flag = False
+										parking_flag = True
+										print("Pink Avoidance Complete Blue...")
+									prev_distance = tfmini.distance_right
+
+							
+								print('6')
+
+							else:
+								g_flag = False
+								r_flag = False
+								p_flag = False
+								r_past = False
+								g_past = False
+								p_past = False
+
+								print('7')
+
+								pwm.write(red_led, 0)
+								pwm.write(green_led, 0)
+
+							if not change_path:
+								if g_flag or g_last_flag:
+									if last_red:
+										g_last_flag = True
+										r_last_flag = False
+									print("avoiding green..")
+									correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, finish)
+								elif r_flag or r_last_flag:
+									if last_red:
+										r_last_flag = True
+										g_last_flag = False
+									print("avoiding red...")
+									correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, finish)
+								elif p_flag:
+									print("avoiding pink..")
+									if orange_flag:
+										correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, finish)
+									elif blue_flag:
+										correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, finish)
+								else:
+									correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, finish)
+
+								print(f"g_last:{g_last_flag} r_last:{r_last_flag}")
+							else:
+
+								print(f"Turning 180...{abs(corr)} {i}")
+								print(f"heading_angle:{heading_angle} prev_heading {previous_heading}")
+								if abs(heading_angle) == 180 and abs(corr) < 15:
+									power = 0
+									pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
+									time.sleep(0.5)
+									power = 100
+									prev_power = 0
+									heading_angle = -180
+									change_path = False
+									last_red = False
+									print("Change path is false")
+								#tfmini.getTFminiData()
+								if r_last_flag or cw:
+									r_flag = True
+									g_flag = True
+									g_past = False
+									print("Turning anticlockwise")
+									cw = True
+									offset = -90
+								elif g_last_flag or ccw:
+									g_flag = True
+									r_flag = False
+									r_past = False
+									print("Turning clockwise")
+									ccw = True
+									offset = 90
+								if abs(corr) < 15 and i < 2 and heading_angle != previous_heading:
+									print(f"off:{offset}")
+									print(f"heading_angle before change {heading_angle}")
+									previous_heading = heading_angle
+									heading_angle = heading_angle + offset
+									print(f"heading_angle after change {heading_angle}")
+									previous_heading_stored = True
+									i = i + 1
+								correctAngle(heading_angle, head.value)
+					#print(f"green:{green_count} r_count:{red_count}")
+					print(f"trigger:{trigger} reset_f:{reset_f}")
+					#print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
+				else:
+					power = 0
+					pwm.hardware_PWM(12, 100, 0)
+					heading_angle = 0
+					counter = 0
+					correctAngle(heading_angle, head.value)
+					color_b.Value = False
+					stop_b.value = False
+					red_b.value = False
+					green_b.value = False
+
+	except Exception as e:
+		print(f"Exception: {e}")
+		if isinstance(e, KeyboardInterrupt):
+			power = 0
+			pwm.hardware_PWM(12, 100, 0)
+			heading_angle = 0
+			counter = 0
+			correctAngle(heading_angle, head.value)
+			color_b.Value = False
+			stop_b.value = False
+			red_b.value = False
+			green_b.value = False
+	finally:
+		pwm.set_PWM_dutycycle(12, 0)  # Stop motor
+		pwm.write(20, 0)              # Set direction pin low (optional)
+		print("Motors stopped safely.")
+		pwm.stop() 
 
 
 def runEncoder(counts, head):
-	print("Encoder Process Started")
-	ser = serial.Serial('/dev/UART_USB', 115200)
-	print("created uart")
+		
+		app.run(host='0.0.0.0', port=5003)
+
+		print("Encoder Process Started")
 
 
-	try:
+		#try:
 		while True:
 			line = ser.readline().decode().strip()
 			esp_data = line.split(" ")
@@ -1791,9 +1898,10 @@ def runEncoder(counts, head):
 			else:
 				print(f"⚠️ Incomplete ESP data: {esp_data}")
 
-	except KeyboardInterrupt:
-		print("👋 Shutting down...")
-		ser.close()
+		'''except e:
+			print(f"Exception:{e}")
+			#ser.close()'''
+
 
 '''def color_SP(blue_c, orange_c, white_c):
 	fps3 = 0
@@ -1818,7 +1926,8 @@ def runEncoder(counts, head):
 			#print(f"color:{color_sensor}")'''
 
 def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle, turn_trigger, specific_angle):
-	print("This is first line")
+	#print("This is first line")
+	global CalledProcessError
 	lidar_binary_path = '/home/pi/rplidar_sdk/output/Linux/Release/ultra_simple'
 	print("⏳ Waiting for LIDAR output...")
 	
@@ -1837,121 +1946,92 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
 		text=True
 	)
 
-	try:
-		for line in process.stdout:
-			line = line.strip()
-			#print(line)
-			if "theta" in line and "Dist" in line:
-				try:
-					angle_part = line.split()
-					#print(angle_part)
-					
-					angle_index = angle_part.index("theta:") + 1
-					dist_index = angle_part.index("Dist:") + 1
+	#try:
+	for line in process.stdout:
+		line = line.strip()
+		#print(line)
+		if "theta" in line and "Dist" in line:
+			try:
+				angle_part = line.split()
+				#print(angle_part)
+				
+				angle_index = angle_part.index("theta:") + 1
+				dist_index = angle_part.index("Dist:") + 1
 
-					angle = float(angle_part[angle_index])
-					distance = float(angle_part[dist_index])
-					angle = int(angle)					
-								
-					
-					
-					'''angle = float(angle_part[1])
-					distance = float(angle_part[3])
-					angle = int(angle)'''
-					imu_r = int(imu_shared.value)
-					#print(f"📍 Angle: {angle:.2f}°, Distance: {distance:.2f} mm")
-				except Exception as e:
-					print("⚠️ Parse error:", e)
-			else:
-				print("ℹ️", line)
+				angle = float(angle_part[angle_index])
+				distance = float(angle_part[dist_index])
+				angle = int(angle)					
+							
+				
+				
+				'''angle = float(angle_part[1])
+				distance = float(angle_part[3])
+				angle = int(angle)'''
+				imu_r = int(imu_shared.value)
+				#print(f"📍 Angle: {angle:.2f}°, Distance: {distance:.2f} mm")
+			except Exception as e:
+				print("⚠️ Parse error:", e)
+		else:
+			print("ℹ️", line)
 
 
-			if previous_angle.value != angle:
-		
-				while(angle - previous_angle.value > 1):
-					lidar_angle.value = previous_angle.value + 1
-					lidar_distance.value = previous_distance
-					previous_angle.value = previous_angle.value + 1
+		if previous_angle.value != angle:
+	
+			while(angle - previous_angle.value > 1):
+				lidar_angle.value = previous_angle.value + 1
+				lidar_distance.value = previous_distance
+				previous_angle.value = previous_angle.value + 1
+				rplidar[int(lidar_angle.value)] = lidar_distance.value
+				if(int(lidar_angle.value) == (0 + imu_r ) % 360):
+					specific_angle[0] = lidar_distance.value
+					lidar_front = lidar_distance.value
+				if(int(lidar_angle.value) == (90 + imu_r ) % 360):
+					specific_angle[1] = lidar_distance.value
+					lidar_left = lidar_distance.value
+
+				if(int(lidar_angle.value) == (270 + imu_r ) % 360):
+					specific_angle[2] = lidar_distance.value
+					lidar_right = lidar_distance.value
+
+				#print(f"angles: {specific_angle} imu: {imu_shared.value} total:{imu_r + lidar_angle.value} sp_angle:{sp_angle.value}")
+				
+			if(distance != 0): 
+				with lidar_angle.get_lock(), lidar_distance.get_lock(), previous_angle.get_lock(), imu_shared.get_lock():
+					lidar_angle.value = angle
+					lidar_distance.value = distance
+					previous_distance = distance
+					previous_angle.value = angle
 					rplidar[int(lidar_angle.value)] = lidar_distance.value
-					if(int(lidar_angle.value) == (0 + imu_r - sp_angle.value) % 360):
+					if(int(lidar_angle.value) == (0 + imu_r) % 360):
 						specific_angle[0] = lidar_distance.value
 						lidar_front = lidar_distance.value
-					if(int(lidar_angle.value) == (90 + imu_r - sp_angle.value) % 360):
+					if(int(lidar_angle.value) == (90 + imu_r) % 360):
 						specific_angle[1] = lidar_distance.value
 						lidar_left = lidar_distance.value
+					if(int(lidar_angle.value) == (270 + imu_r) % 360  ):
+						specific_angle[2] = lidar_distance.value 
+						lidar_right = lidar_distance.value                                      
+					#print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
+			
+			if(lidar_front < 800 and lidar_left < 900 and lidar_right > 1800):
+				turn_trigger.value = True
+			else:
+				turn_trigger.value = False
+			#print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left} sp_angle:{sp_angle.value}, turn_trigger:{turn_trigger.value}")
+					#print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
 
-					if(int(lidar_angle.value) == (270 + imu_r - sp_angle.value) % 360):
-						specific_angle[2] = lidar_distance.value
-						lidar_right = lidar_distance.value
-
-					#print(f"angles: {specific_angle} imu: {imu_shared.value} total:{imu_r + lidar_angle.value} sp_angle:{sp_angle.value}")
-				   
-				if(distance != 0): 
-					with lidar_angle.get_lock(), lidar_distance.get_lock(), previous_angle.get_lock(), imu_shared.get_lock():
-						lidar_angle.value = angle
-						lidar_distance.value = distance
-						previous_distance = distance
-						previous_angle.value = angle
-						rplidar[int(lidar_angle.value)] = lidar_distance.value
-						if(int(lidar_angle.value) == (0 + imu_r + sp_angle.value) % 360):
-							specific_angle[0] = lidar_distance.value
-							lidar_front = lidar_distance.value
-						if(int(lidar_angle.value) == (90 + imu_r + sp_angle.value) % 360):
-							specific_angle[1] = lidar_distance.value
-							lidar_left = lidar_distance.value
-						if(int(lidar_angle.value) == (270 + imu_r + sp_angle.value) % 360  ):
-							specific_angle[2] = lidar_distance.value 
-							lidar_right = lidar_distance.value                                      
-						#print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
-				
-				if(lidar_front < 800 and lidar_left < 900 and lidar_right > 1800):
-					turn_trigger.value = True
-				else:
-					turn_trigger.value = False
-				#print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left} sp_angle:{sp_angle.value}, turn_trigger:{turn_trigger.value}")
-						#print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
-
-	except KeyboardInterrupt:
+	'''except KeyboardInterrupt:
 		print("🛑 Ctrl+C received. Stopping LIDAR.")
 		process.terminate()
 	finally:
-		print("🔌 Lidar process ended.")
+		print("🔌 Lidar process ended.")'''
 
 
 if __name__ == '__main__':
 	try:
 		print("Starting process")
-
-		pwm = pigpio.pi()
-		counts = multiprocessing.Value('i', 0)
-		color_b = multiprocessing.Value('b', False)
-		stop_b = multiprocessing.Value('b', False)
-		red_b = multiprocessing.Value('b', False)
-		green_b = multiprocessing.Value('b', False)
-		pink_b = multiprocessing.Value('b', False)
-		blue_b = multiprocessing.Value('b', False)
-		orange_o = multiprocessing.Value('b', False)
-		blue_c = multiprocessing.Value('b', False)
-		orange_c = multiprocessing.Value('b', False)
-		white_c = multiprocessing.Value('b', False)
-		centr_y = multiprocessing.Value('f', 0.0)
-		centr_x = multiprocessing.Value('f', 0.0)
-		centr_y_red = multiprocessing.Value('f', 0.0)
-		centr_x_red = multiprocessing.Value('f', 0.0)
-		centr_x_pink = multiprocessing.Value('f', 0.0)
-		centr_y_pink = multiprocessing.Value('f', 0.0)
-		centr_y_b = multiprocessing.Value('f', 0.0)
-		centr_y_o = multiprocessing.Value('f', 0.0)
-		prev_b = multiprocessing.Value('f', 0.0)
-		head = multiprocessing.Value('f', 0.0)
-		sp_angle = multiprocessing.Value('i', 0)
-		turn_trigger = multiprocessing.Value('b', False)
-		# Shared memory for LIDAR and IMU
-		previous_angle = multiprocessing.Value('d', 0.0)
-		lidar_angle = multiprocessing.Value('d', 0.0)
-		lidar_distance = multiprocessing.Value('d', 0.0)
-		imu_shared = multiprocessing.Value('d', 0.0)
-		specific_angle = multiprocessing.Array(c_float, 3)  # shared array of 3 integers
+		#app.run(host='0.0.0.0', port=5000)
+		
 
 		
 		P = multiprocessing.Process(target=Live_Feed, args=(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, blue_b, prev_b, orange_o, centr_y_o))
@@ -1972,7 +2052,15 @@ if __name__ == '__main__':
 		print("lidar process startes")
 
 	except KeyboardInterrupt:
-		
+		ser.close()
+		E.terminate()
+		S.terminate()
+		P.terminate()
+		lidar_proc.terminate()
+		E.join()
+		S.join()
+		P.join()
+		lidar_proc.join()
 		pwm.hardware_PWM(12, 100, 0)
 		pwm.bb_serial_read_close(RX_Head)
 		pwm.bb_serial_read_close(RX_Left)
