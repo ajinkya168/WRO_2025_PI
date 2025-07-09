@@ -47,8 +47,8 @@ from TFmini import TFmini
 
 #log_file = open('/home/pi/WRO_2025_FE/logs/log_9.txt', 'w')
 #sys.stdout = log_file
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
+#GPIO.setmode(GPIO.BCM)
+#GPIO.setwarnings(False)
 
 #### PINS
 
@@ -64,7 +64,7 @@ green_led = 6
 reset_pin = 8
 
 #### INITIALIZATION
-pwm = pigpio.pi()
+#pwm = pigpio.pi()
 process = None
 ser = serial.Serial('/dev/UART_USB', 115200)
 print("created uart")
@@ -211,32 +211,32 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
 	# if(time.time() - last_time > 0.001):
 	if lane == 0:
 		error = setPoint - y
-		print(f"2 lane: {lane}, error: {error} target:{(setPoint)}, x:{x} y:{y} not reverse")
+		#print(f"lane: {lane}, error: {error} target:{(setPoint)}, x:{x} y:{y} not reverse")
 	elif lane == 1:
 		if orange:
 			error = x - (100 - setPoint)
-			print(f"lane:{lane}, error:{error} target:{(100 - setPoint)}, x:{x}, y:{y}")
+			#print(f"lane:{lane}, error:{error} target:{(100 - setPoint)}, x:{x}, y:{y}")
 
 		elif blue:
 			error = (100 + setPoint) - x
-			print(f"lane:{lane}, error:{error} target:{(100 + setPoint)}, x:{x} y:{y} Bluee")
+			#print(f"lane:{lane}, error:{error} target:{(100 + setPoint)}, x:{x} y:{y} Bluee")
 	# print(f" trigger : {flag_t} setPoint: {setPoint} lane: {lane} correction:{correction}, error:{error} x:{x}, y:{y}, prevError :{prevError} angle:{head - correction}")
 	elif lane == 2:
 		if orange:
 			error = y - (200 - setPoint)
-			print(f"lane:{lane} error:{error} target:{(200 - setPoint)},  x: {x} y{y}")
+			#print(f"lane:{lane} error:{error} target:{(200 - setPoint)},  x: {x} y{y}")
 		elif blue:
 			error = y - (-200 - setPoint)
-			print(f"lane:{lane} error:{error} target:{(-200 - setPoint)}, x: {x} y{y}")
+			#print(f"lane:{lane} error:{error} target:{(-200 - setPoint)}, x: {x} y{y}")
 	# print(f"setPoint: {flag_t} lane: {lane} correction:{correction}, error:{error} x:{x}, y:{y}, prevError :{prevError} angle:{head - correction}")
 	elif lane == 3:
 		if orange:
 			error = (setPoint - 100) - x
-			print(f"lane:{lane} error:{error} target:{(setPoint - 100)}, x: {x} y {y}")
+			#print(f"lane:{lane} error:{error} target:{(setPoint - 100)}, x: {x} y {y}")
 
 		elif blue:
 			error = x + (100 + setPoint)
-			print(f"lane:{lane} error:{error} target:{(100 + setPoint)}, x:{x} y {y}")
+			#print(f"lane:{lane} error:{error} target:{(100 + setPoint)}, x:{x} y {y}")
 
 	corr_pos = error
 	pTerm_e = kp_e * error
@@ -247,12 +247,12 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
 
 	if setPoint == 0:
 		if abs(error) < 10:
-			print("absolute is 0")
+			#print("absolute is 0")
 			correction = 0
 
 	if not reset:
 		tfmini.getTFminiData()
-		print(f"centr_pink:{centr_x_pink.value}")
+		#print(f"centr_pink:{centr_x_pink.value}")
 		if ((setPoint == -35 and orange) or (counter == 0 and (centr_x_pink.value < 800 and centr_x_pink.value > 0) and ((centr_y.value or centr_y_red.value) <= centr_y_pink.value) and not blue and not orange) and not finish):
 			if tfmini.distance_left <= 30:
 				correction = 20
@@ -407,8 +407,8 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 
 	picam2.start()
 
-	#cv2.namedWindow('Object Frame', cv2.WINDOW_NORMAL)
-	#cv2.resizeWindow('Object Frame', 400, 200)
+	cv2.namedWindow('Object Frame', cv2.WINDOW_NORMAL)
+	cv2.resizeWindow('Object Frame', 400, 200)
 	time.sleep(2)
 	pwm.write(green_led, 1)
 	while True:
@@ -934,18 +934,18 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 		# print(f"{centr_y_pink.value}")
 		#print(f"blue centr x:{centroid_x_b} centr_y = {centroid_y_b} blue: {blue_b.value} prev_b.value:{prev_b.value}")
 		#print(f"blue: {centr_y_b.value} {cv2.contourArea(max_cnt_b)} ")
-		#cv2.imshow('Object Frame', img)
+		cv2.imshow('Object Frame', img)
 		ret, buffer = cv2.imencode('.jpg', img)
 		if not ret:
 			continue
 		yield (b'--frame\r\n'
 			b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
-		'''if cv2.waitKey(1) & 0xFF == ord('q'):
+		if cv2.waitKey(1) & 0xFF == ord('q'):
 			stop_b.value = True
-			break'''
+			break
 
-	#cv2.destroyAllWindows()
-	#picam2.stop()
+	cv2.destroyAllWindows()
+	picam2.stop()
 
 
 @app.route('/video')
@@ -1240,7 +1240,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 						color_s = "Orange"
 					elif white_c.value:
 						color_s = "White"
-					print(f"Color Sensor: {color_s}")	
+					#print(f"Color Sensor: {color_s}")	
 					if not blue_flag and not orange_flag:
 						if color_s == "Orange":
 							orange_flag = True
@@ -1799,7 +1799,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 								else:
 									correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, finish)
 
-								print(f"g_last:{g_last_flag} r_last:{r_last_flag}")
+								#print(f"g_last:{g_last_flag} r_last:{r_last_flag}")
 							else:
 
 								print(f"Turning 180...{abs(corr)} {i}")
@@ -1839,7 +1839,8 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 									i = i + 1
 								correctAngle(heading_angle, head.value)
 					#print(f"green:{green_count} r_count:{red_count}")
-					print(f"trigger:{trigger} reset_f:{reset_f}")
+					print(f"trigger:{trigger} reset_f:{reset_f} red:{red_b.value} green:{green_b.value}")
+					print(f"x: {x}, y:{y} count:{counts.value} lane:{lane}")
 					#print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
 				else:
 					power = 0
@@ -1872,35 +1873,34 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 
 
 def runEncoder(counts, head):
-		
-		app.run(host='0.0.0.0', port=5003)
+	
 
 		print("Encoder Process Started")
+		try:
+			while True:
+				line = ser.readline().decode().strip()
+				esp_data = line.split(" ")
+				esp_data.append(1)
+				if len(esp_data) >= 2:
+					try:
+						head.value = float(esp_data[0])
+						counts.value = int(esp_data[1])   
+						# ✅ Print clean summary
+						#print("📊 LIDAR Snapshot:")
+						#print(f"0: {dist_0} 90: {dist_90} 270:{dist_270}")
+						#print(f"angle: {lidar_angle.value} distance: {lidar_distance.value}")
+						#print(f"array:{specific_angle}, imu: {esp_angle}")
 
+					except ValueError:
+						print(f"⚠️ Malformed ESP data: {esp_data}")
+				else:
+					print(f"⚠️ Incomplete ESP data: {esp_data}")
 
-		#try:
-		while True:
-			line = ser.readline().decode().strip()
-			esp_data = line.split(" ")
-
-			if len(esp_data) >= 2:
-				try:
-					head.value = float(esp_data[0])
-					counts.value = int(esp_data[1])   
-					# ✅ Print clean summary
-					#print("📊 LIDAR Snapshot:")
-					#print(f"0: {dist_0} 90: {dist_90} 270:{dist_270}")
-					#print(f"angle: {lidar_angle.value} distance: {lidar_distance.value}")
-					#print(f"array:{specific_angle}, imu: {esp_angle}")
-
-				except ValueError:
-					print(f"⚠️ Malformed ESP data: {esp_data}")
-			else:
-				print(f"⚠️ Incomplete ESP data: {esp_data}")
-
-		'''except e:
+		except Exception as e:
 			print(f"Exception:{e}")
-			#ser.close()'''
+			#ser.close()
+		finally:
+			ser.close()
 
 
 '''def color_SP(blue_c, orange_c, white_c):
@@ -2015,8 +2015,7 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
 			
 			if(lidar_front < 800 and lidar_left < 900 and lidar_right > 1800):
 				turn_trigger.value = True
-			else:
-				turn_trigger.value = False
+
 			#print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left} sp_angle:{sp_angle.value}, turn_trigger:{turn_trigger.value}")
 					#print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
 
@@ -2030,7 +2029,7 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
 if __name__ == '__main__':
 	try:
 		print("Starting process")
-		#app.run(host='0.0.0.0', port=5000)
+		#app.run(host='0.0.0.0', port=5003)
 		
 
 		
@@ -2044,7 +2043,6 @@ if __name__ == '__main__':
 
 		#C = multiprocessing.Process(target=color_SP, args=(blue_c, orange_c, white_c))
 		E.start()
-		#C.start()
 		S.start()
 		P.start()
 		print("Starting lidar process")
