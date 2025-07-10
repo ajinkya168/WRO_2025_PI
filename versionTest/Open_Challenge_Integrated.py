@@ -16,7 +16,7 @@ import serial
 import sys
 from BNO085 import IMUandColorSensor
 
-log_file = open('/home/pi/WRO_CODE/logs/log_open.txt', 'w')
+log_file = open('/home/pi/WRO_2025_FE/logs/log_open.txt', 'w')
 sys.stdout = log_file
 
 
@@ -203,7 +203,7 @@ def correctAngle(setPoint_gyro, left, right, trigger, heading):
 
 	"""if(heading > 180 and setPoint_gyro < 180):	
 	heading =  heading - 360"""
-	print(f"before correction: {correction}")
+	#print(f"before correction: {correction}")
 
 	getTFminiData()
 	if (distance_left < 15 and distance_left >= 0):
@@ -245,7 +245,7 @@ def setAngle(angle):
 	pwm.set_servo_pulsewidth(servo, 500 + round(angle * 11.11))  # 0 degree
 
 
-def servoDrive(distance, block, pwm, counts, head):
+def servoDrive(distance, block, pwm, counts, head, sp_angle):
 	print("ServoProcess started")
 	global heading
 	global distance_right, distance_head, distance_left
@@ -282,7 +282,7 @@ def servoDrive(distance, block, pwm, counts, head):
 	trigger = False
 	counter = 0
 	left_flag = False
-	right_flag = False
+	right_flag = True
 	correctAngle(0, left_flag, right_flag, trigger, head.value)
 	target_count = 0
 	turn_t = 0
@@ -329,9 +329,10 @@ def servoDrive(distance, block, pwm, counts, head):
 						sys.exit()
 
 				if right_flag:
-					if(turn_trigger.value and not trigger and (time.time() - turn_t) > (4 + buff)):
-						buff = 0
+					if(turn_trigger.value and not trigger and (time.time() - turn_t) > (2 )):
+						counter = counter + 1
 						heading_angle = (90 * counter) % 360
+						sp_angle.value = heading_angle
 						trigger = True
 						turn_t = time.time()
 					elif not turn_trigger.value:
@@ -356,10 +357,7 @@ def servoDrive(distance, block, pwm, counts, head):
 
 					elif distance_left < 85 and distance_head > 75:
 						trigger = False'''
-				
-
-
-
+			
 
 			else:
 				if init_flag:
@@ -373,14 +371,17 @@ def servoDrive(distance, block, pwm, counts, head):
 				right_flag = False
 				# counts.value = 0
 				correctAngle(heading_angle, left_flag, right_flag, trigger, head.value)
-			print(f"trigger:{trigger} ")
+			print(f"trigger:{trigger}  count:{counts.value} heading_angle: {heading_angle}")
 			#print(f"heading:{head.value} {heading_angle}  counter:{counter} {trigger},  target_count:{target_count}, encoder_c:{counts.value}, L C R:{distance_left} {distance_head} {distance_right}")
 	except KeyboardInterrupt:
 		#imu = IMUandColorSensor(board.SCL, board.SDA)
 		power = 0
 		pwm.set_PWM_dutycycle(12, 0)
-	except Exception as e:
-		print(f"Exception: {e}")
+	finally:
+		pwm.set_PWM_dutycycle(12, 0)  # Stop motor
+		pwm.write(20, 0)              # Set direction pin low (optional)
+		print("Motors stopped safely.")
+		pwm.stop() 
 
 def runEncoder(counts, head):
 	print("Encoder Process Started")
@@ -465,6 +466,12 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
 				if(int(lidar_angle.value) == (270 + imu_r ) % 360):
 					specific_angle[2] = lidar_distance.value
 					lidar_right = lidar_distance.value
+     
+				if(lidar_front < 1200 and lidar_right > 1800):
+					turn_trigger.value = True
+				elif (lidar_front > 1500 and  lidar_right < 1000):
+					turn_trigger.value = False
+				print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left}  turn_trigger:{turn_trigger.value} angle: {sp_angle.value}")
 
 				#print(f"angles: {specific_angle} imu: {imu_shared.value} total:{imu_r + lidar_angle.value} sp_angle:{sp_angle.value}")
 				
@@ -486,11 +493,11 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
 						lidar_right = lidar_distance.value                                      
 					#print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
 			
-			if(lidar_front < 800 and lidar_left < 900 and lidar_right > 1800):
-				turn_trigger.value = True
-			elif (lidar_front > 2000 and (lidar_left < 1000 or lidar_right < 1000)):
-				turn_trigger.value = False
-			#print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left} sp_angle:{sp_angle.value}, turn_trigger:{turn_trigger.value}")
+					if(lidar_front < 1200 and lidar_right > 1800):
+						turn_trigger.value = True
+					elif (lidar_front > 1500 and lidar_right < 1000):
+						turn_trigger.value = False
+					print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left}  turn_trigger:{turn_trigger.value} angle: {sp_angle.value}")
 					#print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
 
 	'''except KeyboardInterrupt:
@@ -505,7 +512,7 @@ if __name__ == "__main__":
 	try:
 
 		
-		S = multiprocessing.Process(target=servoDrive, args=(distance, block, pwm, counts, head,))
+		S = multiprocessing.Process(target=servoDrive, args=(distance, block, pwm, counts, head, sp_angle))
 		E = multiprocessing.Process(target=runEncoder, args=(counts, head,))
 		lidar_proc = multiprocessing.Process(target=read_lidar, args=(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle, turn_trigger, specific_angle))
 
