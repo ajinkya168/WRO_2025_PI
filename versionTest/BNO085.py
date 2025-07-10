@@ -10,12 +10,12 @@ class IMUandColorSensor:
 		self.i2c1 = busio.I2C(scl, sda)
 		self.prev_imu = 0
 
-		self.sensor = adafruit_tcs34725.TCS34725(self.i2c1)
-		self.sensor.gain = 60
-		self.color_rgb = [0, 0, 0]
-		self.r_norm = 0
-		self.g_norm = 0
-		self.b_norm = 0
+		#self.sensor = adafruit_tcs34725.TCS34725(self.i2c1)
+		#self.sensor.gain = 60
+		#self.color_rgb = [0, 0, 0]
+		#self.r_norm = 0
+		#self.g_norm = 0
+		#self.b_norm = 0
 	
 
 	def get_color(self):
