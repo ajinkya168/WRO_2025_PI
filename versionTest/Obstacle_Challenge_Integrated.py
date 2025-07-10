@@ -407,286 +407,327 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 
 	picam2.start()
 
-	cv2.namedWindow('Object Frame', cv2.WINDOW_NORMAL)
-	cv2.resizeWindow('Object Frame', 400, 200)
+	#cv2.namedWindow('Object Frame', cv2.WINDOW_NORMAL)
+	#cv2.resizeWindow('Object Frame', 400, 200)
 	time.sleep(2)
 	pwm.write(green_led, 1)
-	while True:
-		#print(f"fps:{1/(time.time() - fps_time)}")
-		fps_time = time.time() 
-		prev_b.value = centroid_y_b
-		img = picam2.capture_array()
+	try:
+		while True:
+			#print(f"fps:{1/(time.time() - fps_time)}")
+			fps_time = time.time() 
+			prev_b.value = centroid_y_b
+			img = picam2.capture_array()
 
-		hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # green
-		hsv_img1 = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # red
-		hsv_img2 = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # pink
-		hsv_img3 = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # white
-		hsv_img_blue = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # blue
-		hsv_img_orange = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # orange
+			hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # green
+			hsv_img1 = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # red
+			hsv_img2 = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # pink
+			hsv_img3 = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # white
+			hsv_img_blue = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # blue
+			hsv_img_orange = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # orange
 
-		# predefined mask for green colour detection
-		# For Green Color
-		lower = np.array([85, 66, 2])  # green
-		upper = np.array([110, 186, 50])
-		mask = cv2.inRange(hsv_img, lower, upper)
+			# predefined mask for green colour detection
+			# For Green Color
+			lower = np.array([85, 66, 2])  # green
+			upper = np.array([110, 186, 50])
+			mask = cv2.inRange(hsv_img, lower, upper)
 
-		# For Red Color
-		lower1 = np.array([0, 152, 9])  # red
-		upper1 = np.array([2, 254, 123])
-		r1lower = np.array([171, 152, 9])
-		r1upper = np.array([179, 254, 123])
-		mask1 = cv2.inRange(hsv_img1, lower1, upper1)
-		mask_red = cv2.inRange(hsv_img1, r1lower, r1upper)
-		mask1 = mask1 + mask_red
+			# For Red Color
+			lower1 = np.array([0, 152, 9])  # red
+			upper1 = np.array([2, 254, 123])
+			r1lower = np.array([171, 152, 9])
+			r1upper = np.array([179, 254, 123])
+			mask1 = cv2.inRange(hsv_img1, lower1, upper1)
+			mask_red = cv2.inRange(hsv_img1, r1lower, r1upper)
+			mask1 = mask1 + mask_red
 
-		# For Pink Color
-		lower2 = np.array([131, 94, 21])  # pink
-		upper2 = np.array([162, 175, 84])
-		mask2 = cv2.inRange(hsv_img2, lower2, upper2)
-		
-		# For white color
-		lower3 = np.array([0, 0, 69])  # white                              
-		upper3 = np.array([0, 68, 255])
-		r1lower1 = np.array([38, 0, 69])
-		r1upper1 = np.array([179, 68, 255])
-		mask3 = cv2.inRange(hsv_img3, lower1, upper1)
-		mask_white = cv2.inRange(hsv_img3, r1lower1, r1upper1)
-		mask3 = mask3 + mask_white
-		
-		# blue line
-		lower_blue = np.array([106, 110, 41])  # blue
-		upper_blue = np.array([126, 222, 114])
-		mask_blue = cv2.inRange(hsv_img_blue, lower_blue, upper_blue)
-		
-		# Remove Extra garbage from image
-		d_img = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=2)  # green
-		d_img = cv2.morphologyEx(d_img, cv2.MORPH_CLOSE, kernel, iterations=2)  # green
-		d_img1 = cv2.morphologyEx(mask1, cv2.MORPH_OPEN, kernel, iterations=2)  # red
-		d_img1 = cv2.morphologyEx(d_img1, cv2.MORPH_CLOSE, kernel, iterations=2)  # red
-		d_img2 = cv2.morphologyEx(mask2, cv2.MORPH_OPEN, kernel, iterations=2)  # pink
-		d_img2 = cv2.morphologyEx(d_img2, cv2.MORPH_CLOSE, kernel, iterations=2)  # pink
-		d_img3 = cv2.morphologyEx(mask3, cv2.MORPH_CLOSE, kernel, iterations=2)  # white
-		d_img3 = cv2.morphologyEx(d_img3, cv2.MORPH_CLOSE, kernel, iterations=2)  # white
-		d_img_blue = cv2.morphologyEx(mask_blue, cv2.MORPH_CLOSE, kernel, iterations=2)  # blue
-		d_img_blue = cv2.morphologyEx(d_img_blue, cv2.MORPH_CLOSE, kernel, iterations=2)  # blue
-		# find the histogram
-		cont, hei = cv2.findContours(d_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-		cont = sorted(cont, key=cv2.contourArea, reverse=True)[:1]
+			# For Pink Color
+			lower2 = np.array([131, 94, 21])  # pink
+			upper2 = np.array([162, 175, 84])
+			mask2 = cv2.inRange(hsv_img2, lower2, upper2)
+			
+			# For white color
+			lower3 = np.array([0, 0, 69])  # white                              
+			upper3 = np.array([0, 68, 255])
+			r1lower1 = np.array([38, 0, 69])
+			r1upper1 = np.array([179, 68, 255])
+			mask3 = cv2.inRange(hsv_img3, lower1, upper1)
+			mask_white = cv2.inRange(hsv_img3, r1lower1, r1upper1)
+			mask3 = mask3 + mask_white
+			
+			# blue line
+			lower_blue = np.array([106, 110, 41])  # blue
+			upper_blue = np.array([126, 222, 114])
+			mask_blue = cv2.inRange(hsv_img_blue, lower_blue, upper_blue)
+			
+			# Remove Extra garbage from image
+			d_img = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=2)  # green
+			d_img = cv2.morphologyEx(d_img, cv2.MORPH_CLOSE, kernel, iterations=2)  # green
+			d_img1 = cv2.morphologyEx(mask1, cv2.MORPH_OPEN, kernel, iterations=2)  # red
+			d_img1 = cv2.morphologyEx(d_img1, cv2.MORPH_CLOSE, kernel, iterations=2)  # red
+			d_img2 = cv2.morphologyEx(mask2, cv2.MORPH_OPEN, kernel, iterations=2)  # pink
+			d_img2 = cv2.morphologyEx(d_img2, cv2.MORPH_CLOSE, kernel, iterations=2)  # pink
+			d_img3 = cv2.morphologyEx(mask3, cv2.MORPH_CLOSE, kernel, iterations=2)  # white
+			d_img3 = cv2.morphologyEx(d_img3, cv2.MORPH_CLOSE, kernel, iterations=2)  # white
+			d_img_blue = cv2.morphologyEx(mask_blue, cv2.MORPH_CLOSE, kernel, iterations=2)  # blue
+			d_img_blue = cv2.morphologyEx(d_img_blue, cv2.MORPH_CLOSE, kernel, iterations=2)  # blue
+			# find the histogram
+			cont, hei = cv2.findContours(d_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+			cont = sorted(cont, key=cv2.contourArea, reverse=True)[:1]
 
-		cont1, hei1 = cv2.findContours(d_img1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-		cont1 = sorted(cont1, key=cv2.contourArea, reverse=True)[:1]
+			cont1, hei1 = cv2.findContours(d_img1, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+			cont1 = sorted(cont1, key=cv2.contourArea, reverse=True)[:1]
 
-		cont2, hei2 = cv2.findContours(d_img2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-		cont2 = sorted(cont2, key=cv2.contourArea, reverse=True)[:1]
+			cont2, hei2 = cv2.findContours(d_img2, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+			cont2 = sorted(cont2, key=cv2.contourArea, reverse=True)[:1]
 
-		cont3, hei3 = cv2.findContours(d_img3, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-		cont3 = sorted(cont3, key=cv2.contourArea, reverse=True)[:1]
-		
-		cont_b, hei_b = cv2.findContours(d_img_blue, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-		cont_b = sorted(cont_b, key=cv2.contourArea, reverse=True)[:1]
+			cont3, hei3 = cv2.findContours(d_img3, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+			cont3 = sorted(cont3, key=cv2.contourArea, reverse=True)[:1]
+			
+			cont_b, hei_b = cv2.findContours(d_img_blue, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+			cont_b = sorted(cont_b, key=cv2.contourArea, reverse=True)[:1]
 
-		# ----------------------------------------------
-		if len(cont) == 0:
-			green_present = False
-		else:
-			max_cnt = max(cont, key=cv2.contourArea)
-			if cv2.contourArea(max_cnt) > 2000:
-				green_present = True
-			else:
+			# ----------------------------------------------
+			if len(cont) == 0:
 				green_present = False
-
-		# ---------------------------------------
-		if len(cont1) == 0:
-			red_present = False
-
-		else:
-			max_cnt1 = max(cont1, key=cv2.contourArea)
-			if cv2.contourArea(max_cnt1) > 2000:
-				red_present = True
 			else:
+				max_cnt = max(cont, key=cv2.contourArea)
+				if cv2.contourArea(max_cnt) > 2000:
+					green_present = True
+				else:
+					green_present = False
+
+			# ---------------------------------------
+			if len(cont1) == 0:
 				red_present = False
-		# ----------------------------------------------------
-		if len(cont2) == 0:
-			pink_present = False
 
-		else:
-			max_cnt2 = max(cont2, key=cv2.contourArea)
-			if cv2.contourArea(max_cnt2) > 2000:
-				pink_present = True
 			else:
+				max_cnt1 = max(cont1, key=cv2.contourArea)
+				if cv2.contourArea(max_cnt1) > 2000:
+					red_present = True
+				else:
+					red_present = False
+			# ----------------------------------------------------
+			if len(cont2) == 0:
 				pink_present = False
-		# --------------------------------------------------------
-		
-		if len(cont3) == 0:
-			white_present = False
 
-		else:
-			max_cnt3 = max(cont3, key=cv2.contourArea)
-			white_present = True
-			
-		if len(cont_b) == 0:
-			blue_present = False
-		else:
-			max_cnt_b = max(cont_b, key=cv2.contourArea)
-			if cv2.contourArea(max_cnt_b) > 2000:
-				blue_present = True
 			else:
+				max_cnt2 = max(cont2, key=cv2.contourArea)
+				if cv2.contourArea(max_cnt2) > 2000:
+					pink_present = True
+				else:
+					pink_present = False
+			# --------------------------------------------------------
+			
+			if len(cont3) == 0:
+				white_present = False
+
+			else:
+				max_cnt3 = max(cont3, key=cv2.contourArea)
+				white_present = True
+				
+			if len(cont_b) == 0:
 				blue_present = False
-				
-		'''if len(cont_o) == 0:
-			orange_present = False
-		else:
-			max_cnt_o = max(cont_o, key=cv2.contourArea)
-			if cv2.contourArea(max_cnt_o) > 2000:
-				orange_present = True
 			else:
-				orange_present = False'''
-				
-		#print(f"{type(cont3)} {type(max_cnt3)}, {type(np.array(cont3))}")		
-			
-		if not red_present and not green_present and not pink_present:
-			color_b.value = False
-			red_b.value = False
-			green_b.value = False
-			pink_b.value = False
-			all_flag = False
-			both_flag = False
-			pink_red = False
-			pink_green = False
-			only_red = False
-			only_green = False
-			only_pink = False
-
-		if (red_present and green_present and pink_present):
-			all_flag = True
-			both_flag = False
-			pink_red = False
-			pink_green = False
-			only_red = False
-			only_green = False
-			only_pink = False
-		elif (red_present and green_present) and not pink_present:
-			both_flag = True
-			all_flag = False
-			only_red = False
-			only_green = False
-			only_pink = False
-			pink_red = False
-			pink_green = False
-		elif red_present and (not pink_present and not green_present):
-			only_red = True
-			both_flag = False
-			all_flag = False
-			only_green = False
-			only_pink = False
-			pink_red = False
-			pink_green = False
-		elif green_present and (not pink_present and not red_present):
-			only_green = True
-			both_flag = False
-			all_flag = False
-			only_red = False
-			only_pink = False
-			pink_red = False
-			pink_green = False
-		elif pink_present and (not green_present and not red_present):
-			only_pink = True
-			both_flag = False
-			all_flag = False
-			only_red = False
-			only_green = False
-			pink_red = False
-			pink_green = False
-		elif (pink_present and green_present) and not red_present:
-			only_pink = False
-			both_flag = False
-			all_flag = False
-			only_red = False
-			only_green = False
-			pink_red = False
-			pink_green = True
-
-		elif (pink_present and red_present) and not green_present:
-			only_pink = False
-			both_flag = False
-			all_flag = False
-			only_red = False
-			only_green = False
-			pink_red = True
-			pink_green = False
-			
-		'''if (cv2.contourArea(max_cnt_b) > 10000 and cv2.contourArea(max_cnt_b) < 80000):
-			# Draw a rectange on the contour
-			rect_b = cv2.minAreaRect(max_cnt_b)
-			box = cv2.boxPoints(rect_b)
-			box = np.intp(box)
-			cv2.drawContours(img, [box], -1, (0, 255, 0), 3)
-
-			(x, y, w, h) = cv2.boundingRect(box)
-
-			centroid_y_b = y + h // 2
-			centroid_x_b = x + w // 2
-			
-			centr_y_b.value = centroid_y_b
-			blue_b.value = True
-		else:
-			blue_b.value = False
-			centroid_y_b = 0
-			centr_y_b.value = centroid_y_b'''
-			
-		'''if (cv2.contourArea(max_cnt_o) > 10000 and cv2.contourArea(max_cnt_o) < 35000):
-			# Draw a rectange on the contour
-			rect_o = cv2.minAreaRect(max_cnt_o)
-			box = cv2.boxPoints(rect_o)
-			box = np.intp(box)
-			cv2.drawContours(img, [box], -1, (0, 255, 0), 3)
-
-			(x, y, w, h) = cv2.boundingRect(box)
-
-			centroid_y_o = y + h // 2
-			centroid_x_o = x + w // 2
-			
-			centr_y_o.value = centroid_y_o
-			orange_o.value = True
-		else:
-			orange_o.value = False
-			centroid_y_o = 0
-			centr_y_o.value = centroid_y_o'''
-
-		if all_flag:
-			color_b.value = True
-			# print("ITS THE FIRST LOOP")
-			### FOR GREEN BOX
-			if cv2.contourArea(max_cnt) > cv2.contourArea(max_cnt1):
-				if cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000:
-					# Draw a rectange on the contour
-					rect = cv2.minAreaRect(max_cnt)
+				max_cnt_b = max(cont_b, key=cv2.contourArea)
+				if cv2.contourArea(max_cnt_b) > 2000:
+					blue_present = True
+				else:
+					blue_present = False
 					
-					box = cv2.boxPoints(rect)
-					box = np.intp(box)
-					#print(f"{box}, {type(box)}")
-					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
-					(x, y, w, h) = cv2.boundingRect(box)
-					centroid_y = y + h // 2
-					centroid_x = x + w // 2
-					centr_y.value = centroid_y
-					centr_x.value = centroid_x
-					centr_y_red.value = 0
-					centr_x_red.value = 0
-					green_b.value = True
-					red_b.value = False
+			'''if len(cont_o) == 0:
+				orange_present = False
+			else:
+				max_cnt_o = max(cont_o, key=cv2.contourArea)
+				if cv2.contourArea(max_cnt_o) > 2000:
+					orange_present = True
+				else:
+					orange_present = False'''
+					
+			#print(f"{type(cont3)} {type(max_cnt3)}, {type(np.array(cont3))}")		
+				
+			if not red_present and not green_present and not pink_present:
+				color_b.value = False
+				red_b.value = False
+				green_b.value = False
+				pink_b.value = False
+				all_flag = False
+				both_flag = False
+				pink_red = False
+				pink_green = False
+				only_red = False
+				only_green = False
+				only_pink = False
 
+			if (red_present and green_present and pink_present):
+				all_flag = True
+				both_flag = False
+				pink_red = False
+				pink_green = False
+				only_red = False
+				only_green = False
+				only_pink = False
+			elif (red_present and green_present) and not pink_present:
+				both_flag = True
+				all_flag = False
+				only_red = False
+				only_green = False
+				only_pink = False
+				pink_red = False
+				pink_green = False
+			elif red_present and (not pink_present and not green_present):
+				only_red = True
+				both_flag = False
+				all_flag = False
+				only_green = False
+				only_pink = False
+				pink_red = False
+				pink_green = False
+			elif green_present and (not pink_present and not red_present):
+				only_green = True
+				both_flag = False
+				all_flag = False
+				only_red = False
+				only_pink = False
+				pink_red = False
+				pink_green = False
+			elif pink_present and (not green_present and not red_present):
+				only_pink = True
+				both_flag = False
+				all_flag = False
+				only_red = False
+				only_green = False
+				pink_red = False
+				pink_green = False
+			elif (pink_present and green_present) and not red_present:
+				only_pink = False
+				both_flag = False
+				all_flag = False
+				only_red = False
+				only_green = False
+				pink_red = False
+				pink_green = True
+
+			elif (pink_present and red_present) and not green_present:
+				only_pink = False
+				both_flag = False
+				all_flag = False
+				only_red = False
+				only_green = False
+				pink_red = True
+				pink_green = False
+				
+			'''if (cv2.contourArea(max_cnt_b) > 10000 and cv2.contourArea(max_cnt_b) < 80000):
+				# Draw a rectange on the contour
+				rect_b = cv2.minAreaRect(max_cnt_b)
+				box = cv2.boxPoints(rect_b)
+				box = np.intp(box)
+				cv2.drawContours(img, [box], -1, (0, 255, 0), 3)
+
+				(x, y, w, h) = cv2.boundingRect(box)
+
+				centroid_y_b = y + h // 2
+				centroid_x_b = x + w // 2
+				
+				centr_y_b.value = centroid_y_b
+				blue_b.value = True
+			else:
+				blue_b.value = False
+				centroid_y_b = 0
+				centr_y_b.value = centroid_y_b'''
+				
+			'''if (cv2.contourArea(max_cnt_o) > 10000 and cv2.contourArea(max_cnt_o) < 35000):
+				# Draw a rectange on the contour
+				rect_o = cv2.minAreaRect(max_cnt_o)
+				box = cv2.boxPoints(rect_o)
+				box = np.intp(box)
+				cv2.drawContours(img, [box], -1, (0, 255, 0), 3)
+
+				(x, y, w, h) = cv2.boundingRect(box)
+
+				centroid_y_o = y + h // 2
+				centroid_x_o = x + w // 2
+				
+				centr_y_o.value = centroid_y_o
+				orange_o.value = True
+			else:
+				orange_o.value = False
+				centroid_y_o = 0
+				centr_y_o.value = centroid_y_o'''
+
+			if all_flag:
+				color_b.value = True
+				# print("ITS THE FIRST LOOP")
+				### FOR GREEN BOX
+				if cv2.contourArea(max_cnt) > cv2.contourArea(max_cnt1):
+					if cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000:
+						# Draw a rectange on the contour
+						rect = cv2.minAreaRect(max_cnt)
+						
+						box = cv2.boxPoints(rect)
+						box = np.intp(box)
+						#print(f"{box}, {type(box)}")
+						cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+						(x, y, w, h) = cv2.boundingRect(box)
+						centroid_y = y + h // 2
+						centroid_x = x + w // 2
+						centr_y.value = centroid_y
+						centr_x.value = centroid_x
+						centr_y_red.value = 0
+						centr_x_red.value = 0
+						green_b.value = True
+						red_b.value = False
+
+
+
+				### FOR RED BOX
+				elif cv2.contourArea(max_cnt1) > cv2.contourArea(max_cnt):
+					if (cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000):
+						# Draw a rectange on the contour
+						rect1 = cv2.minAreaRect(max_cnt1)
+						box = cv2.boxPoints(rect1)
+						box = np.intp(box)
+						cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+
+						(x, y, w, h) = cv2.boundingRect(box)
+
+						centroid_y_red = y + h // 2
+						centroid_x_red = x + w // 2
+
+						centr_y_red.value = centroid_y_red
+						centr_x_red.value = centroid_x_red
+						centr_y.value = 0
+						centr_x.value = 0
+						red_b.value = True
+						green_b.value = False
+
+				#### FOR PINK BOX
+				# elif cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt) and cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt1):
+				if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
+					# Draw a rectange on the contour
+					rect2 = cv2.minAreaRect(max_cnt2)
+					box = cv2.boxPoints(rect2)
+					box = np.intp(box)
+					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+
+					(x, y, w, h) = cv2.boundingRect(box)
+
+					centroid_x = x + w // 2
+					centroid_y = y + h // 2
+					centr_x_pink.value = centroid_x
+					centr_y_pink.value = centroid_y
+					pink_b.value = True
 
 
 			### FOR RED BOX
-			elif cv2.contourArea(max_cnt1) > cv2.contourArea(max_cnt):
-				if (cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000):
+			elif only_red:
+				color_b.value = True
+				# print(cv2.contourArea(max_cnt1))
+				if cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000:
 					# Draw a rectange on the contour
 					rect1 = cv2.minAreaRect(max_cnt1)
 					box = cv2.boxPoints(rect1)
 					box = np.intp(box)
 					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
-
 					(x, y, w, h) = cv2.boundingRect(box)
 
 					centroid_y_red = y + h // 2
@@ -696,109 +737,19 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 					centr_x_red.value = centroid_x_red
 					centr_y.value = 0
 					centr_x.value = 0
+					centr_x_pink.value = 0
+					centr_y_pink.value = 0
+
 					red_b.value = True
+					pink_b.value = False
 					green_b.value = False
 
-			#### FOR PINK BOX
-			# elif cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt) and cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt1):
-			if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
-				# Draw a rectange on the contour
-				rect2 = cv2.minAreaRect(max_cnt2)
-				box = cv2.boxPoints(rect2)
-				box = np.intp(box)
-				cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
-
-				(x, y, w, h) = cv2.boundingRect(box)
-
-				centroid_x = x + w // 2
-				centroid_y = y + h // 2
-				centr_x_pink.value = centroid_x
-				centr_y_pink.value = centroid_y
-				pink_b.value = True
 
 
-		### FOR RED BOX
-		elif only_red:
-			color_b.value = True
-			# print(cv2.contourArea(max_cnt1))
-			if cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000:
-				# Draw a rectange on the contour
-				rect1 = cv2.minAreaRect(max_cnt1)
-				box = cv2.boxPoints(rect1)
-				box = np.intp(box)
-				cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
-				(x, y, w, h) = cv2.boundingRect(box)
-
-				centroid_y_red = y + h // 2
-				centroid_x_red = x + w // 2
-
-				centr_y_red.value = centroid_y_red
-				centr_x_red.value = centroid_x_red
-				centr_y.value = 0
-				centr_x.value = 0
-				centr_x_pink.value = 0
-				centr_y_pink.value = 0
-
-				red_b.value = True
-				pink_b.value = False
-				green_b.value = False
-
-
-
-		### FOR GREEN BOX
-		elif only_green:
-			color_b.value = True
-			# print(cv2.contourArea(max_cnt))
-			if cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000:
-				# Draw a rectange on the contour
-				rect = cv2.minAreaRect(max_cnt)
-				box = cv2.boxPoints(rect)
-				box = np.intp(box)
-				cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
-				(x, y, w, h) = cv2.boundingRect(box)
-
-				centroid_y = y + h // 2
-				centroid_x = x + w // 2
-				centr_y.value = centroid_y
-				centr_x.value = centroid_x
-				centr_y_red.value = 0
-				centr_x_red.value = 0
-				centr_x_pink.value = 0
-				centr_y_pink.value = 0
-				# if(centroid_y > 100):
-				# if(counter_green >= max_count):
-				green_b.value = True
-				pink_b.value = False
-				red_b.value = False
-
-		### FOR PINK BOX
-		elif only_pink:
-			if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
-				# Draw a rectange on the contour
-				rect2 = cv2.minAreaRect(max_cnt2)
-				box = cv2.boxPoints(rect2)
-				box = np.intp(box)
-				cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
-
-				(x, y, w, h) = cv2.boundingRect(box)
-
-				centroid_x = x + w // 2
-				centroid_y = y + h // 2
-				centr_x_pink.value = centroid_x
-				centr_y_pink.value = centroid_y
-				centr_y_red.value = 0
-				centr_x_red.value = 0
-				centr_x.value = 0
-				centr_y.value = 0
-				red_b.value = False
-				green_b.value = False
-				pink_b.value = True
-
-		elif both_flag:
-			color_b.value = True
-			# print("BOTH ARE PRESENT...")
 			### FOR GREEN BOX
-			if cv2.contourArea(max_cnt) > cv2.contourArea(max_cnt1):
+			elif only_green:
+				color_b.value = True
+				# print(cv2.contourArea(max_cnt))
 				if cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000:
 					# Draw a rectange on the contour
 					rect = cv2.minAreaRect(max_cnt)
@@ -806,21 +757,96 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 					box = np.intp(box)
 					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
 					(x, y, w, h) = cv2.boundingRect(box)
+
 					centroid_y = y + h // 2
 					centroid_x = x + w // 2
 					centr_y.value = centroid_y
 					centr_x.value = centroid_x
-					centr_x_red.value = 0
 					centr_y_red.value = 0
+					centr_x_red.value = 0
 					centr_x_pink.value = 0
 					centr_y_pink.value = 0
+					# if(centroid_y > 100):
+					# if(counter_green >= max_count):
 					green_b.value = True
-
-					red_b.value = False
 					pink_b.value = False
+					red_b.value = False
 
-			### FOR RED BOX
-			elif cv2.contourArea(max_cnt1) > cv2.contourArea(max_cnt):
+			### FOR PINK BOX
+			elif only_pink:
+				if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
+					# Draw a rectange on the contour
+					rect2 = cv2.minAreaRect(max_cnt2)
+					box = cv2.boxPoints(rect2)
+					box = np.intp(box)
+					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+
+					(x, y, w, h) = cv2.boundingRect(box)
+
+					centroid_x = x + w // 2
+					centroid_y = y + h // 2
+					centr_x_pink.value = centroid_x
+					centr_y_pink.value = centroid_y
+					centr_y_red.value = 0
+					centr_x_red.value = 0
+					centr_x.value = 0
+					centr_y.value = 0
+					red_b.value = False
+					green_b.value = False
+					pink_b.value = True
+
+			elif both_flag:
+				color_b.value = True
+				# print("BOTH ARE PRESENT...")
+				### FOR GREEN BOX
+				if cv2.contourArea(max_cnt) > cv2.contourArea(max_cnt1):
+					if cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000:
+						# Draw a rectange on the contour
+						rect = cv2.minAreaRect(max_cnt)
+						box = cv2.boxPoints(rect)
+						box = np.intp(box)
+						cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+						(x, y, w, h) = cv2.boundingRect(box)
+						centroid_y = y + h // 2
+						centroid_x = x + w // 2
+						centr_y.value = centroid_y
+						centr_x.value = centroid_x
+						centr_x_red.value = 0
+						centr_y_red.value = 0
+						centr_x_pink.value = 0
+						centr_y_pink.value = 0
+						green_b.value = True
+
+						red_b.value = False
+						pink_b.value = False
+
+				### FOR RED BOX
+				elif cv2.contourArea(max_cnt1) > cv2.contourArea(max_cnt):
+					if (cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000):
+						# Draw a rectange on the contour
+						rect1 = cv2.minAreaRect(max_cnt1)
+						box = cv2.boxPoints(rect1)
+						box = np.intp(box)
+						cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+
+						(x, y, w, h) = cv2.boundingRect(box)
+
+						centroid_y_red = y + h // 2
+						centroid_x_red = x + w // 2
+
+						centr_y_red.value = centroid_y_red
+						centr_x_red.value = centroid_x_red
+						centr_x.value = 0
+						centr_y.value = 0
+						centr_x_pink.value = 0
+						centr_y_pink.value = 0
+						red_b.value = True
+						green_b.value = False
+						pink_b.value = False
+
+			elif pink_red:
+				### FOR RED BOX
+				# if cv2.contourArea(max_cnt1) > cv2.contourArea(max_cnt2):
 				if (cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000):
 					# Draw a rectange on the contour
 					rect1 = cv2.minAreaRect(max_cnt1)
@@ -837,115 +863,91 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 					centr_x_red.value = centroid_x_red
 					centr_x.value = 0
 					centr_y.value = 0
-					centr_x_pink.value = 0
-					centr_y_pink.value = 0
 					red_b.value = True
+					green_b.value = False  # pink_b.value = False
+				# elif cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt1):
+				if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
+					# Draw a rectange on the contour
+					rect2 = cv2.minAreaRect(max_cnt2)
+					box = cv2.boxPoints(rect2)
+					box = np.intp(box)
+					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+
+					(x, y, w, h) = cv2.boundingRect(box)
+
+					centroid_x = x + w // 2
+					centroid_y = y + h // 2
+					centr_x_pink.value = centroid_x
+					centr_y_pink.value = centroid_y
+					centr_x.value = 0
+					centr_y.value = 0
+					# if centroid_y > 500:
+					pink_b.value = True
+					# red_b.value = False
 					green_b.value = False
-					pink_b.value = False
 
-		elif pink_red:
-			### FOR RED BOX
-			# if cv2.contourArea(max_cnt1) > cv2.contourArea(max_cnt2):
-			if (cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000):
-				# Draw a rectange on the contour
-				rect1 = cv2.minAreaRect(max_cnt1)
-				box = cv2.boxPoints(rect1)
-				box = np.intp(box)
-				cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+			elif pink_green:
+				# if cv2.contourArea(max_cnt) > cv2.contourArea(max_cnt2):
+				if (cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000):
+					# Draw a rectange on the contour
+					rect = cv2.minAreaRect(max_cnt)
+					box = cv2.boxPoints(rect)
+					box = np.intp(box)
+					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
 
-				(x, y, w, h) = cv2.boundingRect(box)
-
-				centroid_y_red = y + h // 2
-				centroid_x_red = x + w // 2
-
-				centr_y_red.value = centroid_y_red
-				centr_x_red.value = centroid_x_red
-				centr_x.value = 0
-				centr_y.value = 0
-				red_b.value = True
-				green_b.value = False  # pink_b.value = False
-			# elif cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt1):
-			if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
-				# Draw a rectange on the contour
-				rect2 = cv2.minAreaRect(max_cnt2)
-				box = cv2.boxPoints(rect2)
-				box = np.intp(box)
-				cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
-
-				(x, y, w, h) = cv2.boundingRect(box)
-
-				centroid_x = x + w // 2
-				centroid_y = y + h // 2
-				centr_x_pink.value = centroid_x
-				centr_y_pink.value = centroid_y
-				centr_x.value = 0
-				centr_y.value = 0
-				# if centroid_y > 500:
-				pink_b.value = True
-				# red_b.value = False
-				green_b.value = False
-
-		elif pink_green:
-			# if cv2.contourArea(max_cnt) > cv2.contourArea(max_cnt2):
-			if (cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000):
-				# Draw a rectange on the contour
-				rect = cv2.minAreaRect(max_cnt)
-				box = cv2.boxPoints(rect)
-				box = np.intp(box)
-				cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
-
-				(x, y, w, h) = cv2.boundingRect(box)
-				centroid_y = y + h // 2
-				centroid_x = x + w // 2
-				centr_y.value = centroid_y
-				centr_x.value = centroid_x
-				centr_x_red.value = 0
-				centr_x_red.value = 0
-				red_b.value = False
-				green_b.value = True  # pink_b.value = False
-			# elif cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt):
-			if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
-				# Draw a rectange on the contour
-				rect2 = cv2.minAreaRect(max_cnt2)
-				box = cv2.boxPoints(rect2)
-				box = np.intp(box)
-				cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
-				(x, y, w, h) = cv2.boundingRect(box)
-				centroid_x = x + w // 2
-				centroid_y = y + h // 2
-				centr_x_pink.value = centroid_x
-				centr_y_pink.value = centroid_y
-				centr_x_red.value = 0
+					(x, y, w, h) = cv2.boundingRect(box)
+					centroid_y = y + h // 2
+					centroid_x = x + w // 2
+					centr_y.value = centroid_y
+					centr_x.value = centroid_x
+					centr_x_red.value = 0
+					centr_x_red.value = 0
+					red_b.value = False
+					green_b.value = True  # pink_b.value = False
+				# elif cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt):
+				if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
+					# Draw a rectange on the contour
+					rect2 = cv2.minAreaRect(max_cnt2)
+					box = cv2.boxPoints(rect2)
+					box = np.intp(box)
+					cv2.drawContours(img, [box], -1, (255, 0, 0), 3)
+					(x, y, w, h) = cv2.boundingRect(box)
+					centroid_x = x + w // 2
+					centroid_y = y + h // 2
+					centr_x_pink.value = centroid_x
+					centr_y_pink.value = centroid_y
+					centr_x_red.value = 0
+					centr_y_red.value = 0
+					# if centroid_y > 500:
+					pink_b.value = True
+					red_b.value = False  # green_b.value = False
+			else:
+				centr_x_pink.value = 0
 				centr_y_red.value = 0
-				# if centroid_y > 500:
-				pink_b.value = True
-				red_b.value = False  # green_b.value = False
-		else:
-			centr_x_pink.value = 0
-			centr_y_red.value = 0
-			centr_y.value = 0
-			centr_x.value = 0
-			centr_x_red.value = 0
-		# print(f"Green:{green_present}, red:{red_present}, pink:{pink_present}")
-		# print(f"all:{all_flag}, only_red:{only_red}, only_green:{only_green}, only_pink:{only_pink}, pink_green:{pink_green}, pink_red:{pink_red}, both:{both_flag}")
-		# print(f"g_next:{g_next.value}, r_next:{r_next.value}")
-		# print(f"green:{green_b.value}  red:{red_b.value}, pink:{pink_b.value}")
-		#print(f"green centr :{centr_x.value}, red_centr:{centr_x_red.value}, pink_centr:{centr_x_pink.value}")
-		# print(f"{centr_y_pink.value}")
-		#print(f"blue centr x:{centroid_x_b} centr_y = {centroid_y_b} blue: {blue_b.value} prev_b.value:{prev_b.value}")
-		#print(f"blue: {centr_y_b.value} {cv2.contourArea(max_cnt_b)} ")
-		cv2.imshow('Object Frame', img)
-		ret, buffer = cv2.imencode('.jpg', img)
-		if not ret:
-			continue
-		yield (b'--frame\r\n'
-			b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
-		if cv2.waitKey(1) & 0xFF == ord('q'):
-			stop_b.value = True
-			break
+				centr_y.value = 0
+				centr_x.value = 0
+				centr_x_red.value = 0
+			# print(f"Green:{green_present}, red:{red_present}, pink:{pink_present}")
+			# print(f"all:{all_flag}, only_red:{only_red}, only_green:{only_green}, only_pink:{only_pink}, pink_green:{pink_green}, pink_red:{pink_red}, both:{both_flag}")
+			# print(f"g_next:{g_next.value}, r_next:{r_next.value}")
+			#print(f"green:{green_b.value}  red:{red_b.value}, pink:{pink_b.value}")
+			#print(f"green centr :{centr_x.value}, red_centr:{centr_x_red.value}, pink_centr:{centr_x_pink.value}")
+			#cv2.imshow('Object Frame', img)
+			'''ret, buffer = cv2.imencode('.jpg', img)
+			if not ret:
+				continue
+			yield (b'--frame\r\n'
+				b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')'''
+			'''if cv2.waitKey(1) & 0xFF == ord('q'):
+				stop_b.value = True
+				break
 
-	cv2.destroyAllWindows()
-	picam2.stop()
+		cv2.destroyAllWindows()'''
+		
+	except Exception as e:
+		print(f"Exception: {e}")
+	finally:
+		picam2.stop()
 
 
 @app.route('/video')
@@ -1079,6 +1081,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 	orange_c.value = True
 	try:
 		while True:
+			#print(f"red:{red_b.value} green:{green_b.value}")
 			#print(f"turn_trigger: {turn_trigger.value}")
 			#print(f"angles:{specific_angle}")
 			#print(f"fps 2222:{1/(time.time() - fps_time2)}")
@@ -1206,8 +1209,8 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 				if previous_state == 1 and button_state == 0:
 					button = not (button)
 					power = 70
-
 				if button:  ##### THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
+
 					if not reset_servo:
 						time.sleep(0.5)
 						servo.setAngle(130)
@@ -1620,7 +1623,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 							avg_blue = (prev_b.value*0.1 + avg_blue*0.9)
 							avg_orange = (prev_b.value*0.1 + avg_blue*0.9)
 							
-							if(turn_trigger.value and not trigger and (time.time() - turn_t) > (4 + buff)):
+							if(turn_trigger.value and not trigger):  #and (time.time() - turn_t) > (4 + buff):
 								counter = counter + 1
 								buff = 0
 								heading_angle = (90 * counter) % 360
@@ -1628,7 +1631,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 								trigger = True
 								reset_f = True
 								timer_started = False
-								turn_t = time.time()
+								#turn_t = time.time()
 							elif not turn_trigger.value:
 								trigger = False
 								pwm.write(blue_led, 0)
@@ -1842,7 +1845,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 								correctAngle(heading_angle, head.value)
 					#print(f"green:{green_count} r_count:{red_count}")
 					print(f"trigger:{trigger} reset_f:{reset_f} red:{red_b.value} green:{green_b.value}")
-					print(f"x: {x}, y:{y} count:{counts.value} lane:{lane}")
+					print(f"x: {x}, y:{y} count:{counts.value} heading_angle:{heading_angle}")
 					#print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
 				else:
 					power = 0
@@ -1854,6 +1857,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 					stop_b.value = False
 					red_b.value = False
 					green_b.value = False
+				print(f"button:{button}")
 
 	except Exception as e:
 		print(f"Exception: {e}")
@@ -1876,7 +1880,6 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 
 def runEncoder(counts, head):
 	
-
 		print("Encoder Process Started")
 		try:
 			while True:
@@ -1887,12 +1890,6 @@ def runEncoder(counts, head):
 					try:
 						head.value = float(esp_data[0])
 						counts.value = int(esp_data[1])   
-						# ✅ Print clean summary
-						#print("📊 LIDAR Snapshot:")
-						#print(f"0: {dist_0} 90: {dist_90} 270:{dist_270}")
-						#print(f"angle: {lidar_angle.value} distance: {lidar_distance.value}")
-						#print(f"array:{specific_angle}, imu: {esp_angle}")
-
 					except ValueError:
 						print(f"⚠️ Malformed ESP data: {esp_data}")
 				else:
@@ -1903,7 +1900,6 @@ def runEncoder(counts, head):
 			#ser.close()
 		finally:
 			ser.close()
-
 
 '''def color_SP(blue_c, orange_c, white_c):
 	fps3 = 0
@@ -2037,9 +2033,6 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
 if __name__ == '__main__':
 	try:
 		print("Starting process")
-		#app.run(host='0.0.0.0', port=5003)
-		
-
 		
 		P = multiprocessing.Process(target=Live_Feed, args=(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, blue_b, prev_b, orange_o, centr_y_o))
 		S = multiprocessing.Process(target=servoDrive, args=(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, head, centr_y_b, blue_b, prev_b, orange_o, centr_y_o, blue_c, orange_c, white_c, sp_angle, turn_trigger, specific_angle))
@@ -2073,7 +2066,7 @@ if __name__ == '__main__':
 		pwm.bb_serial_read_close(RX_Right)
 		pwm.stop()
 		imu.close()
-		GPIO.cleanup()
+		#GPIO.cleanup()
 
 
 
