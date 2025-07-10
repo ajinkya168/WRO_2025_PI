@@ -8,7 +8,8 @@ import time
 import multiprocessing
 import pigpio
 import board
-
+from ctypes import c_float
+import subprocess
 from BNO085 import IMUandColorSensor
 from Encoder import EncoderCounter
 import serial
@@ -24,7 +25,7 @@ red_led = 10
 green_led = 6
 reset_pin = 14
 button_pin = 5
-
+angle = 0
 
 pwm = pigpio.pi()
 if not pwm.connected:
@@ -74,6 +75,17 @@ lidar_distance = multiprocessing.Value('d', 0.0)
 imu_shared = multiprocessing.Value('d', 0.0)
 specific_angle = multiprocessing.Array(c_float, 3)  # shared array of 3 integers
 
+
+
+rplidar = [None]*360
+previous_distance = 0
+dist_0 = 0
+dist_90 = 0
+dist_270 = 0
+angle = 0
+lidar_front = 0
+lidar_left = 0
+lidar_right = 0
 
 # Parameters for servo
 servo = 8
@@ -220,7 +232,7 @@ def correctAngle(setPoint_gyro, left, right, trigger, heading):
 	elif correction < -30:
 		correction = -30
 
-	print(f"time : {time.time() - prev_time} imu: {glob} correction : {correction} error: {error_gyro} left: {distance_left}, right:{distance_right}")
+	#print(f"time : {time.time() - prev_time} imu: {glob} correction : {correction} error: {error_gyro} left: {distance_left}, right:{distance_right}")
 	prev_time = time.time()
 	# print(f"setPoint:{setPoint_gyro} Correction: {correction}, error:{error_gyro} left:{left}, right:{right}, left_d:{distance_left}, right_d :{distance_right}")
 	# print("correction: ", e)
@@ -322,7 +334,7 @@ def servoDrive(distance, block, pwm, counts, head):
 						heading_angle = (90 * counter) % 360
 						trigger = True
 						turn_t = time.time()
-					elif !(turn_trigger.value):
+					elif not turn_trigger.value:
 						trigger = False
 						pwm.write(blue_led, 0)
 					'''if (distance_right > 100 and distance_head < 75) and not trigger and (time.time() - turn_t) > 3:
@@ -361,7 +373,8 @@ def servoDrive(distance, block, pwm, counts, head):
 				right_flag = False
 				# counts.value = 0
 				correctAngle(heading_angle, left_flag, right_flag, trigger, head.value)
-			print(f"heading:{head.value} {heading_angle}  counter:{counter} {trigger},  target_count:{target_count}, encoder_c:{counts.value}, L C R:{distance_left} {distance_head} {distance_right}")
+			print(f"trigger:{trigger} ")
+			#print(f"heading:{head.value} {heading_angle}  counter:{counter} {trigger},  target_count:{target_count}, encoder_c:{counts.value}, L C R:{distance_left} {distance_head} {distance_right}")
 	except KeyboardInterrupt:
 		#imu = IMUandColorSensor(board.SCL, board.SDA)
 		power = 0
@@ -391,7 +404,7 @@ def runEncoder(counts, head):
 		ser.close()
 
 
-ef read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle, turn_trigger, specific_angle):
+def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle, turn_trigger, specific_angle):
 	#print("This is first line")
 	global CalledProcessError
 	lidar_binary_path = '/home/pi/rplidar_sdk/output/Linux/Release/ultra_simple'
@@ -475,7 +488,7 @@ ef read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle,
 			
 			if(lidar_front < 800 and lidar_left < 900 and lidar_right > 1800):
 				turn_trigger.value = True
-			elif (lidar_front > 2000 and lidar_left < 1000 and lidar_right < 1000):
+			elif (lidar_front > 2000 and (lidar_left < 1000 or lidar_right < 1000)):
 				turn_trigger.value = False
 			#print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left} sp_angle:{sp_angle.value}, turn_trigger:{turn_trigger.value}")
 					#print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
