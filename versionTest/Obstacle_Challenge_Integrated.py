@@ -1621,13 +1621,15 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 							avg_orange = (prev_b.value*0.1 + avg_blue*0.9)
 							
 							if(turn_trigger.value and not trigger and (time.time() - turn_t) > (4 + buff)):
+								counter = counter + 1
 								buff = 0
-								timer_started = False
+								heading_angle = (90 * counter) % 360
+								sp_angle.value = heading_angle
 								trigger = True
 								reset_f = True
-								pwm.write(blue_led, 1)
+								timer_started = False
 								turn_t = time.time()
-							else:
+							elif not turn_trigger.value:
 								trigger = False
 								pwm.write(blue_led, 0)
 									#pwm.write(green_led, 0)
@@ -1992,7 +1994,10 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
 				if(int(lidar_angle.value) == (270 + imu_r ) % 360):
 					specific_angle[2] = lidar_distance.value
 					lidar_right = lidar_distance.value
-
+				if(lidar_front < 1200 and lidar_right > 1800):
+					turn_trigger.value = True
+				elif (lidar_front > 1500 and lidar_right < 1000):
+					turn_trigger.value = False
 				#print(f"angles: {specific_angle} imu: {imu_shared.value} total:{imu_r + lidar_angle.value} sp_angle:{sp_angle.value}")
 				
 			if(distance != 0): 
@@ -2012,9 +2017,12 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
 						specific_angle[2] = lidar_distance.value 
 						lidar_right = lidar_distance.value                                      
 					#print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
-			
-			if(lidar_front < 800 and lidar_left < 900 and lidar_right > 1800):
-				turn_trigger.value = True
+					if(lidar_front < 1200 and lidar_right > 1800):
+						turn_trigger.value = True
+					elif (lidar_front > 1500 and lidar_right < 1000):
+						turn_trigger.value = False			
+			'''if(lidar_front < 800 and lidar_left < 900 and lidar_right > 1800):
+				turn_trigger.value = True'''
 
 			#print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left} sp_angle:{sp_angle.value}, turn_trigger:{turn_trigger.value}")
 					#print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")

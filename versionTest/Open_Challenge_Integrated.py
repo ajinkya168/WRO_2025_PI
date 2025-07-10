@@ -338,14 +338,8 @@ def servoDrive(distance, block, pwm, counts, head, sp_angle):
 					elif not turn_trigger.value:
 						trigger = False
 						pwm.write(blue_led, 0)
-					'''if (distance_right > 100 and distance_head < 75) and not trigger and (time.time() - turn_t) > 3:
-						# time.sleep(0.5)
-						counter = counter + 1
-						heading_angle = (90 * counter) % 360
-						trigger = True
-						turn_t = time.time()
 
-					if distance_right < 85 and distance_head > 75:
+					'''if distance_right < 85 and distance_head > 75:
 						trigger = False'''
 				elif left_flag:
 					'''if (distance_left > 100 and distance_head < 75) and not trigger and (time.time() - turn_t) > 3:
