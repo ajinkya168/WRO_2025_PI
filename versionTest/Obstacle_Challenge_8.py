@@ -1354,7 +1354,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 							print(f"ORANGE RESET...reverse_trigger:{reverse_trigger}")
 
 							if (green_b.value or green_turn) or (reverse_trigger):  # green after trigger
-								#tfmini.getTFminiData()
+								tfmini.getTFminiData()
 								if counter != rev_counter:
 									green_count = 1
 									red_count = 0
@@ -1649,7 +1649,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 
 							GPIO.output(red_led, GPIO.LOW)
 							GPIO.output(green_led, GPIO.LOW)
-
+################################################################################################
 						if not change_path:
 							if g_flag or g_last_flag:
 								if last_red:
@@ -1820,11 +1820,11 @@ if __name__ == '__main__':
 		S = multiprocessing.Process(target=servoDrive, args=(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, head, centr_y_b, blue_b, prev_b, orange_o, centr_y_o, blue_c, orange_c, white_c))
 		E = multiprocessing.Process(target=runEncoder, args=(counts, head,))
 		C = multiprocessing.Process(target=color_SP, args=(blue_c, orange_c, white_c))
+
+		P.start()
 		E.start()
 		C.start()
 		S.start()
-		P.start()
-
 
 	except KeyboardInterrupt:
 		pwm.hardware_PWM(12, 100, 0)
