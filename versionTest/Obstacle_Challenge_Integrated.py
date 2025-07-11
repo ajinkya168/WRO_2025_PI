@@ -45,12 +45,10 @@ import serial
 import RPi.GPIO as GPIO
 from TFmini import TFmini
 
-log_file = open('/home/pi/WRO_2025_FE/logs/log_9.txt', 'w')
-sys.stdout = log_file
-#GPIO.setmode(GPIO.BCM)
-#GPIO.setwarnings(False)
+#log_file = open('/home/pi/WRO_2025_FE/logs/log_9.txt', 'w')
+#sys.stdout = log_file
 
-#### PINS
+#### PINS 
 
 RX_Head = 23
 RX_Left = 24
@@ -405,10 +403,13 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 	picam2.preview_configuration.align()
 	picam2.configure('preview')
 
-	picam2.start()
-
-	#cv2.namedWindow('Object Frame', cv2.WINDOW_NORMAL)
-	#cv2.resizeWindow('Object Frame', 400, 200)
+	try:
+		picam2.start()
+	except Exception as e:
+		print(f"❌ Failed to start camera: {e}")
+		return
+	cv2.namedWindow('Object Frame', cv2.WINDOW_NORMAL)
+	cv2.resizeWindow('Object Frame', 400, 200)
 	time.sleep(2)
 	pwm.write(green_led, 1)
 	try:
@@ -932,19 +933,21 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 			# print(f"g_next:{g_next.value}, r_next:{r_next.value}")
 			#print(f"green:{green_b.value}  red:{red_b.value}, pink:{pink_b.value}")
 			#print(f"green centr :{centr_x.value}, red_centr:{centr_x_red.value}, pink_centr:{centr_x_pink.value}")
-			#cv2.imshow('Object Frame', img)
+			cv2.imshow('Object Frame', img)
 			'''ret, buffer = cv2.imencode('.jpg', img)
 			if not ret:
 				continue
 			yield (b'--frame\r\n'
 				b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')'''
-			'''if cv2.waitKey(1) & 0xFF == ord('q'):
+			if cv2.waitKey(1) & 0xFF == ord('q'):
 				stop_b.value = True
 				break
 
-		cv2.destroyAllWindows()'''
-		
-	except Exception as e:
+		cv2.destroyAllWindows()
+		picam2.stop()
+
+	except KeyboardInterrupt:
+		picam2.stop()
 		print(f"Exception: {e}")
 	finally:
 		picam2.stop()
@@ -961,7 +964,7 @@ def index():
 
 
 def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, head, centr_y_b, blue_b, prev_b, orange_o, centr_y_o, blue_c, orange_c, white_c, sp_angle, turn_trigger, specific_angle):
-
+	pwm  = pigpio.pi()
 	global imu, corr, corr_pos
 
 	pb_time = 0
@@ -1086,6 +1089,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 			#print(f"turn_trigger: {turn_trigger.value}")
 			#print(f"angles:{specific_angle}")
 			#print(f"fps 2222:{1/(time.time() - fps_time2)}")
+			#print(f"stop: {stop_b.value}")
 			fps_time2 = time.time()
 			if centr_y_b.value > 400 and (counter == 0 or blue_flag):
 				power = 50
@@ -1856,7 +1860,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 						stop_b.value = False
 						red_b.value = False
 						green_b.value = False
-					print(f"button:{button}")
+					#print(f"button:{button}")
 				except Exception as e:
 					print(f"Exception: {e}")
 
@@ -1876,7 +1880,8 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 		pwm.set_PWM_dutycycle(12, 0)  # Stop motor
 		pwm.write(20, 0)              # Set direction pin low (optional)
 		print("Motors stopped safely.")
-		pwm.stop() 
+		pwm.stop()
+		pwm.close()
 
 
 def runEncoder(counts, head):
@@ -1902,31 +1907,13 @@ def runEncoder(counts, head):
 		finally:
 			ser.close()
 
-'''def color_SP(blue_c, orange_c, white_c):
-	fps3 = 0
-	while True:
-			color_sensor = imu.get_color()
-			#color_sensor = "None"
-			#print(f" fps33:{(1/(time.time() - fps3))} color: {color_sensor}")
-			fps3 = time.time()
 
-			if color_sensor == "Orange":
-				orange_c.value = True
-				blue_c.value = False
-				white_c.value = False
-			elif color_sensor == "Blue":
-				blue_c.value = True
-				orange_c.value = False
-				white_c.value = False
-			else:
-				white_c.value = True
-				blue_c.value = False
-				orange_c.value = False
-			#print(f"color:{color_sensor}")'''
 
 def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle, turn_trigger, specific_angle):
 	#print("This is first line")
 	global CalledProcessError
+	pwm  = pigpio.pi()
+
 	lidar_binary_path = '/home/pi/rplidar_sdk/output/Linux/Release/ultra_simple'
 	print("⏳ Waiting for LIDAR output...")
 	
@@ -1988,9 +1975,9 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
 				if(int(lidar_angle.value) == (270 + imu_r ) % 360):
 					specific_angle[2] = lidar_distance.value
 					lidar_right = lidar_distance.value
-				if(lidar_front < 1200 and lidar_right > 1800):
+				if(lidar_front < 1200 and lidar_right > 1800 and lidar_left < 1000 ):
 					turn_trigger.value = True
-				elif (lidar_front > 1500 and lidar_right < 1000):
+				elif (lidar_front > 1500 and (lidar_right < 1000 or lidar_left < 1000)):
 					turn_trigger.value = False
 				#print(f"angles: {specific_angle} imu: {imu_shared.value} total:{imu_r + lidar_angle.value} sp_angle:{sp_angle.value}")
 				
