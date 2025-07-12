@@ -1580,7 +1580,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 						#avg_blue = (prev_b.value*0.1 + avg_blue*0.9)
 						#avg_orange = (prev_b.value*0.1 + avg_blue*0.9)
 						
-						if(turn_trigger.value and not trigger and (time.time() - turn_t) > (4 + buff)):
+						if(turn_trigger.value and not trigger): # and (time.time() - turn_t) > (4 + buff)):
 							#counter = counter + 1
 							buff = 0
 							#heading_angle = (90 * counter) % 360
@@ -1645,7 +1645,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 
 						################### PANDAV 2.0 ####################
 
-						if green_b.value and not r_flag and not continue_parking and not g_past:
+						if green_b.value and not r_flag and not continue_parking and not g_flag:
 							print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
 							g_flag = True
 							#if (centr_x.value > 1500 or  centr_y.value > 900):
@@ -1654,7 +1654,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 							pwm.write(green_led, 0)
 							print('1')
 
-						elif (g_past or time.time() - gp_time < 0.5) and not continue_parking:
+						elif (g_past or time.time() - gp_time < 0.5) and not continue_parking :
 							print("Avoiding green...")
 	
 							if tf_r <= 50 : #and ((avg_left_pass < 60 or avg_left_pass > 120) or counter!=rev_counter):
@@ -1670,7 +1670,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 							g_flag = True
 							print('2')
 
-						elif red_b.value and not g_flag and not continue_parking and not r_past:
+						elif red_b.value and not g_flag and not continue_parking and not r_flag:
 							r_flag = True
 							print(f"centr x red: {centr_x_red.value} centr y red: {centr_y_red.value}")
 							#if ((centr_x_red.value < 100 and centr_x_red.value > 0) or  centr_y_red.value > 900):
@@ -1801,6 +1801,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 							correctAngle(heading_angle, head.value)
 				#print(f"green:{green_count} r_count:{red_count}")
 				print(f"trigger:{trigger} reset_f:{reset_f} red:{r_flag} green:{g_flag} counter: {counter}, imu:{head.value}")
+				print(f"r_past:{r_past} g_past:{g_past}")
 				print(f"x: {x}, y:{y} count:{counts.value} heading_angle:{heading_angle}")
 				print(f"head:{tf_h} left:{tf_l} right: {tf_r}")
 				#print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
@@ -1868,7 +1869,7 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
 	#print("This is first line")
 	global CalledProcessError
 	pwm  = pigpio.pi()
-
+	trig_time = 0
 	lidar_binary_path = '/home/pi/rplidar_sdk/output/Linux/Release/ultra_simple'
 	print("⏳ Waiting for LIDAR output...")
 	
@@ -1956,8 +1957,11 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
 					#print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
 					if(lidar_front < 750 and lidar_right > 1800 and lidar_left < 1000 ):
 						turn_trigger.value = True
-					elif (lidar_front > 1500 and (lidar_right < 1000 or lidar_left < 1000)):
-						turn_trigger.value = False	
+						trig_time = time.time()
+					elif time.time() - trig_time > 4:
+						turn_trigger.value = False
+					'''elif (lidar_front > 1500 and (lidar_right < 1000 or lidar_left < 1000)):
+						turn_trigger.value = False'''	
 
 			#print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left} sp_angle:{sp_angle.value}, turn_trigger:{turn_trigger.value}")
 					#print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
