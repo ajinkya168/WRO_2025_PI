@@ -2011,11 +2011,3 @@ if __name__ == '__main__':
 		tfmini.close()
 
 
-
-
-# ------------ LIDAR PROCESS SETUP ------------
-
-
-
-# You may want to periodically do:
-# imu_shared.value = imu.get_heading()  # Assuming imu object is initialized
