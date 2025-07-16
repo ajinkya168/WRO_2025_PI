@@ -1239,7 +1239,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                             # counter = counter + 1
                             buff = 0
                             # heading_angle = (90 * counter) % 360
-                            sp_angle.value = heading_angle
                             trigger = True
                             reset_f = True
                             timer_started = False
