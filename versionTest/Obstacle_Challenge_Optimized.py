@@ -18,26 +18,11 @@ import sys
 import os
 import time
 import subprocess
+import camera_utilities
+from PID import correctPosition, correctAngle
 
 os.system('sudo pkill pigpiod')
 os.system('sudo pigpiod')
-
-
-def kill_process_on_port(port):
-    try:
-        # Find PID using the port
-        result = subprocess.check_output(
-            f"lsof -t -i:{port}", shell=True
-        ).decode().strip()
-
-        if result:
-            pids = result.split('\n')
-            for pid in pids:
-                print(f"Killing PID {pid} using port {port}")
-                os.system(f"kill -9 {pid}")
-    except subprocess.CalledProcessError:
-        print(f"No process is using port {port}")
-
 
 # kill_process_on_port(5003)
 time.sleep(5)
@@ -132,180 +117,14 @@ previous_angle = multiprocessing.Value('d', 0.0)
 lidar_angle = multiprocessing.Value('d', 0.0)
 lidar_distance = multiprocessing.Value('d', 0.0)
 imu_shared = multiprocessing.Value('d', 0.0)
-specific_angle = multiprocessing.Array(c_float, 3)  # shared array of 3 integers
+specific_angle = multiprocessing.Array(
+    c_float, 3)  # shared array of 3 integers
 
 
 ############ PID VARIABLES #############
 
-currentAngle = error_gyro = prevError = totalError = prevErrorGyro = totalErrorGyro = correction =  0
-
-kp = 0.6
-ki = 0
-kd = 0.1
-
-kp_e = 3  # 12
-ki_e = 0
-kd_e = 40  # 40if
-
-corr = corr_pos = 0
 
 ###################################################
-
-
-def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse, heading, centr_x, finish, distance_h, distance_l, distance_r):
-    # print("INSIDE CORRECT")
-    global prevError, totalError, prevErrorGyro, totalErrorGyro, corr_pos
-
-    error = correction = pTerm_e = dTerm_e = iTerm_e =0
-
-    lane = counter % 4
-
-    # if(time.time() - last_time > 0.001):
-    if lane == 0:
-        error = setPoint - y
-        print(
-            f"lane: {lane}, error: {error} target:{(setPoint)}, x:{x} y:{y} not reverse")
-    elif lane == 1:
-        if orange:
-            error = x - (100 - setPoint)
-            print(
-                f"lane:{lane}, error:{error} target:{(100 - setPoint)}, x:{x}, y:{y}")
-
-        elif blue:
-            error = (100 + setPoint) - x
-            # print(f"lane:{lane}, error:{error} target:{(100 + setPoint)}, x:{x} y:{y} Bluee")
-    elif lane == 2:
-        if orange:
-            error = y - (200 - setPoint)
-            # print(f"lane:{lane} error:{error} target:{(200 - setPoint)},  x: {x} y{y}")
-        elif blue:
-            error = y - (-200 - setPoint)
-            # print(f"lane:{lane} error:{error} target:{(-200 - setPoint)}, x: {x} y{y}")
-    elif lane == 3:
-        if orange:
-            error = (setPoint - 100) - x
-            # print(f"lane:{lane} error:{error} target:{(setPoint - 100)}, x: {x} y {y}")
-
-        elif blue:
-            error = x + (100 + setPoint)
-            # print(f"lane:{lane} error:{error} target:{(100 + setPoint)}, x:{x} y {y}")
-
-    corr_pos = error
-    pTerm_e = kp_e * error
-    dTerm_e = kd_e * (error - prevError)
-    totalError += error
-    iTerm_e = ki_e * totalError
-    correction = pTerm_e + iTerm_e + dTerm_e
-
-    if setPoint == 0:
-        if abs(error) < 10:
-            # print("absolute is 0")
-            correction = 0
-
-    if not reset:
-        print(f"centr_pink:{centr_x_pink.value}")
-        if ((setPoint == -35 and orange) or (counter == 0 and (centr_x_pink.value < 800 and centr_x_pink.value > 0) and ((centr_y.value or centr_y_red.value) <= centr_y_pink.value) and not blue and not orange) and not finish):
-            if distance_l <= 30:
-                correction = 20
-                print(f"Avoiding pink wall {correction}")
-
-            elif distance_r < 50:
-                if distance_r <= 35:
-                    correction = -45
-                    print(f"Avoiding pink wall {correction}")
-
-                else:
-                    correction = -10
-                    print(f"Avoiding pink wall {correction}")
-
-            else:
-                correction = 0
-
-        elif ((setPoint == 35 and blue) or (counter == 0 and (centr_x_pink.value < 800 and centr_x_pink.value > 0) and ((centr_y.value or centr_y_red.value) <= centr_y_pink.value) and not blue and not orange) and not finish):
-
-            if distance_r <= 30:
-                correction = -20
-                print(f"Avoiding pink wall {correction}")
-
-            elif distance_l < 50 or distance_l > 100:
-                if distance_l <= 35:
-                    correction = 45
-                    print(f"Avoiding pink wall {correction}")
-
-                else:
-                    correction = 10
-                    print(f"Avoiding pink wall {correction}")
-            else:
-                correction = 0
-
-        if not blue:
-            if (setPoint <= -70) and distance_l <= 22:
-                print(f"Correcting Green Wall Orange")
-                correction = 10
-            else:
-                pass
-
-            if setPoint >= 70 and (distance_r <= 20 or (distance_h <= 18)):
-                print(f"Wall detected..making correction")
-                correction = -10
-            else:
-                pass
-
-        else:
-            if setPoint <= -70 and (distance_l <= 20 or (distance_h <= 18)):
-                print(f"Wall detected..making correction")
-                correction = 10
-            else:
-                pass
-
-            if setPoint >= 70 and distance_r <= 22:
-                print(f"correctng red wall in blue")
-                correction = -10
-            else:
-                pass
-
-    if setPoint == 0:
-        if correction > 25:
-            correction = 25
-        elif correction < -25:
-            correction = -25
-    else:
-        if correction > 45:
-            correction = 45
-        elif correction < -45:
-            correction = -45
-
-    prevError = error
-    correctAngle(head + correction, heading)
-
-
-def correctAngle(setPoint_gyro, heading):
-    global corr
-    error_gyro = prevErrorGyro = totalErrorGyro = correction  = 0
-
-    error_gyro = heading - setPoint_gyro
-
-    if error_gyro > 180:
-        error_gyro = error_gyro - 360
-    corr = error_gyro
-    # print("Error : ", error_gyro)
-    pTerm = dTerm = iTerm =  0
-
-
-    pTerm = kp * error_gyro
-    dTerm = kd * (error_gyro - prevErrorGyro)
-    totalErrorGyro += error_gyro
-    iTerm = ki * totalErrorGyro
-    correction = pTerm + iTerm + dTerm
-
-    if correction > 30:
-        correction = 30
-    elif correction < -30:
-        correction = -30
-
-    prevErrorGyro = error_gyro
-    servo.setAngle(90 - correction)
-
 
 # basic constants for opencv Functs
 kernel = np.ones((3, 3), 'uint8')
@@ -315,35 +134,6 @@ fontScale = 0.6
 color = (0, 0, 255)
 thickness = 2
 
-
-def process_box(cnt, img, color=(255, 0, 0)):
-    if cnt is not None:
-        rect = cv2.minAreaRect(cnt)
-        box = cv2.boxPoints(rect)
-        box = np.intp(box)
-        cv2.drawContours(img, [box], -1, color, 3)
-        x, y, w, h = cv2.boundingRect(box)
-        return x + w // 2, y + h // 2
-    return 0, 0
-
-def clean_mask(mask, kernel, iterations=2):
-    opened = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=iterations)
-    closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, kernel, iterations=iterations)
-    return closed
-
-
-def get_largest_contour(binary_img):
-    contours, _ = cv2.findContours(binary_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    if contours:
-        return sorted(contours, key=cv2.contourArea, reverse=True)[:1]
-    return []
-
-
-def is_color_present(contours, min_area=2000):
-    if not contours:
-        return False, None
-    max_c = max(contours, key=cv2.contourArea)
-    return (cv2.contourArea(max_c) > min_area), max_c
 
 # loop to capture video frames
 def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pink):
@@ -377,16 +167,16 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pi
             pink_green = False
             only_red = False
             only_green = False
-            only_pink = False 
-                       
+            only_pink = False
+
             red_b.value = False
             green_b.value = False
-            pink_b.value = False       
- 
+            pink_b.value = False
+
             centr_x_pink.value = 0
             centr_y.value = 0
             centr_x.value = 0
-            
+
             # print(f"fps:{1/(time.time() - fps_time)}")
             fps_time = time.time()
             img = picam2.capture_array()
@@ -394,7 +184,6 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pi
             hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # green
             hsv_img1 = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # red
             hsv_img2 = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)  # pink
-
 
             # predefined mask for green colour detection
             # For Green Color
@@ -416,31 +205,33 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pi
             upper2 = np.array([162, 175, 84])
             mask2 = cv2.inRange(hsv_img2, lower2, upper2)
 
-
             # Remove Extra garbage from image
-            d_img = clean_mask(mask, kernel)  # green
-            d_img1 = clean_mask(mask1, kernel)  # red
-            d_img2 = clean_mask(mask2, kernel)  # pink
+            d_img = camera_utilities.clean_mask(mask, kernel)  # green
+            d_img1 = camera_utilities.clean_mask(mask1, kernel)  # red
+            d_img2 = camera_utilities.clean_mask(mask2, kernel)  # pink
 
             # find the histogram
-            cont = get_largest_contour(d_img)
-            cont1 = get_largest_contour(d_img1)
-            cont2 = get_largest_contour(d_img2)
+            cont = camera_utilities.get_largest_contour(d_img)
+            cont1 = camera_utilities.get_largest_contour(d_img1)
+            cont2 = camera_utilities.get_largest_contour(d_img2)
 
             # ----------------------------------------------
-            green_present, max_cnt = is_color_present(cont, min_area=2000)
+            green_present, max_cnt = camera_utilities.is_color_present(
+                cont, min_area=2000)
 
             # ---------------------------------------
-            
-            red_present, max_cnt1 = is_color_present(cont1, min_area=2000)
+
+            red_present, max_cnt1 = camera_utilities.is_color_present(
+                cont1, min_area=2000)
 
             # ----------------------------------------------------
-            pink_present, max_cnt2 = is_color_present(cont2, min_area=2000)
+            pink_present, max_cnt2 = camera_utilities.is_color_present(
+                cont2, min_area=2000)
 
             # --------------------------------------------------------
 
             color_combo = (red_present, green_present, pink_present)
-            #print(f"Color Combo: {color_combo}")
+            # print(f"Color Combo: {color_combo}")
 
             if color_combo == (False, False, False):
                 pass
@@ -457,7 +248,7 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pi
             elif color_combo == (False, True, False):
                 only_green = True
             elif color_combo == (False, False, True):
-                only_pink = True                
+                only_pink = True
 
             if all_flag:
                 # print("ITS THE FIRST LOOP")
@@ -465,7 +256,8 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pi
                 if cv2.contourArea(max_cnt) > cv2.contourArea(max_cnt1):
                     if cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000:
                         # Draw a rectange on the contour
-                        centroid_x, centroid_y = process_box(max_cnt, img)
+                        centroid_x, centroid_y = camera_utilities.process_box(
+                            max_cnt, img)
                         centr_y.value = centroid_y
                         centr_x.value = centroid_x
                         green_b.value = True
@@ -474,9 +266,10 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pi
                 elif cv2.contourArea(max_cnt1) > cv2.contourArea(max_cnt):
                     if (cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000):
                         # Draw a rectange on the contour
-                        
-                        centroid_x_red, centroid_y_red = process_box(max_cnt1, img)
-            
+
+                        centroid_x_red, centroid_y_red = camera_utilities.process_box(
+                            max_cnt1, img)
+
                         centr_y.value = centroid_y_red
                         centr_x.value = centroid_x_red
 
@@ -486,7 +279,8 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pi
                 # elif cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt) and cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt1):
                 if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
                     # Draw a rectange on the contour
-                    centroid_x_pink, centroid_y_pink = process_box(max_cnt2, img)
+                    centroid_x_pink, centroid_y_pink = camera_utilities.process_box(
+                        max_cnt2, img)
 
                     centr_x_pink.value = centroid_x
                     centr_y_pink.value = centroid_y
@@ -497,33 +291,34 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pi
                 # print(cv2.contourArea(max_cnt1))
                 if cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000:
                     # Draw a rectange on the contour
-                    centroid_x_red, centroid_y_red = process_box(max_cnt1, img)
+                    centroid_x_red, centroid_y_red = camera_utilities.process_box(
+                        max_cnt1, img)
                     centr_y.value = centroid_y_red
                     centr_x.value = centroid_x_red
 
                     red_b.value = True
-
 
             # FOR GREEN BOX
             elif only_green:
                 # print(cv2.contourArea(max_cnt))
                 if cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000:
                     # Draw a rectange on the contour
-                    centroid_x, centroid_y = process_box(max_cnt, img)
+                    centroid_x, centroid_y = camera_utilities.process_box(
+                        max_cnt, img)
 
                     centr_y.value = centroid_y
                     centr_x.value = centroid_x
-   
+
                     # if(centroid_y > 100):
                     # if(counter_green >= max_count):
                     green_b.value = True
-
 
             # FOR PINK BOX
             elif only_pink:
                 if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
                     # Draw a rectange on the contour
-                    centroid_x, centroid_y = process_box(max_cnt2, img)
+                    centroid_x, centroid_y = camera_utilities.process_box(
+                        max_cnt2, img)
                     centr_x_pink.value = centroid_x
                     centr_y_pink.value = centroid_y
                     pink_b.value = True
@@ -534,29 +329,31 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pi
                 if cv2.contourArea(max_cnt) > cv2.contourArea(max_cnt1):
                     if cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000:
                         # Draw a rectange on the contour
-                        centroid_x, centroid_y = process_box(max_cnt, img)
+                        centroid_x, centroid_y = camera_utilities.process_box(
+                            max_cnt, img)
 
                         centr_y.value = centroid_y
                         centr_x.value = centroid_x
-  
+
                         green_b.value = True
 
                 # FOR RED BOX
                 elif cv2.contourArea(max_cnt1) > cv2.contourArea(max_cnt):
                     if (cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000):
                         # Draw a rectange on the contour
-                        centroid_x_red, centroid_y_red = process_box(max_cnt1, img)
+                        centroid_x_red, centroid_y_red = camera_utilities.process_box(
+                            max_cnt1, img)
                         centr_y.value = centroid_y_red
                         centr_x.value = centroid_x_red
                         red_b.value = True
-       
 
             elif pink_red:
                 # FOR RED BOX
                 # if cv2.contourArea(max_cnt1) > cv2.contourArea(max_cnt2):
                 if (cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000):
                     # Draw a rectange on the contour
-                    centroid_x_red, centroid_y_red = process_box(max_cnt1, img)
+                    centroid_x_red, centroid_y_red = camera_utilities.process_box(
+                        max_cnt1, img)
 
                     centr_y.value = centroid_y_red
                     centr_x.value = centroid_x_red
@@ -565,34 +362,35 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pi
                 # elif cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt1):
                 if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
                     # Draw a rectange on the contour
-                    centroid_x, centroid_y = process_box(max_cnt2, img)
- 
+                    centroid_x, centroid_y = camera_utilities.process_box(
+                        max_cnt2, img)
+
                     centr_x_pink.value = centroid_x
                     centr_y_pink.value = centroid_y
 
                     # if centroid_y > 500:
                     pink_b.value = True
- 
 
             elif pink_green:
                 # if cv2.contourArea(max_cnt) > cv2.contourArea(max_cnt2):
                 if (cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000):
                     # Draw a rectange on the contour
-                    centroid_x, centroid_y = process_box(max_cnt, img)
+                    centroid_x, centroid_y = camera_utilities.process_box(
+                        max_cnt, img)
                     centr_y.value = centroid_y
                     centr_x.value = centroid_x
                     green_b.value = True  # pink_b.value = False
                 # elif cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt):
                 if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
                     # Draw a rectange on the contour
-                    centroid_x, centroid_y = process_box(max_cnt2, img)
+                    centroid_x, centroid_y = camera_utilities.process_box(
+                        max_cnt2, img)
                     centr_x_pink.value = centroid_x
                     centr_y_pink.value = centroid_y
                     pink_b.value = True
 
-
             # print(f"green:{green_b.value}  red:{red_b.value}, pink:{pink_b.value}")
-            # print(f"green centr :{centr_x.value}, red_centr:{centr_x_red.value}, pink_centr:{centr_x_pink.value}")
+            # print(f"green centr :{centr_x.value}, red_centr:{centr_x.value}, pink_centr:{centr_x_pink.value}")
             # cv2.imshow('Object Frame', img)
             '''if cv2.waitKey(1) & 0xFF == ord('q'):
 				stop_b.value = True
@@ -607,7 +405,15 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pi
         picam2.stop()
 
 
-def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, centr_y_pink, head, turn_trigger):
+def calculate_heading(counter, reverse, orange, blue):
+    offset_tmp = 180 if orange else -180
+    offset = offset_tmp if reverse else 0
+    angle = ((90 * counter) % 360) + offset if orange else - \
+        ((90 * counter) % 360) - offset
+    return angle % 360 if abs(angle) >= 360 else angle
+
+
+def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, centr_y_pink, head, sp_angle, turn_trigger):
     pwm = pigpio.pi()
     global imu, corr, corr_pos
 
@@ -654,7 +460,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
     reverse_complete = reverse = reverse_trigger = False
     finish_flag = False
     reset_servo = False
-    orange_c.value = True
 
     ############ VARIABLES ##################
     color_n = ""
@@ -676,7 +481,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
 
     c = c_time = fps_time2 = 0
 
-    color_s = ""
+    color_s = "Orange"
     debounce_delay = 0.2
     last_time = 0
 
@@ -745,10 +550,10 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                 green_b.value = red_b.value = False
                 g_past = r_past = g_flag = r_flag = False
 
-                if orange_flag and (((centr_x_pink.value < centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value < centr_x_red.value and (centr_x_red.value > 0 and centr_x_pink.value > 0))):
+                if orange_flag and (((centr_x_pink.value < centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value < centr_x.value and (centr_x.value > 0 and centr_x_pink.value > 0))):
                     setPointR = setPointC = -35
                     finish = True
-                elif blue_flag and (((centr_x_pink.value > centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value > centr_x_red.value and (centr_x_red.value > 0 and centr_x_pink.value > 0))):
+                elif blue_flag and (((centr_x_pink.value > centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value > centr_x.value and (centr_x.value > 0 and centr_x_pink.value > 0))):
                     setPointL = setPointC = 35
                     finish = True
 
@@ -759,7 +564,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                         setPointR = 70
                         # print(f"setPointL: {setPointL}")
                 elif blue_flag:
-                    if (centr_x_red.value < centr_x_pink.value) and (centr_x_pink.value > 0 and centr_x_red.value > 0) and not continue_parking:
+                    if (centr_x.value < centr_x_pink.value) and (centr_x_pink.value > 0 and centr_x.value > 0) and not continue_parking:
                         setPointR = 35
                         setPointL = -70
                         # print(f"setPointR: {setPointR}")
@@ -791,8 +596,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                     setPointR = setPointR + 1
                     setPointL = -70
 
-                avg_right_pass = (tf_r * 0.1) + (avg_right * 0.9)
-                avg_left_pass = (tf_l * 0.1) + (avg_left * 0.9)
                 avg_head = (tf_h * 0.10) + (avg_head*0.90)
                 avg_left = (tf_l * 0.15) + (avg_left*0.85)
                 avg_right = (tf_r * 0.15) + (avg_right*0.85)
@@ -824,17 +627,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
 
                 pwm.write(direction_pin, 1)  # Set pin 20 high
 
-                if stop_b.value:
-                    power = 0
-                    prev_power = 0
-
-                ######     DIRECTION DECISION (CLOCKWISE OR ANTICLOCKWISE)     #####
-                if blue_c.value:
-                    color_s = "Blue"
-                elif orange_c.value:
-                    color_s = "Orange"
-                elif white_c.value:
-                    color_s = "White"
                 # print(f"Color Sensor: {color_s}")
                 if not blue_flag and not orange_flag:
                     if color_s == "Orange":
@@ -1050,16 +842,10 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                                         50 - abs(turn_trigger_distance * turn_cos_theta)) - 10
                                 print(f'Resuming Motor...{x} {y}')
                                 power = 100
-                                if reverse == True:
-                                    print("In blue reverse...")
-                                    offset = 180
-                                    heading_angle = - \
-                                        ((90 * counter) % 360) - offset
-                                    if abs(heading_angle) >= 360:
-                                        heading_angle = (heading_angle % 360)
-                                else:
-                                    print("In blue reverse else...")
-                                    heading_angle = -((90 * counter) % 360)
+
+                                heading_angle = calculate_heading(
+                                    counter, reverse, orange_flag, blue_flag)
+
                                 green_turn = False
                                 red_turn = False
                                 reset_f = False
@@ -1186,25 +972,24 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                                 print(
                                     f"head: {turn_trigger_distance}, corr: {turn_cos_theta}")
                                 if lane_reset == 1:
-                                    enc.x = (150 - (turn_trigger_distance * turn_cos_theta)) - 10
+                                    enc.x = (
+                                        150 - (turn_trigger_distance * turn_cos_theta)) - 10
                                     print(f"x: {enc.x}")
                                 if lane_reset == 2:
-                                    enc.y = (250 - (turn_trigger_distance * turn_cos_theta)) - 10
+                                    enc.y = (
+                                        250 - (turn_trigger_distance * turn_cos_theta)) - 10
                                 if lane_reset == 3:
-                                    enc.x = ((turn_trigger_distance * turn_cos_theta) - 150) + 10
+                                    enc.x = ((turn_trigger_distance *
+                                             turn_cos_theta) - 150) + 10
                                 if lane_reset == 0:
-                                    enc.y = ((turn_trigger_distance *turn_cos_theta) - 50) + 10
+                                    enc.y = ((turn_trigger_distance *
+                                             turn_cos_theta) - 50) + 10
                                 print(f'Resuming Motor...{offset}')
 
                                 power = 100
-                                if reverse == True:
-                                    offset = -180
-                                    heading_angle = (
-                                        (90 * counter) % 360) + offset
-                                    if abs(heading_angle) >= 360:
-                                        heading_angle = (heading_angle % 360)
-                                else:
-                                    heading_angle = ((90 * counter) % 360)
+                                heading_angle = calculate_heading(
+                                    counter, reverse, orange_flag, blue_flag)
+
                                 sp_angle.value = heading_angle
                                 red_turn = False
                                 green_time = False
@@ -1239,6 +1024,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                             # counter = counter + 1
                             buff = 0
                             # heading_angle = (90 * counter) % 360
+                            sp_angle.value = heading_angle
                             trigger = True
                             reset_f = True
                             timer_started = False
@@ -1247,8 +1033,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                             trigger = False
                             pwm.write(blue_led, 0)
                             # pwm.write(green_led, 0)
-
- 
 
                         if last_red:
                             print(
@@ -1286,18 +1070,18 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                                 reset_flags = False
 
                         ################### PANDAV 2.0 ####################
-                        
+
                         g_flag = r_flag = p_flag = r_past = g_past = p_past = False
 
                         pwm.write(red_led, 0)
                         pwm.write(green_led, 0)
 
-                        if green_b.value and not r_flag and not continue_parking :
+                        if green_b.value and not r_flag and not continue_parking:
                             print(
                                 f"centr x: {centr_x.value} centr y: {centr_y.value}")
                             g_flag = True
                             g_past = True
- 
+
                             print('1')
 
                         elif (g_past or time.time() - gp_time < 0.5) and not continue_parking:
@@ -1313,12 +1097,12 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                             g_flag = True
                             print('2')
 
-                        elif red_b.value and not g_flag and not continue_parking :
+                        elif red_b.value and not g_flag and not continue_parking:
                             r_flag = True
                             print(
-                                f"centr x red: {centr_x_red.value} centr y red: {centr_y_red.value}")
+                                f"centr x red: {centr_x.value} centr y red: {centr_y_red.value}")
                             r_past = True
-  
+
                             print('3')
 
                         elif (r_past or time.time() - rp_time < 0.5) and not continue_parking:
@@ -1346,23 +1130,24 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                                     f"prev_distance: {prev_distance}, distance_left: {tf_l} diff: {abs(prev_distance - tf_l)}")
                                 p_flag = True
                                 if tf_l <= 30 and (abs(prev_distance - tf_l) >= 7 and prev_distance > 0) and p_past:
-   
+
                                     parking_flag = True
                                     print("Pink Avoidance Complete...")
                                 prev_distance = tf_l
 
                             elif blue_flag:
-                                print(f"prev_distance: {prev_distance}, distance_right: {tf_r}  diff: {abs(prev_distance - tf_r)}")
+                                print(
+                                    f"prev_distance: {prev_distance}, distance_right: {tf_r}  diff: {abs(prev_distance - tf_r)}")
                                 if tf_r <= 30 and (abs(prev_distance - tf_r) >= 7 and prev_distance > 0) and p_past:
-         
+
                                     parking_flag = True
                                     print("Pink Avoidance Complete Blue...")
                                 prev_distance = tf_r
 
                             print('6')
-                            
+
                         else:
-                           print('7') 
+                            print('7')
 
                         #########################################################################################
 
@@ -1442,7 +1227,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                 print(
                     f"x: {x}, y:{y} count:{counts.value} heading_angle:{heading_angle}")
                 print(f"head:{tf_h} left:{tf_l} right: {tf_r}")
-                # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
+                # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
             else:
                 power = 0
                 pwm.hardware_PWM(12, 100, 0)
@@ -1498,7 +1283,7 @@ def runEncoder(counts, head):
         ser.close()
 
 
-def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, turn_trigger):
+def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle, turn_trigger):
     # print("This is first line")
     global CalledProcessError
     pwm = pigpio.pi()
@@ -1589,7 +1374,7 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, turn_tri
                         trig_time = time.time()
                     elif time.time() - trig_time > 4:
                         turn_trigger.value = False
-            # print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left}, turn_trigger:{turn_trigger.value}")
+            # print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left} sp_angle:{sp_angle.value}, turn_trigger:{turn_trigger.value}")
                     # print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
 
 
@@ -1597,10 +1382,13 @@ if __name__ == '__main__':
     try:
         print("Starting process")
 
-        P = multiprocessing.Process(target=Live_Feed, args=(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pink, ))
-        S = multiprocessing.Process(target=servoDrive, args=(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, centr_y_pink, head,  sp_angle, turn_trigger, ))
+        P = multiprocessing.Process(target=Live_Feed, args=(
+            red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pink, ))
+        S = multiprocessing.Process(target=servoDrive, args=(
+            red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, centr_y_pink, head,  sp_angle, turn_trigger, ))
         E = multiprocessing.Process(target=runEncoder, args=(counts, head,))
-        lidar_proc = multiprocessing.Process(target=read_lidar, args=(lidar_angle, lidar_distance, previous_angle, imu_shared, turn_trigger, ))
+        lidar_proc = multiprocessing.Process(target=read_lidar, args=(
+            lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle, turn_trigger, ))
 
         # Launch the lidar reader process
 
