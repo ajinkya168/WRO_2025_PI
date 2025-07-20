@@ -12,8 +12,6 @@ from ctypes import c_float
 from picamera2 import Picamera2
 import cv2
 import numpy as np
-from flask import Flask, Response
-import logging
 import sys
 import os
 import time
@@ -469,7 +467,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
     power = 100
     prev_power = 0
     last_counter = 12
-    change_counter = rev_counter = 7  # 3
+    change_counter = rev_counter = 7 
     heading_angle = counter = turn_t = current_time = gp_time = rp_time = buff = c_time = green_count = red_count = 0
 
     i = l = lap_finish_time = prev_distance = turn_trigger_distance = target_count = offset = button_state = past_time = 0
@@ -499,11 +497,10 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
             tf_h = tfmini.distance_head
             tf_l = tfmini.distance_left
             tf_r = tfmini.distance_right
+            
             if (time.time() - last_time > debounce_delay):
                 previous_state = button_state
                 button_state = pwm.read(5)
-                # time.sleep(0.03)
-
                 if previous_state == 1 and button_state == 0:
                     button = not (button)
                     last_time = time.time()
@@ -721,9 +718,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                         elif counter == change_counter and red_count == 1:
                             print("Changing path...")
                             last_red = True
-                        print(f"last_red: {last_red}")
                         if blue_flag:  # BLUE RESET BLOCK
-
                             print(f"BLUE RESET...{reverse_trigger}")
 
                             if (red_b.value or red_turn) or reverse_trigger:  # red after trigger
@@ -896,7 +891,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                                         x, y = enc.get_position(
                                             imu_head, counts.value)
                                         power = 100
-                                        prev_power = 65
+                                        prev_power = 95
                                         # Set duty cycle to 50% (128/255)
                                         pwm.set_PWM_dutycycle(pwm_pin, power)
                                         # Set pin 20 hig
