@@ -21,7 +21,7 @@ correcion = 0
 totalError = 0
 prevError = 0
 
-def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse, heading, centr_x, centr_y, finish, distance_h, distance_l, distance_r):
+def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse, heading, centr_x, finish, distance_h, distance_l, distance_r):
     # print("INSIDE CORRECT")
     global prevError, totalError, prevErrorGyro, totalErrorGyro, corr_pos
 
@@ -72,7 +72,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
             correction = 0
 
     if not reset:
-        if ((setPoint == -35 and orange) or (counter == 0 and (centr_x.value < 800 and centr_x.value > 0) and not blue and not orange) and not finish):
+        if ((setPoint == -35 and orange) or (counter == 0 and (centr_x < 800 and centr_x > 0) and not blue and not orange) and not finish):
             if distance_l <= 30:
                 correction = 20
                 print(f"Avoiding pink wall {correction}")
@@ -89,7 +89,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
             else:
                 correction = 0
 
-        elif ((setPoint == 35 and blue) or (counter == 0 and (centr_x.value < 800 and centr_x.value > 0)  and not blue and not orange) and not finish):
+        elif ((setPoint == 35 and blue) or (counter == 0 and (centr_x < 800 and centr_x > 0)  and not blue and not orange) and not finish):
 
             if distance_r <= 30:
                 correction = -20
@@ -148,7 +148,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
 
 
 def correctAngle(setPoint_gyro, heading):
-    global corr
+    #global corr
     error_gyro = prevErrorGyro = totalErrorGyro = correction  = 0
 
     error_gyro = heading - setPoint_gyro

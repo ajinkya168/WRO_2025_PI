@@ -1,3 +1,7 @@
+import os
+os.system('sudo pkill pigpiod')
+os.system('sudo pigpiod')
+
 from TFmini import TFmini
 import RPi.GPIO as GPIO
 import serial
@@ -13,14 +17,13 @@ from picamera2 import Picamera2
 import cv2
 import numpy as np
 import sys
-import os
+
 import time
 import subprocess
 import camera_utilities
-from PID import correctPosition, correctAngle
+from PID import correctPosition, correctAngle, corr, corr_pos
 
-os.system('sudo pkill pigpiod')
-os.system('sudo pigpiod')
+
 
 # kill_process_on_port(5003)
 time.sleep(5)
@@ -30,8 +33,8 @@ time.sleep(5)
 # import time
 
 
-log_file = open('/home/pi/WRO_2025_FE/logs/log_9.txt', 'w')
-sys.stdout = log_file
+#log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
+#sys.stdout = log_file
 
 # PINS
 
@@ -131,7 +134,6 @@ org = (0, 20)
 fontScale = 0.6
 color = (0, 0, 255)
 thickness = 2
-
 
 # loop to capture video frames
 def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pink):
@@ -387,7 +389,7 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pi
                     centr_y_pink.value = centroid_y
                     pink_b.value = True
 
-            # print(f"green:{green_b.value}  red:{red_b.value}, pink:{pink_b.value}")
+            #print(f"green:{green_b.value}  red:{red_b.value}, pink:{pink_b.value}")
             # print(f"green centr :{centr_x.value}, red_centr:{centr_x.value}, pink_centr:{centr_x_pink.value}")
             # cv2.imshow('Object Frame', img)
             '''if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -413,7 +415,7 @@ def calculate_heading(counter, reverse, orange, blue):
 
 def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, centr_y_pink, head, sp_angle, turn_trigger):
     pwm = pigpio.pi()
-    global imu, corr, corr_pos
+    global imu
 
     pb_time = 0
     pwm_pin = 12
@@ -512,7 +514,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
             # print(f"pink detected:{pink_detected}")
             if counter == last_counter and not lap_finish:
                 print(
-                    f"centr_y :{centr_y.value} centr_y_red:{centr_y_red.value}")
+                    f"centr_y :{centr_y.value} ")
                 if not finished:
                     target_count = counts.value + 35000
                     finished = True
@@ -567,11 +569,11 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                         # print(f"setPointR: {setPointR}")
 
                 elif counter % 4 == 0 and not blue_flag and not orange_flag:
-                    if ((centr_x_pink.value < 800 and centr_x_pink.value > 0) and ((centr_y.value or centr_y_red.value) <= centr_y_pink.value)) and not continue_parking:
+                    if ((centr_x_pink.value < 800 and centr_x_pink.value > 0) and ((centr_y.value ) <= centr_y_pink.value)) and not continue_parking:
                         # print(f"at 0 counter orange:{setPointR} {setPointL}")
                         setPointR = 35
                         setPointL = -70
-                    if ((centr_x_pink.value > 800) and ((centr_y.value or centr_y_red.value) <= centr_y_pink.value)) and not continue_parking:
+                    if ((centr_x_pink.value > 800) and ((centr_y.value ) <= centr_y_pink.value)) and not continue_parking:
                         # print(f"at 0 counter blue:{setPointR} {setPointL}")
                         setPointL = -35
                         setPointR = 70
@@ -930,8 +932,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                                     while 1:
                                         print("RED IS SEEN..")
                                         servo.setAngle(80)
-                                        print(f"centr y: {centr_y_red.value}")
-                                        if (red_b.value and (centr_y_red.value < 475 and centr_y_red.value > 0)):
+                                        if (red_b.value and (centr_y.value < 475 and centr_y.value > 0)):
                                             print(f"Breaking the loop...")
                                             break
                                         elif (time.time() - current_time > 0.5) and not red_b.value:
@@ -1066,7 +1067,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
 
                         ################### PANDAV 2.0 ####################
 
-                        g_flag = r_flag = p_flag = r_past = g_past = p_past = False
 
                         pwm.write(red_led, 0)
                         pwm.write(green_led, 0)
@@ -1095,7 +1095,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                         elif red_b.value and not g_flag and not continue_parking:
                             r_flag = True
                             print(
-                                f"centr x red: {centr_x.value} centr y red: {centr_y_red.value}")
+                                f"centr x red: {centr_x.value} centr y red: {centr_y.value}")
                             r_past = True
 
                             print('3')
@@ -1143,7 +1143,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
 
                         else:
                             print('7')
-
+                            g_flag = r_flag = p_flag = r_past = g_past = p_past = False
                         #########################################################################################
 
                         if not change_path:
@@ -1222,6 +1222,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                 print(
                     f"x: {x}, y:{y} count:{counts.value} heading_angle:{heading_angle}")
                 print(f"head:{tf_h} left:{tf_l} right: {tf_r}")
+                
+
                 # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
             else:
                 power = 0
@@ -1229,7 +1231,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                 heading_angle = 0
                 counter = 0
                 correctAngle(heading_angle, head.value)
-                stop_b.value = False
+                #stop_b.value = False
                 red_b.value = False
                 green_b.value = False
             # print(f"button:{button}")
@@ -1242,7 +1244,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
             heading_angle = 0
             counter = 0
             correctAngle(heading_angle, head.value)
-            stop_b.value = False
+            #stop_b.value = False
             red_b.value = False
             green_b.value = False
     finally:

@@ -1,3 +1,7 @@
+import cv2
+import numpy as np
+
+
 def process_box(cnt, img, color=(255, 0, 0)):
     if cnt is not None:
         rect = cv2.minAreaRect(cnt)
