@@ -146,9 +146,8 @@ previous_angle = multiprocessing.Value('d', 0.0)
 lidar_angle = multiprocessing.Value('d', 0.0)
 lidar_distance = multiprocessing.Value('d', 0.0)
 imu_shared = multiprocessing.Value('d', 0.0)
-specific_angle = multiprocessing.Array(
-    c_float, 3)  # shared array of 3 integers
-
+specific_angle = multiprocessing.Array(c_float, 3)  # shared array of 3 integers
+lidar_f = multiprocessing.Value('d', 0.0)
 
 ############ PID VARIABLES #############
 
@@ -204,7 +203,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
     elif lane == 2:
         if orange:
             error = y - (200 - setPoint)
-            # print(f"lane:{lane} error:{error} target:{(200 - setPoint)},  x: {x} y{y}")
+            print(f"lane:{lane} error:{error} target:{(200 - setPoint)},  x: {x} y: {y} setPoint:{setPoint}")
         elif blue:
             error = y - (-200 - setPoint)
             # print(f"lane:{lane} error:{error} target:{(-200 - setPoint)}, x: {x} y{y}")
@@ -212,8 +211,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
     elif lane == 3:
         if orange:
             error = (setPoint - 100) - x
-            # print(f"lane:{lane} error:{error} target:{(setPoint - 100)}, x: {x} y {y}")
-
+            print(f"lane:{lane} error:{error} target:{(setPoint - 100)}, x: {x} y {y}")
         elif blue:
             error = x + (100 + setPoint)
             # print(f"lane:{lane} error:{error} target:{(100 + setPoint)}, x:{x} y {y}")
@@ -943,7 +941,7 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
         picam2.stop()
 
 
-def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, head, centr_y_b,  orange_o, centr_y_o, sp_angle, turn_trigger, specific_angle, imu_shared):
+def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, head, centr_y_b,  orange_o, centr_y_o, sp_angle, turn_trigger, specific_angle, imu_shared, lidar_f):
     pwm = pigpio.pi()
     global imu, corr, corr_pos
 
@@ -992,6 +990,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
     blue_on = False
     finish_flag = False
     reset_servo = False
+    trigger_reset = False
     ############ VARIABLES ##################
     color_n = ""
     setPointL = -70
@@ -1155,6 +1154,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
             if button:  # THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
                 # time.sleep(0.01)
                 
+
 
                 if not reset_servo:
                     time.sleep(0.5)
@@ -1334,7 +1334,6 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                         pwm.write(direction_pin, 0)
                                     print('reversing diection red complete')
                                     print('Stopping Motor...')
-                                    turn_trigger_distance = tf_h
                                     turn_cos_theta = math.cos(
                                         math.radians(abs(corr)))
                                     timer_started = False
@@ -1350,7 +1349,6 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                         tfmini.getTFminiData()
                                         correctAngle(heading_angle, head.value)
                                         if abs(corr) < 15:
-                                            turn_trigger_distance = tf_h
                                             turn_cos_theta = math.cos(
                                                 math.radians(abs(corr)))
                                             break
@@ -1459,9 +1457,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 
                                 if not red_b.value and not r_past:
                                     print('reversing diection green')
-                                    turn_trigger_distance = tf_h
                                     while time.time() - current_time < time_g:
-                                        tfmini.getTFminiData()
                                         servo.setAngle(70)
                                         x, y = enc.get_position(
                                             imu_head, counts.value)
@@ -1474,7 +1470,6 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 
                                     print('reversing diection green complete')
                                     print('Stopping Motor...')
-                                    turn_trigger_distance = tf_h
                                     turn_cos_theta = math.cos(
                                         math.radians(abs(corr)))
                                     timer_started = False
@@ -1541,6 +1536,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                 counter = counter + 1
                                 c_time = time.time()
                                 lane_reset = counter % 4
+                                turn_trigger_distance = lidar_f.value
                                 print(
                                     f"head: {turn_trigger_distance}, corr: {turn_cos_theta}")
                                 if lane_reset == 1:
@@ -1884,7 +1880,7 @@ def runEncoder(counts, head, imu_shared, sp_angle):
         ser.close()
 
 
-def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle, turn_trigger, specific_angle):
+def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle, turn_trigger, specific_angle, lidar_f):
     # print("This is first line")
     global CalledProcessError
     pwm = pigpio.pi()
@@ -1942,6 +1938,7 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
                 if (int(lidar_angle.value) == (0 + imu_r + sp_angle.value) % 360):
                     specific_angle[0] = lidar_distance.value
                     lidar_front = lidar_distance.value
+                    lidar_f.value = lidar_front
                 if (int(lidar_angle.value) == (90 + imu_r + sp_angle.value) % 360):
                     specific_angle[1] = lidar_distance.value
                     lidar_left = lidar_distance.value
@@ -1969,6 +1966,8 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
                     if (int(lidar_angle.value) == (0 + imu_r + sp_angle.value) % 360):
                         specific_angle[0] = lidar_distance.value
                         lidar_front = lidar_distance.value
+                        lidar_f.value = lidar_front
+
                     if (int(lidar_angle.value) == (90 + imu_r + sp_angle.value) % 360):
                         specific_angle[1] = lidar_distance.value
                         lidar_left = lidar_distance.value
@@ -1976,7 +1975,7 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
                         specific_angle[2] = lidar_distance.value
                         lidar_right = lidar_distance.value
                     # print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
-            if (lidar_front < 800 and lidar_right > 1800 and lidar_left < 1000) and not turn_trigger.value:
+            if (lidar_front < 450 and lidar_right > 1800 and lidar_left < 1000) and not turn_trigger.value:
                 turn_trigger.value = True
                 trig_time = time.time()
             elif time.time() - trig_time > 4:
@@ -1995,10 +1994,10 @@ if __name__ == '__main__':
         P = multiprocessing.Process(target=Live_Feed, args=(color_b, stop_b, red_b, green_b, pink_b, centr_y,
                                     centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, orange_o, centr_y_o))
         S = multiprocessing.Process(target=servoDrive, args=(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red,
-                                    centr_x_red, centr_x_pink, centr_y_pink, head, centr_y_b, orange_o, centr_y_o,  sp_angle, turn_trigger, specific_angle, imu_shared))
+                                    centr_x_red, centr_x_pink, centr_y_pink, head, centr_y_b, orange_o, centr_y_o,  sp_angle, turn_trigger, specific_angle, imu_shared, lidar_f))
         E = multiprocessing.Process(target=runEncoder, args=(counts, head, imu_shared, sp_angle))
         lidar_proc = multiprocessing.Process(target=read_lidar, args=(
-            lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle, turn_trigger, specific_angle))
+            lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle, turn_trigger, specific_angle, lidar_f))
 
         # Launch the lidar reader process
 
