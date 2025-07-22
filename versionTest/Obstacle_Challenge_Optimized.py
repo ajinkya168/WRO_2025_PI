@@ -33,8 +33,8 @@ time.sleep(5)
 # import time
 
 
-#log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
-#sys.stdout = log_file
+log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
+sys.stdout = log_file
 
 # PINS
 
@@ -334,7 +334,6 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pi
 
                         centr_y.value = centroid_y
                         centr_x.value = centroid_x
-
                         green_b.value = True
 
                 # FOR RED BOX
@@ -589,10 +588,12 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                 if g_flag and not continue_parking:
                     print(f"away from green {g_past}")
                     setPointL = setPointL - 1
+                    setPointL = max(setPointL, -100)
                     setPointR = 70
                 elif r_flag and not continue_parking:
                     print(f"away from red {r_past}")
                     setPointR = setPointR + 1
+                    setPointR = min(setPointR, 100)
                     setPointL = -70
 
                 avg_head = (tf_h * 0.10) + (avg_head*0.90)
@@ -1076,7 +1077,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                                 f"centr x: {centr_x.value} centr y: {centr_y.value}")
                             g_flag = True
                             g_past = True
-
                             print('1')
 
                         elif (g_past or time.time() - gp_time < 0.5) and not continue_parking:
@@ -1086,6 +1086,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                                 print("Green Avoid Complete")
                                 red_count = 0
                                 green_count = 1
+                                g_past = False
+                                g_flag = False
                                 pwm.write(green_led, 1)
                                 buff = 0
                                 gp_time = time.time()
@@ -1094,8 +1096,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
 
                         elif red_b.value and not g_flag and not continue_parking:
                             r_flag = True
-                            print(
-                                f"centr x red: {centr_x.value} centr y red: {centr_y.value}")
+                            print(f"centr x red: {centr_x.value} centr y red: {centr_y.value}")
                             r_past = True
 
                             print('3')
@@ -1106,6 +1107,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                                 print(f"red Avoid complete")
                                 red_count = 1
                                 green_count = 0
+                                r_past = False
+                                r_flag = False
                                 pwm.write(red_led, 1)
                                 buff = 0
                                 rp_time = time.time()
@@ -1125,8 +1128,9 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                                     f"prev_distance: {prev_distance}, distance_left: {tf_l} diff: {abs(prev_distance - tf_l)}")
                                 p_flag = True
                                 if tf_l <= 30 and (abs(prev_distance - tf_l) >= 7 and prev_distance > 0) and p_past:
-
                                     parking_flag = True
+                                    p_past = False
+                                    p_flag = False
                                     print("Pink Avoidance Complete...")
                                 prev_distance = tf_l
 
@@ -1216,8 +1220,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_x_pink, c
                                 i = i + 1
                             correctAngle(heading_angle, head.value)
                 # print(f"green:{green_count} r_count:{red_count}")
-                print(
-                    f"trigger:{trigger} reset_f:{reset_f} red:{r_flag} green:{g_flag} counter: {counter}, imu:{head.value}")
+                print(f"trigger:{trigger} reset_f:{reset_f} r_flag:{r_flag} g_flag:{g_flag} counter: {counter}, imu:{head.value}")
+                print(f"red:{red_b.value} green:{green_b.value} pink:{pink_b.value}")
                 print(f"r_past:{r_past} g_past:{g_past}")
                 print(
                     f"x: {x}, y:{y} count:{counts.value} heading_angle:{heading_angle}")
@@ -1345,7 +1349,8 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
 
                 if (lidar_front < 750 and lidar_right > 1800 and lidar_left < 1000):
                     turn_trigger.value = True
-                elif (lidar_front > 1500 and (lidar_right < 1000 or lidar_left < 1000)):
+                    trig_time = time.time()
+                elif time.time() - trig_time > 4:
                     turn_trigger.value = False
                 # print(f"angles: {specific_angle} imu: {imu_shared.value} total:{imu_r + lidar_angle.value} sp_angle:{sp_angle.value}")
 

@@ -45,7 +45,7 @@ import serial
 import RPi.GPIO as GPIO
 from TFmini import TFmini
 
-log_file = open('/home/pi/WRO_2025_FE/logs/log_9.txt', 'w')
+log_file = open('/home/pi/WRO_2025_PI/logs/log_10.txt', 'w')
 sys.stdout = log_file
 
 #### PINS 
