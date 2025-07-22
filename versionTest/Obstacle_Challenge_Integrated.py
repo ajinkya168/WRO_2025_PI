@@ -265,31 +265,31 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
             else:
                 correction = 0
 
-            if not blue:
-                if (setPoint <= -70) and distance_l <= 22:
-                    print(f"Correcting Green Wall Orange")
-                    correction = 10
-                else:
-                    pass
-
-                if setPoint >= 70 and (distance_r <= 20 or (distance_h <= 18)):
-                    print(f"Wall detected..making correction")
-                    correction = -10
-                else:
-                    pass
-
+        if not blue:
+            if (setPoint <= -70) and distance_l <= 22:
+                print(f"Correcting Green Wall Orange")
+                correction = 10
             else:
-                if setPoint <= -70 and (distance_l <= 20 or (distance_h <= 18)):
-                    print(f"Wall detected..making correction")
-                    correction = 10
-                else:
-                    pass
+                pass
 
-                if setPoint >= 70 and distance_r <= 22:
-                    print(f"correctng red wall in blue")
-                    correction = -10
-                else:
-                    pass
+            if setPoint >= 70 and (distance_r <= 20 or (distance_h <= 18)):
+                print(f"Wall detected..making correction")
+                correction = -10
+            else:
+                pass
+
+        else:
+            if setPoint <= -70 and (distance_l <= 20 or (distance_h <= 18)):
+                print(f"Wall detected..making correction")
+                correction = 10
+            else:
+                pass
+
+            if setPoint >= 70 and distance_r <= 22:
+                print(f"correctng red wall in blue")
+                correction = -10
+            else:
+                pass
 
     if setPoint == 0:
         if correction > 25:
@@ -963,7 +963,8 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
     button = False
 
     trigger = reset_f = False
-    blue_flag = orange_flag = False
+    blue_flag = False
+    orange_flag = True
 
     change_path = False
     timer_started = False
@@ -1585,7 +1586,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                             # counter = counter + 1
                             buff = 0
                             # heading_angle = (90 * counter) % 360
-                            sp_angle.value = heading_angle
+                            #sp_angle.value = heading_angle
                             trigger = True
                             reset_f = True
                             timer_started = False
@@ -1855,7 +1856,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
         # pwm.close()
 
 
-def runEncoder(counts, head, imu_shared):
+def runEncoder(counts, head, imu_shared, sp_angle):
     pwm = pigpio.pi()
     print("Encoder Process Started")
 
@@ -1869,6 +1870,7 @@ def runEncoder(counts, head, imu_shared):
                 try:
                     head.value = float(esp_data[0])
                     imu_shared.value = head.value
+                    #sp_angle.value = 0
                     counts.value = int(esp_data[1])
                     pwm.write(red_led, 1)
                 except ValueError:
@@ -1923,6 +1925,7 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
                 angle = int(angle)
 
                 imu_r = int(imu_shared.value)
+                sp_angle.value = 360 - sp_angle.value
                 # print(f"📍 Angle: {angle:.2f}°, Distance: {distance:.2f} mm")
             except Exception as e:
                 print("⚠️ Parse error:", e)
@@ -1936,14 +1939,14 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
                 lidar_distance.value = previous_distance
                 previous_angle.value = previous_angle.value + 1
                 rplidar[int(lidar_angle.value)] = lidar_distance.value
-                if (int(lidar_angle.value) == (0 + imu_r) % 360):
+                if (int(lidar_angle.value) == (0 + imu_r + sp_angle.value) % 360):
                     specific_angle[0] = lidar_distance.value
                     lidar_front = lidar_distance.value
-                if (int(lidar_angle.value) == (90 + imu_r) % 360):
+                if (int(lidar_angle.value) == (90 + imu_r + sp_angle.value) % 360):
                     specific_angle[1] = lidar_distance.value
                     lidar_left = lidar_distance.value
 
-                if (int(lidar_angle.value) == (270 + imu_r) % 360):
+                if (int(lidar_angle.value) == (270 + imu_r + sp_angle.value) % 360):
                     specific_angle[2] = lidar_distance.value
                     lidar_right = lidar_distance.value
 
@@ -1963,13 +1966,13 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
                     previous_distance = distance
                     previous_angle.value = angle
                     rplidar[int(lidar_angle.value)] = lidar_distance.value
-                    if (int(lidar_angle.value) == (0 + imu_r) % 360):
+                    if (int(lidar_angle.value) == (0 + imu_r + sp_angle.value) % 360):
                         specific_angle[0] = lidar_distance.value
                         lidar_front = lidar_distance.value
-                    if (int(lidar_angle.value) == (90 + imu_r) % 360):
+                    if (int(lidar_angle.value) == (90 + imu_r + sp_angle.value) % 360):
                         specific_angle[1] = lidar_distance.value
                         lidar_left = lidar_distance.value
-                    if (int(lidar_angle.value) == (270 + imu_r) % 360):
+                    if (int(lidar_angle.value) == (270 + imu_r + sp_angle.value) % 360):
                         specific_angle[2] = lidar_distance.value
                         lidar_right = lidar_distance.value
                     # print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
@@ -1981,7 +1984,7 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
             '''elif (lidar_front > 1500 and (lidar_right < 1000 or lidar_left < 1000)):
                 turn_trigger.value = False'''
 
-            #print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left}  turn_trigger:{turn_trigger.value} diff:{time.time() - trig_time}  imu:{imu_r}")
+            #print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left}  turn_trigger:{turn_trigger.value} diff:{time.time() - trig_time}  imu:{imu_r} sp_angle: {sp_angle.value}")
                     # print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
 
 
@@ -1993,7 +1996,7 @@ if __name__ == '__main__':
                                     centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, orange_o, centr_y_o))
         S = multiprocessing.Process(target=servoDrive, args=(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red,
                                     centr_x_red, centr_x_pink, centr_y_pink, head, centr_y_b, orange_o, centr_y_o,  sp_angle, turn_trigger, specific_angle, imu_shared))
-        E = multiprocessing.Process(target=runEncoder, args=(counts, head, imu_shared))
+        E = multiprocessing.Process(target=runEncoder, args=(counts, head, imu_shared, sp_angle))
         lidar_proc = multiprocessing.Process(target=read_lidar, args=(
             lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle, turn_trigger, specific_angle))
 
