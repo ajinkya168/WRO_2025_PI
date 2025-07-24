@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2944527bd46eb93dd7d0ed3ca7f1ec959c5e772eb995d68779ae75fbc3cf146f
-size 892
+created uart
+Resetting....
+Reset Complete
+Starting process
+Starting  processes
+Process Started
+Exception: name 'stop_b' is not defined
+Motors stopped safely.
+⏳ Waiting for LIDAR output...
+🚀 Launching ultra_simple...
+ℹ️ Ultra simple LIDAR data grabber for SLAMTEC LIDAR.
+ℹ️ Version: 2.1.0
+ℹ️ SLAMTEC LIDAR S/N: 988BE195C1E79ED8B5E29EF11C5C4A7D
+ℹ️ Firmware Ver: 1.02
+ℹ️ Hardware Rev: 18
+ℹ️ SLAMTEC Lidar health status : 0
+Encoder Process Started
+⚠️ Malformed ESP data: ['I2C', 'address', 'not', 'found', 1]
+⚠️ Malformed ESP data: ['Failed', 'to', 'find', 'BNO08x', 'chip,', 'retrying...', 1]
+⚠️ Malformed ESP data: ['BNO08x', 'Found!', 1]
+⚠️ Malformed ESP data: ['Setting', 'desired', 'reports', 1]
+⚠️ Malformed ESP data: ['Setting', 'desired', 'reports', 1]
+⚠️ Malformed ESP data: ['Setting', 'desired', 'reports', 1]
+Image Process started
