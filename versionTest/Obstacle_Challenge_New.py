@@ -390,6 +390,7 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
             pink_b.value = False
 
             centr_x_pink.value = 0
+            centr_y_pink.value = 0
             centr_y.value = 0
             centr_x.value = 0
 
@@ -777,11 +778,11 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                 r_past = False
                 g_flag = False
                 r_flag = False
-                if orange_flag and (((centr_x_pink.value < centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value < centr_x_red.value and (centr_x_red.value > 0 and centr_x_pink.value > 0))):
+                if orange_flag and (((centr_x_pink.value < centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value < centr_x.value and (centr_x.value > 0 and centr_x_pink.value > 0))):
                     setPointR = -35
                     setPointC = -35
                     finish = True
-                elif blue_flag and (((centr_x_pink.value > centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value > centr_x_red.value and (centr_x_red.value > 0 and centr_x_pink.value > 0))):
+                elif blue_flag and (((centr_x_pink.value > centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value > centr_x.value and (centr_x.value > 0 and centr_x_pink.value > 0))):
                     setPointL = 35
                     setPointC = 35
                     finish = True
@@ -795,18 +796,18 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                         print(f"setPointL : {setPointL}")
                         # print(f"setPointL: {setPointL}")
                 elif blue_flag:
-                    if (centr_x_red.value < centr_x_pink.value) and (centr_x_pink.value > 0 and centr_x_red.value > 0) and not continue_parking:
+                    if (centr_x.value < centr_x_pink.value) and (centr_x_pink.value > 0 and centr_x.value > 0) and not continue_parking:
                         setPointR = 35
                         setPointL = -70
                         print(f"setPointR: {setPointR}")
 
                 elif counter % 4 == 0 and not blue_flag and not orange_flag:
-                    if ((centr_x_pink.value < 800 and centr_x_pink.value > 0) and ((centr_y.value or centr_y_red.value) <= centr_y_pink.value)) and not continue_parking:
+                    if ((centr_x_pink.value < 800 and centr_x_pink.value > 0) and ((centr_y.value ) <= centr_y_pink.value)) and not continue_parking:
                         setPointR = 35
                         setPointL = -70
                         print(f"at 0 counter orange:{setPointR} {setPointL}")
 
-                    if ((centr_x_pink.value > 800) and ((centr_y.value or centr_y_red.value) <= centr_y_pink.value)) and not continue_parking:
+                    if ((centr_x_pink.value > 800) and ((centr_y.value) <= centr_y_pink.value)) and not continue_parking:
                         setPointL = -35
                         setPointR = 70
                         print(f"at 0 counter blue:{setPointR} {setPointL}")
@@ -1264,7 +1265,6 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                             # heading_angle = (90 * counter) % 360
                             #sp_angle.value = heading_angle
                             trigger = True
-                            reset_f = True
                             timer_started = False
                             turn_t = time.time()
                         elif not turn_trigger.value:
@@ -1353,9 +1353,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 
                         elif red_b.value and not g_flag and not continue_parking:
                             r_flag = True
-                            print(
-                                f"centr x red: {centr_x_red.value} centr y red: {centr_y_red.value}")
-                            # if ((centr_x_red.value < 100 and centr_x_red.value > 0) or  centr_y_red.value > 900):
+                            print(f"centr x red: {centr_x_red.value} centr y red: {centr_y_red.value}")
                             r_past = True
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
@@ -1501,7 +1499,6 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                 print(f"x: {x}, y:{y} count:{counts.value} heading_angle:{heading_angle}")
                 print(f"head:{tf_h} left:{tf_l} right: {tf_r}")
                 print(f"L: {setPointL} R: {setPointR} setPointC: {setPointC}")
-                # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
             else:
                 power = 0
                 pwm.hardware_PWM(12, 100, 0)
