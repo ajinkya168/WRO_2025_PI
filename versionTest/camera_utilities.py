@@ -15,6 +15,8 @@ def process_box(cnt, img, color=(255, 0, 0)):
 def clean_mask(mask, kernel, iterations=2):
     opened = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=iterations)
     closed = cv2.morphologyEx(opened, cv2.MORPH_CLOSE, kernel, iterations=iterations)
+    closed = cv2.GaussianBlur(closed, (5, 5), 0)
+
     return closed
 
 

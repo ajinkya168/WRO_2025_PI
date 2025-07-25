@@ -5,13 +5,7 @@ os.system('sudo pigpiod')
 
 import numpy as np
 import cv2
-from picamera2 import Picamera2
-picam2 = Picamera2()
-picam2.preview_configuration.main.size = (1600,1000)
-picam2.preview_configuration.main.format = "RGB888"
-picam2.preview_configuration.align()
-picam2.configure("preview")
-picam2.start()
+
 
 
 
@@ -41,9 +35,9 @@ cv2.createTrackbar("R1 Min", "HSV", 0, 179, empty)
 
 cv2.resizeWindow('F', 700,600)
 
-
+cap = cv2.VideoCapture(0)
 while True:
-    img= picam2.capture_array()
+    ret, img = cap.read()
     h_min = cv2.getTrackbarPos("HUE Min", "HSV")
     h_max = cv2.getTrackbarPos("HUE Max", "HSV")
     s_min = cv2.getTrackbarPos("SAT Min", "HSV")
@@ -63,9 +57,9 @@ while True:
     r1upper = np.array([r1_max, s_max, v_max])
     r1lower = np.array([r1_min, s_min, v_min])
     mask1 = cv2.inRange(hsv_img, lower, upper)
-    #mask2 = cv2.inRange(hsv_img, r1lower, r1upper)
-    #mask = mask1 + mask2
-    mask = mask1
+    mask2 = cv2.inRange(hsv_img, r1lower, r1upper)
+    mask = mask1 + mask2
+    #mask = mask1
     kernel = np.ones((3,3),'uint8')
    #mask = cv2.
     #mask = cv2.dilate(mask, kernel, iterations=1)
@@ -73,7 +67,8 @@ while True:
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel,iterations = 2)
     d_img = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel,iterations = 2)
 
-    
+    #cv2.bitwise_not(d_img, d_img)    
+    d_img = cv2.GaussianBlur(d_img, (5, 5), 0)
 
     final_img = resize_final_img(300,300, d_img)
     # final_img = np.concatenate((mask,d_img,e_img),axis =1)

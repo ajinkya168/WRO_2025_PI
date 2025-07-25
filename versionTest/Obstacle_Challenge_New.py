@@ -407,24 +407,27 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 
             # predefined mask for green colour detection
             # For Green Color
-            lower = np.array([85, 66, 2])  # green
-            upper = np.array([110, 186, 50])
+            lower = np.array([100, 86, 16])  # green
+            upper = np.array([107, 255, 184])
             mask = cv2.inRange(hsv_img, lower, upper)
 
             # For Red Color
-            lower1 = np.array([0, 152, 9])  # red
-            upper1 = np.array([2, 254, 123])
-            r1lower = np.array([171, 152, 9])
-            r1upper = np.array([179, 254, 123])
+            lower1 = np.array([0, 193, 35])  # red
+            upper1 = np.array([96, 255, 255])
+            r1lower = np.array([167, 193, 35])
+            r1upper = np.array([179, 255, 255])
             mask1 = cv2.inRange(hsv_img1, lower1, upper1)
             mask_red = cv2.inRange(hsv_img1, r1lower, r1upper)
             mask1 = mask1 + mask_red
 
             # For Pink Color
-            lower2 = np.array([131, 94, 21])  # pink
-            upper2 = np.array([162, 175, 84])
+            lower2 = np.array([126, 78, 47])  # pink
+            upper2 = np.array([145, 196, 100])
+            lower2_p = np.array([0, 78, 47])
+            upper2_p = np.array([0, 196, 100])
             mask2 = cv2.inRange(hsv_img2, lower2, upper2)
-
+            mask2_pink = cv2.inRange(hsv_img2, lower2_p, upper2_p)
+            mask2 = mask2 + mask2_pink
             # Remove Extra garbage from image
             d_img = camera_utilities.clean_mask(mask, kernel)  # green
             d_img1 = camera_utilities.clean_mask(mask1, kernel)  # red
@@ -610,11 +613,11 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 
             print(f"green:{green_b.value}  red:{red_b.value}, pink:{pink_b.value}")
             # print(f"green centr :{centr_x.value}, red_centr:{centr_x.value}, pink_centr:{centr_x_pink.value}")
-            # cv2.imshow('Object Frame', img)
-            '''if cv2.waitKey(1) & 0xFF == ord('q'):
+            '''cv2.imshow('Object Frame', img)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
                 stop_b.value = True
-                break'''
-        #cv2.destroyAllWindows()
+                break
+        cv2.destroyAllWindows()'''
         #picam2.stop()
 
     except KeyboardInterrupt:

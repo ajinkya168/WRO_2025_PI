@@ -187,8 +187,8 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pi
 
             # predefined mask for green colour detection
             # For Green Color
-            lower = np.array([85, 66, 2])  # green
-            upper = np.array([110, 186, 50])
+            lower = np.array([100, 86, 16])  # green
+            upper = np.array([107, 255, 184])
             mask = cv2.inRange(hsv_img, lower, upper)
 
             # For Red Color
