@@ -1,29 +1,3 @@
-ServoProcess started
-before correction: 124.73908430852335
-time : 1725620821.5031936 imu: 103.94923692376946 correction : 30 error: 103.94923692376946 left: 32, right:35
-before correction: 123.7899027470398
-time : 0.060021400451660156 imu: 103.15825228919984 correction : 30 error: 103.15825228919984 left: 32, right:36
-heading:103.15825228919984 0  counter:0 False,  target_count:0, encoder_c:0,    L C R:32 13 36
-
-		********** Packet *************
-DBG::		 HEADER:
-DBG::		 Data Len: 39
-DBG::		 Channel: INPUT_SENSOR_REPORTS (3)
-DBG::		 	Report Type: BASE_TIMESTAMP (0xfb)
-DBG::		 	Sensor Report Type: ACCELEROMETER(0x1)
-DBG::		 Sequence number: 44
-
-DBG::		 Data:
-DBG::		[0x04] 0xFB 0x19 0x01 0x00 
-DBG::		[0x08] 0x00 0x01 0x05 0xFF 
-DBG::		[0x0C] 0xFF 0xFF 0xFF 0xFF 
-DBG::		[0x10] 0xFF 0xFF 0xFF 0xFF 
-DBG::		[0x14] 0xFF 0xFF 0xFF 0xFF 
-DBG::		[0x18] 0xFF 0xFF 0xFF 0xFF 
-DBG::		[0x1C] 0xFF 0xFF 0xFF 0xFF 
-DBG::		[0x20] 0xFF 0xFF 0xFF 0xFF 
-DBG::		[0x24] 0xFF 0xFF 0xFF 0xFF 
-DBG::		[0x28] 0xFF 0xFF 0xFF 
-		*******************************
-
-Exception: 255
+version https://git-lfs.github.com/spec/v1
+oid sha256:8bf81e10c2f25c04ec2097a45a708fbfe4030d32eddbe5412fb8581edece4cbd
+size 1059

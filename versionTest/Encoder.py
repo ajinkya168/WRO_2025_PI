@@ -3,7 +3,6 @@ import RPi.GPIO as GPIO
 import time
 import math
 import board
-import busio
 from math import atan2, sqrt
 #import matplotlib.pyplot as plt
 import multiprocessing

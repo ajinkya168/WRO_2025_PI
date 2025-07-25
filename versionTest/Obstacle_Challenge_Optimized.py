@@ -388,20 +388,22 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_x_pink, centr_y_pi
                     centr_y_pink.value = centroid_y
                     pink_b.value = True
 
-            #print(f"green:{green_b.value}  red:{red_b.value}, pink:{pink_b.value}")
-            # print(f"green centr :{centr_x.value}, red_centr:{centr_x.value}, pink_centr:{centr_x_pink.value}")
-            # cv2.imshow('Object Frame', img)
+            print(f"green:{green_b.value}  red:{red_b.value}, pink:{pink_b.value}")
+            #print(f"green centr :{centr_x.value}, red_centr:{centr_x.value}, pink_centr:{centr_x_pink.value}")
+            #cv2.imshow('Object Frame', img)
             '''if cv2.waitKey(1) & 0xFF == ord('q'):
-				stop_b.value = True
-				break'''
-        # cv2.destroyAllWindows()
-        picam2.stop()
+                stop_b.value = True
+                break'''
+        #cv2.destroyAllWindows()
+        #picam2.stop()
 
     except KeyboardInterrupt:
-        picam2.stop()
+       #picam2.stop()
         # print(f"Exception: {e}")
+        pass
     finally:
-        picam2.stop()
+        #picam2.stop()
+        pass
 
 
 def calculate_heading(counter, reverse, orange, blue):
