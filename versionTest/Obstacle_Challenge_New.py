@@ -172,7 +172,6 @@ corr_pos = 0
 
 def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse, heading, centr_x_p, centr_y_g, centr_y_r, centr_y_p, finish, distance_h, distance_l, distance_r):
     # print("INSIDE CORRECT")
-    # getTFminiData()
     global prevError, totalError, prevErrorGyro, totalErrorGyro, corr_pos
 
     error = 0
