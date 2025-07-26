@@ -239,7 +239,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
     trigger = False
     counter = 0
     left_flag = False
-    right_flag = True
+    right_flag = False
     correctAngle(0, left_flag, right_flag, trigger, head.value, 0,0,0)
     target_count = 0
     turn_t = 0
@@ -463,7 +463,7 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, sp_angle, turn_trigg
             elif (lidar_front > 1500 and lidar_right < 1000) and right_f.value:
                 turn_trigger.value = False
             
-            if(lidar_front < 800 and lidar_left < 1800 and lidar_right > 1000) and left_f.value:
+            if(lidar_front < 800 and lidar_left > 1800 and lidar_right < 1000) and left_f.value:
                 turn_trigger.value = True
             elif (lidar_front > 1500 and lidar_left < 1000) and left_f.value:
                 turn_trigger.value = False
