@@ -15,8 +15,8 @@ import serial
 import sys
 from TFmini import TFmini
 
-#log_file = open('/home/pi/WRO_CODE/logs/log_open.txt', 'w')
-#sys.stdout = log_file
+log_file = open('/home/pi/WRO_CODE/logs/log_open.txt', 'w')
+sys.stdout = log_file
 
 
 # PINS
@@ -273,6 +273,18 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                 pwm.set_PWM_dutycycle(12, 2.55 * total_power)  # Set duty cycle to 50% (128/255)
 
                 pwm.write(20, 1)  # Set pin 20 high
+                
+                if counter == 12:
+                    counter = -1
+                    print(f"Counters are over")
+                
+                if counter == -1:    
+                    if tf_h < 1500 and heading_angle == 0 and (head.value < 10 or head.value > 350):
+                        print(f"Open CHallenge Finished")
+                        power = 0
+                        pwm.set_PWM_dutycycle(12, power)  # Set duty cycle to 50% (128/255)
+                        sys.exit()
+
 
                 if not right_flag and not left_flag:
                     if tf_r > 100:
@@ -284,16 +296,11 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
 
                 correctAngle(heading_angle, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
 
-                if counter == 12:
-                    counter = -99
-                    if tf_h < 150 and heading_angle == 0 and (head.value < 10 or head.value > 350):
-                        power = 0
-                        pwm.set_PWM_dutycycle(12, power)  # Set duty cycle to 50% (128/255)
-                        sys.exit()
+
 
                 if right_flag:
                     print("Right Flag is set")
-                    if(turn_trigger.value and not trigger and (time.time() - turn_t) > (3)):
+                    if(turn_trigger.value and not trigger ) and time.time() - turn_t > 3:
                         counter = counter + 1
                         heading_angle = (90 * counter) % 360
                         sp_angle.value = heading_angle
@@ -304,7 +311,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                         pwm.write(blue_led, 0)
 
                 elif left_flag:
-                    if(turn_trigger.value and not trigger and (time.time() - turn_t) > (3)):
+                    if(turn_trigger.value and not trigger) and time.time() - turn_t > 3:
                         counter = counter + 1
                         heading_angle = -(90 * counter) % 360
                         sp_angle.value = heading_angle
@@ -314,8 +321,6 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                         trigger = False
                         pwm.write(blue_led, 0)
                 
-
-
 
 
             else:
@@ -328,9 +333,8 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                 counter = 0
                 left_flag = False
                 right_flag = False
-                # counts.value = 0
                 correctAngle(heading_angle, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
-            print(f"counter:{counter} trigger:{trigger}, trigger_b:{turn_trigger.value} right_flag:{right_flag} left_flag:{left_flag} heading_angle:{heading_angle}, tf_h: {lidar_f.value}, tf_l: {tf_l}, tf_r: {tf_r}")
+            print(f"counts:{counts.value} counter:{counter} trigger:{trigger}, trigger_b:{turn_trigger.value} right_flag:{right_flag} left_flag:{left_flag} heading_angle:{heading_angle}, head:{head.value} tf_h: {lidar_f.value}, tf_l: {tf_l}, tf_r: {tf_r}")
             #print(f"heading:{head.value} {heading_angle}  counter:{counter} {trigger},  target_count:{target_count}, encoder_c:{counts.value}, L C R:{distance_left} {distance_head} {distance_right}")
     except KeyboardInterrupt:
         power = 0
@@ -363,6 +367,7 @@ def runEncoder(counts, head):
 def read_lidar(lidar_angle, lidar_distance, previous_angle, sp_angle, turn_trigger, specific_angle, lidar_f, head, left_f, right_f):
     #print("This is first line")
     global CalledProcessError
+    trig_time = 0
     lidar_binary_path = '/home/pi/rplidar_sdk/output/Linux/Release/ultra_simple'
     print("⏳ Waiting for LIDAR output...")
     
@@ -424,13 +429,14 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, sp_angle, turn_trigg
                 if(int(lidar_angle.value) == (270 + imu_r + sp_angle.value) % 360):
                     specific_angle[2] = lidar_distance.value
                     lidar_right = lidar_distance.value
-                if(lidar_front < 800 and lidar_left < 900 and lidar_right > 1800) and right_f.value:
+                '''if(lidar_front < 800 and lidar_left < 900 and lidar_right > 1500) and right_f.value and not turn_trigger.value:
                     turn_trigger.value = True
-                elif (lidar_front < 800 and lidar_left > 1800 and lidar_right < 900) and left_f.value:
+                    trig_time = time.time()
+                elif (lidar_front < 800 and lidar_left > 1500 and lidar_right < 900) and left_f.value and not turn_trigger.value:
                     turn_trigger.value = True
+                    trig_time = time.time()
                 else:
-                    turn_trigger.value = False
-            
+                    turn_trigger.value = False'''
                 #print(f"angles: {specific_angle} imu: {imu_shared.value} total:{imu_r + lidar_angle.value} sp_angle:{sp_angle.value}")
                 
             if(distance != 0): 
@@ -452,14 +458,16 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, sp_angle, turn_trigg
                         lidar_right = lidar_distance.value                                      
                     #print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
             
-                if(lidar_front < 800 and lidar_left < 900 and lidar_right > 1800) and right_f.value:
-                    turn_trigger.value = True
-                elif (lidar_front < 800 and lidar_left > 1800 and lidar_right < 900) and left_f.value:
-                    turn_trigger.value = True
-                else:
-                    turn_trigger.value = False
+            if(lidar_front < 800 and lidar_left < 1000 and lidar_right > 1500) and right_f.value:
+                turn_trigger.value = True
+            elif (lidar_front > 1500 and lidar_right < 1000) and right_f.value:
+                turn_trigger.value = False
             
-                    
+            if(lidar_front < 800 and lidar_left < 1800 and lidar_right > 1000) and left_f.value:
+                turn_trigger.value = True
+            elif (lidar_front > 1500 and lidar_left < 1000) and left_f.value:
+                turn_trigger.value = False
+                
             #print(f"angles: {imu_r} sp_angle:{sp_angle.value} front: {lidar_front}, left: {lidar_left}, right: {lidar_right} lidar_f: {lidar_f.value} turn_trigger: {turn_trigger.value}")
 
     '''except KeyboardInterrupt:
