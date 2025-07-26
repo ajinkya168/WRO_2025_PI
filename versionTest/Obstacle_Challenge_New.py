@@ -1260,16 +1260,15 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 
                         # and (time.time() - turn_t) > (4 + buff)):
                         if (turn_trigger.value and not trigger) and (time.time() - turn_t) > (4 + buff):
-                            # counter = counter + 1
                             buff = 0
-                            # heading_angle = (90 * counter) % 360
-                            #sp_angle.value = heading_angle
                             trigger = True
+                            reset_f = True
                             timer_started = False
                             turn_t = time.time()
                         elif not turn_trigger.value:
                             trigger = False
                             pwm.write(blue_led, 0)
+                            
                             # pwm.write(green_led, 0)
                         '''if color_s == color_n and not trigger and (time.time() - turn_t) > (4 + buff):
 							buff = 0
@@ -1624,10 +1623,10 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
                 if (int(lidar_angle.value) == (270 + imu_r + sp_angle.value) % 360):
                     specific_angle[2] = lidar_distance.value
                     lidar_right = lidar_distance.value
-                if (lidar_front < 650 and lidar_right > 1800 and lidar_left < 1000):
+                '''if (lidar_front < 650 and lidar_right > 1800 and lidar_left < 1000):
                     turn_trigger.value = True
                 else:
-                    turn_trigger.value = False
+                    turn_trigger.value = False'''
 
                 '''if (lidar_front < 750 and lidar_right > 1800 and lidar_left < 1000) and not turn_trigger.value:
                     turn_trigger.value = True
@@ -1657,10 +1656,10 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
                         specific_angle[2] = lidar_distance.value
                         lidar_right = lidar_distance.value
                     # print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
-                    if (lidar_front < 650 and lidar_right > 1800 and lidar_left < 1000):
-                        turn_trigger.value = True
-                    else:
-                        turn_trigger.value = False
+            if (lidar_front < 650 and lidar_right > 1800 and lidar_left < 1000):
+                turn_trigger.value = True
+            else:
+                turn_trigger.value = False
 
 
             #print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left}  turn_trigger:{turn_trigger.value} diff:{time.time() - trig_time}  imu:{imu_r} sp_angle: {sp_angle.value}")
