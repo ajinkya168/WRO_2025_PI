@@ -377,17 +377,7 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
     try:
         while True:
             
-            all_flag = False
-            both_flag = False
-            pink_red = False
-            pink_green = False
-            only_red = False
-            only_green = False
-            only_pink = False
 
-            red_b.value = False
-            green_b.value = False
-            pink_b.value = False
 
             centr_x_pink.value = 0
             centr_y_pink.value = 0
@@ -440,24 +430,35 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 
             # ----------------------------------------------
             green_present, max_cnt = camera_utilities.is_color_present(
-                cont, min_area=2000)
+                cont, min_area=1000)
 
             # ---------------------------------------
 
             red_present, max_cnt1 = camera_utilities.is_color_present(
-                cont1, min_area=2000)
+                cont1, min_area=1000)
 
             # ----------------------------------------------------
             pink_present, max_cnt2 = camera_utilities.is_color_present(
-                cont2, min_area=2000)
+                cont2, min_area=1000)
 
             # --------------------------------------------------------
 
             color_combo = (red_present, green_present, pink_present)
-            # print(f"Color Combo: {color_combo}")
-
+          #  print(f"Color Combo: {color_combo}")
+            #print(f"area {cv2.contourArea(max_cnt)}")
             if color_combo == (False, False, False):
-                pass
+                red_b.value = False
+                green_b.value = False
+                pink_b.value = False
+
+                all_flag = False
+                both_flag = False
+                pink_red = False
+                pink_green = False
+                only_red = False
+                only_green = False
+                only_pink = False
+                    
             elif color_combo == (True, True, True):
                 all_flag = True
             elif color_combo == (True, True, False):
@@ -484,6 +485,7 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
                         centr_y.value = centroid_y
                         centr_x.value = centroid_x
                         green_b.value = True
+                        red_b.value = False
 
                 # FOR RED BOX
                 elif cv2.contourArea(max_cnt1) > cv2.contourArea(max_cnt):
@@ -495,12 +497,12 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 
                         centr_y.value = centroid_y_red
                         centr_x.value = centroid_x_red
-
                         red_b.value = True
+                        green_b.value = False
 
                 # FOR PINK BOX
                 # elif cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt) and cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt1):
-                if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
+                if (cv2.contourArea(max_cnt2) > 1000 and cv2.contourArea(max_cnt2) < 306000):
                     # Draw a rectange on the contour
                     centroid_x_pink, centroid_y_pink = camera_utilities.process_box(
                         max_cnt2, img)
@@ -511,6 +513,8 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 
             # FOR RED BOX
             elif only_red:
+                green_b.value = False
+                pink_b.value = False  
                 # print(cv2.contourArea(max_cnt1))
                 if cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000:
                     # Draw a rectange on the contour
@@ -518,11 +522,12 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
                         max_cnt1, img)
                     centr_y.value = centroid_y_red
                     centr_x.value = centroid_x_red
-
                     red_b.value = True
 
             # FOR GREEN BOX
             elif only_green:
+                red_b.value = False
+                pink_b.value = False  
                 # print(cv2.contourArea(max_cnt))
                 if cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000:
                     # Draw a rectange on the contour
@@ -538,7 +543,9 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 
             # FOR PINK BOX
             elif only_pink:
-                if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
+                red_b.value = False
+                green_b.value = False   
+                if (cv2.contourArea(max_cnt2) > 1000 and cv2.contourArea(max_cnt2) < 306000):
                     # Draw a rectange on the contour
                     centroid_x, centroid_y = camera_utilities.process_box(
                         max_cnt2, img)
@@ -547,6 +554,7 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
                     pink_b.value = True
 
             elif both_flag:
+                pink_b.value = False
                 # print("BOTH ARE PRESENT...")
                 # FOR GREEN BOX
                 if cv2.contourArea(max_cnt) > cv2.contourArea(max_cnt1):
@@ -570,6 +578,7 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
                         red_b.value = True
 
             elif pink_red:
+                green_b.value = False
                 # FOR RED BOX
                 # if cv2.contourArea(max_cnt1) > cv2.contourArea(max_cnt2):
                 if (cv2.contourArea(max_cnt1) > 1000 and cv2.contourArea(max_cnt1) < 306000):
@@ -582,7 +591,7 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 
                     red_b.value = True
                 # elif cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt1):
-                if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
+                if (cv2.contourArea(max_cnt2) > 1000 and cv2.contourArea(max_cnt2) < 306000):
                     # Draw a rectange on the contour
                     centroid_x, centroid_y = camera_utilities.process_box(
                         max_cnt2, img)
@@ -594,6 +603,7 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
                     pink_b.value = True
 
             elif pink_green:
+                red_b.value = False
                 # if cv2.contourArea(max_cnt) > cv2.contourArea(max_cnt2):
                 if (cv2.contourArea(max_cnt) > 1000 and cv2.contourArea(max_cnt) < 306000):
                     # Draw a rectange on the contour
@@ -603,7 +613,7 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
                     centr_x.value = centroid_x
                     green_b.value = True  # pink_b.value = False
                 # elif cv2.contourArea(max_cnt2) > cv2.contourArea(max_cnt):
-                if (cv2.contourArea(max_cnt2) > 2000 and cv2.contourArea(max_cnt2) < 306000):
+                if (cv2.contourArea(max_cnt2) > 1000 and cv2.contourArea(max_cnt2) < 306000):
                     # Draw a rectange on the contour
                     centroid_x, centroid_y = camera_utilities.process_box(
                         max_cnt2, img)
@@ -611,13 +621,13 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
                     centr_y_pink.value = centroid_y
                     pink_b.value = True
 
-            print(f"green:{green_b.value}  red:{red_b.value}, pink:{pink_b.value}")
+            #print(f"LIVE green:{green_b.value}  red:{red_b.value}, pink:{pink_b.value}")
             #print(f"green centr :{centr_x.value}, red_centr:{centr_x.value}, pink_centr:{centr_x_pink.value}")
-            #cv2.imshow('Object Frame', img)
-            '''if cv2.waitKey(1) & 0xFF == ord('q'):
+            '''cv2.imshow('Object Frame', img)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
                 stop_b.value = True
-                break'''
-        #cv2.destroyAllWindows()
+                break
+        cv2.destroyAllWindows()'''
         #picam2.stop()
 
     except KeyboardInterrupt:
@@ -708,6 +718,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
     try:
 
         while True:
+            print(f"green: {green_b.value} red: {red_b.value} pink: {pink_b.value}")
             imu_shared.value = head.value
             # print(f"red:{red_b.value} green:{green_b.value}")
             # print(f"angles:{specific_angle}")
@@ -744,7 +755,8 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                 if not finished:
                     target_count = counts.value + 35000
                     finished = True
-                if counts.value >= target_count and not reverse_trigger:
+ #               if counts.value >= target_count and not reverse_trigger:
+                if tf_h < 1500 and not reverse_trigger:
                     power = 0
                     # Set duty cycle to 50% (128/255)
                     pwm.set_PWM_dutycycle(pwm_pin, power)
@@ -1130,7 +1142,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                     green_turn = False
                                     green_time = False
                                     reverse_trigger = False
-                                elif lidar_f.value < 30 and not green_b.value and not pink_b.value:
+                                elif lidar_f.value < 100 and not green_b.value and not pink_b.value:
                                     green_turn = False
                                     reverse_trigger = False
                                     green_time = True
@@ -1181,6 +1193,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                     if not timer_started:
                                         current_time = time.time()
                                         timer_started = True
+                                        
                                     print(
                                         f'reversing diection red pink color: {pink_b.value} pink flag: {p_flag} {p_past}  red color:{red_b.value} red flag: {r_past} {r_flag}')
                                     while 1:
@@ -1203,7 +1216,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                         # Set pin 20 hig
                                         pwm.write(direction_pin, 0)
                                     print('red reversing diection complete')
-                                    buff = 4
+                                    buff = 0
                                     timer_started = False
                                 print('Stopping Motor...')
 
@@ -1504,10 +1517,8 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                 heading_angle = 0
                 counter = 0
                 correctAngle(heading_angle, head.value)
-                color_b.Value = False
                 stop_b.value = False
-                red_b.value = False
-                green_b.value = False
+
             # print(f"button:{button}")
 
     except Exception as e:
@@ -1623,10 +1634,10 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
                 if (int(lidar_angle.value) == (270 + imu_r + sp_angle.value) % 360):
                     specific_angle[2] = lidar_distance.value
                     lidar_right = lidar_distance.value
-                '''if (lidar_front < 650 and lidar_right > 1800 and lidar_left < 1000):
+                if (lidar_front < 650 and lidar_right > 1800 and lidar_left < 1000):
                     turn_trigger.value = True
                 else:
-                    turn_trigger.value = False'''
+                    turn_trigger.value = False
 
                 '''if (lidar_front < 750 and lidar_right > 1800 and lidar_left < 1000) and not turn_trigger.value:
                     turn_trigger.value = True
@@ -1656,10 +1667,10 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
                         specific_angle[2] = lidar_distance.value
                         lidar_right = lidar_distance.value
                     # print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
-            if (lidar_front < 650 and lidar_right > 1800 and lidar_left < 1000):
-                turn_trigger.value = True
-            else:
-                turn_trigger.value = False
+                    if (lidar_front < 650 and lidar_right > 1800 and lidar_left < 1000):
+                        turn_trigger.value = True
+                    else:
+                        turn_trigger.value = False
 
 
             #print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left}  turn_trigger:{turn_trigger.value} diff:{time.time() - trig_time}  imu:{imu_r} sp_angle: {sp_angle.value}")
