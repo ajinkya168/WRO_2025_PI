@@ -20,6 +20,11 @@ import time
 import subprocess
 from DetectorResult import DetectorResult  # Assuming DetectorResult is defined in a separate file
 import limelight
+import limelightresults
+import urllib.request
+import json
+
+
 os.system('sudo pkill pigpiod')
 os.system('sudo pigpiod')
 
@@ -132,6 +137,7 @@ lidar_distance = multiprocessing.Value('d', 0.0)
 imu_shared = multiprocessing.Value('d', 0.0)
 specific_angle = multiprocessing.Array(c_float, 3)  # shared array of 3 integers
 lidar_f = multiprocessing.Value('d', 0.0)
+shared_lock = multiprocessing.Lock()
 
 ############ PID VARIABLES #############
 
@@ -334,7 +340,7 @@ thickness = 2
 
 
 # loop to capture video frames
-def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, orange_o, centr_y_o):
+def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, orange_o, centr_y_o, shared_lock):
     print('Image Process started')
     both_flag = False
     all_flag = False
@@ -364,7 +370,9 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 
     # Time for FPS calculation
     prev_time = time.time()
-
+    block_name = ""
+    points= []
+    cx, cy = 0, 0
     try:
         while True:
             # Read frame from stream
@@ -374,34 +382,59 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
             if a != -1 and b != -1:
                 jpg = bytes_stream[a:b+2]
                 bytes_stream = bytes_stream[b+2:]
-                frame = cv2.imdecode(np.frombuffer(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
+                #frame = cv2.imdecode(np.frombuffer(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
 
                 # Get Limelight parsed results
                 result = ll.get_latest_results()
-                parsed = limelightresults.parse_results(result)
-
-                if parsed and parsed.validity:
-                    detector_data_list = result.get("Results", {}).get("Detector", [])
-                    for det in detector_data_list:
-                        det_res = DetectorResult(det)
-
-                        # Draw bounding box using polygon points
-                        pts = np.array(det_res.points, np.int32)
-                        pts = pts.reshape((-1, 1, 2))
-                        cv2.polylines(frame, [pts], isClosed=True, color=(0, 255, 0), thickness=2)
-
-                        # Label
-                        label = f"{det_res.class_name} ({det_res.confidence:.2f})"
-                        cv2.putText(frame, label, tuple(det_res.points[0]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-
-                        # Print detection details
-                        print("Class:", det_res.class_name)
-                        print("Confidence:", det_res.confidence)
-                        print("Target X deg / px:", det_res.target_x_degrees, "/", det_res.target_x_pixels)
-                        print("Target Y deg / px:", det_res.target_y_degrees, "/", det_res.target_y_pixels)
-                        print("Target Area:", det_res.target_area)
-                        print("Points:", det_res.points)
-                        print("---")
+                #parsed = limelightresults.parse_results(result)
+                #print(result.get('Detector')[0])
+                #print(result.get('Detector'))
+                detectors = result.get('Detector', [])
+                if detectors:
+                    detector_data = detectors[0]
+                    block_name = detector_data['class']
+                    points = detector_data['pts']
+                    #print(detector_data['class'])
+                    cx = sum(p[0] for p in points) / 4
+                    cy = sum(p[1] for p in points) / 4
+                else:
+                    block_name = None
+                    points = [0,0,0,0]
+                    cx, cy  = 0, 0
+                #print(f"block_name:{block_name}, cx, xy:{(cx, xy)}")
+                if(block_name == "red"):
+                    
+                    red_b.value = True
+                    green_b.value = False
+                    centr_x_red.value = cx
+                    centr_y_red.value = cy
+                    centr_x.value = 0
+                    centr_y.value = 0
+                elif(block_name == "green"):
+                    green_b.value = True
+                    red_b.value = False
+                    centr_x.value = cx
+                    centr_y.value = cy
+                    centr_x_red.value = 0
+                    centr_y_red.value = 0
+                    
+                elif(block_name == "pink"):
+                    pink_b.value = True
+                    centr_x_pink.value = cx
+                    centr_y_pink.value = cy
+                else:
+                    print("ELSLSELSLELSLESLLEL")
+                    red_b.value = False
+                    green_b.value = False
+                    pink_b.value = False
+                    centr_x_red.value = 0
+                    centr_y_red.value = 0
+                    centr_x.value = 0
+                    centr_y.value = 0
+                    centr_x_pink.value = 0
+                    centr_y_pink.value = 0
+                #print(f"block_name:{block_name} red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value}")
+                # print(result['Detector'][0]['class'] if result['Detector'] else None)
 
                 # FPS calculation
                 curr_time = time.time()
@@ -413,26 +446,29 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
                     ll_fps = ll.get_fps()
                 except:
                     ll_fps = "N/A"
+                
+                #print(f"LL FPS: {ll_fps}")
+                #print(f"LL class:{result.get("Results", {}).get("Detector", [])}")
 
                 # Overlay FPS
-                cv2.putText(frame, f"LL FPS: {ll_fps}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-                cv2.putText(frame, f"Cam FPS: {fps_calc:.2f}", (10, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+                #cv2.putText(frame, f"LL FPS: {ll_fps}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+                #cv2.putText(frame, f"Cam FPS: {fps_calc:.2f}", (10, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
 
                 # Display frame
-                cv2.imshow("Limelight Stream", frame)
-                if cv2.waitKey(1) == 27:  # ESC to exit
-                    break
+                #cv2.imshow("Limelight Stream", frame)
+                #if cv2.waitKey(1) == 27:  # ESC to exit
+                    #break
 
     except KeyboardInterrupt:
         print("\n🔴 Stopped by user.")
-
+        ll.disable_websocket()
     finally:
         ll.disable_websocket()
-        cv2.destroyAllWindows()
+        #cv2.destroyAllWindows()
         print("🛑 Limelight connection closed.")
 
 
-def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, head, centr_y_b,  orange_o, centr_y_o, sp_angle, turn_trigger, specific_angle, imu_shared, lidar_f):
+def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, head, centr_y_b,  orange_o, centr_y_o, sp_angle, turn_trigger, specific_angle, imu_shared, lidar_f, shared_lock):
     pwm = pigpio.pi()
     global imu, corr, corr_pos
 
@@ -511,6 +547,8 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
     try:
         while True:
             imu_shared.value = head.value
+            print(f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value}")
+
             # print(f"red:{red_b.value} green:{green_b.value}")
             # print(f"angles:{specific_angle}")
             # print(f"fps 2222:{1/(time.time() - fps_time2)}")
@@ -1312,8 +1350,9 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                 correctAngle(heading_angle, head.value)
                 color_b.Value = False
                 stop_b.value = False
-                red_b.value = False
-                green_b.value = False
+                #red_b.value = False
+                #green_b.value = False
+                #print("BUUTTTTON ELSE")
             # print(f"button:{button}")
 
     except Exception as e:
@@ -1477,9 +1516,9 @@ if __name__ == '__main__':
         print("Starting process")
 
         P = multiprocessing.Process(target=Live_Feed, args=(color_b, stop_b, red_b, green_b, pink_b, centr_y,
-                                    centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, orange_o, centr_y_o))
+                                    centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, orange_o, centr_y_o, shared_lock))
         S = multiprocessing.Process(target=servoDrive, args=(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red,
-                                    centr_x_red, centr_x_pink, centr_y_pink, head, centr_y_b, orange_o, centr_y_o,  sp_angle, turn_trigger, specific_angle, imu_shared, lidar_f))
+                                    centr_x_red, centr_x_pink, centr_y_pink, head, centr_y_b, orange_o, centr_y_o,  sp_angle, turn_trigger, specific_angle, imu_shared, lidar_f, shared_lock))
         E = multiprocessing.Process(target=runEncoder, args=(counts, head, imu_shared, sp_angle))
         lidar_proc = multiprocessing.Process(target=read_lidar, args=(
             lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle, turn_trigger, specific_angle, lidar_f))
@@ -1488,17 +1527,17 @@ if __name__ == '__main__':
 
         # C = multiprocessing.Process(target=color_SP, args=(blue_c, orange_c, white_c))
         print("Starting lidar process")
-        #lidar_proc.start()
+        lidar_proc.start()
         print("lidar process startes")
         print("Image Process Start")
         P.start()
         print("Image Process Started")
         print("Servo Process Start")
-        #S.start()
+        S.start()
         print("Servo Process Started")
         print("Encoder Process Start")
 
-        #E.start()
+        E.start()
         print("Encoder Process Started")
 
     except KeyboardInterrupt:

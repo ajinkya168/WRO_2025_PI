@@ -105,20 +105,22 @@ if __name__ == '__main__':
 
     # Fixed-size list for 360 degrees
     lidar_data_list = [None] * 360
-
+    count = 0
+    esp_angle = 0.0
     try:
         while True:
             line = ser.readline().decode().strip()
             esp_data = line.split(" ")
-            
+        
             esp_data.append(1)
-            #print(esp_data)
+            print(esp_data)
+            if esp_data[1].isdigit() :
+                esp_angle = float(esp_data[0])
+                count = int(esp_data[1])
            
-            esp_angle = float(esp_data[0])
-            count = int(esp_data[1])
             imu.value = esp_angle
+            print(f"count: {count} angle: {esp_angle} imu: {imu.value}")
             #print(f"imu: {imu.value}")
-
 
 
     except KeyboardInterrupt:
