@@ -7,7 +7,7 @@ import RPi.GPIO as GPIO
 import time
 import multiprocessing
 import pigpio
-import board
+#import board
 from ctypes import c_float
 import subprocess
 from Encoder import EncoderCounter
@@ -300,7 +300,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
 
                 if right_flag:
                     print("Right Flag is set")
-                    if(turn_trigger.value and not trigger ) and time.time() - turn_t > 3:
+                    if(turn_trigger.value and not trigger ) and time.time() - turn_t > 2:
                         counter = counter + 1
                         heading_angle = (90 * counter) % 360
                         sp_angle.value = heading_angle
@@ -311,7 +311,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                         pwm.write(blue_led, 0)
 
                 elif left_flag:
-                    if(turn_trigger.value and not trigger) and time.time() - turn_t > 3:
+                    if(turn_trigger.value and not trigger) and time.time() - turn_t > 2:
                         counter = counter + 1
                         heading_angle = -(90 * counter) % 360
                         sp_angle.value = heading_angle
