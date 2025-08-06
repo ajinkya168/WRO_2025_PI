@@ -36,8 +36,8 @@ time.sleep(5)
 # import time
 
 
-#log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
-#sys.stdout = log_file
+log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
+sys.stdout = log_file
 
 # PINS
 
@@ -423,7 +423,6 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
                     centr_x_pink.value = cx
                     centr_y_pink.value = cy
                 else:
-                    print("ELSLSELSLELSLESLLEL")
                     red_b.value = False
                     green_b.value = False
                     pink_b.value = False
@@ -501,7 +500,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 
     red_turn = green_turn = False
     calc_time = False
-    lap_finish = continue_parking = parking_head = parking_flag = False
+    lap_finish = continue_parking = parking_heading = parking_flag = False
     turn_flag = reset_flags = counter_reset = False
     finished = finish = stop_flag = False
     red_time = green_time = False
@@ -525,7 +524,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
     setPointC = 0
     power = 100
     prev_power = 0
-    last_counter = 12
+    last_counter = 1
     change_counter = 7  # 3
     rev_counter = 7
     heading_angle = counter = turn_t = current_time = gp_time = rp_time = buff = c_time = green_count = red_count = 0
@@ -547,6 +546,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
     try:
         while True:
             imu_shared.value = head.value
+            imu_head = head.value
             print(f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value}")
 
             # print(f"red:{red_b.value} green:{green_b.value}")
@@ -581,11 +581,14 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
             if counter == last_counter and not lap_finish:
                 print(
                     f"centr_y :{centr_y.value} centr_y_red:{centr_y_red.value}")
+                print("REACHED MAXIMUM COUNTS")
+                print(f"target:{target_count}")
                 if not finished:
-                    target_count = counts.value + 35000
+                    target_count = counts.value + 17500
                     finished = True
                 if counts.value >= target_count and not reverse_trigger:
                     power = 0
+            
                     # Set duty cycle to 50% (128/255)
                     pwm.set_PWM_dutycycle(pwm_pin, power)
                     time.sleep(3)
@@ -594,7 +597,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                     lap_finish = True
                     reverse_trigger = True
                     print(
-                        f"Vehicle is stopped,..reverse_trigger: {reverse_trigger}")
+                        f"Vehicle is stopped...")
 
             if lap_finish:
                 if not counter_reset:
@@ -612,17 +615,18 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                         setPointC = 100
 
             if continue_parking:  # THIS SETPOINT IS WHEN THE ROBOT IS IN THE PARKING MODE
+                print("Inside Continue parking")
                 green_b.value = False
                 red_b.value = False
                 g_past = False
                 r_past = False
                 g_flag = False
                 r_flag = False
-                if orange_flag and (((centr_x_pink.value < centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value < centr_x_red.value and (centr_x_red.value > 0 and centr_x_pink.value > 0))):
+                if orange_flag: # and (((centr_x_pink.value < centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value < centr_x_red.value and (centr_x_red.value > 0 and centr_x_pink.value > 0))):
                     setPointR = -35
                     setPointC = -35
                     finish = True
-                elif blue_flag and (((centr_x_pink.value > centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value > centr_x_red.value and (centr_x_red.value > 0 and centr_x_pink.value > 0))):
+                elif blue_flag: # and (((centr_x_pink.value > centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value > centr_x_red.value and (centr_x_red.value > 0 and centr_x_pink.value > 0))):
                     setPointL = 35
                     setPointC = 35
                     finish = True
@@ -801,7 +805,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                         g_past = False
                         if blue_flag:  # BLUE RESET BLOCK
 
-                            print(f"BLUE RESET...{reverse_trigger}")
+                            print(f"BLUE RESET")
 
                             if (red_b.value or red_turn) or reverse_trigger:  # red after trigger
                                 if counter != rev_counter:
@@ -1027,21 +1031,20 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                 counter = counter + 1
                                 c_time = time.time()
                                 lane_reset = counter % 4
-                                turn_trigger_distance = lidar_f.value
-                                print(
-                                    f"head: {turn_trigger_distance}, corr: {turn_cos_theta}")
+                                turn_trigger_distance = tf_h
+
                                 if lane_reset == 1:
                                     enc.x = (
-                                        150 - (turn_trigger_distance ))
+                                        1500 - (turn_trigger_distance ))/10
                                     print(f"x: {enc.x}")
                                 if lane_reset == 2:
                                     enc.y = (
-                                        250 - (turn_trigger_distance )) 
+                                        2500 - (turn_trigger_distance))/10 
                                 if lane_reset == 3:
-                                    enc.x = ((turn_trigger_distance) - 150) 
+                                    enc.x = ((turn_trigger_distance) - 1500)/10 
                                 if lane_reset == 0:
-                                    enc.y = ((turn_trigger_distance) - 50) 
-                                print(f'Resuming Motor...{offset}')
+                                    enc.y = ((turn_trigger_distance) - 500)/10 
+                                #print(f'Resuming Motor...{offset}')
 
                                 power = 100
                                 heading_angle = ((90 * counter) % 360)
@@ -1149,7 +1152,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                             #r_flag = True
                             print('4')
 
-                        elif pink_b.value and continue_parking :
+                        elif pink_b.value and continue_parking and not p_flag:
                             # if (centr_x_pink.value < 800 and orange_flag) or (centr_x_pink.value > 800 and blue_flag):
                             p_flag = True
                             p_past = True
@@ -1268,7 +1271,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                     f"trigger:{trigger} turn_trigger: {turn_trigger.value} reset_f:{reset_f} red:{r_flag} green:{g_flag} pink:{pink_b.value} counter: {counter}, imu:{head.value}")
                 print(f"r_past:{r_past} g_past:{g_past} p_past:{p_past}")
                 print(f"x: {x}, y:{y} count:{counts.value} heading_angle:{heading_angle}")
-                print(f"head:{tf_h} left:{tf_l} right: {tf_r}")
+                print(f"tf_h :{tf_h} left:{tf_l} right: {tf_r}")
                 print(f"L: {setPointL} R: {setPointR} setPointC: {setPointC}")
                 # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
             else:
