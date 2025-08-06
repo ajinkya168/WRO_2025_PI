@@ -695,12 +695,6 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                     servo.setAngle(90)
                     reset_servo = True
 
-                if not reverse:
-                    imu_head = head.value
-                else:
-                    # print(f"Changing imu..{imu_head} {cw} {ccw}")
-                    imu_head = head.value - 180
-
                 x, y = enc.get_position(imu_head, counts.value)
 
                 total_power = (power * 0.1) + (prev_power * 0.9)
@@ -805,17 +799,6 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                         setPointL = -70
                         setPointR = 70
                         g_past = False
-
-                        if not last_red:
-                            g_last_flag = False
-                            r_last_flag = False
-                        print(f"green: {green_count} red:{red_count}")
-                        if counter == change_counter and green_count == 1:
-                            last_red = False
-                        elif counter == change_counter and red_count == 1:
-                            print("Changing path...")
-                            last_red = True
-                        print(f"last_red: {last_red}")
                         if blue_flag:  # BLUE RESET BLOCK
 
                             print(f"BLUE RESET...{reverse_trigger}")
@@ -936,15 +919,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                         50 - abs(turn_trigger_distance * turn_cos_theta)) - 10
                                 print(f'Resuming Motor...{x} {y}')
                                 power = 100
-                                if reverse == True:
-                                    print("In blue reverse...")
-                                    offset = 180
-                                    heading_angle = -((90 * counter) % 360) - offset
-                                    if abs(heading_angle) >= 360:
-                                        heading_angle = (heading_angle % 360)
-                                else:
-                                    print("In blue reverse else...")
-                                    heading_angle = -((90 * counter) % 360)
+                                heading_angle = -((90 * counter) % 360)
                                 green_turn = False
                                 red_turn = False
                                 reset_f = False
@@ -1009,14 +984,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                         green_count = 0
                                         pwm.write(red_led, 1)
                                         pwm.write(green_led, 0)
-                                    '''while 1:
-                                        #tfmini.getTFminiData()
-                                        print(f"correct red heading..")
-                                        correctAngle(heading_angle, head.value)
-                                        if abs(corr) < 15:
-                                            print(
-                                                f"turn_trigger: {turn_trigger_distance}")
-                                            break'''
+ 
 
                                     if not timer_started:
                                         current_time = time.time()
@@ -1076,14 +1044,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                 print(f'Resuming Motor...{offset}')
 
                                 power = 100
-                                if reverse == True:
-                                    offset = -180
-                                    heading_angle = (
-                                        (90 * counter) % 360) + offset
-                                    if abs(heading_angle) >= 360:
-                                        heading_angle = (heading_angle % 360)
-                                else:
-                                    heading_angle = ((90 * counter) % 360)
+                                heading_angle = ((90 * counter) % 360)
                                 sp_angle.value = heading_angle
                                 red_turn = False
                                 green_time = False
@@ -1112,44 +1073,12 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                             trigger = False
                             pwm.write(blue_led, 0)
                             # pwm.write(green_led, 0)
-                        '''if color_s == color_n and not trigger and (time.time() - turn_t) > (4 + buff):
-							buff = 0
-							timer_started = False
-							trigger = True
-							reset_f = True
-							GPIO.output(blue_led, GPIO.HIGH)
-							turn_t = time.time()
 
-						elif color_s == 'White':
-							trigger = False
-							GPIO.output(blue_led, GPIO.LOW)'''
 
                         prev_blue = centr_y_b.value
                         prev_orange = centr_y_o.value
 
-                        if last_red:
 
-                            print(
-                                f"tf mini back: {tfmini.distance_back} front:{tf_h} sum:{tf_h + tfmini.distance_back} corr:{abs(corr)}")
-
-                        if g_last_flag:
-                            if ((imu_head < 10 or imu_head > 350) and heading_angle == 0) and ((tfmini.distance_back*math.cos(math.radians(abs(imu_head))) > 150 and imu_head > 350) or (tf_h*math.cos(math.radians(abs(imu_head))) < 160 and imu_head < 10)) and last_red:
-                                u = u + 1
-                                if u > 3:
-                                    print(
-                                        f"Change path is true after 4.2 seconds")
-                                    reset_flags = True
-                                    change_path = True
-                                    reverse = True
-                        elif r_last_flag:
-                            if ((imu_head < 10 or imu_head > 350) and heading_angle == 0) and ((tfmini.distance_back*math.cos(math.radians(abs(imu_head)))) > 150 and imu_head < 10) or (tf_h*math.cos(math.radians(abs(imu_head))) < 160 and imu_head > 350) and last_red:
-                                u = u + 1
-                                if u > 3:
-                                    print(
-                                        f"Change path is true after 4.2 seconds")
-                                    reset_flags = True
-                                    change_path = True
-                                    reverse = True
 
                         if reset_flags:
                             if orange_flag:
