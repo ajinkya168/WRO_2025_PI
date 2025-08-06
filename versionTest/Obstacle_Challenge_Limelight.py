@@ -36,8 +36,8 @@ time.sleep(5)
 # import time
 
 
-log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
-sys.stdout = log_file
+#log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
+#sys.stdout = log_file
 
 # PINS
 
@@ -360,7 +360,7 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 
     limelight_address = discovered_limelights[0]
     ll = limelight.Limelight(limelight_address)
-    ll.pipeline_switch(5)
+    ll.pipeline_switch(6)
     ll.enable_websocket()
 
     # MJPEG Stream URL
@@ -524,7 +524,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
     setPointC = 0
     power = 100
     prev_power = 0
-    last_counter = 1
+    last_counter = 12
     change_counter = 7  # 3
     rev_counter = 7
     heading_angle = counter = turn_t = current_time = gp_time = rp_time = buff = c_time = green_count = red_count = 0
