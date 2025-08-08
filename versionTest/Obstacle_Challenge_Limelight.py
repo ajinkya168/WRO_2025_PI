@@ -27,17 +27,17 @@ import json
 
 os.system('sudo pkill pigpiod')
 os.system('sudo pigpiod')
+time.sleep(2)
+os.system("fuser -k 5800/tcp || true")
 
 
-time.sleep(5)
 
 
 # import RPi.GPIO as GPIO
 # import time
 
-
-#log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
-#sys.stdout = log_file
+log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
+sys.stdout = log_file
 
 # PINS
 
@@ -188,7 +188,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
 
         elif blue:
             error = (100 + setPoint) - x
-            # print(f"lane:{lane}, error:{error} target:{(100 + setPoint)}, x:{x} y:{y} Bluee")
+            # print(f"lane:{lane}, error:{error} target:{(55 + setPoint)}, x:{x} y:{y} Bluee")
     # print(f" trigger : {flag_t} setPoint: {setPoint} lane: {lane} correction:{correction}, error:{error} x:{x}, y:{y}, prevError :{prevError} angle:{head - correction}")
     elif lane == 2:
         if orange:
@@ -204,7 +204,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
             print(f"lane:{lane} error:{error} target:{(setPoint - 100)}, x: {x} y {y}")
         elif blue:
             error = x + (100 + setPoint)
-            # print(f"lane:{lane} error:{error} target:{(100 + setPoint)}, x:{x} y {y}")
+            # print(f"lane:{lane} error:{error} target:{(55 + setPoint)}, x:{x} y {y}")
 
     corr_pos = error
     pTerm_e = kp_e * error
@@ -242,7 +242,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
                 correction = -20
                 print(f"Avoiding pink wall {correction}")
 
-            elif distance_l < 50 or distance_l > 100:
+            elif distance_l < 50 or distance_l > 55:
                 if distance_l <= 35:
                     correction = 45
                     print(f"Avoiding pink wall {correction}")
@@ -254,26 +254,26 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
                 correction = 0
 
         if not blue:
-            if (setPoint <= -70 or setPoint == 0) and distance_l <= 22:
+            if (setPoint <= -100 or setPoint == 0) and distance_l <= 22:
                 print(f"Correcting Green Wall Orange")
                 correction = 10
             else:
                 pass
 
-            if (setPoint >= 70 or setPoint == 0) and (distance_r <= 20 or distance_h <= 18):
+            if (setPoint >= 100 or setPoint == 0) and (distance_r <= 20 ):
                 print(f"Correcting Red Wall...")
                 correction = -10
             else:
                 pass
 
         else:
-            if (setPoint <= -70 or sertPoint == 0) and (distance_l <= 20 or distance_h <= 18):
+            if (setPoint <= -100 or sertPoint == 0) and (distance_l <= 20 ):
                 print(f"Correcting Green Wall Blue")
                 correction = 10
             else:
                 pass
 
-            if (setPoint >= 70 or setPoint == 0) and distance_r <= 22:
+            if (setPoint >= 100 or setPoint == 0) and distance_r <= 22:
                 print(f"correctng red wall in blue")
                 correction = -10
             else:
@@ -357,8 +357,8 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
     if not discovered_limelights:
         print("❌ No Limelight found.")
         exit()
-
     limelight_address = discovered_limelights[0]
+    print(f"limelight address: {limelight_address} {type(limelight_address)}")
     ll = limelight.Limelight(limelight_address)
     ll.pipeline_switch(6)
     ll.enable_websocket()
@@ -401,28 +401,49 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
                     block_name = None
                     points = [0,0,0,0]
                     cx, cy  = 0, 0
-                #print(f"block_name:{block_name}, cx, xy:{(cx, xy)}")
-                if(block_name == "red"):
-                    
+                #print(f"block_name:{block_name} detector[1]:{detectors[1]['class']}, cx, xy:{(cx, cy)}")
+                if(block_name == "red") and len(detectors) == 1:
+                    print('1')
                     red_b.value = True
                     green_b.value = False
+                    pink_b.value = False
                     centr_x_red.value = cx
                     centr_y_red.value = cy
                     centr_x.value = 0
                     centr_y.value = 0
-                elif(block_name == "green"):
+                elif(block_name == "green") and len(detectors) == 1:
+                    print('2')
                     green_b.value = True
                     red_b.value = False
+                    pink_b.value = False
                     centr_x.value = cx
                     centr_y.value = cy
-                    centr_x_red.value = 0
-                    centr_y_red.value = 0
-                    
-                elif(block_name == "pink"):
-                    pink_b.value = True
-                    centr_x_pink.value = cx
-                    centr_y_pink.value = cy
+                elif(len(detectors) == 2 and block_name == "green" and detectors[1]['class'] == "red"):
+                    print("*")
+                    green_b.value = True
+                    red_b.value = False
+                    pink_b.value = False
+                    centr_x.value = cx
+                    centr_y.value = cy
+      
+                elif(len(detectors) == 2 and block_name == "red" and detectors[1]['class'] == "green"):
+                    print("#")
+                    red_b.value = True
+                    green_b.value = False
+                    pink_b.value = False
+                    centr_x_red.value = cx
+                    centr_y_red.value = cy
+
+                elif (block_name == "red" and (detectors[1]['class'] == "pink")):
+                    print('3')
+                    red_b.value = True
+                    green_b.value = False
+                elif (block_name == "green" and (detectors[1]['class'] == "pink")):
+                    print('4')
+                    green_b.value = True
+                    red_b.value = False
                 else:
+                    print('5')
                     red_b.value = False
                     green_b.value = False
                     pink_b.value = False
@@ -430,19 +451,23 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
                     centr_y_red.value = 0
                     centr_x.value = 0
                     centr_y.value = 0
-                    centr_x_pink.value = 0
-                    centr_y_pink.value = 0
-                #print(f"block_name:{block_name} red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value}")
+
+                if(block_name == "pink"):
+                    pink_b.value = True
+                else:
+                    pink_b.value = False
+                    
+
+                #print(f"detectors: {detectors}")
+                print(f"block_name:{block_name} red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value}")
                 # print(result['Detector'][0]['class'] if result['Detector'] else None)
 
-                # FPS calculation
-                curr_time = time.time()
-                fps_calc = 1.0 / (curr_time - prev_time)
-                prev_time = curr_time
+
 
                 # Get LL FPS
                 try:
                     ll_fps = ll.get_fps()
+                    print(f"LL FPS: {ll_fps}")
                 except:
                     ll_fps = "N/A"
                 
@@ -460,7 +485,7 @@ def Live_Feed(color_b, stop_b, red_b, green_b, pink_b, centr_y, centr_x, centr_y
 
     except KeyboardInterrupt:
         print("\n🔴 Stopped by user.")
-        ll.disable_websocket()
+        #ll.disable_websocket()
     finally:
         ll.disable_websocket()
         #cv2.destroyAllWindows()
@@ -477,7 +502,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 
     pwm.set_mode(pwm_pin, pigpio.OUTPUT)  # Set pin 12 as an output
     pwm.set_mode(direction_pin, pigpio.OUTPUT)  # Set pin 20 as an output
-    pwm.hardware_PWM(pwm_pin, 100, 0)
+    pwm.hardware_PWM(pwm_pin, 55, 0)
 
     pwm.set_PWM_dutycycle(pwm_pin, 0)  # Set duty cycle to 50% (128/255)
 
@@ -522,7 +547,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
     setPointL = -70
     setPointR = 70
     setPointC = 0
-    power = 100
+    power = 70
     prev_power = 0
     last_counter = 12
     change_counter = 7  # 3
@@ -574,7 +599,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                     last_time = time.time()
                     print(
                         f"🔘 Button toggled! Drive {'started' if button else 'stopped'}")
-                    power = 100
+                    power = 70
             ##### STOP CONDITION ######
             # print(f"rgb:{imu.color_rgb} color:{color_sensor}")
             # print(f"pink detected:{pink_detected}")
@@ -592,7 +617,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                     # Set duty cycle to 50% (128/255)
                     pwm.set_PWM_dutycycle(pwm_pin, power)
                     time.sleep(3)
-                    power = 100
+                    power = 70
                     prev_power = 0
                     lap_finish = True
                     reverse_trigger = True
@@ -664,7 +689,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                 pb_time = time.time()
             # IF DOES NOT SEE PINK, KEEP THE SAME SETPOINT FOR 1 SECOND AND THEN CHANGE
             elif not pink_b.value and time.time() - pb_time > 1 and not lap_finish:
-                # print(f"Resetting setPoints...{pink_detected}")
+                print(f"Resetting setPoints...{pink_detected}")
                 if g_flag and not continue_parking:
                     print(f"away from green {g_past}")
                     setPointL = setPointL - 1
@@ -685,7 +710,6 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                 avg_right = (tf_r * 0.15) + (avg_right*0.85)
 
                 # print(f"average ::: r_pass:{avg_right_pass} l_pass:{avg_left_pass} h:{avg_head} l:{avg_left} r:{avg_right}")
-
             ##########
             if button:  # THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
                 # time.sleep(0.01)
@@ -750,7 +774,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                         pink_r = True
                     while time.time() - c_time < time_p and not reverse_complete:
                         print("Reversing backward...")
-                        power = 100
+                        power = 70
                         prev_power = 0
                         # Set duty cycle to 50% (128/255)
                         pwm.set_PWM_dutycycle(pwm_pin, power)
@@ -784,7 +808,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                         correctAngle(heading_angle, head.value)
                     back_bot = False
                     stop_flag = False
-                    if (abs(corr) < 15) and (tf_h <= 5 and tf_h >= 0) and not finish_flag:
+                    if (abs(corr) < 15) and (tf_h <= 50 and tf_h >= 0) and not finish_flag:
                         finish_timer = time.time()
                         finish_flag = True
                     print(f"finish flag:{finish_flag}")
@@ -821,7 +845,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                     red_turn = False
                                     red_time = False
                                     reverse_trigger = False
-                                elif (tf_h < 30 and time.time() - g_time > 0.8) and not red_b.value and not pink_b.value:
+                                elif (tf_h < 300 and time.time() - g_time > 0.8) and not red_b.value and not pink_b.value:
                                     red_turn = False
                                     reverse_trigger = False
                                     red_time = True
@@ -830,7 +854,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 
                             else:
                                 if red_time:
-                                    time_g = 0.8
+                                    time_g = 1.2
 
                                 else:
                                     time_g = 0.5
@@ -842,11 +866,11 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                 if not green_b.value and not red_b.value:
                                     print('reversing diection red')
                                     while (time.time() - current_time < time_g):
-                                        servo.setAngle(100)
+                                        servo.setAngle(70)
                                         x, y = enc.get_position(
                                             imu_head, counts.value)
-                                        power = 100
-                                        prev_power = 95
+                                        power = 70
+                                        prev_power = 70
                                         # Set duty cycle to 50% (128/255)
                                         pwm.set_PWM_dutycycle(pwm_pin, power)
                                         # Set pin 20 hig
@@ -887,7 +911,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                             break
                                         x, y = enc.get_position(
                                             imu_head, counts.value)
-                                        power = 100
+                                        power = 70
                                         prev_power = 0
                                         # Set duty cycle to 50% (128/255)
                                         pwm.set_PWM_dutycycle(pwm_pin, power)
@@ -902,7 +926,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                 # Set duty cycle to 50% (128/255)
                                 pwm.set_PWM_dutycycle(pwm_pin, power)
 
-                                print(f"head: {tf_h}")
+                                print(f"front: {tf_h}")
                                 print(f"before update: {x} {y}")
                                 time.sleep(0.8)
                                 counter = counter + 1
@@ -922,7 +946,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                     enc.y = (
                                         50 - abs(turn_trigger_distance * turn_cos_theta)) - 10
                                 print(f'Resuming Motor...{x} {y}')
-                                power = 100
+                                power = 70
                                 heading_angle = -((90 * counter) % 360)
                                 green_turn = False
                                 red_turn = False
@@ -933,7 +957,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
 
                         if orange_flag:  # ORANGE RESET BLOCK
                             print(
-                                f"ORANGE RESET...reverse_trigger:{reverse_trigger}")
+                                f"ORANGE RESET...setPoint C:{setPointC}")
 
                             if (green_b.value or green_turn) or (reverse_trigger):  # green after trigger
                                 if counter != rev_counter:
@@ -949,7 +973,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                     green_turn = False
                                     green_time = False
                                     reverse_trigger = False
-                                elif lidar_f.value < 30 and not green_b.value and not pink_b.value:
+                                elif tf_h < 500 and not green_b.value and not pink_b.value:
                                     green_turn = False
                                     reverse_trigger = False
                                     green_time = True
@@ -971,8 +995,8 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                         servo.setAngle(70)
                                         x, y = enc.get_position(
                                             imu_head, counts.value)
-                                        power = 100
-                                        prev_power = 65
+                                        power = 70
+                                        prev_power = 70
                                         # Set duty cycle to 50% (128/255)
                                         pwm.set_PWM_dutycycle(pwm_pin, power)
                                         # Set pin 20 hig
@@ -983,12 +1007,13 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                     timer_started = False
                                 elif (red_b.value or red_turn) or r_past:
                                     red_turn = True
-                                    if counter != rev_counter:
-                                        red_count = 1
-                                        green_count = 0
-                                        pwm.write(red_led, 1)
-                                        pwm.write(green_led, 0)
- 
+                                    while 1:
+                                        tfmini.getTFminiData()
+                                        print(f"correct red heading..")
+                                        correctAngle(heading_angle, head.value)
+                                        if abs(corr) < 15:
+                                            print(f"turn_trigger: {turn_trigger_distance}")
+                                            break
 
                                     if not timer_started:
                                         current_time = time.time()
@@ -999,7 +1024,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                         print("RED IS SEEN..")
                                         servo.setAngle(80)
                                         print(f"centr y: {centr_y_red.value}")
-                                        if (red_b.value and (centr_y_red.value < 475 and centr_y_red.value > 0)):
+                                        if (red_b.value):
                                             print(f"Breaking the loop...")
                                             break
                                         elif (time.time() - current_time > 0.5) and not red_b.value:
@@ -1008,7 +1033,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                         # getTFminiData()
                                         x, y = enc.get_position(imu_head, counts.value)
                                         # print(f"x: {x}, y: {y},  count:{counts.value} distance_head : {distance_head}")
-                                        power = 100
+                                        power = 70
                                         prev_power = 0
                                         # Set duty cycle to 50% (128/255)
                                         pwm.set_PWM_dutycycle(pwm_pin, power)
@@ -1046,7 +1071,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                     enc.y = ((turn_trigger_distance) - 500)/10 
                                 #print(f'Resuming Motor...{offset}')
 
-                                power = 100
+                                power = 70
                                 heading_angle = ((90 * counter) % 360)
                                 sp_angle.value = heading_angle
                                 red_turn = False
@@ -1109,7 +1134,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                         elif (g_past or time.time() - gp_time < 0.5) and not continue_parking:
                             print("Avoiding green...")
                             g_flag = True
-                            # and ((avg_left_pass < 60 or avg_left_pass > 120) or counter!=rev_counter):
+                            # and ((avg_left_pass < 50 or avg_left_pass > 120) or counter!=rev_counter):
                             if tf_r <= 50:
                                 print("Green Avoid Complete")
                                 g_past = False
@@ -1128,7 +1153,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                             r_flag = True
                             print(
                                 f"centr x red: {centr_x_red.value} centr y red: {centr_y_red.value}")
-                            # if ((centr_x_red.value < 100 and centr_x_red.value > 0) or  centr_y_red.value > 900):
+                            # if ((centr_x_red.value < 55 and centr_x_red.value > 0) or  centr_y_red.value > 900):
                             r_past = True
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
@@ -1137,7 +1162,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                         elif (r_past or time.time() - rp_time < 0.5) and not continue_parking:
                             print("Avoiding red...")
                             r_flag = True
-                            # and ((avg_right_pass < 60 or avg_right_pass > 120) or counter!=rev_counter):
+                            # and ((avg_right_pass < 50 or avg_right_pass > 120) or counter!=rev_counter):
                             if tf_l <= 50:
                                 print(f"red Avoid complete")
                                 r_past = False
@@ -1235,7 +1260,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                                 # Set duty cycle to 50% (128/255)
                                 pwm.set_PWM_dutycycle(pwm_pin, power)
                                 time.sleep(0.5)
-                                power = 100
+                                power = 70
                                 prev_power = 0
                                 heading_angle = -180
                                 change_path = False
@@ -1276,7 +1301,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
                 # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
             else:
                 power = 0
-                pwm.hardware_PWM(12, 100, 0)
+                pwm.hardware_PWM(12, 55, 0)
                 heading_angle = 0
                 counter = 0
                 correctAngle(heading_angle, head.value)
@@ -1291,7 +1316,7 @@ def servoDrive(color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, centr_x
         print(f"Exception: {e}")
         if isinstance(e, KeyboardInterrupt):
             power = 0
-            pwm.hardware_PWM(12, 100, 0)
+            pwm.hardware_PWM(12, 55, 0)
             heading_angle = 0
             counter = 0
             correctAngle(heading_angle, head.value)
@@ -1482,7 +1507,7 @@ if __name__ == '__main__':
         S.join()
         P.join()
         lidar_proc.join()
-        pwm.hardware_PWM(12, 100, 0)
+        pwm.hardware_PWM(12, 55, 0)
         pwm.bb_serial_read_close(RX_Head)
         pwm.bb_serial_read_close(RX_Left)
         pwm.bb_serial_read_close(RX_Right)
