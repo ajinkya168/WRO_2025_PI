@@ -28,16 +28,16 @@ import json
 os.system('sudo pkill pigpiod')
 os.system('sudo pigpiod')
 time.sleep(2)
-os.system("fuser -k 5800/tcp || true")
-time.sleep(3)
 
-
+import websocket, json, socket
+import requests
+import signal
 
 # import RPi.GPIO as GPIO
 # import time
 
-log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
-sys.stdout = log_file
+#log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
+#sys.stdout = log_file
 
 # PINS
 
@@ -327,10 +327,23 @@ def correctAngle(setPoint_gyro, heading):
     prevErrorGyro = error_gyro
     servo.setAngle(90 - correction)
 
-
+_running = True
+def _graceful_stop(signum, frame):
+    global _running
+    _running = False
+    # optional: print so you see it fired
+    print(f"\n🔔 Worker got signal {signum}, stopping...")
 
 # loop to capture video frames
 def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, orange_o, centr_y_o, shared_lock):
+    signal.signal(signal.SIGTERM, _graceful_stop)
+    signal.signal(signal.SIGINT,  _graceful_stop)
+
+
+
+    session = requests.Session()
+    session.trust_env = False  # avoids proxy stalls
+
     print('Image Process started')
     both_flag = False
     all_flag = False
@@ -344,19 +357,19 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
     orange_present = False
     dist = -1
     discovered_limelights = limelight.discover_limelights(debug=False)
+
     if not discovered_limelights:
         print("❌ No Limelight found.")
         exit()
+
     limelight_address = discovered_limelights[0]
     print(f"limelight address: {limelight_address} {type(limelight_address)}")
     ll = limelight.Limelight(limelight_address)
     ll.pipeline_switch(7)
-    ll.enable_websocket()
-
     # MJPEG Stream URL
-    stream_url = f"http://{limelight_address}:5800/stream.mjpg"
+    '''stream_url = f"http://{limelight_address}:5800/stream.mjpg"
     stream = urllib.request.urlopen(stream_url)
-    bytes_stream = b''
+    bytes_stream = b'''
 
     # Time for FPS calculation
     prev_time = time.time()
@@ -364,120 +377,102 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
     points= []
     cx, cy = 0, 0
     try:
-        while True:
-            # Read frame from stream
-            bytes_stream += stream.read(1024)
-            a = bytes_stream.find(b'\xff\xd8')
-            b = bytes_stream.find(b'\xff\xd9')
-            if a != -1 and b != -1:
-                jpg = bytes_stream[a:b+2]
-                bytes_stream = bytes_stream[b+2:]
-                #frame = cv2.imdecode(np.frombuffer(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
+        while _running:
+            # Get Limelight parsed results
+            try:
+                result = session.get(f"http://172.29.0.1:5807/results", timeout=0.05).json()
+            except requests.exceptions.RequestException:
+                if not _running: break
+                continue
+            #parsed = limelightresults.parse_results(result)
+            #print(result.get('Detector')[0])
+            #print(result.get('Detector'))
+            detectors = result.get('Detector', [])
+            if detectors:
+                detector_data = detectors[0]
+                block_name = detector_data['class']
+                points = detector_data['pts']
+                #print(detector_data['class'])
+                cx = sum(p[0] for p in points) / 4
+                cy = sum(p[1] for p in points) / 4
+            else:
+                block_name = None
+                points = [0,0,0,0]
+                cx, cy  = 0, 0
+            #print(f"block_name:{block_name} detector[1]:{detectors[1]['class']}, cx, xy:{(cx, cy)}")
+            if(block_name == "red") and len(detectors) == 1:
+                print('1')
+                red_b.value = True
+                green_b.value = False
+                pink_b.value = False
+                centr_x_red.value = cx
+                centr_y_red.value = cy
+                centr_x.value = 0
+                centr_y.value = 0
+            elif(block_name == "green") and len(detectors) == 1:
+                print('2')
+                green_b.value = True
+                red_b.value = False
+                pink_b.value = False
+                centr_x.value = cx
+                centr_y.value = cy
+            elif(len(detectors) == 2 and block_name == "green" and detectors[1]['class'] == "red"):
+                print("*")
+                green_b.value = True
+                red_b.value = False
+                pink_b.value = False
+                centr_x.value = cx
+                centr_y.value = cy
+    
+            elif(len(detectors) == 2 and block_name == "red" and detectors[1]['class'] == "green"):
+                print("#")
+                red_b.value = True
+                green_b.value = False
+                pink_b.value = False
+                centr_x_red.value = cx
+                centr_y_red.value = cy
 
-                # Get Limelight parsed results
-                result = ll.get_latest_results()
-                #parsed = limelightresults.parse_results(result)
-                #print(result.get('Detector')[0])
-                #print(result.get('Detector'))
-                detectors = result.get('Detector', [])
-                if detectors:
-                    detector_data = detectors[0]
-                    block_name = detector_data['class']
-                    points = detector_data['pts']
-                    #print(detector_data['class'])
-                    cx = sum(p[0] for p in points) / 4
-                    cy = sum(p[1] for p in points) / 4
-                else:
-                    block_name = None
-                    points = [0,0,0,0]
-                    cx, cy  = 0, 0
-                #print(f"block_name:{block_name} detector[1]:{detectors[1]['class']}, cx, xy:{(cx, cy)}")
-                if(block_name == "red") and len(detectors) == 1:
-                    print('1')
-                    red_b.value = True
-                    green_b.value = False
-                    pink_b.value = False
-                    centr_x_red.value = cx
-                    centr_y_red.value = cy
-                    centr_x.value = 0
-                    centr_y.value = 0
-                elif(block_name == "green") and len(detectors) == 1:
-                    print('2')
-                    green_b.value = True
-                    red_b.value = False
-                    pink_b.value = False
-                    centr_x.value = cx
-                    centr_y.value = cy
-                elif(len(detectors) == 2 and block_name == "green" and detectors[1]['class'] == "red"):
-                    print("*")
-                    green_b.value = True
-                    red_b.value = False
-                    pink_b.value = False
-                    centr_x.value = cx
-                    centr_y.value = cy
-      
-                elif(len(detectors) == 2 and block_name == "red" and detectors[1]['class'] == "green"):
-                    print("#")
-                    red_b.value = True
-                    green_b.value = False
-                    pink_b.value = False
-                    centr_x_red.value = cx
-                    centr_y_red.value = cy
+            elif (block_name == "red" and (detectors[1]['class'] == "pink")):
+                print('3')
+                red_b.value = True
+                green_b.value = False
+            elif (block_name == "green" and (detectors[1]['class'] == "pink")):
+                print('4')
+                green_b.value = True
+                red_b.value = False
+            else:
+                print('5')
+                red_b.value = False
+                green_b.value = False
+                pink_b.value = False
+                centr_x_red.value = 0
+                centr_y_red.value = 0
+                centr_x.value = 0
+                centr_y.value = 0
 
-                elif (block_name == "red" and (detectors[1]['class'] == "pink")):
-                    print('3')
-                    red_b.value = True
-                    green_b.value = False
-                elif (block_name == "green" and (detectors[1]['class'] == "pink")):
-                    print('4')
-                    green_b.value = True
-                    red_b.value = False
-                else:
-                    print('5')
-                    red_b.value = False
-                    green_b.value = False
-                    pink_b.value = False
-                    centr_x_red.value = 0
-                    centr_y_red.value = 0
-                    centr_x.value = 0
-                    centr_y.value = 0
-
-                if(block_name == "pink"):
-                    pink_b.value = True
-                else:
-                    pink_b.value = False
-                    
-
-                #print(f"detectors: {detectors}")
-                print(f"block_name:{block_name} red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value}")
-                # print(result['Detector'][0]['class'] if result['Detector'] else None)
-
-
-
-                # Get LL FPS
-                try:
-                    ll_fps = ll.get_fps()
-                    print(f"LL FPS: {ll_fps}")
-                except:
-                    ll_fps = "N/A"
+            if(block_name == "pink"):
+                pink_b.value = True
+            else:
+                pink_b.value = False
                 
-                #print(f"LL FPS: {ll_fps}")
-                #print(f"LL class:{result.get("Results", {}).get("Detector", [])}")
 
-                # Overlay FPS
-                #cv2.putText(frame, f"LL FPS: {ll_fps}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-                #cv2.putText(frame, f"Cam FPS: {fps_calc:.2f}", (10, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-
-                # Display frame
-                #cv2.imshow("Limelight Stream", frame)
-                #if cv2.waitKey(1) == 27:  # ESC to exit
-                    #break
-
+            #print(f"detectors: {detectors}")
+            #print(f"block_name:{block_name} red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value}")
+            # print(result['Detector'][0]['class'] if result['Detector'] else None
+            # Get LL FPS
+            try:
+                ll_fps = ll.get_fps()
+                print(f"LL FPS: {ll_fps}")
+            except:
+                ll_fps = "N/A"
+            time.sleep(0.01)
+    except Exception as e:
+        print(f"Exception in live feed: {e}")
     except KeyboardInterrupt:
+        session.close()
         print("\n🔴 Stopped by user.")
-        #ll.disable_websocket()
     finally:
-        ll.disable_websocket()
+        session.close()
         #cv2.destroyAllWindows()
         print("🛑 Limelight connection closed.")
 
@@ -1297,7 +1292,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 print(f"r_past:{r_past} g_past:{g_past} p_past:{p_past}")
                 print(f"x: {x}, y:{y} count:{counts.value} heading_angle:{heading_angle}")
                 print(f"tf_h :{tf_h} left:{tf_l} right: {tf_r} POWER = {power}")
-                print(f"L: {setPointL} R: {setPointR} setPointC: {setPointC} stop_b.value: {stop_b.value}")
+                print(f"L: {setPointL} R: {setPointR} setPointC: {setPointC} stop_evt: {stop_evt.is_set()}")
                 # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
             else:
                 power = 0
@@ -1462,8 +1457,7 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
                     # print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
                     if stop_evt.is_set():
                         if (lidar_front < 650 and lidar_right > 1800 and lidar_left < 1000) :
-                            turn_trigger.value = True
-                            
+                            turn_trigger.value = True      
                         else:
                             turn_trigger.value = False
                         stop_evt.clear()
@@ -1489,7 +1483,7 @@ if __name__ == '__main__':
 
         # C = multiprocessing.Process(target=color_SP, args=(blue_c, orange_c, white_c))
         print("Starting lidar process")
-        lidar_proc.start()
+        #lidar_proc.start()
         print("lidar process startes")
         print("Image Process Start")
         P.start()
@@ -1499,7 +1493,7 @@ if __name__ == '__main__':
         print("Servo Process Started")
         print("Encoder Process Start")
 
-        E.start()
+        #E.start()
         print("Encoder Process Started")
 
     except KeyboardInterrupt:
@@ -1517,5 +1511,4 @@ if __name__ == '__main__':
         pwm.bb_serial_read_close(RX_Left)
         pwm.bb_serial_read_close(RX_Right)
         pwm.stop()
-        imu.close()
         tfmini.close()
