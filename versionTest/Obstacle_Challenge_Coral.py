@@ -374,7 +374,7 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
             # get_objects returns list of Obj with bbox in input space (iw, ih)
             objs = detect.get_objects(interpreter, score_threshold=CONF_TH)
             
-            dets = []
+            det = []
             for obj in objs:
                 bbox = obj.bbox
                 x1 = int(bbox.xmin * scale_x)
@@ -384,48 +384,80 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 cx = x1 + x2//2
                 cy = y1 + y2//2
                 name = labels.get(obj.id, str(obj.id))
-                dets.append((name))
-            pairs=[]
-            if len(dets) >= 2:
+                det.append((name, cx, cy))
+            pair=[]
+            if len(det) >= 2:
                 # Normal case: take only the first detected pair
-                pairs.append((dets[0], dets[1]))
-            elif len(dets) == 1:
+                pair = (det[0], det[1])
+            elif len(det) == 1:
                 # Only one detection → second is None
-                pairs.append((dets[0], None))
+                pair = (det[0], None)
             else:
                 # No detections at all
-                pairs.append((None, None))
-                
-            if pairs[0] == ('pink', None):
+                pair = (None, None)
+
+            # Extract just names for checks
+            n1 = pair[0][0] if pair[0] else None
+            n2 = pair[1][0] if pair[1] else None
+            if n1 == 'pink' and n2 is None:
                 pink_b.value = True
             else:
                 pink_b.value = False
 
-            if pairs[0] == ('pink', 'red') or  pairs[0] == ('red', 'pink'):
+            if (n1, n2) in (('pink', 'red'), ('red', 'pink')):
                 red_b.value = True
                 green_b.value = False
                 pink_b.value = True
-                centr_x_red.value = cx
-                centr_y_red.value = cy
-            elif pairs[0] == ('pink', 'green') or pairs[0] == ('green', 'pink'):
+                if n1 == 'red':
+                    centr_x_red.value = pair[0][1]
+                    centr_y_red.value = pair[0][2]
+                elif n2 == 'red':
+                    centr_x_red.value = pair[1][1]
+                    centr_y_red.value = pair[1][2] 
+                if n1 == 'pink':
+                    centr_x_pink.value = pair[0][1]
+                    centr_y_pink.value = pair[0][2]
+                elif n2 == 'pink':
+                    centr_x_pink.value = pair[1][1]
+                    centr_y_pink.value = pair[1][2]
+            if (n1, n2) in (('pink', 'green'), ('green', 'pink')):
                 green_b.value = True
                 red_b.value = False
                 pink_b.value = True
-                centr_x.value = cx
-                centr_y.value = cy            
-            elif pairs[0] == ('red', 'green') or pairs[0] == ('red', None):
+                if n1 == 'green':
+                    centr_x.value = pair[0][1]
+                    centr_y.value = pair[0][2]
+                elif n2 == 'green':
+                    centr_x.value = pair[1][1]
+                    centr_y.value = pair[1][2] 
+                if n1 == 'pink':
+                    centr_x_pink.value = pair[0][1]
+                    centr_y_pink.value = pair[0][2]
+                elif n2 == 'pink':
+                    centr_x_pink.value = pair[1][1]
+                    centr_y_pink.value = pair[1][2]
+            if (n1, n2) in (('green', 'red'), ('green', None)):
+                green_b.value = True
+                red_b.value = False
+                pink_b.value = False
+                if n1 == 'green':
+                    centr_x.value = pair[0][1]
+                    centr_y.value = pair[0][2]
+                elif n2 == 'green':
+                    centr_x.value = pair[1][1]
+                    centr_y.value = pair[1][2]
+            if (n1, n2) in (('red', 'green'), ('red', None)):
                 red_b.value = True
                 green_b.value = False
                 pink_b.value = False
-                centr_x_red.value = cx
-                centr_y_red.value = cy
-            elif pairs[0] == ('green', 'red') or pairs[0] == ('green', None):
-                red_b.value = False
-                green_b.value = True
-                pink_b.value = False
-                centr_x.value = cx
-                centr_y.value = cy
-            elif pairs[0] == (None, None):
+                if n1 == 'red':
+                    centr_x_red.value = pair[0][1]
+                    centr_y_red.value = pair[0][2]
+                elif n2 == 'red':
+                    centr_x_red.value = pair[1][1]
+                    centr_y_red.value = pair[1][2]
+                      
+            elif n1 is None and n2 is None :
                 red_b.value = False
                 green_b.value = False
                 pink_b.value = False
@@ -435,7 +467,7 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 centr_y.value = 0
             now = time.time()
             fps = 1.0 / max(1e-3, (now - t_prev)); t_prev = now
-            print(f"pairs:{pairs[0]} red_b.value: {red_b.value} green_b.value:{green_b.value} pink_b:{pink_b.value} cx:{cx} cy:{cy}")
+            print(f"pairs:{pair} red_b.value: {red_b.value} green_b.value:{green_b.value} pink_b:{pink_b.value} cx:{cx} cy:{cy} fps:{fps}")
             #cv2.imshow("Coral SSD Live", frame_bgr)
             '''if cv2.waitKey(1) & 0xFF == 27:  # ESC
                 break'''
