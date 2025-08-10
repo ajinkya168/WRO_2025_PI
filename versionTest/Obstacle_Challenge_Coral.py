@@ -27,8 +27,8 @@ time.sleep(2)
 
 # import RPi.GPIO as GPIO
 # import time
-#log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
-#sys.stdout = log_file
+log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
+sys.stdout = log_file
 
 # PINS
 
