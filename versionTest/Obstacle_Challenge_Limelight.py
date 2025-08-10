@@ -28,16 +28,15 @@ import json
 os.system('sudo pkill pigpiod')
 os.system('sudo pigpiod')
 time.sleep(2)
-os.system("fuser -k 5800/tcp || true")
-time.sleep(3)
 
-
+import websocket, json, socket
+import requests
+import signal
 
 # import RPi.GPIO as GPIO
 # import time
-
-log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
-sys.stdout = log_file
+#log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
+#sys.stdout = log_file
 
 # PINS
 
@@ -254,26 +253,26 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
                 correction = 0
 
         if not blue:
-            if (setPoint <= -100 or setPoint == 0) and distance_l <= 22:
+            if (setPoint <= -70 or setPoint == 0) and distance_l <= 22:
                 print(f"Correcting Green Wall Orange")
                 correction = 10
             else:
                 pass
 
-            if (setPoint >= 100 or setPoint == 0) and (distance_r <= 20 ):
+            if (setPoint >= 70 or setPoint == 0) and (distance_r <= 20 or distance_h <= 180):
                 print(f"Correcting Red Wall...")
                 correction = -10
             else:
                 pass
 
         else:
-            if (setPoint <= -100 or setPoint == 0) and (distance_l <= 20 ):
+            if (setPoint <= -70 or setPoint == 0) and (distance_l <= 20 or distance_h <=180 ):
                 print(f"Correcting Green Wall Blue")
                 correction = 10
             else:
                 pass
 
-            if (setPoint >= 100 or setPoint == 0) and distance_r <= 22:
+            if (setPoint >= 70 or setPoint == 0) and distance_r <= 22:
                 print(f"correctng red wall in blue")
                 correction = -10
             else:
@@ -327,10 +326,23 @@ def correctAngle(setPoint_gyro, heading):
     prevErrorGyro = error_gyro
     servo.setAngle(90 - correction)
 
-
+_running = True
+def _graceful_stop(signum, frame):
+    global _running
+    _running = False
+    # optional: print so you see it fired
+    print(f"\n🔔 Worker got signal {signum}, stopping...")
 
 # loop to capture video frames
 def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, orange_o, centr_y_o, shared_lock):
+    signal.signal(signal.SIGTERM, _graceful_stop)
+    signal.signal(signal.SIGINT,  _graceful_stop)
+
+
+
+    session = requests.Session()
+    session.trust_env = False  # avoids proxy stalls
+
     print('Image Process started')
     both_flag = False
     all_flag = False
@@ -344,19 +356,19 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
     orange_present = False
     dist = -1
     discovered_limelights = limelight.discover_limelights(debug=False)
+
     if not discovered_limelights:
         print("❌ No Limelight found.")
         exit()
+
     limelight_address = discovered_limelights[0]
     print(f"limelight address: {limelight_address} {type(limelight_address)}")
     ll = limelight.Limelight(limelight_address)
     ll.pipeline_switch(7)
-    ll.enable_websocket()
-
     # MJPEG Stream URL
-    stream_url = f"http://{limelight_address}:5800/stream.mjpg"
+    '''stream_url = f"http://{limelight_address}:5800/stream.mjpg"
     stream = urllib.request.urlopen(stream_url)
-    bytes_stream = b''
+    bytes_stream = b'''
 
     # Time for FPS calculation
     prev_time = time.time()
@@ -364,120 +376,102 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
     points= []
     cx, cy = 0, 0
     try:
-        while True:
-            # Read frame from stream
-            bytes_stream += stream.read(1024)
-            a = bytes_stream.find(b'\xff\xd8')
-            b = bytes_stream.find(b'\xff\xd9')
-            if a != -1 and b != -1:
-                jpg = bytes_stream[a:b+2]
-                bytes_stream = bytes_stream[b+2:]
-                #frame = cv2.imdecode(np.frombuffer(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
+        while _running:
+            # Get Limelight parsed results
+            try:
+                result = session.get(f"http://172.29.0.1:5807/results", timeout=0.05).json()
+            except requests.exceptions.RequestException:
+                if not _running: break
+                continue
+            #parsed = limelightresults.parse_results(result)
+            #print(result.get('Detector')[0])
+            #print(result.get('Detector'))
+            detectors = result.get('Detector', [])
+            if detectors:
+                detector_data = detectors[0]
+                block_name = detector_data['class']
+                points = detector_data['pts']
+                #print(detector_data['class'])
+                cx = sum(p[0] for p in points) / 4
+                cy = sum(p[1] for p in points) / 4
+            else:
+                block_name = None
+                points = [0,0,0,0]
+                cx, cy  = 0, 0
+            #print(f"block_name:{block_name} detector[1]:{detectors[1]['class']}, cx, xy:{(cx, cy)}")
+            if(block_name == "red") and len(detectors) == 1:
+                print('1')
+                red_b.value = True
+                green_b.value = False
+                pink_b.value = False
+                centr_x_red.value = cx
+                centr_y_red.value = cy
+                centr_x.value = 0
+                centr_y.value = 0
+            elif(block_name == "green") and len(detectors) == 1:
+                print('2')
+                green_b.value = True
+                red_b.value = False
+                pink_b.value = False
+                centr_x.value = cx
+                centr_y.value = cy
+            elif(len(detectors) == 2 and block_name == "green" and detectors[1]['class'] == "red"):
+                print("*")
+                green_b.value = True
+                red_b.value = False
+                pink_b.value = False
+                centr_x.value = cx
+                centr_y.value = cy
+    
+            elif(len(detectors) == 2 and block_name == "red" and detectors[1]['class'] == "green"):
+                print("#")
+                red_b.value = True
+                green_b.value = False
+                pink_b.value = False
+                centr_x_red.value = cx
+                centr_y_red.value = cy
 
-                # Get Limelight parsed results
-                result = ll.get_latest_results()
-                #parsed = limelightresults.parse_results(result)
-                #print(result.get('Detector')[0])
-                #print(result.get('Detector'))
-                detectors = result.get('Detector', [])
-                if detectors:
-                    detector_data = detectors[0]
-                    block_name = detector_data['class']
-                    points = detector_data['pts']
-                    #print(detector_data['class'])
-                    cx = sum(p[0] for p in points) / 4
-                    cy = sum(p[1] for p in points) / 4
-                else:
-                    block_name = None
-                    points = [0,0,0,0]
-                    cx, cy  = 0, 0
-                #print(f"block_name:{block_name} detector[1]:{detectors[1]['class']}, cx, xy:{(cx, cy)}")
-                if(block_name == "red") and len(detectors) == 1:
-                    print('1')
-                    red_b.value = True
-                    green_b.value = False
-                    pink_b.value = False
-                    centr_x_red.value = cx
-                    centr_y_red.value = cy
-                    centr_x.value = 0
-                    centr_y.value = 0
-                elif(block_name == "green") and len(detectors) == 1:
-                    print('2')
-                    green_b.value = True
-                    red_b.value = False
-                    pink_b.value = False
-                    centr_x.value = cx
-                    centr_y.value = cy
-                elif(len(detectors) == 2 and block_name == "green" and detectors[1]['class'] == "red"):
-                    print("*")
-                    green_b.value = True
-                    red_b.value = False
-                    pink_b.value = False
-                    centr_x.value = cx
-                    centr_y.value = cy
-      
-                elif(len(detectors) == 2 and block_name == "red" and detectors[1]['class'] == "green"):
-                    print("#")
-                    red_b.value = True
-                    green_b.value = False
-                    pink_b.value = False
-                    centr_x_red.value = cx
-                    centr_y_red.value = cy
+            elif (block_name == "red" and (detectors[1]['class'] == "pink")):
+                print('3')
+                red_b.value = True
+                green_b.value = False
+            elif (block_name == "green" and (detectors[1]['class'] == "pink")):
+                print('4')
+                green_b.value = True
+                red_b.value = False
+            else:
+                print('5')
+                red_b.value = False
+                green_b.value = False
+                pink_b.value = False
+                centr_x_red.value = 0
+                centr_y_red.value = 0
+                centr_x.value = 0
+                centr_y.value = 0
 
-                elif (block_name == "red" and (detectors[1]['class'] == "pink")):
-                    print('3')
-                    red_b.value = True
-                    green_b.value = False
-                elif (block_name == "green" and (detectors[1]['class'] == "pink")):
-                    print('4')
-                    green_b.value = True
-                    red_b.value = False
-                else:
-                    print('5')
-                    red_b.value = False
-                    green_b.value = False
-                    pink_b.value = False
-                    centr_x_red.value = 0
-                    centr_y_red.value = 0
-                    centr_x.value = 0
-                    centr_y.value = 0
-
-                if(block_name == "pink"):
-                    pink_b.value = True
-                else:
-                    pink_b.value = False
-                    
-
-                #print(f"detectors: {detectors}")
-                print(f"block_name:{block_name} red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value}")
-                # print(result['Detector'][0]['class'] if result['Detector'] else None)
-
-
-
-                # Get LL FPS
-                try:
-                    ll_fps = ll.get_fps()
-                    print(f"LL FPS: {ll_fps}")
-                except:
-                    ll_fps = "N/A"
+            if(block_name == "pink"):
+                pink_b.value = True
+            else:
+                pink_b.value = False
                 
-                #print(f"LL FPS: {ll_fps}")
-                #print(f"LL class:{result.get("Results", {}).get("Detector", [])}")
 
-                # Overlay FPS
-                #cv2.putText(frame, f"LL FPS: {ll_fps}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-                #cv2.putText(frame, f"Cam FPS: {fps_calc:.2f}", (10, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-
-                # Display frame
-                #cv2.imshow("Limelight Stream", frame)
-                #if cv2.waitKey(1) == 27:  # ESC to exit
-                    #break
-
+            #print(f"detectors: {detectors}")
+            #print(f"block_name:{block_name} red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value}")
+            # print(result['Detector'][0]['class'] if result['Detector'] else None
+            # Get LL FPS
+            try:
+                ll_fps = ll.get_fps()
+                print(f"LL FPS: {ll_fps}")
+            except:
+                ll_fps = "N/A"
+            time.sleep(0.01)
+    except Exception as e:
+        print(f"Exception in live feed: {e}")
     except KeyboardInterrupt:
+        session.close()
         print("\n🔴 Stopped by user.")
-        #ll.disable_websocket()
     finally:
-        ll.disable_websocket()
+        session.close()
         #cv2.destroyAllWindows()
         print("🛑 Limelight connection closed.")
 
@@ -564,7 +558,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             imu_head = head.value
             print(f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value}")
 
-            # print(f"red:{red_b.value} green:{green_b.value}")
             # print(f"angles:{specific_angle}")
             # print(f"fps 2222:{1/(time.time() - fps_time2)}")
             fps_time2 = time.time()
@@ -1070,6 +1063,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         # avg_orange = (prev_b.value*0.1 + avg_blue*0.9)
 
                         # and (time.time() - turn_t) > (4 + buff)):
+                        
+                        # TRIGGGER CHECK VALUESSSS
                         if (turn_trigger.value and not trigger) and (time.time() - turn_t) > (4 + buff):
                             # counter = counter + 1
                             buff = 0
@@ -1104,23 +1099,19 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                         ################### PANDAV 2.0 ####################
 
-                        if green_b.value and not r_flag and not continue_parking and not g_flag:
-                            power = 70
-                            prev_power = 65
+                        if green_b.value and not r_flag and not continue_parking:
                             print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
                             g_flag = True
-                            # if (centr_x.value > 1500 or  centr_y.value > 900):
                             g_past = True
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
                             print('1')
 
 
-                        elif (g_past or time.time() - gp_time < 1) and not continue_parking:
+                        elif (g_past or time.time() - gp_time < 0.2) and not continue_parking:
                             print("Avoiding green...")
-
-                            g_flag = True
-                            if tf_r <= 30:
+                            #g_flag = True
+                            if tf_r <= 50:
                                 print("Green Avoid Complete")
                                 g_past = False
                                 g_flag = False
@@ -1128,52 +1119,32 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 pwm.write(green_led, 1)
                                 buff = 0
                                 gp_time = time.time()
-                                power = 0
-                                prev_power = 0
-                                # Set duty cycle to 50% (128/255)
-                                pwm.set_PWM_dutycycle(pwm_pin, power)
-                                print("waiting for 1 second")
-                                stop_evt.set()
-                                time.sleep(1)
-                                print("green block saved")
-                           # g_flag = True
+
                             print('2')
 
-                        elif red_b.value and not g_flag and not continue_parking and not r_flag:
-                            power = 70
-                            prev_power = 65
+                        elif red_b.value and not g_flag and not continue_parking :
                             r_flag = True
                             print(f"centr x red: {centr_x_red.value} centr y: {centr_y_red.value}")
-                            # if ((centr_x_red.value < 55 and centr_x_red.value > 0) or  centr_y_red.value > 900):
                             r_past = True
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
 
                             print('3')
 
-                        elif (r_past or time.time() - rp_time < 1) and not continue_parking:
+                        elif (r_past or time.time() - rp_time < 0.2) and not continue_parking:
                             print("Avoiding red...")
-
-                            r_flag = True
+                            #r_flag = True
                             # and ((avg_right_pass < 50 or avg_right_pass > 120) or counter!=rev_counter):
-                            if tf_l <= 30:
+                            if tf_l <= 50:
                                 print(f"red Avoid complete")
                                 r_past = False
                                 r_flag = False
                                 red_stored = False
-                                red_count = 1
-                                green_count = 0
                                 pwm.write(red_led, 1)
                                 pwm.write(green_led, 0)
                                 buff = 0
                                 rp_time = time.time()
-                                power = 0
-                                prev_power = 0
-                                # Set duty cycle to 50% (128/255)
-                                pwm.set_PWM_dutycycle(pwm_pin, power)
-                                print("waiting for 1 second")
-                                stop_evt.set()
-                                time.sleep(1)
+
                                 print("red block saved")
                             #r_flag = True
                             print('4')
@@ -1217,87 +1188,38 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             p_past = False
                             print("No flags set, moving forward")
                             print('7')
-
+                        
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
 
-                        if not change_path:
-                            if g_flag or g_last_flag:
-                                if last_red:
-                                    g_last_flag = True
-                                    r_last_flag = False
-                                print("avoiding green..")
-                                correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag,
-                                                reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)
-                            elif r_flag or r_last_flag:
-                                if last_red:
-                                    r_last_flag = True
-                                    g_last_flag = False
-                                print("avoiding red...")
+                        if g_flag :
+                            print("avoiding green..")
+                            correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag,
+                                            reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)
+                        elif r_flag:
+                            print("avoiding red...")
+                            correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag,
+                                            reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)
+                        elif p_flag:
+                            print("avoiding pink..")
+                            if orange_flag:
                                 correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag,
                                                 reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)
-                            elif p_flag:
-                                print("avoiding pink..")
-                                if orange_flag:
-                                    correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag,
-                                                    reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)
-                                elif blue_flag:
-                                    correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag,
-                                                    reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)
-                            else:
-                                print("Going straight")
-                                correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag,
+                            elif blue_flag:
+                                correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag,
                                                 reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)
-
-                            print(f"g_last:{g_last_flag} r_last:{r_last_flag}")
                         else:
+                            print("Going straight")
+                            correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag,
+                                            reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)
 
-                            print(f"Turning 180...{abs(corr)} {i}")
-                            print(
-                                f"heading_angle:{heading_angle} prev_heading {previous_heading}")
-                            if abs(heading_angle) == 180 and abs(corr) < 15:
-                                power = 0
-                                # Set duty cycle to 50% (128/255)
-                                pwm.set_PWM_dutycycle(pwm_pin, power)
-                                time.sleep(0.5)
-                                power = 70
-                                prev_power = 0
-                                heading_angle = -180
-                                change_path = False
-                                last_red = False
-                                print("Change path is false")
-                            if r_last_flag or cw:
-                                r_flag = True
-                                g_flag = True
-                                g_past = False
-                                print("Turning anticlockwise")
-                                cw = True
-                                offset = -90
-                            elif g_last_flag or ccw:
-                                g_flag = True
-                                r_flag = False
-                                r_past = False
-                                print("Turning clockwise")
-                                ccw = True
-                                offset = 90
-                            if abs(corr) < 15 and i < 2 and heading_angle != previous_heading:
-                                print(f"off:{offset}")
-                                print(
-                                    f"heading_angle before change {heading_angle}")
-                                previous_heading = heading_angle
-                                heading_angle = heading_angle + offset
-                                print(
-                                    f"heading_angle after change {heading_angle}")
-                                previous_heading_stored = True
-                                i = i + 1
-                            correctAngle(heading_angle, head.value)
-                # print(f"green:{green_count} r_count:{red_count}")
+
                 print(
                     f"trigger:{trigger} turn_trigger: {turn_trigger.value} reset_f:{reset_f} red:{r_flag} green:{g_flag} pink:{pink_b.value} counter: {counter}, imu:{head.value}")
                 print(f"r_past:{r_past} g_past:{g_past} p_past:{p_past}")
                 print(f"x: {x}, y:{y} count:{counts.value} heading_angle:{heading_angle}")
                 print(f"tf_h :{tf_h} left:{tf_l} right: {tf_r} POWER = {power}")
-                print(f"L: {setPointL} R: {setPointR} setPointC: {setPointC} stop_b.value: {stop_b.value}")
+                print(f"L: {setPointL} R: {setPointR} setPointC: {setPointC}")
                 # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
             else:
                 power = 0
@@ -1340,7 +1262,7 @@ def runEncoder(counts, head, imu_shared, sp_angle):
             line = ser.readline().decode().strip()
             esp_data = line.split(" ")
             esp_data.append(1)
-            if len(esp_data) >= 2:
+            if esp_data[1].isdigit():
                 try:
                     head.value = float(esp_data[0])
                     imu_shared.value = head.value
@@ -1424,13 +1346,10 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
                     specific_angle[2] = lidar_distance.value
                     lidar_right = lidar_distance.value
                     
-                if stop_evt.is_set():
-                    if (lidar_front < 650 and lidar_right > 1800 and lidar_left < 1000) :
-                        turn_trigger.value = True                    
-                    else:
-                        turn_trigger.value = False
-                    stop_evt.clear()
-
+                if (lidar_front < 650 and lidar_right > 1800 and lidar_left < 1000) :
+                    turn_trigger.value = True                    
+                else:
+                    turn_trigger.value = False
                 '''if (lidar_front < 750 and lidar_right > 1800 and lidar_left < 1000) and not turn_trigger.value:
                     turn_trigger.value = True
                     trig_time = time.time()
@@ -1460,13 +1379,11 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu_shared, sp_angle
                         specific_angle[2] = lidar_distance.value
                         lidar_right = lidar_distance.value
                     # print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
-                    if stop_evt.is_set():
-                        if (lidar_front < 650 and lidar_right > 1800 and lidar_left < 1000) :
-                            turn_trigger.value = True
-                            
-                        else:
-                            turn_trigger.value = False
-                        stop_evt.clear()
+ 
+                    if (lidar_front < 650 and lidar_right > 1800 and lidar_left < 1000) :
+                        turn_trigger.value = True      
+                    else:
+                        turn_trigger.value = False
                         
 
             #print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left}  turn_trigger:{turn_trigger.value} diff:{time.time() - trig_time}  imu:{imu_r} sp_angle: {sp_angle.value}")
@@ -1488,12 +1405,17 @@ if __name__ == '__main__':
         # Launch the lidar reader process
 
         # C = multiprocessing.Process(target=color_SP, args=(blue_c, orange_c, white_c))
+
+        print("Image Process Start")
+        time.sleep(2)
+        P.start()
+        time.sleep(3)
+        print("Image Process Started")
+
         print("Starting lidar process")
         lidar_proc.start()
         print("lidar process startes")
-        print("Image Process Start")
-        P.start()
-        print("Image Process Started")
+
         print("Servo Process Start")
         S.start()
         print("Servo Process Started")
@@ -1517,5 +1439,4 @@ if __name__ == '__main__':
         pwm.bb_serial_read_close(RX_Left)
         pwm.bb_serial_read_close(RX_Right)
         pwm.stop()
-        imu.close()
         tfmini.close()
