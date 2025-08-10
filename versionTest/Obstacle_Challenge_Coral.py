@@ -560,7 +560,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             imu_head = head.value
             if not button:
                 print(f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value}")
-
+                print(f"centr_X:{centr_x_pink.value} centr_y:{centr_y_pink.value}")
             # print(f"angles:{specific_angle}")
             # print(f"fps 2222:{1/(time.time() - fps_time2)}")
             fps_time2 = time.time()
@@ -653,7 +653,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         print(f"setPointR: {setPointR}")
 
                 elif counter % 4 == 0 and not blue_flag and not orange_flag:
-                    if ((centr_x_pink.value < 800 and centr_x_pink.value > 0) and ((centr_y.value or centr_y_red.value) <= centr_y_pink.value)) and not continue_parking:
+                    if ((centr_x_pink.value < 400 and centr_x_pink.value > 0) and ((centr_x_red.value) > centr_x_pink.value)) and not continue_parking:
                         setPointR = 35
                         setPointL = -70
                         print(f"at 0 counter orange:{setPointR} {setPointL}")
@@ -829,7 +829,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                             else:
                                 if red_time:
-                                    time_g = 1.2
+                                    time_g = 1
 
                                 else:
                                     time_g = 0.5
@@ -957,9 +957,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             else:
                                 print("ORANGE RESET ELSE..")
                                 if green_time:
-                                    time_g = 1.2
-                                else:
                                     time_g = 1
+                                else:
+                                    time_g = 0.5
                                 print(f"time_g:{time_g}")
 
                                 if not timer_started:
@@ -1104,15 +1104,15 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         if green_b.value and not r_flag and not continue_parking:
                             print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
                             g_flag = True
-                            g_past = True
-                            r_flag = False
-                            r_past = False
+                            if (centr_x.value > 700 or  centr_y.value > 500):
+                                g_past = True
+
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
                             print('1')
 
 
-                        elif (g_past or time.time() - gp_time < 0.1) and not continue_parking:
+                        elif (g_past or time.time() - gp_time < 0.2) and not continue_parking:
                             print("Avoiding green...")
                             g_flag = True
                             if tf_r <= 50:
@@ -1128,20 +1128,19 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                         elif red_b.value and not g_flag and not continue_parking :
                             r_flag = True
-                            print(f"centr x red: {centr_x_red.value} centr y: {centr_y_red.value}")
-                            r_past = True
-                            g_flag = False
-                            g_past = False
+                            print(f"x cent:{centr_x_red.value} centr y:{centr_y_red.value}")
+                            if ((centr_x_red.value < 50 and centr_x_red.value > 0) or  centr_y_red.value > 500):
+                                r_past = True
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
 
                             print('3')
 
-                        elif (r_past or time.time() - rp_time < 0.1) and not continue_parking:
+                        elif (r_past or time.time() - rp_time < 0.2) and not continue_parking:
                             print("Avoiding red...")
                             r_flag = True
                             # and ((avg_right_pass < 50 or avg_right_pass > 120) or counter!=rev_counter):
-                            if tf_l <= 50:
+                            if tf_l <= 50 :
                                 print(f"red Avoid complete")
                                 r_past = False
                                 r_flag = False
@@ -1415,13 +1414,13 @@ if __name__ == '__main__':
         P.start()
         #time.sleep(3)
         print("Image Process Started")
-        #E.start()
+        E.start()
         print("Starting lidar process")
-        #lidar_proc.start()
+        lidar_proc.start()
         print("lidar process startes")
 
         print("Servo Process Start")
-        #S.start()
+        S.start()
         print("Servo Process Started")
         print("Encoder Process Start")
 
