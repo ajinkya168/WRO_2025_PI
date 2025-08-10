@@ -671,7 +671,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 pb_time = time.time()
             # IF DOES NOT SEE PINK, KEEP THE SAME SETPOINT FOR 1 SECOND AND THEN CHANGE
             elif not pink_b.value and time.time() - pb_time > 1 and not lap_finish:
-                print(f"Resetting setPoints...{pink_detected}")
+                #print(f"Resetting setPoints...{pink_detected}")
                 if g_flag and not continue_parking:
                     print(f"away from green {g_past}")
                     setPointL = setPointL - 1
