@@ -1104,9 +1104,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         if green_b.value and not r_flag and not continue_parking:
                             print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
                             g_flag = True
-                            if (centr_x.value > 700 or  centr_y.value > 500):
+#                            if (centr_x.value > 700 or  centr_y.value > 500) and tf_l < 30:
+                            if tf_l < 30:
                                 g_past = True
-
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
                             print('1')
@@ -1129,7 +1129,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         elif red_b.value and not g_flag and not continue_parking :
                             r_flag = True
                             print(f"x cent:{centr_x_red.value} centr y:{centr_y_red.value}")
-                            if ((centr_x_red.value < 50 and centr_x_red.value > 0) or  centr_y_red.value > 500):
+                            #if ((centr_x_red.value < 50 and centr_x_red.value > 0) or  centr_y_red.value > 500) and tf_r < 30:
+                            if tf_r < 30:
                                 r_past = True
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
