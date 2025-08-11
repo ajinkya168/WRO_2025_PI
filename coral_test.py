@@ -67,7 +67,7 @@ try:
         now = time.time()
         fps = 1.0 / max(1e-3, (now - t_prev)); t_prev = now
         print(f"cls_name:{cls_name} fps: {fps} pair:{pairs}")
-        #cv2.imshow("Coral SSD Live", frame_bgr)
+        cv2.imshow("Coral SSD Live", frame_bgr)
         if cv2.waitKey(1) & 0xFF == 27:  # ESC
             break
 finally:

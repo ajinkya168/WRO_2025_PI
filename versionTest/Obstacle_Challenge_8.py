@@ -917,7 +917,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 	setPointL = -70
 	setPointR = 70
 	setPointC = 0
-	power = 70
+	power = 60
 	prev_power = 0
 	last_counter = 12
 	change_counter = 7 # 3
@@ -1090,7 +1090,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 			button_state = GPIO.input(5)
 			if previous_state == 1 and button_state == 0:
 				button = not (button)
-				power = 70
+				power = 60
 
 			if button:  ##### THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
 				if not reset_servo:
@@ -1159,7 +1159,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 						pink_r = True
 					while time.time() - c_time < time_p and not reverse_complete:
 						print("Reversing backward...")
-						power = 70
+						power = 60
 						prev_power = 0
 						pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
 						pwm.write(direction_pin, 0)  # Set pin 20 hig '''
@@ -1265,7 +1265,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 									while (time.time() - current_time < time_g):
 										servo.setAngle(100)
 										x, y = enc.get_position(imu_head, counts.value)
-										power = 70
+										power = 60
 										prev_power = 95
 										pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
 										pwm.write(direction_pin, 0)  # Set pin 20 hig
@@ -1303,7 +1303,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 											print("Green is not there breaking the loop...")
 											break
 										x, y = enc.get_position(imu_head, counts.value)
-										power = 70
+										power = 60
 										prev_power = 0
 										pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
 										pwm.write(direction_pin, 0)  # Set pin 20 hig
@@ -1333,7 +1333,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 									enc.y = (50 - abs(turn_trigger_distance * turn_cos_theta)) - 10
 								print(f'Resuming Motor...{x} {y}')
 
-								power = 70
+								power = 60
 								if reverse == True:
 									print("In blue reverse...")
 									offset = 180
@@ -1391,7 +1391,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 										servo.setAngle(70)
 										# getTFminiData()
 										x, y = enc.get_position(imu_head, counts.value)
-										power = 70
+										power = 60
 										prev_power = 65
 										pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
 										pwm.write(direction_pin, 0)  # Set pin 20 hig
@@ -1435,7 +1435,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 										# getTFminiData()
 										x, y = enc.get_position(imu_head, counts.value)
 										# print(f"x: {x}, y: {y},  count:{counts.value} distance_head : {distance_head}")
-										power = 70
+										power = 60
 										prev_power = 0
 										pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
 										pwm.write(direction_pin, 0)  # Set pin 20 hig
@@ -1467,7 +1467,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 									enc.y = ((turn_trigger_distance * turn_cos_theta) - 50) + 10
 								print(f'Resuming Motor...{offset}')
 
-								power = 70
+								power = 60
 								if reverse == True:
 									offset = -180
 									heading_angle = ((90 * counter) % 360) + offset
@@ -1488,7 +1488,7 @@ def servoDrive(pwm, color_b, stop_b, red_b, green_b, pink_b, counts, centr_y, ce
 						if avg_head < 10:
 							prev_restore = time.time()
 							print(f"counter: {counter} Trigger detected...")
-							power = 70
+							power = 60
 							prev_power = 0
 							while time.time() - prev_restore < 2:
 								tfmini.getTFminiData()

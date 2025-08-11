@@ -210,6 +210,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
             correction = 0
 
     if not reset:
+        tfmini.getTFminiData()
         if (((setPoint == -35 or setPoint == 0) and orange) or (counter == 0 and (centr_x_p < 800 and centr_x_p > 0) and ((centr_y_g or centr_y_r) <= centr_y_p) and not blue and not orange) and not finish):
             if distance_l <= 30:
                 correction = 20
@@ -251,14 +252,14 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
             else:
                 pass
 
-            if (setPoint >= 70 or setPoint == 0) and (distance_r <= 20 or distance_h <= 180):
+            if (setPoint >= 70 or setPoint == 0) and (distance_r <= 20 or (tfmini.distance_head <= 18)):
                 print(f"Correcting Red Wall...")
                 correction = -10
             else:
                 pass
 
         else:
-            if (setPoint <= -70 or setPoint == 0) and (distance_l <= 20 or distance_h <=180 ):
+            if (setPoint <= -70 or setPoint == 0) and (distance_l <= 20 or (tfmini.distance_head <= 18)) :
                 print(f"Correcting Green Wall Blue")
                 correction = 10
             else:
@@ -383,8 +384,11 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 y2 = int(bbox.ymax * scale_y)
                 cx = x1 + x2//2
                 cy = y1 + y2//2
+                area = max(0, (x2 - x1)) * max(0, (y2 - y1))
                 name = labels.get(obj.id, str(obj.id))
-                det.append((name, cx, cy))
+                det.append((name, cx, cy, area))
+            dets.sort(key=lambda d: d[3], reverse=True)
+
             pair=[]
             if len(det) >= 2:
                 # Normal case: take only the first detected pair
@@ -401,6 +405,9 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
             n2 = pair[1][0] if pair[1] else None
             if n1 == 'pink' and n2 is None:
                 pink_b.value = True
+                if n1 == 'pink':
+                    centr_x_pink.value = pair[0][1]
+                    centr_y_pink.value = pair[0][2]
             else:
                 pink_b.value = False
 
@@ -414,13 +421,14 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 elif n2 == 'red':
                     centr_x_red.value = pair[1][1]
                     centr_y_red.value = pair[1][2] 
+
                 if n1 == 'pink':
                     centr_x_pink.value = pair[0][1]
                     centr_y_pink.value = pair[0][2]
                 elif n2 == 'pink':
-                    centr_x_pink.value = pair[1][1]
-                    centr_y_pink.value = pair[1][2]
-            if (n1, n2) in (('pink', 'green'), ('green', 'pink')):
+                    centr_x_red.value = pair[1][1]
+                    centr_y_red.value = pair[1][2] 
+            elif (n1, n2) in (('pink', 'green'), ('green', 'pink')):
                 green_b.value = True
                 red_b.value = False
                 pink_b.value = True
@@ -436,7 +444,7 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 elif n2 == 'pink':
                     centr_x_pink.value = pair[1][1]
                     centr_y_pink.value = pair[1][2]
-            if (n1, n2) in (('green', 'red'), ('green', None)):
+            elif (n1, n2) in (('green', 'red'), ('green', None)):
                 green_b.value = True
                 red_b.value = False
                 pink_b.value = False
@@ -446,7 +454,7 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 elif n2 == 'green':
                     centr_x.value = pair[1][1]
                     centr_y.value = pair[1][2]
-            if (n1, n2) in (('red', 'green'), ('red', None)):
+            elif (n1, n2) in (('red', 'green'), ('red', None)):
                 red_b.value = True
                 green_b.value = False
                 pink_b.value = False
@@ -554,6 +562,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     orange_c.value = True
     debounce_delay = 0.2
     last_time = 0
+    avoided = False
+    avoided_time = time.time()
+    reverse_until = 0
     try:
         while True:
             imu_shared.value = head.value
@@ -690,8 +701,19 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             ##########
             if button:  # THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
                 # time.sleep(0.01)
-                
 
+                if red_b.value or green_b.value:
+                    power = 40
+                else:
+                    power = 70
+
+
+                if time.time() < avoided_time:
+                    pwm.set_PWM_dutycycle(pwm_pin, 0)
+                    pwm.write(direction_pin, 0)
+                    #correctAngle(heading_angle, imu_head)  # still steer if needed
+                    
+                    continue  # skip the drive code below       
 
                 if not reset_servo:
                     time.sleep(0.5)
@@ -779,10 +801,10 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         print("Moving slowly..")
                         power = 85
                         pwm.set_PWM_dutycycle(pwm_pin, power)
-                        correctAngle(heading_angle, head.value)
+                        #correctAngle(heading_angle, head.value)
                     back_bot = False
                     stop_flag = False
-                    if (abs(corr) < 15) and (tf_h <= 50 and tf_h >= 0) and not finish_flag:
+                    if (abs(corr) < 15) and (tf_h <= 500 and tf_h >= 0) and not finish_flag:
                         finish_timer = time.time()
                         finish_flag = True
                     print(f"finish flag:{finish_flag}")
@@ -802,6 +824,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         setPointR = 70
                         setPointC = 0
                         g_past = False
+                        servo.setAngle(90)
                         if blue_flag:  # BLUE RESET BLOCK
 
                             print(f"BLUE RESET")
@@ -865,7 +888,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                         pwm.write(green_led, 1)
                                     while 1 and green_b.value:
                                         tfmini.getTFminiData()
-                                        correctAngle(heading_angle, head.value)
+                                        #correctAngle(heading_angle, head.value)
                                         if abs(corr) < 15:
                                             turn_cos_theta = math.cos(
                                                 math.radians(abs(corr)))
@@ -933,7 +956,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         if orange_flag:  # ORANGE RESET BLOCK
                             print(
                                 f"ORANGE RESET...setPoint C:{setPointC}")
-
+                            
                             if (green_b.value or green_turn) or (reverse_trigger):  # green after trigger
                                 if counter != rev_counter:
                                     green_count = 1
@@ -957,9 +980,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             else:
                                 print("ORANGE RESET ELSE..")
                                 if green_time:
-                                    time_g = 1
+                                    time_g = 1.2
                                 else:
-                                    time_g = 0.5
+                                    time_g = 0.8
                                 print(f"time_g:{time_g}")
 
                                 if not timer_started:
@@ -1001,7 +1024,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                         print("RED IS SEEN..")
                                         servo.setAngle(80)
                                         print(f"centr y: {centr_y_red.value}")
-                                        if (red_b.value):
+                                        if (red_b.value)and (centr_y_red.value < 200 and centr_y_red.value > 0):
                                             print(f"Breaking the loop...")
                                             break
                                         elif (time.time() - current_time > 0.5) and not red_b.value:
@@ -1056,6 +1079,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 reset_f = False
                                 g_flag = False
                                 g_past = False
+                                avoided = True
                                 # centr_y_b.value = 0
 
                     else:
@@ -1064,10 +1088,10 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         # avg_blue = (prev_b.value*0.1 + avg_blue*0.9)
                         # avg_orange = (prev_b.value*0.1 + avg_blue*0.9)
 
-                        # and (time.time() - turn_t) > (4 + buff)):
+
                         
                         # TRIGGGER CHECK VALUESSSS
-                        if (turn_trigger.value and not trigger) and (time.time() - turn_t) > (4 + buff):
+                        if (turn_trigger.value and not trigger) and (time.time() - turn_t) > 6 + buff:
                             # counter = counter + 1
                             buff = 0
                             # heading_angle = (90 * counter) % 360
@@ -1101,54 +1125,59 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                         ################### PANDAV 2.0 ####################
 
-                        if green_b.value and not r_flag and not continue_parking:
+                        if green_b.value and not r_flag and not continue_parking and not g_flag:
                             print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
                             g_flag = True
-#                            if (centr_x.value > 700 or  centr_y.value > 500) and tf_l < 30:
-                            if tf_l < 30:
+                            g_past = True
+                            avoided_time = time.time() + 0.5
+                            '''if (centr_x.value > 700 or  centr_y.value > 500) and not g_past:
+                            #if tf_l < 35 and not g_past:
                                 g_past = True
+                                print("g past is true")'''
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
                             print('1')
 
 
-                        elif (g_past or time.time() - gp_time < 0.2) and not continue_parking:
+                        elif (g_past or time.time() - gp_time < 0.5) and not continue_parking:
                             print("Avoiding green...")
                             g_flag = True
-                            if tf_r <= 50:
+                            if tf_r <= 50 and not green_b.value:
                                 print("Green Avoid Complete")
                                 g_past = False
                                 g_flag = False
+
                                 pwm.write(red_led, 0)
                                 pwm.write(green_led, 1)
-                                buff = 0
                                 gp_time = time.time()
 
                             print('2')
 
-                        elif red_b.value and not g_flag and not continue_parking :
+                        elif red_b.value and not g_flag and not continue_parking and not r_flag:
                             r_flag = True
-                            print(f"x cent:{centr_x_red.value} centr y:{centr_y_red.value}")
-                            #if ((centr_x_red.value < 50 and centr_x_red.value > 0) or  centr_y_red.value > 500) and tf_r < 30:
-                            if tf_r < 30:
+                            r_past = True
+                            avoided_time = time.time() + 0.5
+                            #print(f"x cent:{centr_x_red.value} centr y:{centr_y_red.value}")
+                            '''if ((centr_x_red.value < 100 and centr_x_red.value > 0) or  centr_y_red.value > 500) and not r_past:
+                            #if tf_r < 35 and not r_past:
                                 r_past = True
+                                print("r past is true")'''
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
 
                             print('3')
 
-                        elif (r_past or time.time() - rp_time < 0.2) and not continue_parking:
+                        elif (r_past or time.time() - rp_time < 0.5) and not continue_parking:
                             print("Avoiding red...")
                             r_flag = True
                             # and ((avg_right_pass < 50 or avg_right_pass > 120) or counter!=rev_counter):
-                            if tf_l <= 50 :
+                            if tf_l <= 50 and not red_b.value :
                                 print(f"red Avoid complete")
                                 r_past = False
                                 r_flag = False
                                 red_stored = False
                                 pwm.write(red_led, 1)
                                 pwm.write(green_led, 0)
-                                buff = 0
                                 rp_time = time.time()
                                 print("red block saved")
                             print('4')
@@ -1214,6 +1243,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                                 reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)
                         else:
                             print("Going straight")
+
                             correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag,
                                             reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)
 
@@ -1265,7 +1295,7 @@ def runEncoder(counts, head, imu_shared, sp_angle):
             line = ser.readline().decode().strip()
             esp_data = line.split(" ")
             esp_data.append(1)
-            if esp_data[1].isdigit():
+            if abs(esp_data[1].isdigit()):
                 try:
                     head.value = float(esp_data[0])
                     imu_shared.value = head.value
