@@ -252,14 +252,14 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
             else:
                 pass
 
-            if (setPoint >= 70 or setPoint == 0) and (distance_r <= 20 or (tfmini.distance_head <= 18)):
+            if (setPoint >= 70 or setPoint == 0) and (distance_r <= 20 or (tfmini.distance_head <= 25)):
                 print(f"Correcting Red Wall...")
                 correction = -10
             else:
                 pass
 
         else:
-            if (setPoint <= -70 or setPoint == 0) and (distance_l <= 20 or (tfmini.distance_head <= 18)) :
+            if (setPoint <= -70 or setPoint == 0) and (distance_l <= 20 or (tfmini.distance_head <= 25)) :
                 print(f"Correcting Green Wall Blue")
                 correction = 10
             else:
@@ -386,7 +386,8 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 cy = y1 + y2//2
                 area = max(0, (x2 - x1)) * max(0, (y2 - y1))
                 name = labels.get(obj.id, str(obj.id))
-                det.append((name, cx, cy, area))
+                if area >= 2500:
+                    det.append((name, cx, cy, area))
             dets.sort(key=lambda d: d[3], reverse=True)
 
             pair=[]
@@ -686,14 +687,14 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 if g_flag and not continue_parking:
                     print(f"away from green {g_past}")
                     setPointL = setPointL - 1
-                    if setPointL < -100:
-                        setPointL = -100
+                    if setPointL < -150:
+                        setPointL = -150
                     setPointR = 70
                 elif r_flag and not continue_parking:
                     print(f"away from red {r_past}")
                     setPointR = setPointR + 1
-                    if setPointR > 100:
-                        setPointR = 100
+                    if setPointR > 150:
+                        setPointR = 150
                     setPointL = -70
             else:
                 setPointR = 70
@@ -703,7 +704,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 # time.sleep(0.01)
 
                 if red_b.value or green_b.value:
-                    power = 40
+                    power = 50
                 else:
                     power = 70
 
@@ -713,7 +714,20 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     pwm.write(direction_pin, 0)
                     #correctAngle(heading_angle, imu_head)  # still steer if needed
                     
-                    continue  # skip the drive code below       
+                    continue  # skip the drive code below   
+
+                if avoided_time > 0 and time.time() < reverse_until:
+                    # non-blocking reverse
+                    power = 70
+                    prev_power = 65
+                    pwm.set_PWM_dutycycle(pwm_pin, int(1.3 * power))
+                    pwm.write(direction_pin, 0)  # 0 = reverse, 1 = forward (per your wiring)
+                    # keep the robot straight while reversing (or add bias if you want to angle out)
+                    #correctAngle(sp_angle.value, imu_head)
+                    servo.setAngle(90)
+                    continue  # still skip forward-drive code
+
+                                
 
                 if not reset_servo:
                     time.sleep(0.5)
@@ -820,6 +834,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         back_bot = True
                 else:
                     if reset_f:
+                        print("RESET FLAG")
+
+
                         setPointL = -70
                         setPointR = 70
                         setPointC = 0
@@ -982,7 +999,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 if green_time:
                                     time_g = 1.2
                                 else:
-                                    time_g = 0.8
+                                    time_g = 1
                                 print(f"time_g:{time_g}")
 
                                 if not timer_started:
@@ -1006,28 +1023,19 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     print('Stopping Motor...')
                                     timer_started = False
                                 elif (red_b.value or red_turn) or r_past:
+                                    print('Stopping Motor... RED IS SEEN')
                                     red_turn = True
-                                    while 1:
-                                        tfmini.getTFminiData()
-                                        print(f"correct red heading..")
-                                        correctAngle(heading_angle, head.value)
-                                        if abs(corr) < 15:
-                                            print(f"turn_trigger: {turn_trigger_distance}")
-                                            break
 
-                                    if not timer_started:
-                                        current_time = time.time()
-                                        timer_started = True
-                                    print(
-                                        f'reversing diection red pink color: {pink_b.value} pink flag: {p_flag} {p_past}  red color:{red_b.value} red flag: {r_past} {r_flag}')
+                    
+                                    print(f'reversing diection red pink color: {pink_b.value} pink flag: {p_flag} {p_past}  red color:{red_b.value} red flag: {r_past} {r_flag}')
                                     while 1:
                                         print("RED IS SEEN..")
                                         servo.setAngle(80)
                                         print(f"centr y: {centr_y_red.value}")
-                                        if (red_b.value)and (centr_y_red.value < 200 and centr_y_red.value > 0):
+                                        if (centr_y_red.value < 500 and centr_y_red.value > 0):
                                             print(f"Breaking the loop...")
                                             break
-                                        elif (time.time() - current_time > 0.5) and not red_b.value:
+                                        elif (time.time() - current_time > 1.4):
                                             print("Green is not there breaking the loop...")
                                             break
                                         # getTFminiData()
@@ -1040,7 +1048,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                         # Set pin 20 hig
                                         pwm.write(direction_pin, 0)
                                     print('red reversing diection complete')
-                                    buff = 4
+                                    
                                     timer_started = False
                                 print('Stopping Motor...')
 
@@ -1051,7 +1059,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                                 # getTFminiData()
                                 x, y = enc.get_position(imu_head, counts.value)
-
+                                buff = 4
                                 time.sleep(0.8)
                                 counter = counter + 1
                                 c_time = time.time()
@@ -1130,6 +1138,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             g_flag = True
                             g_past = True
                             avoided_time = time.time() + 0.5
+                            reverse_until = avoided_time + 0.7
+
                             '''if (centr_x.value > 700 or  centr_y.value > 500) and not g_past:
                             #if tf_l < 35 and not g_past:
                                 g_past = True
@@ -1142,11 +1152,10 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         elif (g_past or time.time() - gp_time < 0.5) and not continue_parking:
                             print("Avoiding green...")
                             g_flag = True
-                            if tf_r <= 50 and not green_b.value:
+                            if (tf_r <= 50 and not green_b.value) and tf_l <= 25 and tf_h >= 1000:
                                 print("Green Avoid Complete")
                                 g_past = False
                                 g_flag = False
-
                                 pwm.write(red_led, 0)
                                 pwm.write(green_led, 1)
                                 gp_time = time.time()
@@ -1157,6 +1166,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             r_flag = True
                             r_past = True
                             avoided_time = time.time() + 0.5
+                            reverse_until = avoided_time + 0.7
                             #print(f"x cent:{centr_x_red.value} centr y:{centr_y_red.value}")
                             '''if ((centr_x_red.value < 100 and centr_x_red.value > 0) or  centr_y_red.value > 500) and not r_past:
                             #if tf_r < 35 and not r_past:
@@ -1171,15 +1181,26 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             print("Avoiding red...")
                             r_flag = True
                             # and ((avg_right_pass < 50 or avg_right_pass > 120) or counter!=rev_counter):
-                            if tf_l <= 50 and not red_b.value :
-                                print(f"red Avoid complete")
-                                r_past = False
-                                r_flag = False
-                                red_stored = False
-                                pwm.write(red_led, 1)
-                                pwm.write(green_led, 0)
-                                rp_time = time.time()
-                                print("red block saved")
+                            if tf_r <= 25:
+                                if tf_l <= 50 and not red_b.value:
+                                    print(f"red Avoid complete")
+                                    r_past = False
+                                    r_flag = False
+                                    red_stored = False
+                                    pwm.write(red_led, 1)
+                                    pwm.write(green_led, 0)
+                                    rp_time = time.time()
+                                    print("red block saved")
+                            else:
+                                if tf_l <= 50 and not red_b.value and tf_h> 1500:
+                                    print(f"red Avoid complete")
+                                    r_past = False
+                                    r_flag = False
+                                    red_stored = False
+                                    pwm.write(red_led, 1)
+                                    pwm.write(green_led, 0)
+                                    rp_time = time.time()
+                                    print("red block saved")
                             print('4')
 
                         elif pink_b.value and continue_parking and not p_flag:
