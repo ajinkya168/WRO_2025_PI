@@ -711,14 +711,14 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     power = 70
 
 
-                if time.time() < avoided_time:
+                if time.time() < avoided_time and not trigger:
                     pwm.set_PWM_dutycycle(pwm_pin, 0)
                     pwm.write(direction_pin, 0)
                     #correctAngle(heading_angle, imu_head)  # still steer if needed
                     
                     continue  # skip the drive code below   
 
-                if avoided_time > 0 and time.time() < reverse_until:
+                if avoided_time > 0 and time.time() < reverse_until and not trigger:
                     # non-blocking reverse
                     power = 70
                     prev_power = 65
