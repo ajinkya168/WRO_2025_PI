@@ -311,10 +311,10 @@ def correctAngle(setPoint_gyro, heading):
     iTerm = ki * totalErrorGyro
     correction = pTerm + iTerm + dTerm
 
-    if correction > 30:
-        correction = 30
-    elif correction < -30:
-        correction = -30
+    if correction > 45:
+        correction = 45
+    elif correction < -45:
+        correction = -45
 
     prevErrorGyro = error_gyro
     servo.setAngle(90 - correction)
@@ -566,6 +566,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     avoided = False
     avoided_time = time.time()
     reverse_until = 0
+    encoder_counter_store = False
+    encoder_counts_value = 0
     try:
         while True:
             imu_shared.value = head.value
@@ -1133,17 +1135,12 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                         ################### PANDAV 2.0 ####################
 
-                        if green_b.value and not r_flag and not continue_parking and not g_flag:
+                        '''if green_b.value and not r_flag and not continue_parking and not g_flag:
                             print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
                             g_flag = True
                             g_past = True
                             avoided_time = time.time() + 0.5
                             reverse_until = avoided_time + 0.7
-
-                            '''if (centr_x.value > 700 or  centr_y.value > 500) and not g_past:
-                            #if tf_l < 35 and not g_past:
-                                g_past = True
-                                print("g past is true")'''
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
                             print('1')
@@ -1168,10 +1165,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             avoided_time = time.time() + 0.5
                             reverse_until = avoided_time + 0.7
                             #print(f"x cent:{centr_x_red.value} centr y:{centr_y_red.value}")
-                            '''if ((centr_x_red.value < 100 and centr_x_red.value > 0) or  centr_y_red.value > 500) and not r_past:
-                            #if tf_r < 35 and not r_past:
-                                r_past = True
-                                print("r past is true")'''
+
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
 
@@ -1244,7 +1238,132 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             print('7')
                         
                             pwm.write(red_led, 0)
+                            pwm.write(green_led, 0)'''
+
+
+
+                        if green_b.value and not r_flag and not continue_parking and not g_flag:
+                            print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
+                            g_flag = True
+                            g_past = True
+                            avoided_time = time.time() + 0.5
+                            reverse_until = avoided_time + 0.7
+                            pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
+                            print('1')
+
+
+                        elif (g_past) and not continue_parking:
+                            print("Avoiding green...")
+                            g_flag = True
+                            if not green_b.value and not encoder_counter_store:
+                                encoder_counts_value = counts.value
+                                encoder_counter_store = True
+                                print("encoder counts are stored for green")
+                            '''if (tf_r <= 50 and not green_b.value) and tf_l <= 25 and tf_h >= 1000:
+                                print("Green Avoid Complete")
+                                g_past = False
+                                g_flag = False
+                                pwm.write(red_led, 0)
+                                pwm.write(green_led, 1)
+                                gp_time = time.time()'''
+
+                            print('2')
+
+                        elif red_b.value and not g_flag and not continue_parking and not r_flag:
+                            r_flag = True
+                            r_past = True
+                            avoided_time = time.time() + 0.5
+                            reverse_until = avoided_time + 0.7
+                            #print(f"x cent:{centr_x_red.value} centr y:{centr_y_red.value}")
+
+                            pwm.write(red_led, 0)
+                            pwm.write(green_led, 0)
+
+                            print('3')
+
+                        elif (r_past or time.time() - rp_time < 0.5) and not continue_parking:
+                            print("Avoiding red...")
+                            r_flag = True
+                            if not red_b.value and not encoder_counter_store:
+                                encoder_counts_value = counts.value
+                                encoder_counter_store = True
+                                print("encoder counts stored for red")
+                            # and ((avg_right_pass < 50 or avg_right_pass > 120) or counter!=rev_counter):
+                            if tf_r <= 25:
+                                if tf_l <= 50 and not red_b.value:
+                                    print(f"red Avoid complete")
+                                    r_past = False
+                                    r_flag = False
+                                    red_stored = False
+                                    pwm.write(red_led, 1)
+                                    pwm.write(green_led, 0)
+                                    rp_time = time.time()
+                                    print("red block saved")
+                            else:
+                                if tf_l <= 50 and not red_b.value and tf_h> 1500:
+                                    print(f"red Avoid complete")
+                                    r_past = False
+                                    r_flag = False
+                                    red_stored = False
+                                    pwm.write(red_led, 1)
+                                    pwm.write(green_led, 0)
+                                    rp_time = time.time()
+                                    print("red block saved")
+                            print('4')
+
+                        elif pink_b.value and continue_parking and not p_flag:
+                            # if (centr_x_pink.value < 800 and orange_flag) or (centr_x_pink.value > 800 and blue_flag):
+                            p_flag = True
+                            p_past = True
+                            print('5')
+
+                        elif p_past and continue_parking and not parking_flag:
+                            if orange_flag:
+                                print(
+                                    f"prev_distance: {prev_distance}, distance_left: {tf_l} diff: {abs(prev_distance - tf_l)}")
+                                p_flag = True
+                                if tf_l <= 30 and (abs(prev_distance - tf_l) >= 7 and prev_distance > 0) and p_past:
+                                    p_past = False
+                                    p_flag = False
+                                    parking_flag = True
+                                    print("Pink Avoidance Complete...")
+                                prev_distance = tf_l
+
+                            elif blue_flag:
+                                print(
+                                    f"prev_distance: {prev_distance}, distance_right: {tf_r}  diff: {abs(prev_distance - tf_r)}")
+                                if tf_r <= 30 and (abs(prev_distance - tf_r) >= 7 and prev_distance > 0) and p_past:
+                                    p_past = False
+                                    p_flag = False
+                                    parking_flag = True
+                                    print("Pink Avoidance Complete Blue...")
+                                prev_distance = tf_r
+
+                            print('6')
+
+                        else:
+                            g_flag = False
+                            r_flag = False
+                            p_flag = False
+                            r_past = False
+                            g_past = False
+                            p_past = False
+                            print("No flags set, moving forward")
+                            print('7')
+                        
+                            pwm.write(red_led, 0)
+                            pwm.write(green_led, 0)
+                        print(f"counts {counts.value} encoder: {encoder_counts_value} encoder updated: {encoder_counts_value + 200} ")
+                        if encoder_counter_store and (g_past or r_past):
+                            
+                            if counts.value > encoder_counts_value + 800:
+                                g_past = False
+                                r_past = False
+                                g_flag = False
+                                r_flag = False
+                                encoder_counter_store = False
+                                print("Encoder counts done")
 
                         if g_flag :
                             print("avoiding green..")
