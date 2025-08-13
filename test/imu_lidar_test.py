@@ -46,18 +46,19 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu):
 
             angle = int(angle)
             imu_r = int(imu.value)
+            sp_angle = 90
+            sp_angle = 360 - sp_angle
             if previous_angle.value != angle:
-        
                 while(angle - previous_angle.value > 1):
                     lidar_angle.value = previous_angle.value + 1
                     lidar_distance.value = previous_distance
                     previous_angle.value = previous_angle.value + 1
                     rplidar[int(lidar_angle.value)] = lidar_distance.value
-                    if(int(lidar_angle.value) == (0 + imu_r) % 360):
+                    if(int(lidar_angle.value) == (0 + imu_r + sp_angle) % 360):
                         specific_angle[0] = lidar_distance.value
-                    if(int(lidar_angle.value) == (90 + imu_r) % 360):
+                    if(int(lidar_angle.value) == (90 + imu_r+ sp_angle) % 360):
                         specific_angle[1] = lidar_distance.value
-                    if(int(lidar_angle.value) == (270 + imu_r) % 360):
+                    if(int(lidar_angle.value) == (270 + imu_r +sp_angle) % 360):
                         specific_angle[2] = lidar_distance.value                                    
                     print(f"angles: {specific_angle} imu: {imu.value} total:{imu.value + lidar_angle.value}")
                    
@@ -68,11 +69,11 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu):
                         previous_distance = distance
                         previous_angle.value = angle
                         rplidar[int(lidar_angle.value)] = lidar_distance.value
-                        if(int(lidar_angle.value) == (0 + imu_r) % 360):
+                        if(int(lidar_angle.value) == (0 + imu_r + sp_angle) % 360):
                             specific_angle[0] = lidar_distance.value
-                        if(int(lidar_angle.value) == (90 + imu_r) % 360):
+                        if(int(lidar_angle.value) == (90 + imu_r + sp_angle) % 360):
                             specific_angle[1] = lidar_distance.value
-                        if(int(lidar_angle.value) == (270 + imu_r) % 360  ):
+                        if(int(lidar_angle.value) == (270 + imu_r + sp_angle) % 360  ):
                             specific_angle[2] = lidar_distance.value                                       
                         print(f"angles: {specific_angle}, imu: {imu.value} total:{imu_r + lidar_angle.value}")
                         #print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
@@ -113,13 +114,13 @@ if __name__ == '__main__':
             esp_data = line.split(" ")
         
             esp_data.append(1)
-            print(esp_data)
+            #print(esp_data)
             if esp_data[1].isdigit() :
                 esp_angle = float(esp_data[0])
                 count = int(esp_data[1])
            
             imu.value = esp_angle
-            print(f"count: {count} angle: {esp_angle} imu: {imu.value}")
+            #print(f"count: {count} angle: {esp_angle} imu: {imu.value}")
             #print(f"imu: {imu.value}")
 
 
