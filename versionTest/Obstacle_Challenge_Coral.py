@@ -212,7 +212,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
 
     if not reset:
         tfmini.getTFminiData()
-        if (((setPoint == -35 or setPoint == 0) and orange) or (counter == 0 and (centr_x_p < 800 and centr_x_p > 0) and ((centr_y_g or centr_y_r) <= centr_y_p) and not blue and not orange) and not finish):
+        if (((setPoint == -35 ) and orange) or (counter == 0 and (centr_x_p < 800 and centr_x_p > 0) and ((centr_y_g or centr_y_r) <= centr_y_p) and not blue and not orange) and not finish):
             if distance_l <= 30:
                 correction = 20
                 print(f"Avoiding pink wall {correction}")
@@ -229,7 +229,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
             else:
                 correction = 0
 
-        elif (((setPoint == 35 or setPoint == 0) and blue) or (counter == 0 and (centr_x_p < 800 and centr_x_p > 0) and ((centr_y_g or centr_y_r) <= centr_y_p) and not blue and not orange) and not finish):
+        elif (((setPoint == 35 ) and blue) or (counter == 0 and (centr_x_p < 800 and centr_x_p > 0) and ((centr_y_g or centr_y_r) <= centr_y_p) and not blue and not orange) and not finish):
             
             if distance_r <= 30:
                 correction = -20
@@ -247,13 +247,13 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
                 correction = 0
 
         if not blue:
-            if (setPoint <= -70 or setPoint == 0) and distance_l <= 20:
+            if (setPoint <= -70 ) and distance_l <= 20:
                 print(f"Correcting Green Wall Orange")
                 correction = 10
             else:
                 pass
 
-            if (setPoint >= 70 or setPoint == 0) and (distance_r <= 20 or (tfmini.distance_head <= 20)):
+            if (setPoint >= 70 ) and (distance_r <= 20 or (tfmini.distance_head <= 20)):
                 print(f"Correcting Red Wall...")
                 correction = -10
             else:
@@ -312,10 +312,10 @@ def correctAngle(setPoint_gyro, heading):
     iTerm = ki * totalErrorGyro
     correction = pTerm + iTerm + dTerm
 
-    if correction > 35:
-        correction = 35
-    elif correction < -35:
-        correction = -35
+    if correction > 40:
+        correction = 40
+    elif correction < -40:
+        correction = -40
 
     prevErrorGyro = error_gyro
     servo.setAngle(90 - correction)
@@ -571,7 +571,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     encoder_counter_store = False
     encoder_counts_value = 0
     l_left = 0
-    off = 5000
+    off = 4000
+    rev_count = 0
     try:
         while True:
             imu_shared.value = head.value
@@ -660,24 +661,24 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 print(f"PINK IS DETECTED...")
                 if orange_flag:
                     if (centr_x_pink.value < centr_x.value) and (centr_x_pink.value > 0 and centr_x.value > 0) and not continue_parking:
-                        setPointL = -35
+                        setPointL = -40
                         setPointR = 70
                         print(f"setPointL : {setPointL}")
                         # print(f"setPointL: {setPointL}")
                 elif blue_flag:
                     if (centr_x_red.value < centr_x_pink.value) and (centr_x_pink.value > 0 and centr_x_red.value > 0) and not continue_parking:
-                        setPointR = 35
+                        setPointR = 40
                         setPointL = -70
                         print(f"setPointR: {setPointR}")
 
                 elif counter % 4 == 0 and not blue_flag and not orange_flag:
                     if ((centr_x_pink.value < 400 and centr_x_pink.value > 0) and ((centr_x_red.value) > centr_x_pink.value)) and not continue_parking:
-                        setPointR = 35
+                        setPointR = 40
                         setPointL = -70
                         print(f"at 0 counter orange:{setPointR} {setPointL}")
 
                     if ((centr_x_pink.value > 800) and ((centr_y.value or centr_y_red.value) <= centr_y_pink.value)) and not continue_parking:
-                        setPointL = -35
+                        setPointL = -40
                         setPointR = 70
                         print(f"at 0 counter blue:{setPointR} {setPointL}")
 
@@ -712,10 +713,10 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 if red_b.value or green_b.value:
                     power = 50
                 else:
-                    power = 70
+                    power = 65
 
 
-                if time.time() < avoided_time:
+                if time.time() < avoided_time  :
                     pwm.set_PWM_dutycycle(pwm_pin, 0)
                     pwm.write(direction_pin, 0)
                     #correctAngle(heading_angle, imu_head)  # still steer if needed
@@ -724,7 +725,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                 if avoided_time > 0 and time.time() < reverse_until :
                     # non-blocking reverse
-                    power = 70
+                    power = 65
                     prev_power = 0
                     pwm.set_PWM_dutycycle(pwm_pin, int(1.3 * power))
                     pwm.write(direction_pin, 0)  # 0 = reverse, 1 = forward (per your wiring)
@@ -983,7 +984,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             if  (not green_b.value) and not red_b.value and not not_block:
                                 print("In first block")
                                 not_block = False
-                                if tf_h < 500 and tfmini.distance_head < 50:
+                                if tf_h < 500 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 50:
                                     not_block = True
                             elif (green_b.value or green_turn) or (reverse_trigger):  # green after trigger
                                 if counter != rev_counter:
@@ -998,7 +999,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     green_turn = False
                                     green_time = False
                                     reverse_trigger = False
-                                elif tf_h < 300 and tfmini.distance_head < 30 and not green_b.value and not pink_b.value:
+                                elif tf_h < 300 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 30 and not green_b.value and not pink_b.value:
                                     green_turn = False
                                     reverse_trigger = False
                                     green_time = True
@@ -1017,7 +1018,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     timer_started = True
 
                                 if not red_b.value and not r_past:
-                                    if tf_h < 500 and tfmini.distance_head < 80:
+                                    if tf_h < 500 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 50:
                                         print('reversing diection green')
                                         while time.time() - current_time < time_g:
                                             servo.setAngle(70)
@@ -1101,8 +1102,22 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 # centr_y_b.value = 0
 
                     else:                      
+                        if tfmini.distance_head < 10:
+                            prev_restore = time.time()
+                            print(f"counter: {counter} Trigger detected...")
+                            power = 60
+                            prev_power = 0
+                            while time.time() - prev_restore < 2:
+                                tfmini.getTFminiData()
+                                servo.setAngle(70)
+                                pwm.set_PWM_dutycycle(pwm_pin, power)  # Set duty cycle to 50% (128/255)
+                                pwm.write(direction_pin, 0)  # Set pin 20 hig
+                                any_color = True
+                        else:
+                            blue_on = False
+
                         # TRIGGGER CHECK VALUESSSS
-                        if (turn_trigger.value and not trigger) and (time.time() - turn_t) > 3 + buff and tfmini.distance_head < 80:
+                        if (turn_trigger.value and not trigger) and (time.time() - turn_t) > 4 + buff and tfmini.distance_head < 55:
                             buff = 0
                             trigger = True
                             reset_f = True
@@ -1239,9 +1254,10 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         if green_b.value and not r_flag and not continue_parking and not g_flag :
                             print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
 
-                            if not reset_f:
+                            if not trigger and rev_count <1:
                                 avoided_time = time.time() + 0.5
                                 reverse_until = avoided_time + 0.7
+                                rev_count +=1
                             g_flag = True
                             g_past = True
                             pwm.write(red_led, 0)
@@ -1263,9 +1279,10 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         elif red_b.value and not g_flag and not continue_parking and not r_flag :
                             r_flag = True
                             r_past = True
-                            if not reset_f:
+                            if not trigger and rev_count < 1:
                                 avoided_time = time.time() + 0.5
                                 reverse_until = avoided_time + 0.7
+                                rev_count += 1
 
                             #print(f"x cent:{centr_x_red.value} centr y:{centr_y_red.value}")
                             print("Red detected")
@@ -1333,6 +1350,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 r_past = False
                                 g_flag = False
                                 r_flag = False
+                                rev_count = 0
                                 encoder_counter_store = False
                                 print("Encoder counts done")
 
@@ -1364,7 +1382,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 print(f"r_flag:{r_flag} g_flag:{g_flag}")
                 print(f"r_past:{r_past} g_past:{g_past} p_past:{p_past}")
                 print(f"x: {x}, y:{y} count:{counts.value} heading_angle:{heading_angle}")
-                print(f"tf_h :{tf_h} {l_left} left:{tf_l} head:{tfmini.distance_head} right: {tf_r} POWER = {power}")
+                print(f"tf_h :{tf_h} {l_left} left:{tf_l} head:{(math.cos(math.radians(abs(corr))) * tfmini.distance_head)} right: {tf_r} POWER = {power}")
                 print(f"L: {setPointL} R: {setPointR} setPointC: {setPointC}")
                 # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
             else:
