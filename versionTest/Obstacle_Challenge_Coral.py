@@ -1081,12 +1081,10 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 turn_trigger_distance = tf_h
 
                                 if lane_reset == 1:
-                                    enc.x = (
-                                        1500 - (turn_trigger_distance ))/10
+                                    enc.x = (1500 - (turn_trigger_distance ))/10
                                     print(f"x: {enc.x}")
                                 if lane_reset == 2:
-                                    enc.y = (
-                                        2500 - (turn_trigger_distance))/10 
+                                    enc.y = (2500 - (turn_trigger_distance))/10 
                                 if lane_reset == 3:
                                     enc.x = ((turn_trigger_distance) - 1500)/10 
                                 if lane_reset == 0:
@@ -1129,23 +1127,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         elif not turn_trigger.value:
                             trigger = False
                             pwm.write(blue_led, 0)
-
-                        prev_blue = centr_y_b.value
-                        prev_orange = centr_y_o.value
-
-
-
-                        if reset_flags:
-                            if orange_flag:
-                                blue_flag = True
-                                orange_flag = False
-                                color_n = "Blue"
-                                reset_flags = False
-                            elif blue_flag:
-                                orange_flag = True
-                                blue_flag = False
-                                color_n = "Orange"
-                                reset_flags = False
 
                         ################### PANDAV 2.0 ####################
 
