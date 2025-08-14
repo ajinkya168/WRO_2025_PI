@@ -673,12 +673,12 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                 elif counter % 4 == 0 and not blue_flag and not orange_flag:
                     if ((centr_x_pink.value < 400 and centr_x_pink.value > 0) and ((centr_x_red.value) > centr_x_pink.value)) and not continue_parking:
-                        setPointR = 40
+                        setPointR = 35
                         setPointL = -70
                         print(f"at 0 counter orange:{setPointR} {setPointL}")
 
                     if ((centr_x_pink.value > 800) and ((centr_y.value or centr_y_red.value) <= centr_y_pink.value)) and not continue_parking:
-                        setPointL = -40
+                        setPointL = -35
                         setPointR = 70
                         print(f"at 0 counter blue:{setPointR} {setPointL}")
 
@@ -732,7 +732,10 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     # keep the robot straight while reversing (or add bias if you want to angle out)
                     #correctAngle(sp_angle.value, imu_head)
                     print("reverse after block spotted")
-                    servo.setAngle(90)
+                    if red_b.value:
+                        servo.setAngle(70)
+                    elif green_b.value:
+                        servo.setAngle(110)
                     continue  # still skip forward-drive code
 
                                 
@@ -986,7 +989,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 not_block = False
                                 if tf_h < 500 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 50:
                                     not_block = True
-                            elif (green_b.value or green_turn) or (reverse_trigger):  # green after trigger
+                            elif (green_b.value or green_turn):  # green after trigger
                                 if counter != rev_counter:
                                     green_count = 1
                                     red_count = 0
@@ -1251,7 +1254,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)'''
 
-                        if green_b.value and not r_flag and not continue_parking and not g_flag :
+                        if green_b.value and not r_flag and not continue_parking and not g_flag and not reset_f:
                             print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
 
                             if not trigger and rev_count <1:
@@ -1276,7 +1279,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                             print('2')
 
-                        elif red_b.value and not g_flag and not continue_parking and not r_flag :
+                        elif red_b.value and not g_flag and not continue_parking and not r_flag and not reset_f:
                             r_flag = True
                             r_past = True
                             if not trigger and rev_count < 1:
