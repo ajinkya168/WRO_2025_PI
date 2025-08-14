@@ -331,7 +331,7 @@ def _graceful_stop(signum, frame):
 def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, orange_o, centr_y_o, shared_lock):
     MODEL_PATH = "/home/pi/WRO_2025_PI/limelight_neural_detector_8bit.tflite"
     LABELS     = "/home/pi/WRO_2025_PI/label_map.txt"   # put your label file here (id -> name), or set to None
-    CONF_TH    = 0.5
+    CONF_TH    = 0.69
     CAM_INDEX  = 0
 
     # Load model
@@ -387,8 +387,8 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 cy = y1 + y2//2
                 area = max(0, (x2 - x1)) * max(0, (y2 - y1))
                 name = labels.get(obj.id, str(obj.id))
-                #if area >= 1000:
-                det.append((name, cx, cy, area))
+                if area >= 1000:
+                    det.append((name, cx, cy, area))
             dets.sort(key=lambda d: d[3], reverse=True)
 
             pair=[]
@@ -571,7 +571,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     encoder_counter_store = False
     encoder_counts_value = 0
     l_left = 0
-    off = 4000
+    off = 3000
     rev_count = 0
     reverse_true = False
     try:
@@ -662,13 +662,13 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 print(f"PINK IS DETECTED...")
                 if orange_flag:
                     if (centr_x_pink.value < centr_x.value) and (centr_x_pink.value > 0 and centr_x.value > 0) and not continue_parking:
-                        setPointL = -40
+                        setPointL = -35
                         setPointR = 70
                         print(f"setPointL : {setPointL}")
                         # print(f"setPointL: {setPointL}")
                 elif blue_flag:
                     if (centr_x_red.value < centr_x_pink.value) and (centr_x_pink.value > 0 and centr_x_red.value > 0) and not continue_parking:
-                        setPointR = 40
+                        setPointR = 35
                         setPointL = -70
                         print(f"setPointR: {setPointR}")
 
@@ -704,9 +704,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     if setPointR > 150:
                         setPointR = 150
                     setPointL = -70
-            else:
-                setPointR = 70
-                setPointL = -70
+
             ##########
             if button:  # THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
                 # time.sleep(0.01)
@@ -1274,7 +1272,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                 print(f"trigger:{trigger} turn_trigger: {turn_trigger.value} reset_f:{reset_f} counter: {counter}, imu:{head.value}")
                 print(f"red_b.value:{red_b.value} green_b.value:{green_b.value} pink_b.value:{pink_b.value}")
-                print(f"r_flag:{r_flag} g_flag:{g_flag}")
+                print(f"r_flag:{r_flag} g_flag:{g_flag} rev_count: {rev_count}")
                 print(f"r_past:{r_past} g_past:{g_past} p_past:{p_past}")
                 print(f"x: {x}, y:{y} count:{counts.value} heading_angle:{heading_angle}")
                 print(f"tf_h :{tf_h} {l_left} left:{tf_l} head:{(math.cos(math.radians(abs(corr))) * tfmini.distance_head)} right: {tf_r} POWER = {power} corr: {abs(corr)}")
