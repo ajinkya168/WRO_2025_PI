@@ -602,7 +602,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     finished = True
                 if counts.value >= target_count and not reverse_trigger:
                     power = 0
-            
                     # Set duty cycle to 50% (128/255)
                     pwm.set_PWM_dutycycle(pwm_pin, power)
                     time.sleep(3)
@@ -699,7 +698,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 # time.sleep(0.01)
                 
 
-
                 if not reset_servo:
                     time.sleep(0.5)
                     servo.setAngle(130)
@@ -708,12 +706,11 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     reset_servo = True
 
                 x, y = enc.get_position(imu_head, counts.value)
-
+                
                 total_power = (power * 0.1) + (prev_power * 0.9)
                 prev_power = total_power
                 # Set duty cycle to 50% (128/255)
                 pwm.set_PWM_dutycycle(pwm_pin, 2.55 * total_power)
-
                 pwm.write(direction_pin, 1)  # Set pin 20 high
 
 
@@ -1066,8 +1063,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     else:
                         # print(f"power :{power} prev_power{prev_power}")
 
-                        # avg_blue = (prev_b.value*0.1 + avg_blue*0.9)
-                        # avg_orange = (prev_b.value*0.1 + avg_blue*0.9)
 
                         # and (time.time() - turn_t) > (4 + buff)):
                         if (turn_trigger.value and not trigger) and (time.time() - turn_t) > (4 + buff):

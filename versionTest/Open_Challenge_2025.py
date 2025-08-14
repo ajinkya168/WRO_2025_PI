@@ -429,14 +429,7 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, sp_angle, turn_trigg
                 if(int(lidar_angle.value) == (270 + imu_r + sp_angle.value) % 360):
                     specific_angle[2] = lidar_distance.value
                     lidar_right = lidar_distance.value
-                '''if(lidar_front < 800 and lidar_left < 900 and lidar_right > 1500) and right_f.value and not turn_trigger.value:
-                    turn_trigger.value = True
-                    trig_time = time.time()
-                elif (lidar_front < 800 and lidar_left > 1500 and lidar_right < 900) and left_f.value and not turn_trigger.value:
-                    turn_trigger.value = True
-                    trig_time = time.time()
-                else:
-                    turn_trigger.value = False'''
+
                 #print(f"angles: {specific_angle} imu: {imu_shared.value} total:{imu_r + lidar_angle.value} sp_angle:{sp_angle.value}")
                 
             if(distance != 0): 

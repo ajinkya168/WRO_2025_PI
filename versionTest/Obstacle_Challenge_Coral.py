@@ -1149,111 +1149,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                         ################### PANDAV 2.0 ####################
 
-                        '''if green_b.value and not r_flag and not continue_parking and not g_flag:
-                            print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
-                            g_flag = True
-                            g_past = True
-                            avoided_time = time.time() + 0.5
-                            reverse_until = avoided_time + 0.7
-                            pwm.write(red_led, 0)
-                            pwm.write(green_led, 0)
-                            print('1')
-
-
-                        elif (g_past or time.time() - gp_time < 0.5) and not continue_parking:
-                            print("Avoiding green...")
-                            g_flag = True
-                            if (tf_r <= 50 and not green_b.value) and tf_l <= 25 and tf_h >= 1000:
-                                print("Green Avoid Complete")
-                                g_past = False
-                                g_flag = False
-                                pwm.write(red_led, 0)
-                                pwm.write(green_led, 1)
-                                gp_time = time.time()
-
-                            print('2')
-
-                        elif red_b.value and not g_flag and not continue_parking and not r_flag:
-                            r_flag = True
-                            r_past = True
-                            avoided_time = time.time() + 0.5
-                            reverse_until = avoided_time + 0.7
-                            #print(f"x cent:{centr_x_red.value} centr y:{centr_y_red.value}")
-
-                            pwm.write(red_led, 0)
-                            pwm.write(green_led, 0)
-
-                            print('3')
-
-                        elif (r_past or time.time() - rp_time < 0.5) and not continue_parking:
-                            print("Avoiding red...")
-                            r_flag = True
-                            # and ((avg_right_pass < 50 or avg_right_pass > 120) or counter!=rev_counter):
-                            if tf_r <= 25:
-                                if tf_l <= 50 and not red_b.value:
-                                    print(f"red Avoid complete")
-                                    r_past = False
-                                    r_flag = False
-                                    red_stored = False
-                                    pwm.write(red_led, 1)
-                                    pwm.write(green_led, 0)
-                                    rp_time = time.time()
-                                    print("red block saved")
-                            else:
-                                if tf_l <= 50 and not red_b.value and tf_h> 1500:
-                                    print(f"red Avoid complete")
-                                    r_past = False
-                                    r_flag = False
-                                    red_stored = False
-                                    pwm.write(red_led, 1)
-                                    pwm.write(green_led, 0)
-                                    rp_time = time.time()
-                                    print("red block saved")
-                            print('4')
-
-                        elif pink_b.value and continue_parking and not p_flag:
-                            # if (centr_x_pink.value < 800 and orange_flag) or (centr_x_pink.value > 800 and blue_flag):
-                            p_flag = True
-                            p_past = True
-                            print('5')
-
-                        elif p_past and continue_parking and not parking_flag:
-                            if orange_flag:
-                                print(
-                                    f"prev_distance: {prev_distance}, distance_left: {tf_l} diff: {abs(prev_distance - tf_l)}")
-                                p_flag = True
-                                if tf_l <= 30 and (abs(prev_distance - tf_l) >= 7 and prev_distance > 0) and p_past:
-                                    p_past = False
-                                    p_flag = False
-                                    parking_flag = True
-                                    print("Pink Avoidance Complete...")
-                                prev_distance = tf_l
-
-                            elif blue_flag:
-                                print(
-                                    f"prev_distance: {prev_distance}, distance_right: {tf_r}  diff: {abs(prev_distance - tf_r)}")
-                                if tf_r <= 30 and (abs(prev_distance - tf_r) >= 7 and prev_distance > 0) and p_past:
-                                    p_past = False
-                                    p_flag = False
-                                    parking_flag = True
-                                    print("Pink Avoidance Complete Blue...")
-                                prev_distance = tf_r
-
-                            print('6')
-
-                        else:
-                            g_flag = False
-                            r_flag = False
-                            p_flag = False
-                            r_past = False
-                            g_past = False
-                            p_past = False
-                            print("No flags set, moving forward")
-                            print('7')
-                        
-                            pwm.write(red_led, 0)
-                            pwm.write(green_led, 0)'''
-
                         if green_b.value and not r_flag and not continue_parking and not g_flag and not reset_f:
                             print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
 
@@ -1276,7 +1171,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     encoder_counts_value = counts.value
                                     encoder_counter_store = True
                                     print("encoder counts are stored for green")
-
                             print('2')
 
                         elif red_b.value and not g_flag and not continue_parking and not r_flag and not reset_f:
@@ -1520,12 +1414,6 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
                     turn_trigger.value = True                    
                 else:
                     turn_trigger.value = False
-                '''if (lidar_front < 750 and lidar_right > 1800 and lidar_left < 1000) and not turn_trigger.value:
-                    turn_trigger.value = True
-                    trig_time = time.time()
-                elif time.time() - trig_time > 4:
-                    turn_trigger.value = False
-                print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left} sp_angle:{sp_angle.value}, turn_trigger:{turn_trigger.value} diff: {time.time() - trig_time} ")'''
                 #print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left} ")
 
                 #print(f"angles: {specific_angle} imu: {imu_shared.value} total:{imu_r + lidar_angle.value} sp_angle:{sp_angle.value}")
