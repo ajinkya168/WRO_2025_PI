@@ -383,13 +383,13 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 y1 = int(bbox.ymin * scale_y)
                 x2 = int(bbox.xmax * scale_x)
                 y2 = int(bbox.ymax * scale_y)
-                cx = x1 + x2//2
-                cy = y1 + y2//2
+                cx = (x1 + x2)//2
+                cy = (y1 + y2)//2
                 area = max(0, (x2 - x1)) * max(0, (y2 - y1))
                 name = labels.get(obj.id, str(obj.id))
                 if area >= 1000:
                     det.append((name, cx, cy, area))
-            dets.sort(key=lambda d: d[3], reverse=True)
+            det.sort(key=lambda d: d[3], reverse=True)
 
             pair=[]
             if len(det) >= 2:
@@ -453,9 +453,7 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 if n1 == 'green':
                     centr_x.value = pair[0][1]
                     centr_y.value = pair[0][2]
-                elif n2 == 'green':
-                    centr_x.value = pair[1][1]
-                    centr_y.value = pair[1][2]
+
             elif (n1, n2) in (('red', 'green'), ('red', None)):
                 red_b.value = True
                 green_b.value = False
@@ -463,10 +461,7 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 if n1 == 'red':
                     centr_x_red.value = pair[0][1]
                     centr_y_red.value = pair[0][2]
-                elif n2 == 'red':
-                    centr_x_red.value = pair[1][1]
-                    centr_y_red.value = pair[1][2]
-                      
+
             elif n1 is None and n2 is None :
                 red_b.value = False
                 green_b.value = False
@@ -1342,7 +1337,12 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
     global CalledProcessError
     pwm = pigpio.pi()
     trig_time = 0
-    previous_angle = 0
+    previous_angle = None
+    F = None
+    L = None
+    R = None
+    ENTER = (F < 1100 and L < 1000 and R > 1800)
+    EXIT = (F < 1100 and L > 1800 and R < 1000)
     lidar_binary_path = '/home/pi/rplidar_sdk/output/Linux/Release/ultra_simple'
     print("⏳ Waiting for LIDAR output...")
 
@@ -1379,14 +1379,16 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
                 angle = int(angle)
 
                 imu_r = int(imu_shared.value)
-                
+                if previous_angle is None:
+                    previous_angle = angle                
                 # print(f"📍 Angle: {angle:.2f}°, Distance: {distance:.2f} mm")
             except Exception as e:
                 print("⚠️ Parse error:", e)
         else:
             print("ℹ️", line)
-        sp_angle.value = 360 - sp_angle.value
+        
         if previous_angle != angle:
+            sp_angle.value = 360 - sp_angle.value
             while (abs(angle - previous_angle) > 1):
                 lidar_angle.value = (previous_angle + 1) % 360
                 lidar_distance.value = previous_distance
@@ -1394,25 +1396,24 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
                 previous_angle = lidar_angle.value
                 rplidar[int(lidar_angle.value)] = lidar_distance.value
                 if (int(lidar_angle.value) == (0 + imu_r + sp_angle.value) % 360):
-                    specific_angle[0] = lidar_distance.value
                     lidar_front = lidar_distance.value
+                    F = 0.7*F + 0.3*lidar_distance.value if F else lidar_distance.value
                     lidar_f.value = lidar_front
                 if (int(lidar_angle.value) == (90 + imu_r + sp_angle.value) % 360):
-                    specific_angle[1] = lidar_distance.value
                     lidar_left = lidar_distance.value
+                    L = 0.7*L + 0.3*lidar_distance.value if F else lidar_distance.value
                     lidar_l.value = lidar_left
 
                 if (int(lidar_angle.value) == (270 + imu_r + sp_angle.value) % 360):
-                    specific_angle[2] = lidar_distance.value
                     lidar_right = lidar_distance.value
+                    R = 0.7*R + 0.3*lidar_distance.value if F else lidar_distance.value
                     
-                if (lidar_front <= 1100 and lidar_right >= 1800 and lidar_left <= 1000 ) :
+                if  (F <= 1100 and R >= 1800 and L <= 1000 ) :
                     turn_trigger.value = True                    
                 else:
                     turn_trigger.value = False
                 #print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left} ")
 
-                #print(f"angles: {specific_angle} imu: {imu_shared.value} total:{imu_r + lidar_angle.value} sp_angle:{sp_angle.value}")
 
             if (distance != 0):
                 with lidar_angle.get_lock(), lidar_distance.get_lock(), imu_shared.get_lock():
@@ -1422,25 +1423,25 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
                     previous_angle = angle
                     rplidar[int(lidar_angle.value)] = lidar_distance.value
                     if (int(lidar_angle.value) == (0 + imu_r + sp_angle.value) % 360):
-                        specific_angle[0] = lidar_distance.value
                         lidar_front = lidar_distance.value
+                        F = 0.7*F + 0.3*lidar_distance.value if F else lidar_distance.value
                         lidar_f.value = lidar_front
 
                     if (int(lidar_angle.value) == (90 + imu_r + sp_angle.value) % 360):
-                        specific_angle[1] = lidar_distance.value
                         lidar_left = lidar_distance.value
+                        L = 0.7*L + 0.3*lidar_distance.value if F else lidar_distance.value
                         lidar_l.value = lidar_left
                     if (int(lidar_angle.value) == (270 + imu_r + sp_angle.value) % 360):
-                        specific_angle[2] = lidar_distance.value
                         lidar_right = lidar_distance.value
+                        R = 0.7*R + 0.3*lidar_distance.value if F else lidar_distance.value
                     # print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
  
-                    if (lidar_front <= 1100 and lidar_right >= 1800 and lidar_left <= 1000 ) :
+                    if (F <= 1100 and R >= 1800 and L <= 1000 ) :
                         turn_trigger.value = True      
                     else:
                         turn_trigger.value = False
                         
-
+            print(f"front: {F}. right:{R} left:{L}  turn_trigger:{turn_trigger.value} imu:{imu_r} sp_angle: {sp_angle.value}")
             #print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left}  turn_trigger:{turn_trigger.value} diff:{time.time() - trig_time}  imu:{imu_r} sp_angle: {sp_angle.value}")
             # print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
 
