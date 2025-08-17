@@ -412,6 +412,8 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                     centr_y_pink.value = pair[0][2]
             else:
                 pink_b.value = False
+                centr_x_pink.value = 0
+                centr_y_pink.value = 0
 
             if (n1, n2) in (('pink', 'red'), ('red', 'pink')):
                 red_b.value = True
@@ -453,11 +455,15 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 if n1 == 'green':
                     centr_x.value = pair[0][1]
                     centr_y.value = pair[0][2]
+                centr_x_pink.value = 0
+                centr_y_pink.value = 0
 
             elif (n1, n2) in (('red', 'green'), ('red', None)):
                 red_b.value = True
                 green_b.value = False
                 pink_b.value = False
+                centr_x_pink.value = 0
+                centr_y_pink.value = 0
                 if n1 == 'red':
                     centr_x_red.value = pair[0][1]
                     centr_y_red.value = pair[0][2]
@@ -541,7 +547,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     setPointC = 0
     power = 70
     prev_power = 0
-    last_counter = 0
+    last_counter = 12
     change_counter = 7  # 3
     rev_counter = 7
     heading_angle = counter = turn_t = current_time = gp_time = rp_time = buff = c_time = green_count = red_count = 0
@@ -569,6 +575,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     off = 3000
     rev_count = 0
     reverse_true = False
+    parking_flag = False
+    parking_heading_reverse = False
+    parking_rev_count = 0
     try:
         while True:
             imu_shared.value = head.value
@@ -628,11 +637,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
             if lap_finish and not continue_parking:
                 if orange_flag:
-                    if counter % 4 != 0:
                         setPointR = -100
                         setPointC = -100
                 elif blue_flag:
-                    if counter % 4 != 0:
                         setPointL = 100
                         setPointC = 100
 
@@ -732,13 +739,17 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     print("reverse after block spotted")
                     if red_b.value and centr_x_red.value > 1000:
                         servo.setAngle(70)
-                    else:
-                        servo.setAngle(110)
+
 
                     if green_b.value and centr_x.value < 500 and centr_x.value > 0:
                         servo.setAngle(110)
-                    else:
+
+                    if pink_b.value and centr_x_pink.value < 400 and centr_x_pink.value > 0:
                         servo.setAngle(70)
+                    else:
+                        servo.setAngle(110)
+
+                    
                     continue  # still skip forward-drive code
 
                                 
@@ -782,7 +793,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 ################        PARKING         ################
 
                 if parking_flag and not stop_flag:
-                    print(f"PARKING ------> distance_head : {tf_h}")
+                    print(f"PARKING ------> distance_head : {tfmini.distance_head}")
                     print("Inside Parking Loop")
                     if not calc_time:
                         c_time = time.time()
@@ -801,7 +812,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         prev_power = 0
                         # Set duty cycle to 50% (128/255)
                         pwm.set_PWM_dutycycle(pwm_pin, power)
-                        pwm.write(direction_pin, 0)  # Set pin 20 hig '''
+                        pwm.write(direction_pin, 0)  # Set pin 20 hig
                         prev_time = time.time()
                     reverse_complete = True
                     while time.time() - prev_time < 0.5:
@@ -823,18 +834,22 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             calc_time = False
                             parking_heading = True
 
+
                     print(f"Correcting angle..{abs(corr)}")
                     if parking_heading:
                         print("Moving slowly..")
                         power = 85
                         pwm.set_PWM_dutycycle(pwm_pin, power)
-                        #correctAngle(heading_angle, head.value)
+                        correctAngle(heading_angle, head.value)
                     back_bot = False
                     stop_flag = False
-                    if (abs(corr) < 15) and (tf_h <= 500 and tf_h >= 0) and not finish_flag:
+
+
+                    print(f"parking heading reverse: {parking_heading_reverse}")
+                    if abs(corr) <= 15 and (tf_h <= 100 and tf_h >= 0) and not finish_flag:
                         finish_timer = time.time()
                         finish_flag = True
-                    print(f"finish flag:{finish_flag}")
+                    print(f"finish flag:{tf_h}")
                     if time.time() - finish_timer > 1 and finish_flag and not stop_flag:
                         power = 0
                         prev_power = 0
@@ -984,8 +999,14 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 r_past = False
 
                         if orange_flag:  # ORANGE RESET BLOCK
-
-                            if (green_b.value or green_turn):  # green after trigge
+                            if  (not green_b.value) and not red_b.value and not not_block:
+                                print("In first block else")
+                                print(f"tfmini head:{ (math.cos(math.radians(abs(corr))) * tfmini.distance_head)} tf_h: {tf_h}")
+                                not_block = False
+                                x, y = enc.get_position(imu_head, counts.value)
+                                if tf_h < 400 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 50 and abs(corr) < 35:
+                                    not_block = True
+                            elif (green_b.value or green_turn):  # green after trigge
 
                                 x, y = enc.get_position(imu_head, counts.value)
                                 print(f"Green Detected after trigger... ")
@@ -1001,23 +1022,23 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag,
                                                 reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)
                             else:
-                                not_block = False
                                 print("ORANGE RESET ELSE..")
                                 if green_time:
-                                    time_g = 1.2
+                                    time_g = 1.5
                                 else:
-                                    time_g = 0.8
+                                    time_g = 0.9
                                 print(f"time_g:{time_g}")
 
                                 if not timer_started:
                                     current_time = time.time()
                                     timer_started = True
 
-                                if  (not green_b.value) and not red_b.value and not not_block and not green_time:
-                                    print("In first block")
-                                    
+                                if  (not green_b.value) and not red_b.value and not not_block:
+                                    print("In first block else")
+                                    print(f"tfmini head:{ (math.cos(math.radians(abs(corr))) * tfmini.distance_head)} tf_h: {tf_h}")
+                                    not_block = False
                                     x, y = enc.get_position(imu_head, counts.value)
-                                    if tf_h < 500 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 50 and abs(corr) < 35:
+                                    if tf_h < 400 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 50 and abs(corr) < 35:
                                         not_block = True
 
                                 elif not red_b.value and not r_past:
@@ -1139,7 +1160,10 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
                             if rev_count <1:
                                 avoided_time = time.time() + 0.5
-                                reverse_until = avoided_time + 0.5
+                                if orange_flag:
+                                    reverse_until = avoided_time + 0.8
+                                else:
+                                    reverse_until = avoided_time + 0.5
                                 rev_count +=1
                             g_flag = True
                             g_past = True
@@ -1190,16 +1214,16 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             print('4')
 
                         elif pink_b.value and continue_parking and not p_flag:
-                            # if (centr_x_pink.value < 800 and orange_flag) or (centr_x_pink.value > 800 and blue_flag):
-                            p_flag = True
-                            p_past = True
+                            if (centr_x_pink.value < 200 and orange_flag) or (centr_x_pink.value > 800 and blue_flag):
+                                p_flag = True
+                                p_past = True
                             print('5')
 
                         elif p_past and continue_parking and not parking_flag:
                             if orange_flag:
                                 print(f"prev_distance: {prev_distance}, distance_left: {tf_l} diff: {abs(prev_distance - tf_l)}")
                                 p_flag = True
-                                if tf_l <= 30 and (abs(prev_distance - tf_l) >= 15 and prev_distance > 0) and p_past:
+                                if tf_l <= 30 and (abs(prev_distance - tf_l) >= 7 and prev_distance > 0) and p_past:
                                     p_past = False
                                     p_flag = False
                                     parking_flag = True
@@ -1277,6 +1301,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 print(f"lap_finish:{lap_finish} counter:{counter} continue_parking:{continue_parking}") 
                 print(f"(p_flag:{p_flag} p_past:{p_past} ")
                 print(f"parking_flag:{parking_flag}")
+                print(f"x pink:{centr_x_pink.value} y pink:{centr_y_pink.value}")
                 # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
             else:
                 power = 0
