@@ -981,15 +981,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 r_past = False
 
                         if orange_flag:  # ORANGE RESET BLOCK
-                            print(
-                                f"ORANGE RESET...setPoint C:{tf_h}")
-                            if  (not green_b.value) and not red_b.value and not not_block:
-                                print("In first block")
-                                not_block = False
-                                x, y = enc.get_position(imu_head, counts.value)
-                                if tf_h < 500 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 50 and abs(corr) < 35:
-                                    not_block = True
-                            elif (green_b.value or green_turn):  # green after trigge
+
+                            if (green_b.value or green_turn):  # green after trigge
 
                                 x, y = enc.get_position(imu_head, counts.value)
                                 print(f"Green Detected after trigger... ")
@@ -1124,9 +1117,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             buff = 0
                             power = 0
                             prev_power = 0
-                            # Set duty cycle to 50% (128/255)
                             pwm.set_PWM_dutycycle(pwm_pin, power)
-                            time.sleep(1)
+                            time.sleep(0.2)
                             print("Trigger Detected...")
                             trigger = True
                             reset_f = True
@@ -1160,6 +1152,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 if not green_b.value and not encoder_counter_store:
                                     encoder_counts_value = counts.value
                                     encoder_counter_store = True
+                                    g_flag = False
+                                    g_past = False
                                     print("encoder counts are stored for green")
                             print('2')
 
@@ -1186,6 +1180,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 if not red_b.value and not encoder_counter_store:
                                     encoder_counts_value = counts.value
                                     encoder_counter_store = True
+                                    g_flag = False
+                                    g_past = False
                                     print("encoder counts stored for red")
                             # and ((avg_right_pass < 50 or avg_right_pass > 120) or counter!=rev_counter):
                             print('4')
@@ -1228,11 +1224,14 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             p_past = False
                             print("No flags set, moving forward")
                             print('7')
-                        
+
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
+
+
+
                         print(f"counts {counts.value} encoder: {encoder_counts_value} encoder updated: {encoder_counts_value + off} ")
-                        if encoder_counter_store and (g_past or r_past):
+                        if encoder_counter_store:
                             if counts.value > encoder_counts_value + off:
                                 g_past = False
                                 r_past = False
@@ -1337,10 +1336,11 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
     global CalledProcessError
     pwm = pigpio.pi()
     trig_time = 0
-    previous_angle = None
-    F = None
-    L = None
-    R = None
+    previous_angle = 0
+    F = 0
+    L = 0
+    R = 0
+    prev_sp = 0
     ENTER = (F < 1100 and L < 1000 and R > 1800)
     EXIT = (F < 1100 and L > 1800 and R < 1000)
     lidar_binary_path = '/home/pi/rplidar_sdk/output/Linux/Release/ultra_simple'
@@ -1388,7 +1388,9 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
             print("ℹ️", line)
         
         if previous_angle != angle:
-            sp_angle.value = 360 - sp_angle.value
+            if prev_sp != sp_angle.value:
+                sp_angle.value = 360 - sp_angle.value
+            prev_sp = sp_angle.value
             while (abs(angle - previous_angle) > 1):
                 lidar_angle.value = (previous_angle + 1) % 360
                 lidar_distance.value = previous_distance
@@ -1398,17 +1400,17 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
                 if (int(lidar_angle.value) == (0 + imu_r + sp_angle.value) % 360):
                     lidar_front = lidar_distance.value
                     F = 0.7*F + 0.3*lidar_distance.value if F else lidar_distance.value
-                    lidar_f.value = lidar_front
+                    lidar_f.value = F
                 if (int(lidar_angle.value) == (90 + imu_r + sp_angle.value) % 360):
                     lidar_left = lidar_distance.value
                     L = 0.7*L + 0.3*lidar_distance.value if F else lidar_distance.value
-                    lidar_l.value = lidar_left
+                    lidar_l.value = L
 
                 if (int(lidar_angle.value) == (270 + imu_r + sp_angle.value) % 360):
                     lidar_right = lidar_distance.value
                     R = 0.7*R + 0.3*lidar_distance.value if F else lidar_distance.value
                     
-                if  (F <= 1100 and R >= 1800 and L <= 1000 ) :
+                if  (F <= 1100 and R >= 1300) :
                     turn_trigger.value = True                    
                 else:
                     turn_trigger.value = False
@@ -1424,24 +1426,24 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
                     rplidar[int(lidar_angle.value)] = lidar_distance.value
                     if (int(lidar_angle.value) == (0 + imu_r + sp_angle.value) % 360):
                         lidar_front = lidar_distance.value
-                        F = 0.7*F + 0.3*lidar_distance.value if F else lidar_distance.value
-                        lidar_f.value = lidar_front
+                        F = 0.8*F + 0.2*lidar_distance.value if F else lidar_distance.value
+                        lidar_f.value = F
 
                     if (int(lidar_angle.value) == (90 + imu_r + sp_angle.value) % 360):
                         lidar_left = lidar_distance.value
-                        L = 0.7*L + 0.3*lidar_distance.value if F else lidar_distance.value
-                        lidar_l.value = lidar_left
+                        L = 0.8*L + 0.2*lidar_distance.value if F else lidar_distance.value
+                        lidar_l.value = L
                     if (int(lidar_angle.value) == (270 + imu_r + sp_angle.value) % 360):
                         lidar_right = lidar_distance.value
-                        R = 0.7*R + 0.3*lidar_distance.value if F else lidar_distance.value
+                        R = 0.8*R + 0.2*lidar_distance.value if F else lidar_distance.value
                     # print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
  
-                    if (F <= 1100 and R >= 1800 and L <= 1000 ) :
+                    if (F <= 1100 and R >= 1300 ) :
                         turn_trigger.value = True      
                     else:
                         turn_trigger.value = False
                         
-            print(f"front: {F}. right:{R} left:{L}  turn_trigger:{turn_trigger.value} imu:{imu_r} sp_angle: {sp_angle.value}")
+            #print(f"front: {F}. right:{R} left:{L}  turn_trigger:{turn_trigger.value} imu:{imu_r} sp_angle: {sp_angle.value}")
             #print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left}  turn_trigger:{turn_trigger.value} diff:{time.time() - trig_time}  imu:{imu_r} sp_angle: {sp_angle.value}")
             # print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
 
