@@ -1000,11 +1000,12 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                         if orange_flag:  # ORANGE RESET BLOCK
                             if  (not green_b.value) and not red_b.value and not not_block:
-                                print("In first block else")
-                                print(f"tfmini head:{ (math.cos(math.radians(abs(corr))) * tfmini.distance_head)} tf_h: {tf_h}")
+                                print("In first block")
+                                tfmini.getTFminiData()
+                                print(f"tfmini head:{ (math.cos(math.radians(abs(corr))) * tfmini.distance_head)} tf_h: {tf_h} corr: {abs(corr)}")
                                 not_block = False
                                 x, y = enc.get_position(imu_head, counts.value)
-                                if tf_h < 400 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 50 and abs(corr) < 35:
+                                if tf_h < 400 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 50:
                                     not_block = True
                             elif (green_b.value or green_turn):  # green after trigge
 
@@ -1034,6 +1035,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     timer_started = True
 
                                 if  (not green_b.value) and not red_b.value and not not_block:
+                                    tfmini.getTFminiData()
                                     print("In first block else")
                                     print(f"tfmini head:{ (math.cos(math.radians(abs(corr))) * tfmini.distance_head)} tf_h: {tf_h}")
                                     not_block = False
