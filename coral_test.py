@@ -3,7 +3,7 @@ from pycoral.utils.edgetpu import make_interpreter
 from pycoral.adapters import common, detect
 from pycoral.utils.dataset import read_label_file
 from itertools import combinations
-MODEL_PATH = "/home/pi/WRO_2025_PI/limelight_neural_detector_8bit.tflite"
+MODEL_PATH = "/home/pi/WRO_2025_PI/limelight_neural_detector_8bit_edgetpu.tflite"
 LABELS     = "/home/pi/WRO_2025_PI/label_map.txt"   # put your label file here (id -> name), or set to None
 CONF_TH    = 0.5
 CAM_INDEX  = 0
@@ -52,6 +52,9 @@ try:
         dets = []
         for obj in objs:
             name = labels.get(obj.id, str(obj.id))
+            x0, y0, x1, y1 = int(obj.bbox.xmin * scale_x), int(obj.bbox.ymin * scale_y), int(obj.bbox.xmax * scale_x), int(obj.bbox.ymax * scale_y)
+            cv2.rectangle(frame_bgr, (x0, y0), (x1, y1), (0, 255, 0), 2)
+            cv2.putText(frame_bgr, f"{name} {obj.score:.2f}", (x0, y0 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
             dets.append((name))
         pairs=[]
         if len(dets) >= 2:
