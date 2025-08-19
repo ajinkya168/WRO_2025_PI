@@ -329,7 +329,7 @@ def _graceful_stop(signum, frame):
 
 # loop to capture video frames
 def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, orange_o, centr_y_o, shared_lock):
-    MODEL_PATH = "/home/pi/WRO_2025_PI/limelight_neural_detector_8bit.tflite"
+    MODEL_PATH = "/home/pi/WRO_2025_PI/limelight_neural_detector_8bit_edgetpu.tflite"
     LABELS     = "/home/pi/WRO_2025_PI/label_map.txt"   # put your label file here (id -> name), or set to None
     CONF_TH    = 0.69
     CAM_INDEX  = 0
