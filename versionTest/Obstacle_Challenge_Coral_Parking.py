@@ -331,7 +331,7 @@ def _graceful_stop(signum, frame):
 def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, orange_o, centr_y_o, shared_lock):
     MODEL_PATH = "/home/pi/WRO_2025_PI/limelight_neural_detector_8bit_edgetpu.tflite"
     LABELS     = "/home/pi/WRO_2025_PI/label_map.txt"   # put your label file here (id -> name), or set to None
-    CONF_TH    = 0.69
+    CONF_TH    = 0.65
     CAM_INDEX  = 0
 
     # Load model
@@ -387,7 +387,7 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 cy = (y1 + y2)//2
                 area = max(0, (x2 - x1)) * max(0, (y2 - y1))
                 name = labels.get(obj.id, str(obj.id))
-                if area >= 1000:
+                if area >= 2500:
                     det.append((name, cx, cy, area))
             det.sort(key=lambda d: d[3], reverse=True)
 
@@ -452,18 +452,19 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 green_b.value = True
                 red_b.value = False
                 pink_b.value = False
+                centr_x_red.value = 0
+                centr_y_red.value = 0
                 if n1 == 'green':
                     centr_x.value = pair[0][1]
                     centr_y.value = pair[0][2]
-                centr_x_pink.value = 0
-                centr_y_pink.value = 0
+
 
             elif (n1, n2) in (('red', 'green'), ('red', None)):
                 red_b.value = True
                 green_b.value = False
                 pink_b.value = False
-                centr_x_pink.value = 0
-                centr_y_pink.value = 0
+                centr_x.value = 0
+                centr_y.value = 0
                 if n1 == 'red':
                     centr_x_red.value = pair[0][1]
                     centr_y_red.value = pair[0][2]
@@ -572,7 +573,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     encoder_counter_store = False
     encoder_counts_value = 0
     l_left = 0
-    off = 3000
+    off = 2500
     rev_count = 0
     reverse_true = False
     parking_flag = False
@@ -1005,7 +1006,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 print(f"tfmini head:{ (math.cos(math.radians(abs(corr))) * tfmini.distance_head)} tf_h: {tf_h} corr: {abs(corr)}")
                                 not_block = False
                                 x, y = enc.get_position(imu_head, counts.value)
-                                if tf_h < 400 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 50:
+                                if tf_h < 500 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 50:
                                     not_block = True
                             elif (green_b.value or green_turn):  # green after trigge
 
@@ -1081,7 +1082,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                         print("RED IS SEEN..")
                                         servo.setAngle(80)
                                         print(f"centr y: {centr_y_red.value}")
-                                        if (centr_y_red.value < 600 and centr_y_red.value > 0) or (time.time() - current_time > 1):
+                                        if (centr_y_red.value < 300 and centr_y_red.value > 0) or (time.time() - current_time > 1):
                                             print(f"Breaking the loop...")
                                             break
                                         # getTFminiData()
@@ -1158,7 +1159,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                         ################### PANDAV 2.0 ####################
 
-                        if green_b.value and not r_flag and not continue_parking and not g_flag and not reset_f:
+                        if green_b.value and not r_flag and not continue_parking and not g_flag and not reset_f and centr_y.value > 300:
                             print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
                             if rev_count <1:
                                 avoided_time = time.time() + 0.5
@@ -1186,7 +1187,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     print("encoder counts are stored for green")
                             print('2')
 
-                        elif red_b.value and not g_flag and not continue_parking and not r_flag and not reset_f:
+                        elif red_b.value and not g_flag and not continue_parking and not r_flag and not reset_f and centr_y_red.value > 300:
                             r_flag = True
                             r_past = True
                             
@@ -1265,8 +1266,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 r_past = False
                                 g_flag = False
                                 r_flag = False
-                                rev_count = 0
                                 encoder_counter_store = False
+                                rev_count = 0
                                 print("Encoder counts done")
 
                         if g_flag :
@@ -1443,7 +1444,7 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
                     lidar_right = lidar_distance.value
                     R = 0.7*R + 0.3*lidar_distance.value if F else lidar_distance.value
                     
-                if  (F <= 1100 and R >= 1300) :
+                if  (F <= 800 and R >= 1300) :
                     turn_trigger.value = True                    
                 else:
                     turn_trigger.value = False
@@ -1471,7 +1472,7 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
                         R = 0.8*R + 0.2*lidar_distance.value if F else lidar_distance.value
                     # print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
  
-                    if (F <= 1100 and R >= 1300 ) :
+                    if (F <= 800 and R >= 1300 ) :
                         turn_trigger.value = True      
                     else:
                         turn_trigger.value = False
