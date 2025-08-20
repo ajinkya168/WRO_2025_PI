@@ -184,7 +184,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
     # print(f" trigger : {flag_t} setPoint: {setPoint} lane: {lane} correction:{correction}, error:{error} x:{x}, y:{y}, prevError :{prevError} angle:{head - correction}")
     elif lane == 2:
         if orange:
-            error = y - (200 - setPoint)
+            error = y - (200 - setPoint)  # CHANGE 1
             print(f"lane:{lane} error:{error} target:{(200 - setPoint)},  x: {x} y: {y} setPoint:{setPoint}")
         elif blue:
             error = y - (-200 - setPoint)
@@ -212,7 +212,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
 
     if not reset:
         tfmini.getTFminiData()
-        if (((setPoint == -35 ) and orange) or (counter == 0 and (centr_x_p < 800 and centr_x_p > 0) and ((centr_y_g or centr_y_r) <= centr_y_p) and not blue and not orange) and not finish):
+        if (((setPoint == -35 ) and orange) or (counter == 0 and (centr_x_p < 300 and centr_x_p > 0) and ((centr_y_g or centr_y_r) <= centr_y_p) and not blue and not orange) and not finish):
             if distance_l <= 30:
                 correction = 20
                 print(f"Avoiding pink wall {correction}")
@@ -229,7 +229,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
             else:
                 correction = 0
 
-        elif (((setPoint == 35 ) and blue) or (counter == 0 and (centr_x_p < 800 and centr_x_p > 0) and ((centr_y_g or centr_y_r) <= centr_y_p) and not blue and not orange) and not finish):
+        elif (((setPoint == 35 ) and blue) or (counter == 0 and (centr_x_p < 300 and centr_x_p > 0) and ((centr_y_g or centr_y_r) <= centr_y_p) and not blue and not orange) and not finish):
             
             if distance_r <= 30:
                 correction = -20
@@ -364,7 +364,6 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
             if not ok:
                 break
             H, W = frame_bgr.shape[:2]
-
             # Preprocess
             rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
             inp = cv2.resize(rgb, (iw, ih))
@@ -981,8 +980,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     enc.x = (
                                         150 - abs(turn_trigger_distance * turn_cos_theta)) - 10
                                 if lane_reset == 2:
-                                    enc.y = (
-                                        abs(turn_trigger_distance * turn_cos_theta) - 250) + 10
+                                    enc.y = (abs(turn_trigger_distance * turn_cos_theta) - 250) + 10
                                 if lane_reset == 3:
                                     enc.x = (
                                         abs(turn_trigger_distance * turn_cos_theta) - 150) + 10
@@ -1217,7 +1215,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             print('4')
 
                         elif pink_b.value and continue_parking and not p_flag:
-                            if (centr_x_pink.value < 200 and orange_flag) or (centr_x_pink.value > 800 and blue_flag):
+                            if (centr_x_pink.value < 200 and centr_x_pink.value > 0 and orange_flag) or (centr_x_pink.value > 500 and blue_flag):
                                 p_flag = True
                                 p_past = True
                             print('5')
