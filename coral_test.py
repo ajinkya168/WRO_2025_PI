@@ -5,7 +5,7 @@ from pycoral.utils.dataset import read_label_file
 from itertools import combinations
 MODEL_PATH = "/home/pi/WRO_2025_PI/limelight_neural_detector_8bit_edgetpu.tflite"
 LABELS     = "/home/pi/WRO_2025_PI/label_map.txt"   # put your label file here (id -> name), or set to None
-CONF_TH    = 0.5
+CONF_TH    = 0.65
 CAM_INDEX  = 0
 
 # Load model
