@@ -249,34 +249,34 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
         if not blue:
             if (setPoint <= -70 ) and distance_l <= 20:
                 print(f"Correcting Green Wall Orange")
-                correction = 10
+                correction = 15
             else:
                 pass
 
             if (setPoint >= 70 ) and (distance_r <= 20 or (tfmini.distance_head <= 20)):
                 print(f"Correcting Red Wall...")
-                correction = -10
+                correction = -15
             else:
                 pass
 
         else:
             if (setPoint <= -70 or setPoint == 0) and (distance_l <= 20 or (tfmini.distance_head <= 20)) :
                 print(f"Correcting Green Wall Blue")
-                correction = 10
+                correction = 15
             else:
                 pass
 
             if (setPoint >= 70 or setPoint == 0) and distance_r <= 20:
                 print(f"correctng red wall in blue")
-                correction = -10
+                correction = -15
             else:
                 pass
 
     if setPoint == 0:
-        if correction > 25:
-            correction = 25
-        elif correction < -25:
-            correction = -25
+        if correction > 20:
+            correction = 20
+        elif correction < -20:
+            correction = -20
     else:
         if correction > 45:
             correction = 45
@@ -1159,7 +1159,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                         ################### PANDAV 2.0 ####################
 
-                        if green_b.value and not r_flag and not continue_parking and not g_flag and not reset_f and centr_y.value > 300:
+                        if green_b.value and not r_flag and not continue_parking and not g_flag and not reset_f and centr_y.value > 250:
                             print(f"centr x: {centr_x.value} centr y: {centr_y.value}")
                             if rev_count <1:
                                 avoided_time = time.time() + 0.5
@@ -1187,7 +1187,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     print("encoder counts are stored for green")
                             print('2')
 
-                        elif red_b.value and not g_flag and not continue_parking and not r_flag and not reset_f and centr_y_red.value > 300:
+                        elif red_b.value and not g_flag and not continue_parking and not r_flag and not reset_f and centr_y_red.value > 250:
                             r_flag = True
                             r_past = True
                             
@@ -1293,18 +1293,18 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                             reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)
 
 
-                '''print(f"trigger:{trigger} turn_trigger: {turn_trigger.value} reset_f:{reset_f} counter: {counter}, imu:{head.value}")
+                print(f"trigger:{trigger} turn_trigger: {turn_trigger.value} reset_f:{reset_f} counter: {counter}, imu:{head.value}")
                 print(f"red_b.value:{red_b.value} green_b.value:{green_b.value} pink_b.value:{pink_b.value}")
                 print(f"r_flag:{r_flag} g_flag:{g_flag} rev_count: {rev_count}")
                 print(f"r_past:{r_past} g_past:{g_past} p_past:{p_past}")
                 print(f"x: {x}, y:{y} count:{counts.value} heading_angle:{heading_angle}")
                 print(f"tf_h :{tf_h} {l_left} left:{tf_l} head:{(math.cos(math.radians(abs(corr))) * tfmini.distance_head)} right: {tf_r} POWER = {power} corr: {abs(corr)}")
-                print(f"L: {setPointL} R: {setPointR} setPointC: {setPointC}")'''
+                print(f"L: {setPointL} R: {setPointR} setPointC: {setPointC}")
 
-                print(f"lap_finish:{lap_finish} counter:{counter} continue_parking:{continue_parking}") 
+                '''print(f"lap_finish:{lap_finish} counter:{counter} continue_parking:{continue_parking}") 
                 print(f"(p_flag:{p_flag} p_past:{p_past} ")
                 print(f"parking_flag:{parking_flag}")
-                print(f"x pink:{centr_x_pink.value} y pink:{centr_y_pink.value}")
+                print(f"x pink:{centr_x_pink.value} y pink:{centr_y_pink.value}")'''
                 # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
             else:
                 power = 0
