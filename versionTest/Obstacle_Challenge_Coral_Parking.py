@@ -214,7 +214,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
         tfmini.getTFminiData()
         if (((setPoint == -35 ) and orange) or (counter == 0 and (centr_x_p < 300 and centr_x_p > 0) and ((centr_y_g or centr_y_r) <= centr_y_p) and not blue and not orange) and not finish):
             if distance_l <= 30:
-                correction = 20
+                correction = 10
                 print(f"Avoiding pink wall {correction}")
 
             elif distance_r < 50:
@@ -223,7 +223,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
                     print(f"Avoiding pink wall {correction}")
 
                 else:
-                    correction = -10
+                    correction = -25
                     print(f"Avoiding pink wall {correction}")
 
             else:
@@ -241,7 +241,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
                     print(f"Avoiding pink wall {correction}")
 
                 else:
-                    correction = 10
+                    correction = 20
                     print(f"Avoiding pink wall {correction}")
             else:
                 correction = 0
@@ -253,7 +253,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
             else:
                 pass
 
-            if (setPoint >= 70 ) and (distance_r <= 20 or (tfmini.distance_head <= 20)):
+            if (setPoint >= 70 ) and (distance_r <= 20 or (tfmini.distance_head <= 30)):
                 print(f"Correcting Red Wall...")
                 correction = -15
             else:
@@ -479,8 +479,8 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
             now = time.time()
             fps = 1.0 / max(1e-3, (now - t_prev)); t_prev = now
             print(f"pairs:{pair} red_b.value: {red_b.value} green_b.value:{green_b.value} pink_b:{pink_b.value} cx:{cx} cy:{cy} fps:{fps}")
-            #cv2.imshow("Coral SSD Live", frame_bgr)
-            '''if cv2.waitKey(1) & 0xFF == 27:  # ESC
+            '''cv2.imshow("Coral SSD Live", frame_bgr)
+            if cv2.waitKey(1) & 0xFF == 27:  # ESC
                 break'''
     except KeyboardInterrupt:
         pass
@@ -572,7 +572,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     encoder_counter_store = False
     encoder_counts_value = 0
     l_left = 0
-    off = 2500
+    off = 4000
     rev_count = 0
     reverse_true = False
     parking_flag = False
@@ -737,19 +737,14 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     # keep the robot straight while reversing (or add bias if you want to angle out)
                     #correctAngle(sp_angle.value, imu_head)
                     print("reverse after block spotted")
-                    if red_b.value and centr_x_red.value > 1000:
+                    if red_b.value and not reset_f:
+                        print("Red Detected, setting servo to 60 degrees")
                         servo.setAngle(70)
-
-
-                    if green_b.value and centr_x.value < 500 and centr_x.value > 0:
+                    elif green_b.value and not reset_f:
+                        print("Green Detected, setting servo to 120 degrees")
                         servo.setAngle(110)
 
-                    if pink_b.value and centr_x_pink.value < 400 and centr_x_pink.value > 0:
-                        servo.setAngle(70)
-                    else:
-                        servo.setAngle(110)
 
-                    
                     continue  # still skip forward-drive code
 
                                 
@@ -863,13 +858,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 else:
                     if reset_f:
                         print("RESET FLAG")
-
-
                         setPointL = -70
                         setPointR = 70
                         setPointC = 0
-                        g_past = False
-                        servo.setAngle(90)
                         if blue_flag:  # BLUE RESET BLOCK
 
                             print(f"BLUE RESET")
@@ -998,16 +989,19 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 r_past = False
 
                         if orange_flag:  # ORANGE RESET BLOCK
+
                             if  (not green_b.value) and not red_b.value and not not_block:
-                                print("In first block")
+                                print(f"Nothing is there {not_block}")
                                 tfmini.getTFminiData()
-                                print(f"tfmini head:{ (math.cos(math.radians(abs(corr))) * tfmini.distance_head)} tf_h: {tf_h} corr: {abs(corr)}")
+                                print(f"tfmini head:{ (math.cos(math.radians(abs(corr))) * tfmini.distance_head)} tf_h: {tf_h} corr: {abs(corr)} corr_pos: {corr_pos}")
                                 not_block = False
                                 x, y = enc.get_position(imu_head, counts.value)
-                                if tf_h < 500 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 50:
+                                if tf_h < 500 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 55 and abs(corr_pos) <= 20:
                                     not_block = True
-                            elif (green_b.value or green_turn):  # green after trigge
+                                correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag,
+                                                reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)
 
+                            elif (green_b.value or green_turn) and not_block:  # green after trigge
                                 x, y = enc.get_position(imu_head, counts.value)
                                 print(f"Green Detected after trigger... ")
                                 green_turn = True
@@ -1022,28 +1016,20 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag,
                                                 reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)
                             else:
-                                print("ORANGE RESET ELSE..")
+                                print("Reverse here")
                                 if green_time:
                                     time_g = 1.5
                                 else:
-                                    time_g = 0.9
+                                    time_g = 1
                                 print(f"time_g:{time_g}")
 
                                 if not timer_started:
                                     current_time = time.time()
                                     timer_started = True
+                                print(f"not_block: {not_block} green_b.value: {green_b.value} red_b.value: {red_b.value}")
 
-                                if  (not green_b.value) and not red_b.value and not not_block:
-                                    tfmini.getTFminiData()
-                                    print("In first block else")
-                                    print(f"tfmini head:{ (math.cos(math.radians(abs(corr))) * tfmini.distance_head)} tf_h: {tf_h}")
-                                    not_block = False
-                                    x, y = enc.get_position(imu_head, counts.value)
-                                    if tf_h < 400 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 50 and abs(corr) < 35:
-                                        not_block = True
-
-                                elif not red_b.value and not r_past:
-                                    if tf_h < 500 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 50 and abs(corr) < 35:
+                                if not red_b.value :
+                                    if tf_h < 500 and (math.cos(math.radians(abs(corr))) * tfmini.distance_head) < 50 :
                                         print('reversing diection green')
                                         while time.time() - current_time < time_g:
                                             servo.setAngle(70)
@@ -1132,6 +1118,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 g_flag = False
                                 g_past = False
                                 avoided = False
+                                not_block = False
                                 # centr_y_b.value = 0
 
                     else:                      
@@ -1191,7 +1178,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             
                             if rev_count < 1:
                                 avoided_time = time.time() + 0.5
-                                reverse_until = avoided_time + 0.5
+                                reverse_until = avoided_time + 0.8
                                 rev_count += 1
 
                             #print(f"x cent:{centr_x_red.value} centr y:{centr_y_red.value}")
@@ -1208,8 +1195,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 if not red_b.value and not encoder_counter_store:
                                     encoder_counts_value = counts.value
                                     encoder_counter_store = True
-                                    g_flag = False
-                                    g_past = False
+                                    r_flag = False
+                                    r_past = False
                                     print("encoder counts stored for red")
                             # and ((avg_right_pass < 50 or avg_right_pass > 120) or counter!=rev_counter):
                             print('4')
@@ -1260,10 +1247,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         print(f"counts {counts.value} encoder: {encoder_counts_value} encoder updated: {encoder_counts_value + off} ")
                         if encoder_counter_store:
                             if counts.value > encoder_counts_value + off:
-                                g_past = False
-                                r_past = False
-                                g_flag = False
-                                r_flag = False
+
                                 encoder_counter_store = False
                                 rev_count = 0
                                 print("Encoder counts done")
@@ -1336,7 +1320,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 def runEncoder(counts, head, imu_shared, sp_angle):
     pwm = pigpio.pi()
     print("Encoder Process Started")
-
+    time.sleep(5)
+    pwm.write(green_led, 1)
     try:
         while True:
 
@@ -1391,8 +1376,8 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
         stderr=subprocess.STDOUT,
         text=True
     )
-
-    pwm.write(green_led, 1)
+    
+    
 
     # try:
     for line in process.stdout:
