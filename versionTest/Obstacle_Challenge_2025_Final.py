@@ -882,7 +882,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                     print(
                         f"parking heading reverse: {parking_heading_reverse}")
-                    if abs(corr) <= 15 and (tf_h <= 100 and tf_h >= 0) and not finish_flag:
+                    if tf_h < 200 and not finish_flag:
                         finish_timer = time.time()
                         finish_flag = True
                     print(f"finish flag:{tf_h}")
