@@ -247,26 +247,26 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
         if not blue:
             if (setPoint <= -70) and distance_l <= 20:
                 print(f"Correcting Green Wall Orange")
-                correction = 15
+                correction = 10
             else:
                 pass
 
             if (setPoint >= 70) and (distance_r <= 20 or (tfmini.distance_head <= 35)):
                 print(f"Correcting Red Wall...")
-                correction = -15
+                correction = -10
             else:
                 pass
 
         else:
             if (setPoint <= -70 or setPoint == 0) and (distance_l <= 20 or (tfmini.distance_head <= 25)):
                 print(f"Correcting Green Wall Blue")
-                correction = 15
+                correction = 10
             else:
                 pass
 
             if (setPoint >= 70 or setPoint == 0) and distance_r <= 20:
                 print(f"correctng red wall in blue")
-                correction = -15
+                correction = -10
             else:
                 pass
 
