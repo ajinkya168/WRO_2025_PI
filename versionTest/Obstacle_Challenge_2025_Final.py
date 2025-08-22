@@ -580,6 +580,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     parking_flag = False
     parking_heading_reverse = False
     parking_rev_count = 0
+    trigger_enc_flag = False
+    trigger_enc = 0 
     try:
         while True:
             imu_shared.value = head.value
@@ -911,16 +913,18 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 enc.x = ((turn_trigger_distance) - 1500)/10
                             if lane_reset == 0:
                                 enc.y = ((turn_trigger_distance) - 500)/10
-                                
-                                # print(f'Resuming Motor...{offset}')
-                        power = 70
-                        heading_angle = ((90 * counter) % 360)
-                        sp_angle.value = heading_angle                                
-                        reset_f = False
-                    else:
 
+                            if not trigger_enc_flag:
+                                trigger_enc = counts.value
+                                trigger_enc_flag = True
+                                # print(f'Resuming Motor...{offset}')
+                            power = 70
+                            heading_angle = ((90 * counter) % 360)
+                            sp_angle.value = heading_angle                                
+                            reset_f = False
+                    else:
                         # TRIGGGER CHECK VALUESSSS
-                        if (turn_trigger.value and not trigger) and (time.time() - turn_t) > 4 + buff:
+                        if (turn_trigger.value and not trigger):
                             buff = 0
                             power = 0
                             prev_power = 0
@@ -935,10 +939,11 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             reset_f = True
                             timer_started = False
                             turn_t = time.time()
-                        elif not turn_trigger.value:
-                            trigger = False
-                            reverse_true = False
-
+                        elif trigger_enc_flag:
+                            if counts.value > trigger_enc + 10000:
+                                trigger = False
+                                trigger_enc_flag = False
+                                print("Encoder counts done for trigger")
                             pwm.write(blue_led, 0)
 
                         ################### PANDAV 2.0 ####################
