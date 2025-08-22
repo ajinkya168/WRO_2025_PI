@@ -861,14 +861,13 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     if reset_f:
                         print("RESETTING FLAGS...")
                         if orange_flag:
-                            if l_left < 1000 and l_left > 40:
-                                print(f"l_left: {l_left}")
-                                while l_left > 40:
-                                    print(f"l_left: {l_left} is more than 40")
-                                    tfmini.getTFminiData()
-                                    x, y = enc.get_position(imu_head, counts.value)
-                                    correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag,
-                                                    reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)    
+
+                            while l_left > 40 and l_left < 1000:
+                                print(f"l_left: {l_left} is more than 40")
+                                tfmini.getTFminiData()
+                                x, y = enc.get_position(imu_head, counts.value)
+                                correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag,
+                                                reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)    
                             while head.value - heading_angle < 10 or heading_angle - head.value < -180:
                                 print("reversing to correct heading")
                                 servo.setAngle(70)
@@ -878,7 +877,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 pwm.write(direction_pin, 0)  # 0 = reverse, 1 = forward (per your wiring)
                                 x, y = enc.get_position(imu_head, counts.value)
                             
-                            while tf_h < 450:
+                            while tf_h < 450 and tfmini.distance_head < 50:
                                 print("correcting front distance")
                                 servo.setAngle(90)
                                 power = 70
