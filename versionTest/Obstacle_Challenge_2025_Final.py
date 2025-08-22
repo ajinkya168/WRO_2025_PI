@@ -930,8 +930,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             prev_power = 0
                             avoided_time = time.time() + 0.5
                             reverse_until = avoided_time + 0.6
-
-                            print("Trigger Detected, reversing...")
                             pwm.set_PWM_dutycycle(pwm_pin, power)
                             time.sleep(0.2)
                             print("Trigger Detected...")
