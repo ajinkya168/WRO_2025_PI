@@ -1,19 +1,19 @@
+import os
+os.system('sudo pkill pigpiod')
+os.system('sudo pigpiod')
+import time
+time.sleep(2)
 from TFmini import TFmini
 import RPi.GPIO as GPIO
 import serial
 from Servo import Servo
-# from BNO085 import IMUandColorSensor
 from Encoder import EncoderCounter
 import math
-# import board
 import pigpio
 import multiprocessing
 from ctypes import c_float
-# from picamera2 import Picamera2
 import logging
 import sys
-import os
-import time
 import subprocess
 import cv2
 import time
@@ -22,13 +22,7 @@ from pycoral.utils.edgetpu import make_interpreter
 from pycoral.adapters import common, detect
 from pycoral.utils.dataset import read_label_file
 from itertools import combinations
-os.system('sudo pkill pigpiod')
-os.system('sudo pigpiod')
-time.sleep(2)
 
-
-# import RPi.GPIO as GPIO
-# import time
 log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
 sys.stdout = log_file
 
@@ -46,7 +40,6 @@ green_led = 6
 reset_pin = 19
 
 # INITIALIZATION
-# pwm = pigpio.pi()
 process = None
 ser = serial.Serial('/dev/UART_USB', 115200)
 print("created uart")
@@ -326,16 +319,6 @@ def correctAngle(setPoint_gyro, heading):
     servo.setAngle(90 - correction)
 
 
-_running = True
-
-
-def _graceful_stop(signum, frame):
-    global _running
-    _running = False
-    # optional: print so you see it fired
-    print(f"\n🔔 Worker got signal {signum}, stopping...")
-
-# loop to capture video frames
 
 
 def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, orange_o, centr_y_o, shared_lock):
