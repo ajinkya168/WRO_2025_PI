@@ -633,6 +633,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             l_left = lidar_l.value
             tf_l = tfmini.distance_left
             tf_r = tfmini.distance_right
+            
+
+            
             if (time.time() - last_time > debounce_delay):
                 previous_state = button_state
                 button_state = pwm.read(5)
@@ -751,6 +754,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             ##################### BUTTON STARTS THE CODE ##################
             if button:  # THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
                 # time.sleep(0.01)
+
+                
 
                 if red_b.value or green_b.value:
                     power = 55
@@ -917,7 +922,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 pwm.set_PWM_dutycycle(pwm_pin, int(2.0 * power))
                                 pwm.write(direction_pin, 1)          
                             if tfmini.distance_left> 30:
-                                while tfmini.distance_head > 30 :
+                                while tfmini.distance_head > 20 :
                                     tfmini.getTFminiData()
                                     print("moving ahead to correct heading")
                                     correctAngle(heading_angle, head.value)
@@ -1044,7 +1049,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             if counts.value > trigger_enc + 15000:
                                 trigger = False
                                 trigger_enc_flag = False
-                                avoided_time = time.time() + 2
+                                #avoided_time = time.time() + 2
                                 print("Encoder counts done for trigger")
                             pwm.write(blue_led, 0)
 
@@ -1056,7 +1061,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             if rev_count < 1:
                                 avoided_time = time.time() + 0.5
                                 if orange_flag:
-                                    reverse_until = avoided_time + 0.8
+                                    reverse_until = avoided_time + 0.5
                                 else:
                                     reverse_until = avoided_time + 0.5
                                 rev_count += 1
@@ -1084,7 +1089,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                             if rev_count < 1:
                                 avoided_time = time.time() + 0.5
-                                reverse_until = avoided_time + 0.8
+                                reverse_until = avoided_time + 0.5
                                 rev_count += 1
 
                             # print(f"x cent:{centr_x_red.value} centr y:{centr_y_red.value}")
