@@ -1473,7 +1473,7 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
                         R = 0.8*R + 0.2*lidar_distance.value if F else lidar_distance.value
                     # print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
  
-                    if (F <= 850 and R >= 1300 ) :
+                    if (F <= 900 and R >= 1300 ) :
                         turn_trigger.value = True      
                     else:
                         turn_trigger.value = False
