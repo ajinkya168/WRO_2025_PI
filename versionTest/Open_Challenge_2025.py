@@ -279,7 +279,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                     print(f"Counters are over")
                 
                 if counter == -1:    
-                    if tf_h < 1500 and heading_angle == 0 and (head.value < 10 or head.value > 350):
+                    if tfmini.distance_head < 150 and heading_angle == 0 and (head.value < 10 or head.value > 350):
                         print(f"Open CHallenge Finished")
                         power = 0
                         pwm.set_PWM_dutycycle(12, power)  # Set duty cycle to 50% (128/255)
@@ -287,10 +287,10 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
 
 
                 if not right_flag and not left_flag:
-                    if tf_r > 100:
+                    if tf_r > 180:
                         right_flag = True
                         right_f.value = True
-                    elif tf_l > 100:
+                    elif tf_l > 180:
                         left_flag = True
                         left_f.value = True
 
