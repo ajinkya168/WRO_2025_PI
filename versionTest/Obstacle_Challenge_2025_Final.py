@@ -511,8 +511,7 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
             now = time.time()
             fps = 1.0 / max(1e-3, (now - t_prev))
             t_prev = now
-            print(
-                f"pairs:{pair} red_b.value: {red_b.value} green_b.value:{green_b.value} pink_b:{pink_b.value} cx:{cx} cy:{cy} fps:{fps}")
+            #print(f"pairs:{pair} red_b.value: {red_b.value} green_b.value:{green_b.value} pink_b:{pink_b.value} cx:{cx} cy:{cy} fps:{fps}")
             #cv2.imshow("Coral SSD Live", frame_bgr)
             if cv2.waitKey(1) & 0xFF == ord('q'):  # ESC
                 break
@@ -613,17 +612,15 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     parking_heading_reverse = False
     parking_rev_count = 0
     trigger_enc_flag = False
-    trigger_enc = 0 
+    trigger_enc = 0
+    inParkingatStart = False 
+    startPark = 0
+    exitPark = False
     try:
         while True:
             imu_shared.value = head.value
             imu_head = head.value
-            if not button:
-                print(
-                    f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value}")
-                print(
-                    f"centr_X:{centr_x_pink.value} centr_y:{centr_y_pink.value}")
-                print(f"corr:{corr}")
+
             # print(f"angles:{specific_angle}")
             # print(f"fps 2222:{1/(time.time() - fps_time2)}")
             fps_time2 = time.time()
@@ -634,7 +631,10 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             tf_l = tfmini.distance_left
             tf_r = tfmini.distance_right
             
-
+            if not button:
+                print(f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value} tf_h:{tf_h}")
+                #print(f"centr_X:{centr_x_pink.value} centr_y:{centr_y_pink.value}")
+                #print(f"corr:{corr}")
             
             if (time.time() - last_time > debounce_delay):
                 previous_state = button_state
@@ -706,7 +706,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             ################## IF PINK IS DETECTED THEN WHAT? ###############
 
             if pink_b.value:  # DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
-                print(f"PINK IS DETECTED...")
+                #print(f"PINK IS DETECTED...")
                 if orange_flag:
                     if (centr_x_pink.value < centr_x.value) and (centr_x_pink.value > 0 and centr_x.value > 0) and not continue_parking:
                         setPointL = -35
@@ -751,12 +751,31 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         setPointR = 150
                     setPointL = -70
 
+            if not button and not inParkingatStart and tf_h < 200 and pink_b.value:
+                print("Starting Parking at Start...")
+                enc.x = 0
+                enc.y = -30
+                inParkingatStart = True
+
             ##################### BUTTON STARTS THE CODE ##################
             if button:  # THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
                 # time.sleep(0.01)
+                x, y = enc.get_position(imu_head, counts.value)
+                if time.time() < startPark:
+                    pwm.set_PWM_dutycycle(pwm_pin, int(2.0*power))
+                    pwm.write(direction_pin, 1)
+                    correctAngle(90, head.value)
+                    # correctAngle(heading_angle, imu_head)  # still steer if needed
+                    print("coming out of the zone")
+                    continue  # skip the drive code below
 
-                
-
+                if inParkingatStart:
+                    print("Coming out of the zone..")
+                    if not exitPark:
+                        startPark = time.time() + 2.3
+                        exitPark = True
+                    if abs(corr) < 10 and tf_h > 200:
+                        inParkingatStart = False
                 if red_b.value or green_b.value:
                     power = 55
                 else:
@@ -794,7 +813,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     servo.setAngle(90)
                     reset_servo = True
 
-                x, y = enc.get_position(imu_head, counts.value)
 
                 total_power = (power * 0.1) + (prev_power * 0.9)
                 prev_power = total_power
@@ -896,16 +914,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     if reset_f:
                         print("RESETTING FLAGS...")
                         if orange_flag:
-                            '''while lidar_l.value > 300 and lidar_l.value < 1000:
-                                power = 70
-                                prev_power = 65
-                                pwm.set_PWM_dutycycle(pwm_pin, int(2.0 * power))
-                                pwm.write(direction_pin, 1)  # 0 = reverse, 1 = forward (per your wiring)
-                                print(f"l_left: {lidar_l.value} is more than 40")
-                                tfmini.getTFminiData()
-                                x, y = enc.get_position(head.value, counts.value)
-                                correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag,
-                                                reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)'''    
+    
                             while head.value - heading_angle < -5 or heading_angle - head.value < -180:
                                 print(f"correcting heading {head.value - heading_angle} {tfmini.distance_head}")
                                 x, y = enc.get_position(head.value, counts.value)
@@ -928,9 +937,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     pwm.set_PWM_dutycycle(pwm_pin, int(1.3 * power))
                                     pwm.write(direction_pin, 1)  # 0 = reverse, 1 = forward (per your wiring)
                                     x, y = enc.get_position(head.value, counts.value)
-                                    '''correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag,
-                                                    reset_f, reverse, head.value, centr_x_pink.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r)'''   
-                                    
+
                                 power = 0
                                 prev_power = 0
                                 # Set duty cycle to 50% (128/255)
@@ -1066,7 +1073,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         elif (g_past) and not continue_parking and not reset_f:
                             print("Avoiding green...")
                             g_flag = True
-                            if tf_r <= 50:
+                            if tf_r <= 45:
                                 if not green_b.value and not encoder_counter_store:
                                     encoder_counts_value = counts.value
                                     encoder_counter_store = True
@@ -1075,7 +1082,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     print("encoder counts are stored for green")
                             print('2')
 
-                        elif red_b.value and not g_flag and not continue_parking and not r_flag and not reset_f and centr_y_red.value > 220:
+                        elif red_b.value and not g_flag and not continue_parking and not r_flag and not reset_f and centr_y_red.value > 200:
                             r_flag = True
                             r_past = True
 
@@ -1094,12 +1101,14 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         elif (r_past) and not continue_parking and not reset_f:
                             print("Avoiding red...")
                             r_flag = True
-                            if tf_l <= 50:
+                            if tf_l <= 45:
                                 if not red_b.value and not encoder_counter_store:
                                     encoder_counts_value = counts.value
                                     encoder_counter_store = True
                                     r_flag = False
                                     r_past = False
+                                    avoided_time = time.time() + 3
+
                                     print("encoder counts stored for red")
                             # and ((avg_right_pass < 50 or avg_right_pass > 120) or counter!=rev_counter):
                             print('4')
