@@ -1124,6 +1124,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 reset_f = False
                                 g_flag = False
                                 g_past = False
+                                r_flag = False
+                                r_past = False
                                 avoided = False
                                 not_block = False
                                 # centr_y_b.value = 0
