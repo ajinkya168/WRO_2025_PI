@@ -1,15 +1,28 @@
 [Unit]
-Description=Obstacle Challenge Service
-After=udev.service systemd-udevd.service
+Description=Obstacle Challenge Service (venv)
+After=graphical.target network-online.target
+Wants=graphical.target network-online.target
 
 [Service]
-User=ajinkya
-ExecStart=/usr/bin/python /home/ajinkya/WRO_CODE/versionTest/Obstacle_Challenge_7.py > /home/ajinkya/WRO_CODE/logs/output-7.txt
-Restart=always
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/WRO_2025_PI/versionTest
+
+# --- Make sure the venv is used every time ---
+Environment=VIRTUAL_ENV=/home/pi/coral-py39-env
+Environment=PATH=/home/pi/coral-py39-env/bin:/usr/local/bin:/usr/bin:/bin
+
+# --- If you plan to use cv2.imshow later, keep these (X11/Wayland) ---
 Environment=DISPLAY=:0
-Environment=XAUTHORITY=/home/ajinkya/.Xauthority
+Environment=XAUTHORITY=/home/pi/.Xauthority
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+Environment=WAYLAND_DISPLAY=wayland-1
 
+# --- Run your code with the venv's python ---
+ExecStart=/home/pi/coral-py39-env/bin/python3 /home/pi/WRO_2025_PI/versionTest/Obstacle_Challenge_2025_Final.py
 
+Restart=always
+RestartSec=2
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=graphical.target

@@ -785,10 +785,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     elif green_b.value and not reset_f:
                         print("Green Detected, setting servo to 120 degrees")
                         servo.setAngle(110)
-                    elif trigger:
-                        print("Trigger Detected, setting servo to 60 degrees")
-                        servo.setAngle(70)
-
                     continue  # still skip forward-drive code
 
                 if not reset_servo:
@@ -1034,11 +1030,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         print(f"trigger_enc:{trigger_enc_flag} value:{trigger_enc+ 15000} current:{counts.value}")
                         if (turn_trigger.value and not trigger) and not trigger_enc_flag:
                             buff = 0
-                            power = 0
-                            prev_power = 0
                             avoided_time = time.time() + 0.5
-                            pwm.set_PWM_dutycycle(pwm_pin, power)
-                            time.sleep(0.2)
                             print("Trigger Detected...")
                             trigger = True
                             reset_f = True
@@ -1059,7 +1051,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             print(
                                 f"centr x: {centr_x.value} centr y: {centr_y.value}")
                             if rev_count < 1:
-                                avoided_time = time.time() + 0.5
+                                avoided_time = time.time() + 0.7
                                 if orange_flag:
                                     reverse_until = avoided_time + 0.5
                                 else:
@@ -1088,7 +1080,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             r_past = True
 
                             if rev_count < 1:
-                                avoided_time = time.time() + 0.5
+                                avoided_time = time.time() + 0.7
                                 reverse_until = avoided_time + 0.5
                                 rev_count += 1
 
