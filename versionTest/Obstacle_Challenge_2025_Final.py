@@ -926,7 +926,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         r_flag = False
                         rev_count = 0
                         if blue_flag:
-                            while head.value - heading_angle%360 < -5 or heading_angle%360 - head.value < 180:
+                            while head.value - heading_angle < -5 or  heading_angle - head.value < -180:
                                 print(f"correcting heading {head.value - heading_angle:.2f} {tfmini.distance_head:.2f}")
                                 x, y = enc.get_position(head.value, counts.value)
                                 tfmini.getTFminiData()
@@ -975,7 +975,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 power = 70
                                 heading_angle = -((90 * counter) % 360)
                                 sp_angle.value = heading_angle
-                                while head.value - (heading_angle) < 350 or (heading_angle) - head.value < -180:
+                                while (head.value - heading_angle)%360 < 10 or (heading_angle - head.value)%360 < -180:
                                     print(f"reversing servo {head.value} {heading_angle} {head.value - (heading_angle)} {counts.value} x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f}")
                                     x, y = enc.get_position(head.value, counts.value)
                                     tfmini.getTFminiData()
@@ -1039,7 +1039,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             
                         if orange_flag:
     
-                            while head.value - heading_angle < -2 or heading_angle - head.value < -180:
+                            while head.value - heading_angle < -5 or heading_angle - head.value < -180:
                                 print(f"correcting heading {head.value - heading_angle:.2f} {tfmini.distance_head:.2f}")
                                 x, y = enc.get_position(head.value, counts.value)
                                 tfmini.getTFminiData()
@@ -1442,16 +1442,16 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
                 rplidar[int(lidar_angle.value)] = lidar_distance.value
                 if (int(lidar_angle.value) == (0 + imu_r + sp_angle.value) % 360):
                     lidar_front = lidar_distance.value
-                    F = 0.7*F + 0.3*lidar_distance.value if F else lidar_distance.value
+                    F = 0.8*F + 0.2*lidar_distance.value if F else lidar_distance.value
                     lidar_f.value = F
                 if (int(lidar_angle.value) == (90 + imu_r + sp_angle.value) % 360):
                     lidar_left = lidar_distance.value
-                    L = 0.7*L + 0.3*lidar_distance.value if F else lidar_distance.value
+                    L = 0.8*L + 0.2*lidar_distance.value if F else lidar_distance.value
                     lidar_l.value = L
 
                 if (int(lidar_angle.value) == (270 + imu_r + sp_angle.value) % 360):
                     lidar_right = lidar_distance.value
-                    R = 0.7*R + 0.3*lidar_distance.value if F else lidar_distance.value
+                    R = 0.8*R + 0.2*lidar_distance.value if F else lidar_distance.value
                     lidar_r.value = R
                     
                 if (F <= 900 and R >= 1300) and right_f.value and not left_f.value:

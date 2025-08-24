@@ -451,23 +451,17 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, sp_angle, turn_trigg
                         lidar_right = lidar_distance.value                                      
                     #print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
             
-            if(lidar_front < 800 and lidar_left < 1000 and lidar_right > 1500) and right_f.value:
+            if(lidar_front < 800 and lidar_right > 1500) and right_f.value:
                 turn_trigger.value = True
             elif (lidar_front > 1500 and lidar_right < 1000) and right_f.value:
                 turn_trigger.value = False
             
-            if(lidar_front < 800 and lidar_left > 1800 and lidar_right < 1000) and left_f.value:
+            if(lidar_front < 800 and lidar_left > 1500) and left_f.value:
                 turn_trigger.value = True
             elif (lidar_front > 1500 and lidar_left < 1000) and left_f.value:
                 turn_trigger.value = False
                 
-            #print(f"angles: {imu_r} sp_angle:{sp_angle.value} front: {lidar_front}, left: {lidar_left}, right: {lidar_right} lidar_f: {lidar_f.value} turn_trigger: {turn_trigger.value}")
 
-    '''except KeyboardInterrupt:
-        print("🛑 Ctrl+C received. Stopping LIDAR.")
-        process.terminate()
-    finally:
-        print("🔌 Lidar process ended.")'''
 
 
 
