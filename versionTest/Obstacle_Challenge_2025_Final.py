@@ -634,6 +634,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             tfmini.getTFminiData()
             tf_h = lidar_f.value
             l_left = lidar_l.value
+            l_right = lidar_r.value
             tf_l = tfmini.distance_left
             tf_r = tfmini.distance_right
             
@@ -1082,14 +1083,14 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 turn_trigger_distance = tfmini.distance_head
 
                                 if lane_reset == 1:
-                                    enc.x = (1500 - (turn_trigger_distance))/10
+                                    enc.x = (150 - (turn_trigger_distance)) - 10
                                     print(f"x: {enc.x}")
                                 if lane_reset == 2:
-                                    enc.y = (2500 - (turn_trigger_distance))/10
+                                    enc.y = (250 - (turn_trigger_distance)) - 10
                                 if lane_reset == 3:
-                                    enc.x = ((turn_trigger_distance) - 1500)/10
+                                    enc.x = ((turn_trigger_distance) - 150) + 10
                                 if lane_reset == 0:
-                                    enc.y = ((turn_trigger_distance) - 500)/10
+                                    enc.y = ((turn_trigger_distance) - 50) + 10
 
                                 power = 70
                                                                 
@@ -1138,14 +1139,14 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 turn_trigger_distance = tfmini.distance_head
 
                                 if lane_reset == 1:
-                                    enc.x = (1500 - (turn_trigger_distance))/10
+                                    enc.x = (150 - (turn_trigger_distance)) - 10
                                     print(f"x: {enc.x}")
                                 if lane_reset == 2:
-                                    enc.y = (2500 - (turn_trigger_distance))/10
+                                    enc.y = (250 - (turn_trigger_distance)) - 10
                                 if lane_reset == 3:
-                                    enc.x = ((turn_trigger_distance) - 1500)/10
+                                    enc.x = ((turn_trigger_distance) - 150) + 10
                                 if lane_reset == 0:
-                                    enc.y = ((turn_trigger_distance) - 500)/10
+                                    enc.y = ((turn_trigger_distance) - 50) + 10
 
                                 heading_angle = ((90 * counter) % 360)
                                 sp_angle.value = heading_angle
@@ -1316,7 +1317,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 print(f"r_flag:{r_flag} g_flag:{g_flag} rev_count: {rev_count}")
                 print(f"r_past:{r_past} g_past:{g_past} p_past:{p_past}")
                 print(f"x: {x:.2f}, y:{y:.2f} count:{counts.value} heading_angle:{heading_angle}")
-                print(f"tf_h :{tf_h:.2f} {l_left:.2f} left:{tf_l} head:{(math.cos(math.radians(abs(corr))) * tfmini.distance_head):.2f} right: {tf_r} POWER = {power} corr: {abs(corr)}")
+                print(f"F: {tf_h:.2f}  L: {l_left:.2f} R: {l_right:.2f} left:{tf_l} head:{(math.cos(math.radians(abs(corr))) * tfmini.distance_head):.2f} right: {tf_r} POWER = {power} corr: {abs(corr)}")
                 print(f"L: {setPointL} R: {setPointR} setPointC: {setPointC}")
                 print("---------------------------------------------------")
                 '''print(f"lap_finish:{lap_finish} counter:{counter} continue_parking:{continue_parking}") 
@@ -1360,16 +1361,13 @@ def runEncoder(counts, head, imu_shared, sp_angle):
     pwm.write(green_led, 1)
     try:
         while True:
-            line = ser.readline().decode().strip()
-            esp_data = line.split(" ")
+            line = ser.readline().decode('utf-8', errors = 'ignore').strip()
+            esp_data = line.split()
             # print(f"esp_data: {esp_data}")
-            esp_data.append(1)
-            if abs(esp_data[-1]) >= 1:
+            if len(esp_data) >= 2:
                 try:
                     head.value = float(esp_data[0])
                     imu_shared.value = head.value
-                    # print(f"head value:{head.value}")
-                    # sp_angle.value = 0
                     counts.value = int(esp_data[1])
                     pwm.write(red_led, 1)
                 except ValueError:
@@ -1446,16 +1444,16 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
                 rplidar[int(lidar_angle.value)] = lidar_distance.value
                 if (int(lidar_angle.value) == (0 + imu_r + sp_angle.value) % 360):
                     lidar_front = lidar_distance.value
-                    F = 0.8*F + 0.2*lidar_distance.value if F else lidar_distance.value
+                    F = 0.2*F + 0.8*lidar_distance.value if F else lidar_distance.value
                     lidar_f.value = F
                 if (int(lidar_angle.value) == (90 + imu_r + sp_angle.value) % 360):
                     lidar_left = lidar_distance.value
-                    L = 0.8*L + 0.2*lidar_distance.value if F else lidar_distance.value
+                    L = 0.2*L + 0.8*lidar_distance.value if F else lidar_distance.value
                     lidar_l.value = L
 
                 if (int(lidar_angle.value) == (270 + imu_r + sp_angle.value) % 360):
                     lidar_right = lidar_distance.value
-                    R = 0.8*R + 0.2*lidar_distance.value if F else lidar_distance.value
+                    R = 0.2*R + 0.8*lidar_distance.value if F else lidar_distance.value
                     lidar_r.value = R
                     
                 if (F <= 900 and R >= 1300) and right_f.value and not left_f.value:
@@ -1479,16 +1477,16 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
                     rplidar[int(lidar_angle.value)] = lidar_distance.value
                     if (int(lidar_angle.value) == (0 + imu_r + sp_angle.value) % 360):
                         lidar_front = lidar_distance.value
-                        F = 0.8*F + 0.2*lidar_distance.value if F else lidar_distance.value
+                        F = 0.2*F + 0.8*lidar_distance.value if F else lidar_distance.value
                         lidar_f.value = F
 
                     if (int(lidar_angle.value) == (90 + imu_r + sp_angle.value) % 360):
                         lidar_left = lidar_distance.value
-                        L = 0.8*L + 0.2*lidar_distance.value if F else lidar_distance.value
+                        L = 0.2*L + 0.8*lidar_distance.value if F else lidar_distance.value
                         lidar_l.value = L
                     if (int(lidar_angle.value) == (270 + imu_r + sp_angle.value) % 360):
                         lidar_right = lidar_distance.value
-                        R = 0.8*R + 0.2*lidar_distance.value if F else lidar_distance.value
+                        R = 0.2*R + 0.8*lidar_distance.value if F else lidar_distance.value
                         lidar_r.value = R
                     # print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
 
