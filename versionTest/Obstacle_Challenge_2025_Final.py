@@ -588,8 +588,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     last_counter = 12
     change_counter = 7  # 3
     rev_counter = 7
-    heading_angle = counter = turn_t = current_time = gp_time = rp_time = buff = c_time = green_count = red_count = 0
-
+    counter = turn_t = current_time = gp_time = rp_time = buff = c_time = green_count = red_count = 0
+    heading_angle = 0
     i = l = lap_finish_time = prev_distance = turn_trigger_distance = target_count = offset = button_state = past_time = 0
 
     correctAngle(heading_angle, head.value)
@@ -926,7 +926,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         r_flag = False
                         rev_count = 0
                         if blue_flag:
-                            while head.value - heading_angle < -5 or  heading_angle - head.value < -180:
+                            while head.value - heading_angle < -5 or heading_angle - head.value < 180:
                                 print(f"correcting heading {head.value - heading_angle:.2f} {tfmini.distance_head:.2f}")
                                 x, y = enc.get_position(head.value, counts.value)
                                 tfmini.getTFminiData()
@@ -975,8 +975,12 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 power = 70
                                 heading_angle = -((90 * counter) % 360)
                                 sp_angle.value = heading_angle
-                                while (head.value - heading_angle)%360 < 10 or (heading_angle - head.value)%360 < -180:
-                                    print(f"reversing servo {head.value} {heading_angle} {head.value - (heading_angle)} {counts.value} x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f}")
+
+                                while (heading_angle - head.value) + 360 < -10 or ((head.value - heading_angle) - 360 < -10 and (head.value - heading_angle) - 360 > -350):
+                                    diff = (heading_angle - head.value) + 360 < -10
+                                    reverse_diff = (head.value - heading_angle) - 360 < - 10 and (head.value - heading_angle) - 360 > -350
+                                    print(f"diff:{diff} rev_diff:{reverse_diff} counter:{counter}")
+                                    print(f"reversing servo {head.value:.2f} {heading_angle} diff: {(heading_angle - head.value) + 360:.2f} rev_diff: {(head.value - heading_angle) - 360:.2f} {counts.value} x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f}")
                                     x, y = enc.get_position(head.value, counts.value)
                                     tfmini.getTFminiData()
                                     correctReverseAngle(heading_angle, head.value)
