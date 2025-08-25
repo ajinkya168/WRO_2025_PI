@@ -2,7 +2,7 @@ import os
 os.system('sudo pkill pigpiod')
 os.system('sudo pigpiod')
 import time
-time.sleep(2)
+time.sleep(5)
 from TFmini import TFmini
 import RPi.GPIO as GPIO
 import serial
@@ -163,7 +163,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
     dTerm_e = 0
     iTerm_e = 0
     lane = counter % 4
-
+    n_head = 0
     # if(time.time() - last_time > 0.001):
     if lane == 0:
         error = setPoint - y
@@ -176,7 +176,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
 
         elif blue:
             error = (100 + setPoint) - x
-            # print(f"lane:{lane}, error:{error} target:{(55 + setPoint)}, x:{x} y:{y} Bluee")
+            print(f"lane:{lane}, error:{error} target:{(100 + setPoint)}, x:{x} y:{y} Bluee")
     # print(f" trigger : {flag_t} setPoint: {setPoint} lane: {lane} correction:{correction}, error:{error} x:{x}, y:{y}, prevError :{prevError} angle:{head - correction}")
     elif lane == 2:
         if orange:
@@ -185,7 +185,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
                 f"lane:{lane} error:{error:.2f} target:{(200 - setPoint)},  x: {x} y: {y} setPoint:{setPoint}")
         elif blue:
             error = y - (-200 - setPoint)
-            # print(f"lane:{lane} error:{error} target:{(-200 - setPoint)}, x: {x} y{y}")
+            print(f"lane:{lane} error:{error} target:{(-200 - setPoint)}, x: {x} y{y}")
     # print(f"setPoint: {flag_t} lane: {lane} correction:{correction}, error:{error} x:{x}, y:{y}, prevError :{prevError} angle:{head - correction}")
     elif lane == 3:
         if orange:
@@ -194,7 +194,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
                 f"lane:{lane} error:{error:.2f} target:{(setPoint - 100)}, x: {x} y {y} setPoint:{setPoint}")
         elif blue:
             error = x + (100 + setPoint)
-            # print(f"lane:{lane} error:{error} target:{(55 + setPoint)}, x:{x} y {y}")
+            (f"lane:{lane} error:{error} target:{(55 + setPoint)}, x:{x} y {y}")
 
     corr_pos = error
     pTerm_e = kp_e * error
@@ -262,8 +262,15 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
                 pass
 
         else:
-            if (setPoint <= -70 ) and ((tfmini.distance_head <=25 and ((heading - head) - 360 < -35)) or distance_l <= 20):
-                print(f"Correcting Green Wall Blue")
+
+            if heading > 180:
+                n_head = heading - 360
+            else:
+                n_head = heading
+            print(f"diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
+
+            if (setPoint <= -70 ) and ((tfmini.distance_head <=25 and (head - n_head) > 35) or distance_l <= 20):
+                print(f"Correcting Green Wall... diff:{(head - n_head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
                 correction = 15
             else:
                 pass
@@ -274,18 +281,17 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
             else:
                 pass
     
-    if setPoint == 0:
+    '''if setPoint == 0:
         print("SetPoint is 0..")
         if correction > 20:
             correction = 20
         elif correction < -20:
-            correction = -20
-        
-    else:
-        if correction > 45:
-            correction = 45
-        elif correction < -45:
-            correction = -45
+            correction = -20'''
+
+    if correction > 45:
+        correction = 45
+    elif correction < -45:
+        correction = -45
             
     print(f"diff:{(heading - head):.2f} heading:{heading:.2f} head:{head:.2f} right {distance_r} head_d:{tfmini.distance_head} correction:{correction}") 
 
@@ -593,7 +599,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     color_n = ""
     setPointL = -70
     setPointR = 70
-    setPointC = 5
+    setPointC = 0
     power = 95
     prev_power = 0
     last_counter = 12
@@ -621,7 +627,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     encoder_counter_store = False
     encoder_counts_value = 0
     l_left = 0
-    off = 3000
+    off = 4000
     rev_count = 0
     reverse_true = False
     parking_flag = False
@@ -634,6 +640,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     exitPark = False
     timer = 0
     norm_head = 0
+    lane_reset = 0
     try:
         while True:
             imu_shared.value = head.value
@@ -973,7 +980,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     #correctReverseAngle(heading_angle, head.value)
                                     power = 90
                                     prev_power = 0
-                                    pwm.set_PWM_dutycycle(pwm_pin, int(1.3 * power))
+                                    pwm.set_PWM_dutycycle(pwm_pin, int(2.0 * power))
                                     pwm.write(direction_pin, 1)  # 0 = reverse, 1 = forward (per your wiring)
                                     x, y = enc.get_position(head.value, counts.value)
 
@@ -1021,7 +1028,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     correctReverseAngle(heading_angle, head.value)
                                     power = 90
                                     prev_power = 0
-                                    pwm.set_PWM_dutycycle(pwm_pin, int(1.9 * power))
+                                    pwm.set_PWM_dutycycle(pwm_pin, int(2.0 * power))
                                     pwm.write(direction_pin, 0)  # 0 = reverse, 1 = forward (per your wiring)                                                        
                                 if not trigger_enc_flag:
                                     print("Encoder counts are stored for trigger")
@@ -1036,9 +1043,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     print(f"moving blue right ahead to correct heading x:{x} y:{y} lidar_f:{lidar_f.value} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}")
                                     correctAngle(heading_angle, head.value)
                                     #correctReverseAngle(heading_angle, head.value)
-                                    power = 70
+                                    power = 80
                                     prev_power = 0
-                                    pwm.set_PWM_dutycycle(pwm_pin, int(1.3 * power))
+                                    pwm.set_PWM_dutycycle(pwm_pin, int(1.9 * power))
                                     pwm.write(direction_pin, 1)  # 0 = reverse, 1 = forward (per your wiring)
                                     x, y = enc.get_position(head.value, counts.value)
                                 power = 0
@@ -1166,9 +1173,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     print(f"moving ahead to correct heading x:{x} y:{y} lidar_f:{lidar_f.value} head_d: {tfmini.distance_head:.2f} left:{tfmini.distance_left:.2f}")
                                     correctAngle(heading_angle, head.value)
                                     #correctReverseAngle(heading_angle, head.value)
-                                    power = 70
+                                    power = 90
                                     prev_power = 0
-                                    pwm.set_PWM_dutycycle(pwm_pin, int(1.3 * power))
+                                    pwm.set_PWM_dutycycle(pwm_pin, int(1.9 * power))
                                     pwm.write(direction_pin, 1)  # 0 = reverse, 1 = forward (per your wiring)
                                     x, y = enc.get_position(head.value, counts.value)
                                 power = 0
@@ -1219,8 +1226,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             timer_started = False
                             turn_t = time.time()
                         elif trigger_enc_flag:
-                            print(f"Trigger enc flag is set: {trigger_enc_flag} counts:{counts.value} trigger_enc:{trigger_enc + 16000}")
-                            if counts.value > trigger_enc + 16000:
+                            off = 9000
+                            print(f"Trigger enc flag is set: {trigger_enc_flag} counts:{counts.value} trigger_enc:{trigger_enc + 18000}")
+                            if counts.value > trigger_enc + 18000:
                                 trigger = False
                                 trigger_enc_flag = False
                                 print("Encoder counts done for trigger")
@@ -1325,6 +1333,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                         print(f"counts {counts.value} flag :{encoder_counter_store} encoder: {encoder_counts_value} encoder updated: {encoder_counts_value + off} ")
                         if encoder_counter_store:
+
+
                             if counts.value > encoder_counts_value + off:
                                 encoder_counter_store = False
                                 rev_count = 0
@@ -1361,7 +1371,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 print(f"r_past:{r_past} g_past:{g_past} p_past:{p_past}")
                 print(f"x: {x:.2f}, y:{y:.2f} count:{counts.value} heading_angle:{heading_angle}")
                 print(f"F: {tf_h:.2f}  L: {l_left:.2f} R: {l_right:.2f} left:{tf_l} head:{(math.cos(math.radians(abs(corr))) * tfmini.distance_head):.2f} right: {tf_r} POWER = {power} corr: {abs(corr)}")
-                print(f"L: {setPointL} R: {setPointR} setPointC: {setPointC}")
+                print(f"L: {setPointL} R: {setPointR} setPointC: {setPointC} off:{off}")
                 print("---------------------------------------------------")
                 '''print(f"lap_finish:{lap_finish} counter:{counter} continue_parking:{continue_parking}") 
                 print(f"(p_flag:{p_flag} p_past:{p_past} ")

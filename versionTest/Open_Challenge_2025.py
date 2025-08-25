@@ -280,7 +280,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                     print(f"Counters are over")
                 
                 if counter == -1:    
-                    if tfmini.distance_head < 150 and heading_angle == 0 and (head.value < 10 or head.value > 350):
+                    if tfmini.distance_head < 150 and heading_angle == 0 and (head.value < 5 or head.value > 355) and not trigger:
                         print(f"Open CHallenge Finished")
                         power = 0
                         pwm.set_PWM_dutycycle(12, power)  # Set duty cycle to 50% (128/255)
@@ -301,22 +301,22 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
 
                 if right_flag:
                     print("Right Flag is set")
-                    if (tfmini.distance_right > 130 and tfmini.distance_head < 75) and not trigger:
+                    if (tfmini.distance_right > 150 and tfmini.distance_head < 100) and not trigger:
                         # time.sleep(0.5)
                         counter = counter + 1
                         heading_angle = ((90 * counter) % 360)
                         trigger = True
 
-                    elif tfmini.distance_right < 85 and tfmini.distance_head > 75:
+                    elif tfmini.distance_right < 100 and tfmini.distance_head > 150:
                         trigger = False
 
                 elif left_flag:
-                    if (tfmini.distance_left > 130 and tfmini.distance_head < 75) and not trigger:
+                    if (tfmini.distance_left > 150 and tfmini.distance_head < 100) and not trigger:
                         # time.sleep(0.5)
                         counter = counter + 1
                         heading_angle = -(90 * counter) % 360
                         trigger = True
-                    elif tfmini.distance_left < 85 and tfmini.distance_head > 75:
+                    elif tfmini.distance_left < 100 and tfmini.distance_head > 150:
                         trigger = False
                 
 
