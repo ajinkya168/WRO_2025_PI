@@ -443,18 +443,22 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
             n2 = pair[1][0] if pair[1] else None
             if n1 == 'pink' and n2 is None:
                 pink_b.value = True
+                green_b.value = False
+                red_b.value = False
                 if n1 == 'pink':
                     centr_x_pink.value = pair[0][1]
                     centr_y_pink.value = pair[0][2]
-            else:
-                pink_b.value = False
-                centr_x_pink.value = 0
-                centr_y_pink.value = 0
+                    centr_x.value = 0
+                    centr_y.value = 0
+                    centr_x_red.value = 0
+                    centr_y_red.value = 0
 
-            if (n1, n2) in (('pink', 'red'), ('red', 'pink')):
+            elif (n1, n2) in (('pink', 'red'), ('red', 'pink')):
                 red_b.value = True
                 green_b.value = False
                 pink_b.value = True
+                centr_x.value = 0
+                centr_y.value = 0
                 if n1 == 'red':
                     centr_x_red.value = pair[0][1]
                     centr_y_red.value = pair[0][2]
@@ -472,6 +476,8 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 green_b.value = True
                 red_b.value = False
                 pink_b.value = True
+                centr_x_red.value = 0
+                centr_y_red.value = 0
                 if n1 == 'green':
                     centr_x.value = pair[0][1]
                     centr_y.value = pair[0][2]
@@ -490,6 +496,8 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 pink_b.value = False
                 centr_x_red.value = 0
                 centr_y_red.value = 0
+                centr_x_pink.value = 0
+                centr_y_pink.value = 0
                 if n1 == 'green':
                     centr_x.value = pair[0][1]
                     centr_y.value = pair[0][2]
@@ -500,6 +508,8 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 pink_b.value = False
                 centr_x.value = 0
                 centr_y.value = 0
+                centr_x_pink.value = 0
+                centr_y_pink.value = 0
                 if n1 == 'red':
                     centr_x_red.value = pair[0][1]
                     centr_y_red.value = pair[0][2]
@@ -512,6 +522,8 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
                 centr_y_pink.value = 0
                 centr_x.value = 0
                 centr_y.value = 0
+                centr_x_red.value = 0
+                centr_y_red.value = 0
             now = time.time()
             fps = 1.0 / max(1e-3, (now - t_prev))
             t_prev = now
@@ -609,7 +621,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     encoder_counter_store = False
     encoder_counts_value = 0
     l_left = 0
-    off = 2000
+    off = 3000
     rev_count = 0
     reverse_true = False
     parking_flag = False
@@ -743,7 +755,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     continue_parking = True
                 pb_time = time.time()
             # IF DOES NOT SEE PINK, KEEP THE SAME SETPOINT FOR 1 SECOND AND THEN CHANGE
-            elif not pink_b.value and time.time() - pb_time > 0.5 and not lap_finish:
+            elif not pink_b.value and time.time() - pb_time > 1 and not lap_finish:
                 # print(f"Resetting setPoints...{pink_detected}")
                 if g_flag and not continue_parking:
                     print(f"away from green {g_past}")
@@ -809,9 +821,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         inParkingatStart = False
                         
                 if red_b.value or green_b.value:
-                    power = 65
+                    power = 55
                 else:
-                    power = 85
+                    power = 70
 
                 if time.time() < avoided_time:
                     pwm.set_PWM_dutycycle(pwm_pin, 0)
@@ -1184,11 +1196,11 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                         ################### PANDAV 2.0 ####################
 
-                        if green_b.value and not r_flag and not continue_parking and not g_flag and not reset_f and centr_y.value > 220:
+                        if green_b.value and not r_flag and not continue_parking and not g_flag and not reset_f and centr_y.value > 240:
                             if rev_count < 1:
-                                avoided_time = time.time() + 0.2
+                                avoided_time = time.time() + 0.3
                                 if orange_flag:
-                                    reverse_until = avoided_time + 0.8
+                                    reverse_until = avoided_time + 0.5
                                 else:
                                     reverse_until = avoided_time + 0.5
                                 rev_count += 1
@@ -1211,12 +1223,12 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     print("encoder counts are stored for green")
                             print('2')
 
-                        elif red_b.value and not g_flag and not continue_parking and not r_flag and not reset_f and centr_y_red.value > 250:
+                        elif red_b.value and not g_flag and not continue_parking and not r_flag and not reset_f and centr_y_red.value > 240:
                             r_flag = True
                             r_past = True
                             encoder_counter_store = False
                             if rev_count < 1:
-                                avoided_time = time.time() + 0.2
+                                avoided_time = time.time() + 0.3
                                 reverse_until = avoided_time + 0.5
                                 rev_count += 1
                             # print(f"x cent:{centr_x_red.value} centr y:{centr_y_red.value}")
@@ -1457,9 +1469,9 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
                     lidar_r.value = R
                 
                 #print("in while loop...")    
-                if (F <= 750 and R >= 1300) and right_f.value and not left_f.value:
+                if (F <= 780 and R >= 1300) and right_f.value and not left_f.value:
                     turn_trigger.value = True
-                elif (F <= 750 and L >= 1300) and left_f.value and not right_f.value:
+                elif (F <= 780 and L >= 1300) and left_f.value and not right_f.value:
                     turn_trigger.value = True
                 else:
                     turn_trigger.value = False                    
@@ -1490,9 +1502,9 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
                         
                     # print(f"angles: {specific_angle}, imu: {imu_shared.value} total:{imu_r + lidar_angle.value}")
 
-                    if (F <= 750 and R >= 1300) and right_f.value and not left_f.value:
+                    if (F <= 780 and R >= 1300) and right_f.value and not left_f.value:
                         turn_trigger.value = True
-                    elif (F <= 750 and L >= 1300) and left_f.value and not right_f.value:
+                    elif (F <= 780 and L >= 1300) and left_f.value and not right_f.value:
                         turn_trigger.value = True
                     else:
                         turn_trigger.value = False  

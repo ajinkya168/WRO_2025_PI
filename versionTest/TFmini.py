@@ -10,6 +10,8 @@ class TFmini:
         self.RX_Left = RX_Left
         self.RX_Right = RX_Right
         self.RX_Back = RX_Back
+        # SUJAL START
+        #SUJAL END
         
         #self.lock = lock or multiprocessing.Lock()
 
