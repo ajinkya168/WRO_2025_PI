@@ -227,7 +227,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
 
             else:
                 print("setPoint was not -35")
-                correction = 0
+                pass
 
         elif (((setPoint == 35) and blue) or (counter == 0 and (centr_x_p < 300 and centr_x_p > 0) and ((centr_y_g or centr_y_r) <= centr_y_p) and not blue and not orange) and not finish):
 
@@ -244,42 +244,46 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
                     correction = 25
                     print(f"Avoiding pink wall {correction}")
             else:
-                correction = 0
+                print("setPoint was not 35")
+                pass
 
         if not blue:
+            
+            if head.value > 180 and lane == 0:
+                n_head = head.value - 360
+            else:
+                n_head = head.value
+
             if (setPoint <= -70 ) and distance_l <= 20:
                 print(f"Correcting Green Wall Orange")
                 correction = 15
-            else:
-                print("Green is not there...")
-                pass
-
-            if (setPoint >= 70) and ((tfmini.distance_head <= 25 and (heading - head > 35 )) or distance_r <= 20):
-                print(f"Correcting Red Wall... diff:{(heading - head):.2f} heading:{heading:.2f} head:{head:.2f} right {distance_r} head_d:{tfmini.distance_head}")
+            elif (setPoint >= 70) and ((tfmini.distance_head <= 25 and (n_head - head > 35)) or distance_r <= 20):
+                print(f"Correcting Green Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
                 correction = -15
             else:
-                print("Red is not there...")
+                print("No wall detected...")
                 pass
 
         else:
 
-            if heading > 180:
-                n_head = heading - 360
+            if heading < 180 and lane == 0:
+                n_head = heading + 360
             else:
                 n_head = heading
-            print(f"diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
-
-            if (setPoint <= -70 ) and ((tfmini.distance_head <=25 and (head - n_head) > 35) or distance_l <= 20):
-                print(f"Correcting Green Wall... diff:{(head - n_head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
-                correction = 15
-            else:
-                pass
+                 
+                
 
             if (setPoint >= 70 ) and distance_r <= 20:
                 print(f"correctng red wall in blue")
                 correction = -15
+            elif (setPoint <= -70 ) and ((tfmini.distance_head <=25 and abs((n_head - head) - 360) > 35) or distance_l <= 20):
+                print(f"Correcting Green Wall... diff:{abs((n_head - head) - 360):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
+                correction = 15
             else:
+                print("No wall detected...")
                 pass
+
+
     
     '''if setPoint == 0:
         print("SetPoint is 0..")
@@ -627,7 +631,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     encoder_counter_store = False
     encoder_counts_value = 0
     l_left = 0
-    off = 4000
+    off = 6000
     rev_count = 0
     reverse_true = False
     parking_flag = False
@@ -1226,7 +1230,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             timer_started = False
                             turn_t = time.time()
                         elif trigger_enc_flag:
-                            off = 9000
+                            off = 12000
                             print(f"Trigger enc flag is set: {trigger_enc_flag} counts:{counts.value} trigger_enc:{trigger_enc + 18000}")
                             if counts.value > trigger_enc + 18000:
                                 trigger = False
