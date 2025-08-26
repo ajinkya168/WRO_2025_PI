@@ -205,7 +205,10 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
 
     print(f"Error: {error}")
     if setPoint == 0:
-        if abs(error) < 23:
+        if abs(error) < 15 and orange:
+            print(f"absolute is 0")
+            correction = 0
+        elif abs(error) < 15 and blue:
             print(f"absolute is 0")
             correction = 0
 
@@ -214,7 +217,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
         tfmini.getTFminiData()
         if (((setPoint == -35) and orange) or (counter == 0 and (centr_x_p < 300 and centr_x_p > 0) and ((centr_x_g or centr_x_r) >  centr_x_p) and not blue and not orange) and not finish):
             if distance_l <= 30:
-                correction = 10
+                correction = 20
                 print(f"Avoiding pink wall {correction}")
 
             elif distance_r < 50:
@@ -223,7 +226,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
                     print(f"Avoiding pink wall {correction}")
 
                 else:
-                    correction = -10
+                    correction = -20
                     print(f"Avoiding pink wall {correction}")
             else:
                 correction = 0
@@ -233,7 +236,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
         if (((setPoint == 35) and blue) or (counter == 0 and (centr_x_p < 300 and centr_x_p > 0) and ((centr_x_g or centr_x_r) < centr_y_p) and not blue and not orange) and not finish):
 
             if distance_r <= 30:
-                correction = -10
+                correction = -20
                 print(f"Avoiding pink wall {correction}")
 
             elif distance_l < 50:
@@ -242,7 +245,7 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
                     print(f"Avoiding pink wall {correction}")
 
                 else:
-                    correction = 10
+                    correction = 20
                     print(f"Avoiding pink wall {correction}")
             else:
                 correction 
@@ -627,7 +630,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     encoder_counter_store = False
     encoder_counts_value = 0
     l_left = 0
-    off = 6000
+    off = 5000
     rev_count = 0
     reverse_true = False
     parking_flag = False
@@ -986,28 +989,15 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 prev_power = 0
                                 # Set duty cycle to 50% (128/255)
                                 pwm.set_PWM_dutycycle(pwm_pin, power)
-                                tfmini.getTFminiData()
                                 x, y = enc.get_position(imu_head, counts.value)
                                 buff = 4
-                                time.sleep(0.5)
-                                
-                                c_time = time.time()
+
                                 counter = counter + 1
                                 lane_reset = counter % 4
-                                turn_trigger_distance = tfmini.distance_head
-
-                                if lane_reset == 1:
-                                    enc.x = (150 - turn_trigger_distance) - 10
-                                if lane_reset == 2:
-                                    enc.y = (turn_trigger_distance - 250) + 10
-                                if lane_reset == 3:
-                                    enc.x = (turn_trigger_distance - 150) + 10
-                                if lane_reset == 0:
-                                    enc.y = (50 - turn_trigger_distance) - 10
-
-                                power = 90
                                 heading_angle = -((90 * counter) % 360)
                                 sp_angle.value = heading_angle
+                                                  
+
                                 if head.value < 180 and lane_reset == 0:
                                     norm_head = head.value + 360
                                 else:
@@ -1027,13 +1017,38 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     power = 90
                                     prev_power = 0
                                     pwm.set_PWM_dutycycle(pwm_pin, int(2.0 * power))
-                                    pwm.write(direction_pin, 0)  # 0 = reverse, 1 = forward (per your wiring)                                                        
+                                    pwm.write(direction_pin, 0)  # 0 = reverse, 1 = forward (per your wiring)      
+                                power = 0
+                                prev_power = 0
+                                pwm.set_PWM_dutycycle(pwm_pin, int(2.0 * power))
+
+                                
+                                c_time = time.time()
+
+                                time.sleep(0.5)
+                                tfmini.getTFminiData()
+
+                                turn_trigger_distance = tfmini.distance_right
+
+                                if lane_reset == 1:
+                                    enc.x = (150 - turn_trigger_distance) - 5
+                                if lane_reset == 2:
+                                    enc.y = (turn_trigger_distance - 250) + 5
+                                if lane_reset == 3:
+                                    enc.x = (turn_trigger_distance - 150) + 5
+                                if lane_reset == 0:
+                                    enc.y = (50 - turn_trigger_distance) - 5
+
+                                power = 90
+
                                 if not trigger_enc_flag:
                                     print("Encoder counts are stored for trigger")
                                     trigger_enc = counts.value
                                     trigger_enc_flag = True
-                                power = 70
                                 reset_f = False
+                                green_b.value = False
+                                red_b.value = False
+                                pink_b.value = False
                                 
                             else:
                                 while tfmini.distance_head > 80 :
@@ -1051,7 +1066,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 # Set duty cycle to 50% (128/255)
                                 pwm.set_PWM_dutycycle(pwm_pin, power)
             
-                                tfmini.getTFminiData()
                                 x, y = enc.get_position(imu_head, counts.value)
                                 buff = 4
                                 time.sleep(0.5)
@@ -1059,16 +1073,18 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 c_time = time.time()
                                 counter = counter + 1                                
                                 lane_reset = counter % 4
+                                tfmini.getTFminiData()
+
                                 turn_trigger_distance = tfmini.distance_head
                                 
                                 if lane_reset == 1:
-                                    enc.x = (150 - turn_trigger_distance) - 10
+                                    enc.x = (150 - turn_trigger_distance) - 5
                                 if lane_reset == 2:
-                                    enc.y = (turn_trigger_distance - 250) + 10
+                                    enc.y = (turn_trigger_distance - 250) + 5
                                 if lane_reset == 3:
-                                    enc.x = (turn_trigger_distance - 150) + 10
+                                    enc.x = (turn_trigger_distance - 150) + 5
                                 if lane_reset == 0:
-                                    enc.y = (50 - turn_trigger_distance) - 10
+                                    enc.y = (50 - turn_trigger_distance) - 5
 
                                 heading_angle = -((90 * counter) % 360)
                                 sp_angle.value = heading_angle
@@ -1080,7 +1096,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 # print(f'Resuming Motor...{offset}')
                                 power = 70
                                 reset_f = False
-                            
+                                green_b.value = False
+                                red_b.value = False
+                                pink_b.value = False                            
                         if orange_flag:
                             if head.value > 180 and lane_reset == 0:
                                 norm_head = head.value - 360
@@ -1127,6 +1145,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                                                 
                                 heading_angle = ((90 * counter) % 360)
                                 sp_angle.value = heading_angle
+
                                 if head.value > 180 and lane_reset == 0:
                                     norm_head = head.value - 360
                                 else:
@@ -1150,18 +1169,19 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 # Set duty cycle to 50% (128/255)
                                 pwm.set_PWM_dutycycle(pwm_pin, power)
                                 time.sleep(0.5)
+                                tfmini.getTFminiData()
+
                                 turn_trigger_distance = tfmini.distance_left
 
                                 if lane_reset == 1:
-                                    enc.x = (150 - (turn_trigger_distance)) - 10
+                                    enc.x = (150 - (turn_trigger_distance)) - 5
                                     print(f"x: {enc.x}")
                                 if lane_reset == 2:
-                                    enc.y = (250 - (turn_trigger_distance)) - 10
+                                    enc.y = (250 - (turn_trigger_distance)) - 5
                                 if lane_reset == 3:
-                                    enc.x = ((turn_trigger_distance) - 150) + 10
+                                    enc.x = ((turn_trigger_distance) - 150) + 5
                                 if lane_reset == 0:
-                                    enc.y = ((turn_trigger_distance) - 50) + 10
-
+                                    enc.y = ((turn_trigger_distance) - 50) + 5
                                 power = 90
 
                                 if not trigger_enc_flag:
@@ -1169,6 +1189,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     trigger_enc = counts.value
                                     trigger_enc_flag = True
                                 power = 70
+                                green_b.value = False
+                                red_b.value = False
+                                pink_b.value = False
                                 reset_f = False
                             else:
                                 while tfmini.distance_head > 80 :
@@ -1186,10 +1209,11 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 # Set duty cycle to 50% (128/255)
                                 pwm.set_PWM_dutycycle(pwm_pin, power)
             
-                                tfmini.getTFminiData()
                                 x, y = enc.get_position(imu_head, counts.value)
                                 buff = 4
                                 time.sleep(0.5)
+                                tfmini.getTFminiData()
+
                                 c_time = time.time()
                                 counter = counter + 1                                
 
@@ -1197,14 +1221,14 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 turn_trigger_distance = tfmini.distance_head
 
                                 if lane_reset == 1:
-                                    enc.x = (150 - (turn_trigger_distance)) - 10
+                                    enc.x = (150 - (turn_trigger_distance)) - 5
                                     print(f"x: {enc.x}")
                                 if lane_reset == 2:
-                                    enc.y = (250 - (turn_trigger_distance)) - 10
+                                    enc.y = (250 - (turn_trigger_distance)) - 5
                                 if lane_reset == 3:
-                                    enc.x = ((turn_trigger_distance) - 150) + 10
+                                    enc.x = ((turn_trigger_distance) - 150) + 5
                                 if lane_reset == 0:
-                                    enc.y = ((turn_trigger_distance) - 50) + 10
+                                    enc.y = ((turn_trigger_distance) - 50) + 5
 
                                 heading_angle = ((90 * counter) % 360)
                                 sp_angle.value = heading_angle
@@ -1217,7 +1241,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 # print(f'Resuming Motor...{offset}')
                                 power = 70
                                 reset_f = False
-
+                                green_b.value = False
+                                red_b.value = False
+                                pink_b.value = False
                     else:
                         # TRIGGGER CHECK VALUESSSS
                         if (turn_trigger.value and not trigger) and not trigger_enc_flag:
@@ -1229,7 +1255,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             timer_started = False
                             turn_t = time.time()
                         elif trigger_enc_flag:
-                            off = 12000
+                            off = 8000
                             print(f"Trigger enc flag is set: {trigger_enc_flag} counts:{counts.value} trigger_enc:{trigger_enc + 18000}")
                             if counts.value > trigger_enc + 18000:
                                 trigger = False
