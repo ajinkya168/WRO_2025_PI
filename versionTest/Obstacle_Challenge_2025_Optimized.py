@@ -3,11 +3,8 @@ os.system('sudo pkill pigpiod')
 os.system('sudo pigpiod')
 import time
 time.sleep(5)
-from TFmini import TFmini
 import RPi.GPIO as GPIO
 import serial
-from Servo import Servo
-from Encoder import EncoderCounter
 import math
 import pigpio
 import multiprocessing
@@ -22,352 +19,33 @@ from pycoral.utils.edgetpu import make_interpreter
 from pycoral.adapters import common, detect
 from pycoral.utils.dataset import read_label_file
 from itertools import combinations
+from initHardware import *
 log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
 sys.stdout = log_file
 
-# PINS
-
-RX_Head = 23
-RX_Left = 24
-RX_Right = 25
-RX_Back = 27
-button_pin = 5
-servo_pin = 8
-blue_led = 26
-red_led = 10
-green_led = 6
-reset_pin = 19
-
 # INITIALIZATION
-process = None
-ser = serial.Serial('/dev/UART_USB', 115200)
 print("created uart")
 
+# Initialize tfmini (add this line, adjust class if needed)
+
+
+#### INITIALIZATION ####
 pwm = pigpio.pi()
 if not pwm.connected:
     print("Could not connect to pigpio daemon")
     exit(1)
 
-#### INITIALIZATION ####
-
-# Set pin modes for LEDs and reset
-for pin in [reset_pin, blue_led, red_led, green_led]:
-    pwm.set_mode(pin, pigpio.OUTPUT)
-    pwm.write(pin, 0)  # Set LOW
-
-# Set button pin as input with pull-up
-pwm.set_mode(button_pin, pigpio.INPUT)
-pwm.set_pull_up_down(button_pin, pigpio.PUD_UP)
-
-#### RESETTING ARDUINO ####
-
-print("Resetting....")
-
-pwm.write(reset_pin, 0)          # Pull reset LOW
-pwm.write(green_led, 1)          # Turn on green LED
-time.sleep(1)
-
-pwm.write(reset_pin, 1)          # Release reset (HIGH)
-pwm.write(green_led, 0)          # Turn off green LED
-time.sleep(1)
-
-print("Reset Complete")
-
 ########### IMPORTING CLASSES ###############
-servo = Servo(servo_pin)
-# imu = IMUandColorSensor(board.SCL, board.SDA)
-tfmini_lock = multiprocessing.Lock()
 
-tfmini = TFmini(RX_Head, RX_Left, RX_Right, RX_Back)
 # app = Flask(__name__)
 
-rplidar = [None]*360
-previous_distance = 0
-dist_0 = 0
-dist_90 = 0
-dist_270 = 0
-angle = 0
-lidar_front = 0
-lidar_left = 0
-lidar_right = 0
-
-#########  MULTIPROCESSING VARIABLE ###########
-
-counts = multiprocessing.Value('i', 0)
-color_b = multiprocessing.Value('b', False)
-red_b = multiprocessing.Value('b', False)
-green_b = multiprocessing.Value('b', False)
-pink_b = multiprocessing.Value('b', False)
-orange_o = multiprocessing.Value('b', False)
-blue_c = multiprocessing.Value('b', False)
-orange_c = multiprocessing.Value('b', False)
-white_c = multiprocessing.Value('b', False)
-centr_y = multiprocessing.Value('f', 0.0)
-centr_x = multiprocessing.Value('f', 0.0)
-centr_y_red = multiprocessing.Value('f', 0.0)
-centr_x_red = multiprocessing.Value('f', 0.0)
-centr_x_pink = multiprocessing.Value('f', 0.0)
-centr_y_pink = multiprocessing.Value('f', 0.0)
-centr_y_b = multiprocessing.Value('f', 0.0)
-centr_y_o = multiprocessing.Value('f', 0.0)
-prev_b = multiprocessing.Value('f', 0.0)
-head = multiprocessing.Value('f', 0.0)
-sp_angle = multiprocessing.Value('i', 0)
-turn_trigger = multiprocessing.Value('b', False)
-# Shared memory for LIDAR and IMU
-lidar_angle = multiprocessing.Value('d', 0.0)
-lidar_distance = multiprocessing.Value('d', 0.0)
-imu_shared = multiprocessing.Value('d', 0.0)
-specific_angle = multiprocessing.Array(c_float, 3)  # shared array of 3 integers
-lidar_f = multiprocessing.Value('d', 0.0)
-lidar_l = multiprocessing.Value('d', 0.0)
-lidar_r = multiprocessing.Value('d', 0.0)
-
-previous_angle = multiprocessing.Value('d', 0.0)
-shared_lock = multiprocessing.Lock()
-left_f = multiprocessing.Value('b', False)
-right_f = multiprocessing.Value('b', False)
-stop_evt = multiprocessing.Event()
-############ PID VARIABLES #############
-
-currentAngle = 0
-error_gyro = 0
-prevErrorGyro = 0
-totalErrorGyro = 0
-correcion = 0
-totalError = 0
-prevError = 0
-
-kp = 0.6
-ki = 0
-kd = 0.1
-
-kp_e = 3  # 12
-ki_e = 0
-kd_e = 40  # 40if
-
-corr = 0
-corr_pos = 0
-
-###################################################
-
-
-def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse, heading, centr_x_p, centr_x_r, centr_x_g, centr_y_g, centr_y_r,  centr_y_p, finish, distance_h, distance_l, distance_r, red, green):
-    # print("INSIDE CORRECT")
-    # getTFminiData()
-    global prevError, totalError, prevErrorGyro, totalErrorGyro, corr_pos
-
-    error = 0
-    correction = 0
-    pTerm_e = 0
-    dTerm_e = 0
-    iTerm_e = 0
-    lane = counter % 4
-    n_head = 0
-    # if(time.time() - last_time > 0.001):
-    if lane == 0:
-        error = setPoint - y
-        print(
-            f"lane: {lane}, error: {error:.2f} target:{(setPoint)}, x:{x} y:{y} not reverse")
-    elif lane == 1:
-        if orange:
-            error = x - (100 - setPoint)
-            print(f"lane:{lane}, error:{error:.2f} target:{(100 - setPoint)}, setPoint:{setPoint} x:{x}, y:{y}")
-
-        elif blue:
-            error = (100 + setPoint) - x
-            print(f"lane:{lane}, error:{error} target:{(100 + setPoint)}, x:{x} y:{y} Bluee")
-    # print(f" trigger : {flag_t} setPoint: {setPoint} lane: {lane} correction:{correction}, error:{error} x:{x}, y:{y}, prevError :{prevError} angle:{head - correction}")
-    elif lane == 2:
-        if orange:
-            error = y - (200 - setPoint)  # CHANGE 1
-            print(
-                f"lane:{lane} error:{error:.2f} target:{(200 - setPoint)},  x: {x} y: {y} setPoint:{setPoint}")
-        elif blue:
-            error = y - (-200 - setPoint)
-            print(f"lane:{lane} error:{error} target:{(-200 - setPoint)}, x: {x} y{y}")
-    # print(f"setPoint: {flag_t} lane: {lane} correction:{correction}, error:{error} x:{x}, y:{y}, prevError :{prevError} angle:{head - correction}")
-    elif lane == 3:
-        if orange:
-            error = (setPoint - 100) - x
-            print(
-                f"lane:{lane} error:{error:.2f} target:{(setPoint - 100)}, x: {x} y {y} setPoint:{setPoint}")
-        elif blue:
-            error = x + (100 + setPoint)
-            (f"lane:{lane} error:{error} target:{(55 + setPoint)}, x:{x} y {y}")
-
-    corr_pos = error
-    pTerm_e = kp_e * error
-    dTerm_e = kd_e * (error - prevError)
-    totalError += error
-    iTerm_e = ki_e * totalError
-    correction = pTerm_e + iTerm_e + dTerm_e
-
-    print(f"Error: {error}")
-    if setPoint == 0:
-        if abs(error) < 15 and orange:
-            print(f"absolute is 0")
-            correction = 0
-        elif abs(error) < 15 and blue:
-            print(f"absolute is 0")
-            correction = 0
-
-    if not reset:
-        print(f"In not reset...")
-        tfmini.getTFminiData()
-        if (((setPoint == -35) and orange) or (counter == 0 and (centr_x_p < 300 and centr_x_p > 0) and ((centr_x_g or centr_x_r) >  centr_x_p) and not blue and not orange) and not finish):
-            if distance_l <= 30:
-                correction = 20
-                print(f"Avoiding pink wall {correction}")
-
-            elif distance_r < 50:
-                if distance_r <= 35:
-                    correction = -45
-                    print(f"Avoiding pink wall {correction}")
-
-                else:
-                    correction = -10
-                    print(f"Avoiding pink wall {correction}")
-            else:
-                correction = -20
-                print("setPoint was not -35")
-                pass
-
-        if (((setPoint == 35) and blue) or (counter == 0 and (centr_x_p < 300 and centr_x_p > 0) and ((centr_x_g or centr_x_r) < centr_y_p) and not blue and not orange) and not finish):
-
-            if distance_r <= 30:
-                correction = -20
-                print(f"Avoiding pink wall {correction}")
-
-            elif distance_l < 50:
-                if distance_l <= 35:
-                    correction = 45
-                    print(f"Avoiding pink wall {correction}")
-
-                else:
-                    correction = 20
-                    print(f"Avoiding pink wall {correction}")
-            else:
-                correction = 20
-                print("setPoint was not 35")
-                pass
-
-        if not blue:
-            
-            if heading > 180 and lane == 0:
-                n_head = heading - 360
-            else:
-                n_head = heading
-
-            if (setPoint <= -70 ) and distance_l <= 20:
-                print(f"Correcting Green Wall Orange")
-                correction = 15
-            elif (setPoint >= 70) and ((tfmini.distance_head <= 25 and (n_head - head > 35)) or distance_r <= 20):
-                print(f"Correcting Green Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
-                correction = -15
-            else:
-                print("No wall detected...")
-                pass
-
-        else:
-
-            if heading < 180 and lane == 0:
-                n_head = heading + 360
-            else:
-                n_head = heading
-                 
-                
-
-            if (setPoint >= 70 ) and distance_r <= 20:
-                print(f"correctng red wall in blue")
-                correction = -15
-            elif (setPoint <= -70 ) and ((tfmini.distance_head <=25 and abs((n_head - head) - 360) > 35) or distance_l <= 20):
-                print(f"Correcting Green Wall... diff:{abs((n_head - head) - 360):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
-                correction = 15
-            else:
-                print("No wall detected...")
-                pass
-
-
-    
-
-    if correction > 45:
-        correction = 45
-    elif correction < -45:
-        correction = -45
-            
-    print(f"diff:{(heading - head):.2f} heading:{heading:.2f} head:{head:.2f} right {distance_r} head_d:{tfmini.distance_head} correction:{correction}") 
-
-    prevError = error
-    correctAngle(head + correction, heading)
-
-
-def correctAngle(setPoint_gyro, heading):
-    global corr
-    error_gyro = 0
-    prevErrorGyro = 0
-    totalErrorGyro = 0
-    correction = 0
-    totalError = 0
-    prevError = 0
-
-    error_gyro = heading - setPoint_gyro
-
-    if error_gyro > 180:
-        error_gyro = error_gyro - 360
-    corr = error_gyro
-    # print("Error : ", error_gyro)
-    pTerm = 0
-    dTerm = 0
-    iTerm = 0
-
-    pTerm = kp * error_gyro
-    dTerm = kd * (error_gyro - prevErrorGyro)
-    totalErrorGyro += error_gyro
-    iTerm = ki * totalErrorGyro
-    correction = pTerm + iTerm + dTerm
-
-    if correction > 30:
-        correction = 30
-    elif correction < -30:
-        correction = -30
-
-    prevErrorGyro = error_gyro
-    servo.setAngle(90 - correction)
-
-def correctReverseAngle(setPoint_gyro, heading):
-    global corr
-    error_gyro = 0
-    prevErrorGyro = 0
-    totalErrorGyro = 0
-    correction = 0
-    totalError = 0
-    prevError = 0
-
-    error_gyro = heading - setPoint_gyro
-
-    if error_gyro > 180:
-        error_gyro = error_gyro - 360
-    corr = error_gyro
-    # print("Error : ", error_gyro)
-    pTerm = 0
-    dTerm = 0
-    iTerm = 0
-
-    pTerm = kp * error_gyro
-    dTerm = kd * (error_gyro - prevErrorGyro)
-    totalErrorGyro += error_gyro
-    iTerm = ki * totalErrorGyro
-    correction = pTerm + iTerm + dTerm
-
-    if correction > 30:
-        correction = 30
-    elif correction < -30:
-        correction = -30
-
-    prevErrorGyro = error_gyro
-    servo.setAngle(90 + correction)
-
+hardware = initHardware()
+hardware.resetArduino()
+hardware.resetLeds()
+hardware.setButtonMode()
+tfmini = hardware.tfmini  # or tfmini = TFmini() if you have a TFmini class
+servo = hardware.servo
+ser = hardware.ser
 
 
 def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, centr_y_b, orange_o, centr_y_o, shared_lock):
@@ -566,93 +244,11 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     pwm.hardware_PWM(pwm_pin, 55, 0)
 
     pwm.set_PWM_dutycycle(pwm_pin, 0)  # Set duty cycle to 50% (128/255)
-
     enc = EncoderCounter()
 
-    ############# FLAGS ###############
-    button = False
+  
+    hardware.servo.correctAngle(heading_angle, head.value)
 
-    trigger = reset_f = False
-    blue_flag = False
-    orange_flag = False
-
-    change_path = False
-    timer_started = False
-    timer_v = 0
-    g_flag = r_flag = p_flag = False
-    g_past = r_past = p_past = False
-
-    red_stored = green_store = False
-
-    red_turn = green_turn = False
-    calc_time = False
-    lap_finish = continue_parking = parking_heading = parking_flag = False
-    turn_flag = reset_flags = counter_reset = False
-    finished = finish = stop_flag = False
-    red_time = green_time = False
-    pink_detected = False
-    last_red = False
-    cw = ccw = False
-    reset_heading = previous_heading_stored = False
-    pink_timer = pink_r = False
-    back_bot = False
-    green_timer = red_timer = False
-    g_last_flag = r_last_flag = False
-    reverse_complete = reverse = reverse_trigger = False
-    blue_on = False
-    finish_flag = False
-    reset_servo = False
-    trigger_reset = False
-    not_block = False
-    ############ VARIABLES ##################
-    color_n = ""
-    setPointL = -70
-    setPointR = 70
-    setPointC = 0
-    power = 95
-    prev_power = 0
-    last_counter = 12
-    change_counter = 7  # 3
-    rev_counter = 7
-    counter = turn_t = current_time = gp_time = rp_time = buff = c_time = green_count = red_count = 0
-    heading_angle = 0
-    i = l = lap_finish_time = prev_distance = turn_trigger_distance = target_count = offset = button_state = past_time = 0
-
-    correctAngle(heading_angle, head.value)
-    previous_heading = -1
-    stop_time = turn_cos_theta = parking_done = pink_d = g_time = r_time = u = avg_right = avg_head = avg_left = 0
-
-    time_p = prev_time = prev_restore = finish_timer = prev_blue = prev_orange = avg_blue = avg_orange = 0
-
-    c = c_time = fps_time2 = 0
-
-    color_s = ""
-    orange_c.value = True
-    debounce_delay = 0.2
-    last_time = 0
-    avoided = False
-    avoided_time = time.time()
-    reverse_until = 0
-    encoder_counter_store = False
-    encoder_counts_value = 0
-    l_left = 0
-    off = 5000
-    rev_count = 0
-    reverse_true = False
-    parking_flag = False
-    parking_heading_reverse = False
-    parking_rev_count = 0
-    trigger_enc_flag = False
-    trigger_enc = 0
-    inParkingatStart = False 
-    startPark = 0
-    exitPark = False
-    timer = 0
-    norm_head = 0
-    lane_reset = 0
-    red_time = 0
-    green_time = 0
-    pink_time = 0
     try:
         while True:
             imu_shared.value = head.value
@@ -824,9 +420,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     pwm.set_PWM_dutycycle(pwm_pin, int(2.0*power))
                     pwm.write(direction_pin, 1)
                     if orange_flag:
-                        correctAngle(90, head.value)
+                        hardware.servo.correctAngle(90, head.value)
                     elif blue_flag:
-                        correctAngle(-90, head.value)
+                        hardware.servo.correctAngle(-90, head.value)
                     # correctAngle(heading_angle, imu_head)  # still steer if needed
                     print("coming out of the zone")
                     continue  # skip the drive code below
@@ -1744,6 +1340,47 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
 
 
 if __name__ == '__main__':
+    #########  MULTIPROCESSING VARIABLE ###########
+
+    counts = multiprocessing.Value('i', 0)
+    color_b = multiprocessing.Value('b', False)
+    red_b = multiprocessing.Value('b', False)
+    green_b = multiprocessing.Value('b', False)
+    pink_b = multiprocessing.Value('b', False)
+    orange_o = multiprocessing.Value('b', False)
+    blue_c = multiprocessing.Value('b', False)
+    orange_c = multiprocessing.Value('b', False)
+    white_c = multiprocessing.Value('b', False)
+    centr_y = multiprocessing.Value('f', 0.0)
+    centr_x = multiprocessing.Value('f', 0.0)
+    centr_y_red = multiprocessing.Value('f', 0.0)
+    centr_x_red = multiprocessing.Value('f', 0.0)
+    centr_x_pink = multiprocessing.Value('f', 0.0)
+    centr_y_pink = multiprocessing.Value('f', 0.0)
+    centr_y_b = multiprocessing.Value('f', 0.0)
+    centr_y_o = multiprocessing.Value('f', 0.0)
+    prev_b = multiprocessing.Value('f', 0.0)
+    head = multiprocessing.Value('f', 0.0)
+    sp_angle = multiprocessing.Value('i', 0)
+    turn_trigger = multiprocessing.Value('b', False)
+    # Shared memory for LIDAR and IMU
+    lidar_angle = multiprocessing.Value('d', 0.0)
+    lidar_distance = multiprocessing.Value('d', 0.0)
+    imu_shared = multiprocessing.Value('d', 0.0)
+    specific_angle = multiprocessing.Array(
+        c_float, 3)  # shared array of 3 integers
+    lidar_f = multiprocessing.Value('d', 0.0)
+    lidar_l = multiprocessing.Value('d', 0.0)
+    lidar_r = multiprocessing.Value('d', 0.0)
+
+    previous_angle = multiprocessing.Value('d', 0.0)
+    shared_lock = multiprocessing.Lock()
+    left_f = multiprocessing.Value('b', False)
+    right_f = multiprocessing.Value('b', False)
+    stop_evt = multiprocessing.Event()
+    
+    
+
     try:
         print("Starting process")
 
