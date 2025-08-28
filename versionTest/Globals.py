@@ -11,43 +11,7 @@ class Globals:
     lidar_left = 0
     lidar_right = 0
 
-    #########  MULTIPROCESSING VARIABLE ###########
 
-    counts = multiprocessing.Value('i', 0)
-    color_b = multiprocessing.Value('b', False)
-    red_b = multiprocessing.Value('b', False)
-    green_b = multiprocessing.Value('b', False)
-    pink_b = multiprocessing.Value('b', False)
-    orange_o = multiprocessing.Value('b', False)
-    blue_c = multiprocessing.Value('b', False)
-    orange_c = multiprocessing.Value('b', False)
-    white_c = multiprocessing.Value('b', False)
-    centr_y = multiprocessing.Value('f', 0.0)
-    centr_x = multiprocessing.Value('f', 0.0)
-    centr_y_red = multiprocessing.Value('f', 0.0)
-    centr_x_red = multiprocessing.Value('f', 0.0)
-    centr_x_pink = multiprocessing.Value('f', 0.0)
-    centr_y_pink = multiprocessing.Value('f', 0.0)
-    centr_y_b = multiprocessing.Value('f', 0.0)
-    centr_y_o = multiprocessing.Value('f', 0.0)
-    prev_b = multiprocessing.Value('f', 0.0)
-    head = multiprocessing.Value('f', 0.0)
-    sp_angle = multiprocessing.Value('i', 0)
-    turn_trigger = multiprocessing.Value('b', False)
-    # Shared memory for LIDAR and IMU
-    lidar_angle = multiprocessing.Value('d', 0.0)
-    lidar_distance = multiprocessing.Value('d', 0.0)
-    imu_shared = multiprocessing.Value('d', 0.0)
-    specific_angle = multiprocessing.Array(c_float, 3)  # shared array of 3 integers
-    lidar_f = multiprocessing.Value('d', 0.0)
-    lidar_l = multiprocessing.Value('d', 0.0)
-    lidar_r = multiprocessing.Value('d', 0.0)
-
-    previous_angle = multiprocessing.Value('d', 0.0)
-    shared_lock = multiprocessing.Lock()
-    left_f = multiprocessing.Value('b', False)
-    right_f = multiprocessing.Value('b', False)
-    stop_evt = multiprocessing.Event()
     ############ PID VARIABLES #############
 
     currentAngle = 0
