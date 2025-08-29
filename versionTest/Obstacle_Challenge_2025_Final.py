@@ -1729,13 +1729,17 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         elif p_flag:
                             print("avoiding pink..")
                             if blue_flag:
-                                correctAngle(heading_angle, head.value)
+                                
                                 if tf_l < 30:
                                     correctAngle(heading_angle + 10, head.value)
+                                else:
+                                    correctAngle(heading_angle, head.value)
                             elif orange_flag:
-                                correctAngle(heading_angle, head.value)
                                 if tf_r < 30:
-                                    correctAngle(heading_angle - 10, head.value)                                
+                                    correctAngle(heading_angle - 10, head.value)  
+                                else:
+                                    correctAngle(heading_angle, head.value)
+
                             '''if orange_flag:
                                 correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag,
                                                 reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r, red_b.value, green_b.value)
