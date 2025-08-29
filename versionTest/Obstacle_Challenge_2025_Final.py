@@ -1178,13 +1178,16 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 lane_reset = counter % 4
                                 heading_angle = -((90 * counter) % 360)
                                 sp_angle.value = heading_angle
-                                                  
+                                
+                                if not timer_started:
+                                    timer_v = time.time()
+                                    timer_started = True                                                  
 
                                 if head.value < 180 and lane_reset == 0:
                                     norm_head = head.value + 360
                                 else:
                                     norm_head = head.value
-                                while abs((norm_head - heading_angle) - 360) > 5:
+                                while abs((norm_head - heading_angle) - 360) > 8 and time.time() - timer_v < 2.5:
                                     if head.value < 180 and lane_reset == 0:
                                         norm_head = head.value + 360
                                     else:
@@ -1248,7 +1251,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                         norm_head = head.value + 360
                                     else:
                                         norm_head = head.value
-                                    while abs((norm_head - heading_angle) - 360) > 5:
+                                    while abs((norm_head - heading_angle) - 360) > 8 :
                                         if head.value < 180 and lane_reset == 0:
                                             norm_head = head.value + 360
                                         else:
@@ -1299,6 +1302,17 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                         pwm.set_PWM_dutycycle(pwm_pin, int(1.9 * power))
                                         pwm.write(direction_pin, 1)  # 0 = reverse, 1 = forward (per your wiring)
                                         x, y = enc.get_position(head.value, counts.value)
+                                    while tfmini.distance_head < 70 :
+                                        tfmini.getTFminiData()
+                                        print(f"moving ahead to correct heading x:{x} y:{y} lidar_f:{lidar_f.value} head_d: {tfmini.distance_head:.2f} left:{tfmini.distance_left:.2f}")
+                                        correctReverseAngle(heading_angle, head.value)
+                                        #correctReverseAngle(heading_angle, head.value)
+                                        power = 60
+                                        prev_power = 0
+                                        pwm.set_PWM_dutycycle(pwm_pin, int(1.9 * power))
+                                        pwm.write(direction_pin, 0)  # 0 = reverse, 1 = forward (per your wiring)
+                                        x, y = enc.get_position(head.value, counts.value)
+
                                     power = 0
                                     prev_power = 0
                                     # Set duty cycle to 50% (128/255)
@@ -1649,11 +1663,12 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             print('5')
 
                         elif p_past and continue_parking and not parking_flag:
-                            tfmini.getTFminiData()
-                            tf_r = tfmini.distance_right
-                            tf_l = tfmini.distance_left
+
                             print(f"time after reversing heading {time.time() - pink_time} distance_right:{tf_r} distance_left:{tf_l} prev_distance:{prev_distance}")
                             if time.time() - pink_time > 2:
+                                tfmini.getTFminiData()
+                                tf_r = tfmini.distance_right
+                                tf_l = tfmini.distance_left
                                 if orange_flag:
                                     print(f"prev_distance: {prev_distance}, distance_right: {tf_r} diff: {abs(prev_distance - tf_r)}")
                                     p_flag = True
