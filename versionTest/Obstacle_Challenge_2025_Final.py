@@ -684,8 +684,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     power = 95
     prev_power = 0
     last_counter = 12
-    change_counter = 7  # 3
-    rev_counter = 7
+
     counter = turn_t = current_time = gp_time = rp_time = buff = c_time = green_count = red_count = 0
     heading_angle = 0
     i = l = lap_finish_time = prev_distance = turn_trigger_distance = target_count = offset = button_state = past_time = 0
@@ -1659,25 +1658,24 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     print(f"prev_distance: {prev_distance}, distance_right: {tf_r} diff: {abs(prev_distance - tf_r)}")
                                     p_flag = True
                                     if tf_r <= 30 and (abs(prev_distance - tf_r) >= 10 and prev_distance > 0) and p_past:
-                                        p_past = False
-                                        p_flag = False
                                         p_pass +=1
                                         if p_pass == 2:
+                                            p_past = False
+                                            p_flag = False
                                             parking_flag = True
-                                        print("Pink Avoidance Complete...")
+                                            print("Pink Avoidance Complete...")
                                     prev_distance = tf_r
 
                                 elif blue_flag:
                                     
                                     print(f"prev_distance: {prev_distance}, distance_left: {tf_l}  diff: {abs(prev_distance - tf_l)}")
                                     if tf_l <= 30 and (abs(prev_distance - tf_l) >= 10 and prev_distance > 0) and p_past:
-                                        p_past = False
-                                        p_flag = False
-                                        
                                         p_pass +=1
                                         if p_pass == 2:
+                                            p_past = False
+                                            p_flag = False
                                             parking_flag = True
-                                        print("Pink Avoidance Complete Blue...")
+                                            print("Pink Avoidance Complete Blue...")
                                     prev_distance = tf_l
 
                             print('6')
