@@ -1672,8 +1672,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 if orange_flag:
                                     print(f"prev_distance: {prev_distance}, distance_right: {tf_r} diff: {abs(prev_distance - tf_r)}")
                                     p_flag = True
-                                    if tf_r <= 30 and (abs(prev_distance - tf_r) >= 10 and prev_distance > 0) and p_past:
-                                        p_pass +=1
+                                    if tf_r <= 30 and (abs(prev_distance - tf_r) >= 10 and prev_distance > 0) and not pink_b.value:
+                                        p_pass = 2
                                         if p_pass == 2:
                                             p_past = False
                                             p_flag = False
@@ -1684,8 +1684,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 elif blue_flag:
                                     
                                     print(f"prev_distance: {prev_distance}, distance_left: {tf_l}  diff: {abs(prev_distance - tf_l)}")
-                                    if tf_l <= 30 and (abs(prev_distance - tf_l) >= 10 and prev_distance > 0) and p_past:
-                                        p_pass +=1
+                                    if tf_l <= 30 and (abs(prev_distance - tf_l) >= 10 and prev_distance > 0) and not pink_b.value:
+                                        p_pass = 2
                                         if p_pass == 2:
                                             p_past = False
                                             p_flag = False
