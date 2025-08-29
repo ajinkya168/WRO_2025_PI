@@ -694,7 +694,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 print("REACHED MAXIMUM COUNTS")
                 print(f"target:{target_count}")
                 if not finished:
-                    target_count = counts.value + 17500
+                    target_count = counts.value + 22000
                     finished = True
                 if counts.value >= target_count and not reverse_trigger:
                     power = 0
@@ -708,6 +708,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     lap_finish = True
                     reverse_trigger = True
                     print(f"Vehicle is stopped...")
+                    
 
             if lap_finish:
                 if not counter_reset:
@@ -1481,7 +1482,10 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             print('5')
 
                         elif p_past and continue_parking and not parking_flag:
-                            print(f"time after reversing heading {time.time() - pink_time}")
+                            tfmini.getTFminiData()
+                            tf_r = tfmini.distance_right
+                            tf_l = tfmini.distance_left
+                            print(f"time after reversing heading {time.time() - pink_time} distance_right:{tf_r} distance_left:{tf_l} prev_distance:{prev_distance}")
                             if time.time() - pink_time > 2:
                                 if orange_flag:
                                     print(f"prev_distance: {prev_distance}, distance_right: {tf_r} diff: {abs(prev_distance - tf_r)}")
@@ -1494,6 +1498,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     prev_distance = tf_r
 
                                 elif blue_flag:
+                                    
                                     print(f"prev_distance: {prev_distance}, distance_left: {tf_l}  diff: {abs(prev_distance - tf_l)}")
                                     if tf_l <= 30 and (abs(prev_distance - tf_l) >= 10 and prev_distance > 0) and p_past:
                                         p_past = False
@@ -1765,10 +1770,8 @@ if __name__ == '__main__':
 
         # C = multiprocessing.Process(target=color_SP, args=(blue_c, orange_c, white_c))
 
-        print("Image Process Start")
-        # time.sleep(3)
+        print("Image Process Start")        
         P.start()
-        # time.sleep(3)
         print("Image Process Started")
         E.start()
         print("Starting lidar process")
