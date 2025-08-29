@@ -1,6 +1,5 @@
 import pigpio
-import Globals as G
-from initHardware import *
+
 class Servo:
     def __init__(self, pin, frequency=50):
         self.pin = pin

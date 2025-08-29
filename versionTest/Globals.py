@@ -1,5 +1,5 @@
 import multiprocessing
-
+import time
 
 rplidar = [None]*360
 previous_distance = 0

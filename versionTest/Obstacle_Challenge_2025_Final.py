@@ -670,7 +670,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             tf_r = tfmini.distance_right
             
             if not button:
-                print(f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value} tf_h:{tf_h:.2f} diff:{(head.value - heading_angle):.2f}")
+                print(f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value} tf_h:{tf_h:.2f} diff:{(head.value - heading_angle):.2f} counts:{counts.value:.2f}")
                 #print(f"centr_X:{centr_x_pink.value} centr_y:{centr_y_pink.value}")
                 #print(f"corr:{corr}")
             
@@ -821,6 +821,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                 x, y = enc.get_position(imu_head, counts.value)
                 if time.time() < startPark:
+                    red_b.value = False
+                    green_b.value = False
                     pwm.set_PWM_dutycycle(pwm_pin, int(2.0*power))
                     pwm.write(direction_pin, 1)
                     if orange_flag:
@@ -1424,7 +1426,10 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             g_flag = True
                             if green_b.value:
                                 green_time = time.time()
+                                
                             if tf_r <= 50 or time.time() - green_time > 2:
+                            #if time.time() - green_time > 2.5:
+
                                 if not green_b.value and not encoder_counter_store:
                                     encoder_counts_value = counts.value
                                     encoder_counter_store = True
@@ -1457,6 +1462,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             if red_b.value:
                                 red_time  = time.time()
                             if tf_l <= 50 or time.time() - red_time > 2:
+                            #if time.time() - red_time > 2.5:
+
                                 if not red_b.value and not encoder_counter_store:
                                     encoder_counts_value = counts.value
                                     encoder_counter_store = True

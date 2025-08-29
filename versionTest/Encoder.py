@@ -6,8 +6,7 @@ import math
 from math import atan2, sqrt
 #import matplotlib.pyplot as plt
 import multiprocessing
-import Globals as g
-from initHardware import *
+
 
 class EncoderCounter:
     channelA = 9
@@ -35,7 +34,6 @@ class EncoderCounter:
         self.x_history = [self.x]
         self.y_history = [self.y]
         self.prev_distance = 0
-        self.hardware = initHardware()
 
 
 
