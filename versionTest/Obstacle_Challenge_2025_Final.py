@@ -574,7 +574,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
     trigger = reset_f = False
     blue_flag = False
-    orange_flag = False
+    orange_flag = True
 
     change_path = False
     timer_started = False
@@ -639,7 +639,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     off = 5000
     rev_count = 0
     reverse_true = False
-    parking_flag = False
+    parking_flag = True
     parking_heading_reverse = False
     parking_rev_count = 0
     trigger_enc_flag = False
@@ -653,6 +653,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     red_time = 0
     green_time = 0
     pink_time = 0
+    finish_t = time.time()
+    inside_pink = time.time()
+    state = 1
     try:
         while True:
             imu_shared.value = head.value
@@ -668,6 +671,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             l_right = lidar_r.value
             tf_l = tfmini.distance_left
             tf_r = tfmini.distance_right
+           
+
+           
             
             if not button:
                 print(f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value} tf_h:{tf_h:.2f} diff:{(head.value - heading_angle):.2f} counts:{counts.value:.2f}")
@@ -821,7 +827,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 print("-------------------------------------------------")
 
                 x, y = enc.get_position(imu_head, counts.value)
-                if time.time() < startPark:
+                if time.time() < startPark and not parking_flag:
                     red_b.value = False
                     green_b.value = False
                     pwm.set_PWM_dutycycle(pwm_pin, int(2.0*power))
@@ -834,7 +840,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     print("coming out of the zone")
                     continue  # skip the drive code below
 
-                if inParkingatStart:
+                if inParkingatStart and not parking_flag:
                     print("Coming out of the zone..")
                     if not exitPark:
                         startPark = time.time() + 2.3
@@ -894,6 +900,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 if parking_flag and not stop_flag:
                     print(f"PARKING ------> distance_head : {tfmini.distance_head}")
                     print("Inside Parking Loop")
+                    tfmini.getTFminiData()
                     if not calc_time:
                         c_time = time.time()
                         calc_time = True
@@ -905,63 +912,88 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         print("increasing time..")
                         time_p = 2.5
                         pink_r = True
-                    while time.time() - c_time < time_p and not reverse_complete:
-                        print("Reversing backward...")
-                        power = 70
-                        prev_power = 0
-                        # Set duty cycle to 50% (128/255)
-                        pwm.set_PWM_dutycycle(pwm_pin, power)
-                        pwm.write(direction_pin, 0)  # Set pin 20 hig
-                        prev_time = time.time()
-                    reverse_complete = True
-                    while time.time() - prev_time < 0.5:
-                        print("Robot is stopped")
-                        power = 0
-                        prev_power = 0
-                        # Set duty cycle to 50% (128/255)
-                        pwm.set_PWM_dutycycle(pwm_pin, power)
+                    if state == 1:  
+                        while time.time() - c_time < time_p :
+                            print("Reversing backward...")
+                            power = 70
+                            prev_power = 0
+                            correctReverseAngle(heading_angle, head.value)
+                            # Set duty cycle to 50% (128/255)
+                            pwm.set_PWM_dutycycle(pwm_pin, power)
+                            pwm.write(direction_pin, 0)  # Set pin 20 hig
+                            prev_time = time.time()
+                        reverse_complete = True
+                        state = 2
+                        print('state 1')
+                    if state == 2:
+                        while time.time() - prev_time < 0.5:
+                            print("Robot is stopped")
+                            power = 0
+                            prev_power = 0
+                            # Set duty cycle to 50% (128/255)
+                            pwm.set_PWM_dutycycle(pwm_pin, power)
 
-                    if orange_flag:
-                        print("Changing heading angle")
-                        if not parking_heading:
-                            heading_angle = heading_angle + 90
-                            calc_time = False
-                            parking_heading = True
-                        print("Heading angle changed")
+                        if orange_flag:
+                            print("Changing heading angle")
+                            heading_angle = heading_angle + 70
+                            print("Heading angle changed")
 
-                    elif blue_flag:
-                        print("Changing heading angle Blue")
+                        elif blue_flag:
+                            print("Changing heading angle Blue")
 
-                        if not parking_heading:
-                            heading_angle = heading_angle - 90
-                            calc_time = False
-                            parking_heading = True
-                        print("Heading angle changed Blue")
+                            heading_angle = heading_angle - 70
+                            print("Heading angle changed Blue")
+                        
+                        state = 3
+                        print('state 2')
 
                     print(f"Correcting angle..{abs(corr)}")
-                    if parking_heading:
-                        print("Moving slowly..")
-                        power = 85
-                        prev_power = 84
-                        pwm.set_PWM_dutycycle(pwm_pin, power)
-                        correctAngle(heading_angle, head.value)
-                    back_bot = False
-                    stop_flag = False
-                    print(f"parking heading reverse: {parking_heading_reverse}")
-                    if tfmini.distance_head < 20 and not finish_flag and abs(corr) < 35:
-                        finish_timer = time.time()
-                        finish_flag = True
-                    print(f"finish flag:{tf_h} corr:{abs(corr)}")
-                    if time.time() - finish_timer > 1 and finish_flag and not stop_flag:
+                    if state == 3:
+                        while tfmini.distance_head > 20:
+                            tfmini.getTFminiData() 
+                            print("Moving slowly..")
+                            power = 85
+                            prev_power = 84
+                            pwm.write(direction_pin, 1)  # Set pin 20 hig
+
+                            pwm.set_PWM_dutycycle(pwm_pin, power)
+                            correctAngle(heading_angle, head.value)
+                            print(f"parking heading reverse: {parking_heading_reverse}")
+                        
+                        state = 4
+                        prev_time = time.time()
+                        print('state 3')
+                    if state == 4:
+                        heading_angle = heading_angle - 70
+                        
+                        while time.time() - prev_time < 1:
+                            power = 50
+                            prev_power = 0
+                            pwm.set_PWM_dutycycle(pwm_pin, power)
+                            correctAngle(heading_angle, head.value)
+                            print(f"finish flag:{tf_h} corr:{abs(corr)}")
+                            pwm.write(direction_pin, 1)  # Set pin 20 hig
+                        state = 5
+                        prev_time = time.time()
+                        print('state 4')
+                    
+                    if state == 5:
+                        while time.time() - prev_time < 1:
+                            power = 50
+                            prev_power = 0
+                            pwm.set_PWM_dutycycle(pwm_pin, power)
+                            correctReverseAngle(heading_angle, head.value)
+                            print(f"finish flag:{tf_h} corr:{abs(corr)}")
+                            pwm.write(direction_pin, 0)  # Set pin 20 hig 
+                        state = 6
+                        prev_time = time.time()
+                        print('state 6')
+                    
+                    if state == 6:
                         power = 0
                         prev_power = 0
-                        servo.setAngle(90)
-                        pwm.set_PWM_dutycycle(pwm_pin, power)
-                        stop_flag = True
-                        stop_time = time.time()
-                        print("Succesfully Parked...")
-                        sys.exit(0)
-                        back_bot = True
+                        pwm.set_PWM_dutycycle(pwm_pin, power)  
+                        sys.exit(0)                      
                 else:
                     if reset_f:
                         print("RESETTING FLAGS...")
