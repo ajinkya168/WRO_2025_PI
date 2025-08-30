@@ -1,0 +1,14 @@
+[Unit]
+Description=Open Challenge Service
+After=udev.service systemd-udevd.service
+
+[Service]
+User=pi
+ExecStart=/home/pi/coral-py39-env/bin/python /home/pi/WRO_2025_PI/versionTest/Open_Challenge_2025.py
+Restart=always
+
+
+
+[Install]
+WantedBy=multi-user.target
+

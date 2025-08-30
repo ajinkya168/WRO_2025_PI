@@ -1,0 +1,43 @@
+[Unit]
+Description=WRO 2025 Obstacle Service (self-start pigpiod + venv)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/WRO_2025_PI/versionTest
+# give access to camera/gpio/serial when launched by systemd
+SupplementaryGroups=video,render,input,gpio,plugdev,dialout
+Environment=PYTHONUNBUFFERED=1
+
+# (Optional) if your code opens any GUI windows:
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+Environment=WAYLAND_DISPLAY=wayland-0
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/pi/.Xauthority
+
+# --- manage pigpiod ourselves (no sudo, no separate unit) ---
+# stop any leftover pigpiod from previous runs
+ExecStartPre=/bin/sh -c '/usr/bin/pkill pigpiod || true'
+# start pigpio daemon (as user pi; works with /dev/gpiomem)
+ExecStartPre=/usr/bin/pigpiod -s 5
+# wait until pigpiod answers (pigs t returns tick)
+ExecStartPre=/bin/sh -c 'for i in $(seq 1 20); do /usr/bin/pigs t >/dev/null 2>&1 && exit 0; sleep 0.2; done; echo "pigpiod not responding"; exit 1'
+
+# free TFmini bit-bang serial pins in case previous run crashed
+# (update pins if you change them in code)
+ExecStartPre=/usr/bin/python3 -c 'import pigpio; pi=pigpio.pi(); \
+  [ (lambda p: (pi.bb_serial_read_close(p), None))[0] for p in (23,24,25,27) if True ]; pi.stop()'
+
+# --- run your app using your venv python ---
+ExecStart=/home/pi/coral-py39-env/bin/python /home/pi/WRO_2025_PI/versionTest/Obstacle_Challenge_2025_Final.py
+
+Restart=on-failure
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
