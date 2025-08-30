@@ -3,6 +3,7 @@ os.system('sudo pkill pigpiod')
 os.system('sudo pigpiod')
 import time
 time.sleep(5)
+import traceback
 from TFmini import TFmini
 import RPi.GPIO as GPIO
 import serial
@@ -300,6 +301,37 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
 
     prevError = error
     correctAngle(head + correction, heading)
+
+
+def correctWall(setPoint_distance, dist, sp_h, imu_h):
+
+    error_d = 0
+    prevError_d = 0
+    totalError_d = 0
+    correction_d = 0
+    totalError_d = 0
+    prevError_d = 0
+
+    error_d = dist - setPoint_distance
+
+    # print("Error : ", error_gyro)
+    pTerm = 0
+    dTerm = 0
+    iTerm = 0
+
+    pTerm = 2 * error_d
+    dTerm = 0 * (error_d - prevError_d)
+    totalError_d += error_d
+    iTerm = 0 * totalError_d
+    correction = pTerm + iTerm + dTerm
+
+    if correction > 35:
+        correction = 35
+    elif correction < -35:
+        correction = -35
+
+    prevError_d = error_d
+    correctAngle(sp_h + correction, imu_h)
 
 
 def correctAngle(setPoint_gyro, heading):
@@ -611,10 +643,10 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
             now = time.time()
             fps = 1.0 / max(1e-3, (now - t_prev))
             t_prev = now
-            print(f"pairs:{pair} red_b.value: {red_b.value} green_b.value:{green_b.value} pink_b:{pink_b.value}  fps:{fps}")
+            '''print(f"pairs:{pair} red_b.value: {red_b.value} green_b.value:{green_b.value} pink_b:{pink_b.value}  fps:{fps}")
             print(f"centr g:{centr_x.value} centr g y:{centr_y.value}")
             print(f"centr r x:{centr_x_red.value} centr r y:{centr_y_red.value}")
-            print(f"centr x pink:{centr_x_pink.value} centr y pink:{centr_y_pink.value}")
+            print(f"centr x pink:{centr_x_pink.value} centr y pink:{centr_y_pink.value}")'''
             #cv2.imshow("Coral SSD Live", frame_bgr)
             if cv2.waitKey(1) & 0xFF == ord('q'):  # ESC
                 break
@@ -794,31 +826,13 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
             if lap_finish and not continue_parking:
                 if orange_flag:
-                    setPointR = -100
-                    setPointC = -100
+                    print("Correcting wall pid orange")
+                    correctWall(tfmini.distance_left, 15, heading_angle, head.value)
+
                 elif blue_flag:
-                    setPointL = 100
-                    setPointC = 100
+                    print("Correcting wall pid blue")
+                    correctWall(15, tfmini.distance_right, heading_angle, head.value)
 
-
-            if continue_parking:  # THIS SETPOINT IS WHEN THE ROBOT IS IN THE PARKING MODE
-                print("Inside Continue parking")
-                green_b.value = False
-                red_b.value = False
-                g_past = False
-                r_past = False
-                g_flag = False
-                r_flag = False
-                
-                if orange_flag and (((centr_x_pink.value < centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value < centr_x_red.value and (centr_x_red.value > 0 and centr_x_pink.value > 0))):
-                    setPointR = -35
-                    setPointC = -35
-                    finish = True
-                
-                elif blue_flag and (((centr_x_pink.value > centr_x.value) and (centr_x.value > 0 and centr_x_pink.value > 0)) or (centr_x_pink.value > centr_x_red.value and (centr_x_red.value > 0 and centr_x_pink.value > 0))):
-                    setPointL = 35
-                    setPointC = 35
-                    finish = True
                 
 
             ################## IF PINK IS DETECTED THEN WHAT? ###############
@@ -826,31 +840,15 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             if pink_b.value:  # DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
                 #print(f"PINK IS DETECTED...")
                 if orange_flag and counter % 4 == 0:
-                    #if (centr_x_pink.value < centr_x.value) and (centr_x_pink.value > 0 and centr_x.value > 0) and not continue_parking:
                     setPointL = -35
                     setPointR = 70
                     print(f"setPointL : {setPointL}")
                 elif blue_flag and counter % 4 == 0:
-                    #if (centr_x_red.value < centr_x_pink.value) and (centr_x_pink.value > 0 and centr_x_red.value > 0) and not continue_parking:
                     setPointR = 35
                     setPointL = -70
                     print(f"setPointR: {setPointR}")
 
-                '''elif counter % 4 == 0 and not blue_flag and not orange_flag:
-                    #if ((centr_x_pink.value < 300 and centr_x_pink.value > 0) and ((centr_x_red.value) > centr_x_pink.value)) and not continue_parking:
-                        setPointR = 35
-                        setPointL = -70
-                        print(f"at 0 counter orange:{setPointR} {setPointL}")
 
-                    if ((centr_x_pink.value > 300) and ((centr_y.value or centr_y_red.value) <= centr_y_pink.value)) and not continue_parking:
-                        setPointL = -35
-                        setPointR = 70
-                        print(f"at 0 counter blue:{setPointR} {setPointL}")'''
-
-                '''if lap_finish and not continue_parking:
-                    pink_detected = False
-                    print("Starting Parking...")
-                    continue_parking = True'''
                 pb_time = time.time()
             # IF DOES NOT SEE PINK, KEEP THE SAME SETPOINT FOR 1 SECOND AND THEN CHANGE
             elif not pink_b.value and time.time() - pb_time > 1 and not lap_finish:
@@ -895,6 +893,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             ##################### BUTTON STARTS THE CODE ##################
             if button:  # THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
                 # time.sleep(0.01)
+
                 print("-------------------------------------------------")
 
                 x, y = enc.get_position(imu_head, counts.value)
@@ -983,7 +982,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         print("increasing time..")
                         time_p = 2.5
                         pink_r = True'''
-                    time_p = 0.7
+                    time_p = 0.9
 
                     
                     if state == 8:
@@ -1239,7 +1238,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     print("Lap is finished and it is inside 30")
                                     while tfmini.distance_head > 20 :
                                         tfmini.getTFminiData()
-                                        print(f"moving blue right ahead to correct heading x:{x} y:{y} lidar_f:{lidar_f.value} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}")
+                                        print(f"moving right ahead to correct heading x:{x} y:{y} lidar_f:{lidar_f.value} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}")
                                         correctAngle(heading_angle - 20, head.value)
                                         #correctReverseAngle(heading_angle, head.value)
                                         power = 80
@@ -1661,12 +1660,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 
                             print('4')
 
-                        elif pink_b.value and continue_parking and not p_flag:
-                            if (centr_x_pink.value < 200 and centr_x_pink.value > 0 and orange_flag) or (centr_x_pink.value > 500 and blue_flag):
-                                p_flag = True
-                                p_past = True
-                            print('5')
-
                         elif p_past and continue_parking and not parking_flag:
 
                             print(f"time after reversing heading {time.time() - pink_time} distance_right:{tf_r} distance_left:{tf_l} prev_distance:{prev_distance}")
@@ -1698,7 +1691,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                             print("Pink Avoidance Complete Blue...")
                                     prev_distance = tf_l
 
-                            print('6')
+                            print('5')
                         else:
                             g_flag = False
                             r_flag = False
@@ -1707,7 +1700,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             g_past = False
                             p_past = False
                             print("No flags set, moving forward")
-                            print('7')
+                            print('6')
 
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
@@ -1734,25 +1727,14 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         elif p_flag:
                             print("avoiding pink..")
                             if blue_flag:
-                                
-                                if tf_l < 30:
-                                    correctAngle(heading_angle + 10, head.value)
-                                else:
-                                    correctAngle(heading_angle, head.value)
+                                print("avoiding wall in p_flag")
+                                correctWall(tfmini.distance_left, 30, heading_angle, head.value)
+
                             elif orange_flag:
-                                if tf_r < 30:
-                                    correctAngle(heading_angle - 10, head.value)  
-                                else:
-                                    correctAngle(heading_angle, head.value)
+                                print("avoiding wall in p_flag")
+                                correctWall(30, tfmini.distance_right, heading_angle, head.value)
 
-                            '''if orange_flag:
-                                correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag,
-                                                reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r, red_b.value, green_b.value)
-                            elif blue_flag:
-                                correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag,
-                                                reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r, red_b.value, green_b.value)'''
-                        else:
-
+                        elif not lap_finish:
                             print("Going straight")
                             correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag,
                                             reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r, red_b.value, green_b.value)
@@ -1785,6 +1767,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
     except Exception as e:
         print(f"Exception: {e}")
+        tb = traceback.extract_tb(e.__traceback__)
+        filename, lineno, func, text = tb[-1]
+        print(f"⚠️ Exception in {filename}, line {lineno}, in {func}")
         if isinstance(e, KeyboardInterrupt):
             power = 0
             pwm.hardware_PWM(12, 55, 0)

@@ -23,8 +23,8 @@ import serial
 import RPi.GPIO as GPIO
 from TFmini import TFmini
 
-log_file = open('/home/pi/WRO_2025_FE/logs/log_9.txt', 'w')
-sys.stdout = log_file
+#log_file = open('/home/pi/WRO_2025_FE/logs/log_9.txt', 'w')
+#sys.stdout = log_file
 time.sleep(5)
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
