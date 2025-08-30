@@ -164,37 +164,15 @@ def correctAngle(setPoint_gyro, left, right, trigger, heading, distance_h, dista
     iTerm = ki * totalErrorGyro
     correction = pTerm + iTerm + dTerm
     # print("correction 1: ", correction)
-
     """if(heading > 180 and setPoint_gyro < 180):	
     heading =  heading - 360"""
     print(f"before correction: {correction}")
 
-    if (distance_l < 15 and distance_l >= 0):
-        print("Inside Left")
-        # corr -=1
-        # setPoint_gyro -= corr
-        correction = correction - 20
-
-    # distance_right = -1
-
-    elif (distance_r < 15 and distance_r >= 0):
-        print("inside right")
-        # print(f"correction before decrement: {correction}")
-        # corr += 1
-        # setPoint_gyro -= corr
-        # print(f"before correction: {correction}")
-
-        correction = correction + 20
-
-    else:
-        correction = correction - 0
-
     if correction > 30:
         correction = 30
-
     elif correction < -30:
         correction = -30
-
+    corr = correction
     #print(f"time : {time.time() - prev_time} imu: {glob} correction : {correction} error: {error_gyro} left: {distance_left}, right:{distance_right}")
     prev_time = time.time()
     # print(f"setPoint:{setPoint_gyro} Correction: {correction}, error:{error_gyro} left:{left}, right:{right}, left_d:{distance_left}, right_d :{distance_right}")
@@ -202,6 +180,37 @@ def correctAngle(setPoint_gyro, left, right, trigger, heading, distance_h, dista
     # print("heading: {}, error: {}, correction: {}, left:{}, right: {}".format(heading, error_gyro, correction, left, right))
     prevErrorGyro = error_gyro
     setAngle(90 - correction)
+
+def correctWall(setPoint_distance, dist, sp_h, imu_h):
+
+    error_d = 0
+    prevError_d = 0
+    totalError_d = 0
+    correction_d = 0
+    totalError_d = 0
+    prevError_d = 0
+
+    error_d = dist - setPoint_distance
+
+    # print("Error : ", error_gyro)
+    pTerm = 0
+    dTerm = 0
+    iTerm = 0
+
+    pTerm = 2 * error_d
+    dTerm = 0 * (error_d - prevError_d)
+    totalError_d += error_d
+    iTerm = 0 * totalError_d
+    correction = pTerm + iTerm + dTerm
+
+    if correction > 35:
+        correction = 35
+    elif correction < -35:
+        correction = -35
+
+    prevError_d = error_d
+    correctAngle(sp_h + correction, imu_h)
+
 
 
 def setAngle(angle):
@@ -295,8 +304,25 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                         left_flag = True
                         left_f.value = True
 
-                correctAngle(heading_angle, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
 
+                if right_flag:
+                    if tfmini.distance_left < 15:
+                        correctAngle(heading_angle + 20, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
+                    elif tfmini.distance_right < 15:
+                        correctAngle(heading_angle - 20, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
+                    else:
+                        correctAngle(heading_angle, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
+                elif left_flag:
+                    if tfmini.distance_left < 15:
+                        correctAngle(heading_angle + 20, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
+                    elif tfmini.distance_right < 15:
+                        correctAngle(heading_angle - 20, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
+                    else:
+                        correctAngle(heading_angle, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
+                else:
+                    correctAngle(heading_angle, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
+                    
+                    
 
 
                 if right_flag:
@@ -329,10 +355,8 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                 pwm.hardware_PWM(12, 100, 0)
                 heading_angle = 0
                 counter = 0
-                left_flag = False
-                right_flag = False
                 correctAngle(heading_angle, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
-            print(f"counts:{counts.value} counter:{counter} trigger:{trigger}, trigger_b:{turn_trigger.value} right_flag:{right_flag} left_flag:{left_flag} heading_angle:{heading_angle}, head:{head.value} tf_h: {lidar_f.value}, tf_l: {tf_l}, tf_r: {tf_r}")
+            print(f"counts:{counts.value} counter:{counter} trigger:{trigger}, trigger_b:{turn_trigger.value} right_flag:{right_flag} left_flag:{left_flag} heading_angle:{heading_angle}, head:{head.value} tf_h: {lidar_f.value}, tf_l: {tf_l}, tf_r: {tf_r} corr:{abs(corr)}")
             #print(f"heading:{head.value} {heading_angle}  counter:{counter} {trigger},  target_count:{target_count}, encoder_c:{counts.value}, L C R:{distance_left} {distance_head} {distance_right}")
     except KeyboardInterrupt:
         power = 0
@@ -435,7 +459,7 @@ def read_lidar(lidar_angle, lidar_distance, sp_angle, turn_trigger, specific_ang
                     turn_trigger.value = True
                 else:
                     turn_trigger.value = False
-                print(f"turn_trigger: {turn_trigger.value} lidar_front: {lidar_front}, lidar_left: {lidar_left}, lidar_right: {lidar_right} sp_angle:{sp_angle.value} head:{head.value}")
+                #print(f"turn_trigger: {turn_trigger.value} lidar_front: {lidar_front}, lidar_left: {lidar_left}, lidar_right: {lidar_right} sp_angle:{sp_angle.value} head:{head.value}")
 
                 #print(f"angles: {specific_angle} imu: {imu_shared.value} total:{imu_r + lidar_angle.value} sp_angle:{sp_angle.value}")
                 
@@ -459,7 +483,7 @@ def read_lidar(lidar_angle, lidar_distance, sp_angle, turn_trigger, specific_ang
                         turn_trigger.value = True
                     else:
                         turn_trigger.value = False
-                    print(f"turn_trigger: {turn_trigger.value} lidar_front: {lidar_front}, lidar_left: {lidar_left}, lidar_right: {lidar_right} sp_angle:{sp_angle.value} head:{head.value}")
+                    #print(f"turn_trigger: {turn_trigger.value} lidar_front: {lidar_front}, lidar_left: {lidar_left}, lidar_right: {lidar_right} sp_angle:{sp_angle.value} head:{head.value}")
                             
 
 
