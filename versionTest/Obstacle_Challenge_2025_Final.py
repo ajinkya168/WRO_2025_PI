@@ -51,7 +51,7 @@ if not pwm.connected:
 
 #### INITIALIZATION ####
 
-# Set pin modes for LEDs and reset
+# Set pin modes for LEDs and resets
 for pin in [reset_pin, blue_led, red_led, green_led]:
     pwm.set_mode(pin, pigpio.OUTPUT)
     pwm.write(pin, 0)  # Set LOW
@@ -721,7 +721,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     heading_angle = 0
     i = l = lap_finish_time = prev_distance = turn_trigger_distance = target_count = offset = button_state = past_time = 0
 
-    correctAngle(heading_angle, head.value)
     previous_heading = -1
     stop_time = turn_cos_theta = parking_done = pink_d = g_time = r_time = u = avg_right = avg_head = avg_left = 0
 
@@ -750,6 +749,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     inParkingatStart = False 
     startPark = 0
     exitPark = False
+    init = False
     timer = 0
     norm_head = 0
     lane_reset = 0
@@ -759,8 +759,14 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     finish_t = time.time()
     inside_pink = time.time()
     state = 1
+    servo.setAngle(45)
+
     try:
         while True:
+            if not init:
+                if tf_h > 0:
+                    correctAngle(heading_angle, head.value)
+                    init = True
             imu_shared.value = head.value
             imu_head = head.value
 
@@ -905,7 +911,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     if orange_flag:
                         correctAngle2(90, head.value)
                     elif blue_flag:
-                        correctAngle(-90, head.value)
+                        correctAngle2(-90, head.value)
                     # correctAngle(heading_angle, imu_head)  # still steer if needed
                     print("coming out of the zone")
                     continue  # skip the drive code below
@@ -923,7 +929,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 elif not g_flag and not r_flag:
                     power = 85
                 else:
-                    power = 50
+                    power = 70
 
                 if time.time() < avoided_time:
                     pwm.set_PWM_dutycycle(pwm_pin, 0)
@@ -949,21 +955,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         print("Green Detected, setting servo to 120 degrees")
                         servo.setAngle(110)
                     continue  # still skip forward-drive code
-
-                if not reset_servo:
-                    time.sleep(0.5)
-                    servo.setAngle(130)
-                    time.sleep(0.5)
-                    servo.setAngle(90)
-                    reset_servo = True
-
-
-                total_power = (power * 0.1) + (prev_power * 0.9)
-                prev_power = total_power
-                # Set duty cycle to 50% (128/255)
-                pwm.set_PWM_dutycycle(pwm_pin, 2.55 * total_power)
-
-                pwm.write(direction_pin, 1)  # Set pin 20 high
 
                 ################        PARKING         ################
 
@@ -1764,6 +1755,14 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             print("Going straight")
                             correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag,
                                             reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r, red_b.value, green_b.value)
+
+                total_power = (power * 0.1) + (prev_power * 0.9)
+                prev_power = total_power
+                # Set duty cycle to 50% (128/255)
+                pwm.set_PWM_dutycycle(pwm_pin, 2.55 * total_power)
+
+                pwm.write(direction_pin, 1)  # Set pin 20 high
+
 
                 print(f"centr_x.value: {centr_x.value} centr_y.value: {centr_y.value} centr_red: {centr_x_red.value} centr_y_red:{centr_x_red.value} centr_pink: {centr_x_pink.value}")
                 print(f"left_b.value:{left_f.value} right_b.value:{right_f.value} orange_flag:{orange_flag} blue_flag:{blue_flag}")
