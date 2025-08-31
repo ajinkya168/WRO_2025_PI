@@ -1590,7 +1590,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             if red_b.value:
                                 red_time  = time.time()
                             if counter % 4 != 0:
-                                if tf_l <= 40 or time.time() - red_time > 2 :
+                                if tf_l <= 40 or time.time() - red_time > 1 :
                                 #if time.time() - red_time > 2.5:
 
                                     if not red_b.value and not encoder_counter_store:
@@ -1600,7 +1600,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                         r_past = False
                                         print("encoder counts stored for red")
                             else:
-                                if tf_l <= 30 or time.time() - red_time > 2 :
+                                if tf_l <= 30 or time.time() - red_time > 1 :
                                 #if time.time() - red_time > 2.5:
 
                                     if not red_b.value and not encoder_counter_store:
@@ -1619,28 +1619,28 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             if time.time() - pink_time > 2:
                                 tfmini.getTFminiData()
                                 if orange_flag:
-                                    print(f"prev_distance: {prev_distance}, distance_right: {tfmini.distance_right} diff: {abs(prev_distance - tfmini.distance_right)} diff_flag:{abs(prev_distance - tfmini.distance_right) >= 10}")
+                                    print(f"prev_distance: {prev_distance}, distance_right: {tfmini.distance_right} diff: {prev_distance - tfmini.distance_right} diff_flag:{(prev_distance - tfmini.distance_right) >= 10}")
                                     p_flag = True
-                                    if tf_r <= 35 and (abs(prev_distance - tfmini.distance_right) >= 10 and prev_distance > 0):
+                                    if tfmini.distance_right <= 35 and ((prev_distance - tfmini.distance_right) >= 10 and prev_distance > 0):
                                         p_pass += 1
                                         if p_pass == 2:
                                             p_past = False
                                             p_flag = False
                                             parking_flag = True
                                             print("Pink Avoidance Complete...")
-                                    prev_distance = tf_r
+                                    prev_distance = tfmini.distance_right
 
                                 elif blue_flag:
 
-                                    print(f"prev_distance: {prev_distance}, distance_left: {tf_l}  diff: {abs(prev_distance - tf_l)} diff_flag:{abs(prev_distance - tf_l) >= 10}")
-                                    if tf_l <= 35 and (abs(prev_distance - tf_l) >= 10 and prev_distance > 0):
+                                    print(f"prev_distance: {prev_distance}, distance_left: {tfmini.distance_left}  diff: {prev_distance - tfmini.distance_left} diff_flag:{(prev_distance - tfmini.distance_left) >= 10}")
+                                    if tfmini.distance_left <= 35 and ((prev_distance - tfmini.distance_left>= 10) and prev_distance > 0):
                                         p_pass += 1
                                         if p_pass == 2:
                                             p_past = False
                                             p_flag = False
                                             parking_flag = True
                                             print("Pink Avoidance Complete Blue...")
-                                    prev_distance = tf_l
+                                    prev_distance = tfmini.distance_left
 
                             print('5')
                         else:
