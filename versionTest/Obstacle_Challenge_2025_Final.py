@@ -738,7 +738,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     encoder_counter_store = False
     encoder_counts_value = 0
     l_left = 0
-    off = 6000
+    off = 6
     rev_count = 0
     reverse_true = False
     parking_flag = False
@@ -848,11 +848,11 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             if pink_b.value:  # DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
                 #print(f"PINK IS DETECTED...")
                 if orange_flag and counter % 4 == 0:
-                    setPointL = -20
+                    setPointL = -15
                     setPointR = 35
                     print(f"setPointL : {setPointL}")
                 elif blue_flag and counter % 4 == 0:
-                    setPointR = 20
+                    setPointR = 15
                     setPointL = -35
                     print(f"setPointR: {setPointR}")
 
@@ -1564,13 +1564,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     if not green_b.value and not encoder_counter_store:
                                         encoder_counts_value = counts.value
                                         encoder_counter_store = True
-                                        g_flag = False
-                                        g_past = False
-                                    elif green_b.value and centr_y.value > 270 and not encoder_counter_store:
-                                        encoder_counts_value = counts.value
-                                        encoder_counter_store = True
-                                        g_flag = False
-                                        g_past = False                                        
+                                        g_flag = False                                   
 
                                         print("encoder counts are stored for green")
                             else:
@@ -1583,13 +1577,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                         g_flag = False
                                         g_past = False
                                         print("encoder counts are stored for green")
-
-                                    elif green_b.value and centr_y.value > 270 and not encoder_counter_store:
-                                        encoder_counts_value = counts.value
-                                        encoder_counter_store = True
-                                        g_flag = False
-                                        g_past = False  
-                                        print("encoder counts are stored for green else")
                                 
                             print('2')
 
@@ -1624,11 +1611,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                         encoder_counter_store = True
                                         r_flag = False
                                         r_past = False
-                                    elif red_b.value and not encoder_counter_store and centr_y_red.value > 270 :
-                                        encoder_counts_value = counts.value
-                                        encoder_counter_store = True
-                                        r_flag = False
-                                        r_past = False                                
+                             
                                         print("encoder counts stored for red")
                             else:
                                 if tf_l <= 30 or time.time() - red_time > 2 :
@@ -1640,11 +1623,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                         r_flag = False
                                         r_past = False
                                         print("encoder counts stored for red")                                
-                                    elif red_b.value and not encoder_counter_store and centr_y_red.value > 270 :
-                                        encoder_counts_value = counts.value
-                                        encoder_counter_store = True
-                                        r_flag = False
-                                        r_past = False
+
                                         print("encoder counts stored for red else")                                
                                                             
                                 
