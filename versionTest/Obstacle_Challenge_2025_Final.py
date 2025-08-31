@@ -738,7 +738,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     encoder_counter_store = False
     encoder_counts_value = 0
     l_left = 0
-    off = 5000
+    off = 3000
     rev_count = 0
     reverse_true = False
     parking_flag = False
@@ -1655,6 +1655,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
+                            
+                            
                         print(f"time after reversing heading {time.time() - pink_time}")
                         print(f"counts {counts.value} flag :{encoder_counter_store} encoder: {encoder_counts_value} encoder updated: {encoder_counts_value + off} ")
                         if encoder_counter_store:
@@ -1662,6 +1664,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             r_flag = False
                             g_past = False
                             r_past = False
+                            red_b.value = 0
+                            green_b.value = 0
+                            pink_b.value = 0
                             if counts.value > encoder_counts_value + off:
                                 encoder_counter_store = False
                                 rev_count = 0
