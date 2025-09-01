@@ -33,7 +33,7 @@ class TFmini:
 
     def getTFminiData(self):
         #with self.lock:
-            time.sleep(0.01)  # Adjust the sleep if needed
+            time.sleep(0.012)  # Adjust the sleep if needed
             count_head, recv_head = self.pi.bb_serial_read(self.RX_Head)
             count_left, recv_left = self.pi.bb_serial_read(self.RX_Left)
             count_right, recv_right = self.pi.bb_serial_read(self.RX_Right)
