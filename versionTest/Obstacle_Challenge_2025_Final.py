@@ -992,7 +992,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 prev_distance = tfmini.distance_right
                                     
                             elif blue_flag:
-                                if prev_distance - tfmini.distace_left >= 10:
+                                if prev_distance - tfmini.distance_left >= 10:
                                     print("breaking reverse loop..")
                                     full_park = True
                                     break
