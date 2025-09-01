@@ -757,7 +757,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     finish_t = time.time()
     inside_pink = time.time()
     state = 1
-    parking_count = 1000
+    parking_count = 800
     parking_count_current = 0
     full_park = False
     servo.setAngle(45)
@@ -977,7 +977,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         c_time = time.time()
                         calc_time = True
 
-                    time_p = 1.5
+                    time_p = 1.3
                     if state == 1:  
                         while time.time() - c_time < time_p :
                             tfmini.getTFminiData()
@@ -1010,7 +1010,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                         if full_park:
                             while counts.value > parking_count_current - parking_count:
-                                print(f"Reversing backward full park...{counts.value} {parking_count_current + parking_count}")
+                                print(f"Reversing backward full park...{counts.value} {parking_count_current - parking_count}")
                                 power = 70
                                 prev_power = 0
                                 correctReverseAngle(heading_angle, head.value)
