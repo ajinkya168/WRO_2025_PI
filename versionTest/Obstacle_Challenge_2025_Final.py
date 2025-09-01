@@ -1009,7 +1009,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             prev_time = time.time()
 
                         if full_park:
-                            while counts.value < parking_count_current - parking_count:
+                            while counts.value > parking_count_current - parking_count:
                                 print(f"Reversing backward full park...{counts.value} {parking_count_current + parking_count}")
                                 power = 70
                                 prev_power = 0
