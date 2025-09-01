@@ -228,9 +228,8 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
 
                 else:
                     correction = -10
-                    print(f"Avoiding pink wall {correction}")
+                    print(f"Avoiding pink wall else{correction}")
             else:
-                correction = -10
                 print("setPoint was not -35")
                 pass
 
@@ -247,9 +246,8 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
 
                 else:
                     correction = 20
-                    print(f"Avoiding pink wall {correction}")
+                    print(f"Avoiding pink wall else {correction}")
             else:
-                correction = 10
                 print("setPoint was not 35")
                 pass
 
@@ -811,7 +809,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 print("REACHED MAXIMUM COUNTS")
                 print(f"target:{target_count}")
                 if not finished:
-                    target_count = counts.value + 17000 #22000 - finish too late in the section
+                    target_count = counts.value + 20000 #22000 - finish too late in the section
                     finished = True
                 if counts.value >= target_count and not reverse_trigger:
                     power = 0
@@ -1631,7 +1629,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         elif p_past and continue_parking and not parking_flag:
                             power = 50
                             print(f"time after reversing heading {time.time() - pink_time} distance_right:{tf_r} distance_left:{tf_l} prev_distance:{prev_distance}")
-                            if time.time() - pink_time > 2:
+                            if time.time() - pink_time > 5:
                                 tfmini.getTFminiData()
                                 if orange_flag:
                                     print(f"prev_distance: {prev_distance}, distance_right: {tfmini.distance_right} diff: {prev_distance - tfmini.distance_right} diff_flag:{(prev_distance - tfmini.distance_right) >= 10}")
