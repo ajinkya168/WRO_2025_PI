@@ -713,7 +713,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     setPointC = 0
     power = 95
     prev_power = 0
-    last_counter = 4
+    last_counter = 12
 
     counter = turn_t = current_time = gp_time = rp_time = buff = c_time = green_count = red_count = 0
     heading_angle = 0
@@ -974,7 +974,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         c_time = time.time()
                         calc_time = True
 
-                    time_p = 1.2
+                    time_p = 0.8
                     if state == 1:  
                         while time.time() - c_time < time_p :
                             print("Reversing backward...")
