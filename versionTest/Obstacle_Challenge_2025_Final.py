@@ -1114,7 +1114,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 norm_head = head.value
                                 
                             timer_t = time.time()
-                            while (abs((norm_head - heading_angle) - 360) > 8 or tfmini.distance_head > 60) or time.time() - timer_t < 1.5:#abs((norm_head - heading_angle) - 360) > 8 or tfmini.distance_head > 60:
+                            while (abs((norm_head - heading_angle) - 360) > 8 or tfmini.distance_head > 60) and time.time() - timer_t < 1.5:#abs((norm_head - heading_angle) - 360) > 8 or tfmini.distance_head > 60:
                                 if head.value < 180 and lane_reset == 0:
                                     norm_head = head.value + 360
                                 else:
@@ -1131,7 +1131,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                             if tfmini.distance_right > 25:
                                 timer_t = time.time()
-                                while (tfmini.distance_head > 20 or abs(corr) > 5) or time.time() - timer_t < 1.5:
+                                while (tfmini.distance_head > 20 or abs(corr) > 5) and time.time() - timer_t < 1.5:
                                     tfmini.getTFminiData()
                                     print(f"moving ahead blue to correct heading timer {time.time() - timer_t} x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f} corr:{abs(corr)}")
                                     correctAngle(heading_angle + 20, head.value)
@@ -1334,7 +1334,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 norm_head = head.value
                                 
                             timer_t = time.time()
-                            while (abs(norm_head - heading_angle) > 8 or tfmini.distance_head > 60) or (time.time() - timer_t < 1.5):
+                            while (abs(norm_head - heading_angle) > 8 or tfmini.distance_head > 60) and (time.time() - timer_t < 1.5):
                                 if head.value > 180 and lane_reset == 0:
                                     norm_head = head.value - 360
                                 else:
@@ -1352,7 +1352,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                             if tfmini.distance_left > 25:
                                 timer_t = time.time()
-                                while (tfmini.distance_head > 20 or abs(corr) > 5) or (time.time() - timer_t < 1.5):
+                                while (tfmini.distance_head > 20 or abs(corr) > 5) and (time.time() - timer_t < 1.5):
                                     tfmini.getTFminiData()
                                     print(f"moving ahead to correct heading x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} counter:{counter} imu:{head.value} {tfmini.distance_head:.2f} corr:{abs(corr)}")
                                     correctAngle(heading_angle - 20, head.value)
