@@ -23,7 +23,12 @@ from pycoral.utils.edgetpu import make_interpreter
 from pycoral.adapters import common, detect
 from pycoral.utils.dataset import read_label_file
 from itertools import combinations
-log_file = open('/home/pi/WRO_2025_PI/logs/log_9.txt', 'w')
+import datetime
+
+timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+log_dir = "/home/pi/WRO_2025_PI/logs"
+
+log_file = open(f"{log_dir}/log_{time_stamp}.txt", 'w')
 sys.stdout = log_file
 
 # PINS
