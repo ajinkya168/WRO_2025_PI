@@ -254,11 +254,11 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
     correctAngle(0, left_flag, right_flag, trigger, head.value, 0,0,0)
     target_count = 0
     turn_t = 0
-
+    finish_count = 0
     try:
         while True:
             tfmini.getTFminiData()
-            tf_h = lidar_f.value
+            tf_h = tfmini.distance_head
             tf_l = tfmini.distance_left
             tf_r = tfmini.distance_right
             init_flag = False
@@ -289,15 +289,21 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                 pwm.write(20, 1)  # Set pin 20 high
                 
                 if counter == 12:
+                    finish_count = counts.value
                     counter = -1
                     print(f"Counters are over")
-                
-                if counter == -1:    
-                    if tfmini.distance_head < 150 and heading_angle == 0 and (head.value < 5 or head.value > 355) and not trigger:
+               
+                if counter == -1:
+                    if counts.value > finish_count + 20000:
+                        print(f"Open Challenge Finished")
+                        power = 0
+                        pwm.set_PWM_dutycycle(12, power)  # Set duty cycle to 50% (128/255)
+                        sys.exit()                         
+                    '''if tfmini.distance_head < 150 and heading_angle == 0 and (head.value < 5 or head.value > 355) and not trigger:
                         print(f"Open CHallenge Finished")
                         power = 0
                         pwm.set_PWM_dutycycle(12, power)  # Set duty cycle to 50% (128/255)
-                        sys.exit()
+                        sys.exit()'''
 
 
                 if not right_flag and not left_flag:
@@ -337,7 +343,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                         heading_angle = ((90 * counter) % 360)
                         trigger = True
 
-                    elif tfmini.distance_right < 100 and tfmini.distance_head > 150:
+                    elif tfmini.distance_right < 100 and tfmini.distance_head > 100:
                         trigger = False
 
                 elif left_flag:
@@ -346,7 +352,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                         counter = counter + 1
                         heading_angle = -(90 * counter) % 360
                         trigger = True
-                    elif tfmini.distance_left < 100 and tfmini.distance_head > 150:
+                    elif tfmini.distance_left < 100 and tfmini.distance_head > 100:
                         trigger = False
                 
 
@@ -360,7 +366,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                 heading_angle = 0
                 counter = 0
                 correctAngle(heading_angle, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
-            print(f"counts:{counts.value} counter:{counter} trigger:{trigger}, trigger_b:{turn_trigger.value} right_flag:{right_flag} left_flag:{left_flag} heading_angle:{heading_angle}, head:{head.value} tf_h: {lidar_f.value}, tf_l: {tf_l}, tf_r: {tf_r} corr:{abs(corr)}")
+            print(f"counts:{counts.value} finish_count: {finish_count} target_count: {finish_count + 20000}counter:{counter} trigger:{trigger}, trigger_b:{turn_trigger.value} right_flag:{right_flag} left_flag:{left_flag} heading_angle:{heading_angle}, head:{head.value} tf_h: {tfmini.distance_head}, tf_l: {tf_l}, tf_r: {tf_r} corr:{abs(corr)}")
             #print(f"heading:{head.value} {heading_angle}  counter:{counter} {trigger},  target_count:{target_count}, encoder_c:{counts.value}, L C R:{distance_left} {distance_head} {distance_right}")
     except KeyboardInterrupt:
         power = 0

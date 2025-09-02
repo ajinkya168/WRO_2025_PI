@@ -1364,8 +1364,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     pwm.set_PWM_dutycycle(pwm_pin, int(2.5 * power))
                                     pwm.write(direction_pin, 1)  # 0 = reverse, 1 = forward (per your wiring)
                                     x, y = enc.get_position(head.value, counts.value)
-
- 
             
                                 tfmini.getTFminiData()
                                 x, y = enc.get_position(imu_head, counts.value)
@@ -1488,6 +1486,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     pink_time = time.time()
                                     print(f"pink time {pink_time} ")
                                 else:
+                                    
                                     while tfmini.distance_head > 80 :
                                         tfmini.getTFminiData()
                                         print(f"moving ahead to correct heading x:{x} y:{y} lidar_f:{lidar_f.value} head_d: {tfmini.distance_head:.2f} left:{tfmini.distance_left:.2f}")
@@ -1734,7 +1733,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag,
                                             reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r, red_b.value, green_b.value)
                         elif p_flag:
-                            power = 80
+                            power = 60
                             print("avoiding pink..")
                             if blue_flag:
                                 print("avoiding wall in p_flag")
