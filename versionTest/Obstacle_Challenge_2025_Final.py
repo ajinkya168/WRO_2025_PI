@@ -679,7 +679,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     orange_flag = False
 
     change_path = False
-    timer_started = False
     timer_v = 0
     g_flag = r_flag = p_flag = False
     g_past = r_past = p_past = False
@@ -1154,16 +1153,14 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 heading_angle = -((90 * counter) % 360)
                                 sp_angle.value = heading_angle
                                 
-                                if not timer_started:
-                                    timer_v = time.time()
-                                    timer_started = True                                                  
+                                timer_v = time.time()
 
-                                if head.value < 180 and lane_reset == 0:
+                                if head.value < 180 and lane_reset == 1:
                                     norm_head = head.value + 360
                                 else:
                                     norm_head = head.value
                                 while abs((norm_head - heading_angle) - 360) > 8 and time.time() - timer_v < 2.5:
-                                    if head.value < 180 and lane_reset == 0:
+                                    if head.value < 180 and lane_reset == 1:
                                         norm_head = head.value + 360
                                     else:
                                         norm_head = head.value
@@ -1378,16 +1375,14 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 heading_angle = ((90 * counter) % 360)
                                 sp_angle.value = heading_angle
                                 
-                                if not timer_started:
-                                    timer_v = time.time()
-                                    timer_started = True
+                                timer_v = time.time()
                                     
-                                if head.value > 180 and lane_reset == 0:
+                                if head.value > 180 and lane_reset == 1:
                                     norm_head = head.value - 360
                                 else:
                                     norm_head = head.value  
                                 while abs(norm_head - heading_angle) > 8 and time.time() - timer_v < 2.5:
-                                    if head.value > 180 and lane_reset == 0:
+                                    if head.value > 180 and lane_reset == 1:
                                         norm_head = head.value - 360
                                     else:
                                         norm_head = head.value 
@@ -1555,7 +1550,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             trigger = True
                             reset_f = True
                             avoided_time = time.time() + 0.3
-                            timer_started = False
                             turn_t = time.time()
                         elif trigger_enc_flag:
                             print(f"Trigger enc flag is set: {trigger_enc_flag} counts:{counts.value} trigger_enc:{trigger_enc + 22000}")
