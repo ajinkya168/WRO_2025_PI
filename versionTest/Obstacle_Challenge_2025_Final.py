@@ -282,10 +282,10 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
                 
                 
 
-            if (setPoint >= 35 ) and distance_r <= 20:
+            if (setPoint >= 40 ) and distance_r <= 20:
                 print(f"correctng red wall in blue")
                 correction = -15
-            elif (setPoint <= -35 ) and ((tfmini.distance_head <=25 and abs((n_head - head) - 360) > 35) or distance_l <= 20):
+            elif (setPoint <= -40 ) and ((tfmini.distance_head <=25 and abs((n_head - head) - 360) > 35) or distance_l <= 20):
                 print(f"Correcting Green Wall... diff:{abs((n_head - head) - 360):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
                 correction = 15
             else:
@@ -712,8 +712,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     not_block = False
     ############ VARIABLES ##################
     color_n = ""
-    setPointL = -35
-    setPointR = 35
+    setPointL = -40
+    setPointR = 40
     setPointC = 0
     power = 95
     prev_power = 0
@@ -855,11 +855,11 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 #print(f"PINK IS DETECTED...")
                 if orange_flag and counter % 4 == 0:
                     setPointL = -15
-                    setPointR = 35
+                    setPointR = 40
                     print(f"setPointL : {setPointL}")
                 elif blue_flag and counter % 4 == 0:
                     setPointR = 15
-                    setPointL = -35
+                    setPointL = -40
                     print(f"setPointR: {setPointR}")
 
 
@@ -874,19 +874,19 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         if setPointL < -100:
                             setPointL = -100
                     elif blue_flag:
-                        if setPointL < -35:
-                            setPointL = -35
-                    setPointR = 35
+                        if setPointL < -40:
+                            setPointL = -40
+                    setPointR = 40
                 elif r_flag and not continue_parking:
                     print(f"away from red {r_past}")
                     setPointR = setPointR + 1
                     if orange_flag:
-                        if setPointR > 35:
-                            setPointR = 35
+                        if setPointR > 40:
+                            setPointR = 40
                     elif blue_flag:
                         if setPointR > 100:
                             setPointR = 100
-                    setPointL = -35
+                    setPointL = -40
 
 
 
@@ -1132,9 +1132,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 else:
                                     correctAngle(heading_angle - 10, head.value)
                                     
-                                power = 80
+                                power = 70
                                 prev_power = 0
-                                pwm.set_PWM_dutycycle(pwm_pin, int(2.5 * power))
+                                pwm.set_PWM_dutycycle(pwm_pin, int(1.8 * power))
                                 pwm.write(direction_pin, 1)  
                             correctAngle(heading_angle + 20, head.value)
 
