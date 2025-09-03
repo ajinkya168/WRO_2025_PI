@@ -263,12 +263,12 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
             else:
                 n_head = heading
 
-            if (setPoint <= -35 ) and distance_l <= 25:
+            if (setPoint <= -35 ) and distance_l <= 20:
                 print(f"Correcting Green Wall Orange")
-                correction = 12
-            elif (setPoint >= 35) and ((tfmini.distance_head <= 25 and (n_head - head > 35)) or distance_r <= 25):
+                correction = 15
+            elif (setPoint >= 35) and ((tfmini.distance_head <= 25 and (n_head - head > 35)) or distance_r <= 20):
                 print(f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
-                correction = -12
+                correction = -15
             else:
                 print("No wall detected...")
                 pass
@@ -282,12 +282,12 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
                 
                 
 
-            if (setPoint >= 35 ) and distance_r <= 25:
+            if (setPoint >= 35 ) and distance_r <= 20:
                 print(f"correctng red wall in blue")
-                correction = -12
-            elif (setPoint <= -35 ) and ((tfmini.distance_head <=25 and abs((n_head - head) - 360) > 35) or distance_l <= 25):
+                correction = -15
+            elif (setPoint <= -35 ) and ((tfmini.distance_head <=25 and abs((n_head - head) - 360) > 35) or distance_l <= 20):
                 print(f"Correcting Green Wall... diff:{abs((n_head - head) - 360):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
-                correction = 12
+                correction = 15
             else:
                 print("No wall detected...")
                 pass
@@ -717,8 +717,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     setPointC = 0
     power = 95
     prev_power = 0
-    last_counter = 4
-
+    last_counter = 12
     counter = turn_t = current_time = gp_time = rp_time = buff = c_time = green_count = red_count = 0
     heading_angle = 0
     i = l = lap_finish_time = prev_distance = turn_trigger_distance = target_count = offset = button_state = past_time = 0
@@ -1752,7 +1751,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     correctWall(tfmini.distance_left, 30, heading_angle, head.value)
                                 else:
                                     print("now correcting angle")
-                                    correctAngle(heading_angle, head,.value)
+                                    correctAngle(heading_angle, head.value)
 
                             elif orange_flag:
                                 if time.time() - pink_time < 4:        
