@@ -356,7 +356,7 @@ def correctAngle(setPoint_gyro, heading):
     dTerm = 0
     iTerm = 0
 
-    pTerm = kp * error_gyro
+    pTerm = kp * error_gyro * 2
     dTerm = kd * (error_gyro - prevErrorGyro)
     totalErrorGyro += error_gyro
     iTerm = ki * totalErrorGyro
@@ -983,7 +983,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         c_time = time.time()
                         calc_time = True
 
-                    time_p = 1.3
+                    time_p = 1.8
                     if state == 1:  
                         while time.time() - c_time < time_p :
                             tfmini.getTFminiData()
