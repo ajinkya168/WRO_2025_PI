@@ -1415,7 +1415,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 time.sleep(0.5)
                                 tfmini.getTFminiData()
 
-                                turn_trigger_distance = tfmini.distance_left
+                                turn_trigger_distance = tfmini.distance_left 
 
                                 if lane_reset == 1:
                                     enc.x = (150 - (turn_trigger_distance)) - 5
