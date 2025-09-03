@@ -263,12 +263,12 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
             else:
                 n_head = heading
 
-            if (setPoint <= -35 ) and distance_l <= 20:
+            if (setPoint <= -35 ) and distance_l <= 25:
                 print(f"Correcting Green Wall Orange")
-                correction = 15
-            elif (setPoint >= 35) and ((tfmini.distance_head <= 25 and (n_head - head > 35)) or distance_r <= 20):
+                correction = 12
+            elif (setPoint >= 35) and ((tfmini.distance_head <= 25 and (n_head - head > 35)) or distance_r <= 25):
                 print(f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
-                correction = -15
+                correction = -12
             else:
                 print("No wall detected...")
                 pass
@@ -282,12 +282,12 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
                 
                 
 
-            if (setPoint >= 35 ) and distance_r <= 20:
+            if (setPoint >= 35 ) and distance_r <= 25:
                 print(f"correctng red wall in blue")
-                correction = -15
-            elif (setPoint <= -35 ) and ((tfmini.distance_head <=25 and abs((n_head - head) - 360) > 35) or distance_l <= 20):
+                correction = -12
+            elif (setPoint <= -35 ) and ((tfmini.distance_head <=25 and abs((n_head - head) - 360) > 35) or distance_l <= 25):
                 print(f"Correcting Green Wall... diff:{abs((n_head - head) - 360):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
-                correction = 15
+                correction = 12
             else:
                 print("No wall detected...")
                 pass
@@ -356,7 +356,7 @@ def correctAngle(setPoint_gyro, heading):
     dTerm = 0
     iTerm = 0
 
-    pTerm = kp * error_gyro * 2
+    pTerm = kp * error_gyro * 1.5
     dTerm = kd * (error_gyro - prevErrorGyro)
     totalErrorGyro += error_gyro
     iTerm = ki * totalErrorGyro
@@ -983,13 +983,14 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         c_time = time.time()
                         calc_time = True
 
-                    time_p = 1.8
+                    time_p = 2.5
                     if state == 1:  
                         while time.time() - c_time < time_p :
                             tfmini.getTFminiData()
                             parking_count_current = counts.value
                             
                             if orange_flag:
+                                print(f"prev_distance: {prev_distance}")
                                 if prev_distance - tfmini.distance_right >= 10:
                                     print("Breaking reverse loop..")
                                     full_park = True
@@ -998,6 +999,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 prev_distance = tfmini.distance_right
                                     
                             elif blue_flag:
+                                print(f"prev_distance: {prev_distance}")
                                 if prev_distance - tfmini.distance_left >= 10:
                                     print("breaking reverse loop..")
                                     full_park = True
@@ -1005,7 +1007,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 prev_distance = tfmini.distance_left
                             
                                 
-                            print(f"Reversing backward... {counts.value}")
+                            print(f"Reversing backward... {counts.value} right:{tfmini.distance_right:.2f} left:{tfmini.distance_left:.2f} diff right: {prev_distance - tfmini.distance_right:.2f} diff left:{prev_distance - tfmini.distance_left:.2f}")
                             power = 70
                             prev_power = 0
                             correctReverseAngle(heading_angle, head.value)
@@ -1308,7 +1310,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     lane_reset = counter % 4
                                     tfmini.getTFminiData()
 
-                                    turn_trigger_distance = tfmini.distance_head
+                                    turn_trigger_distance = tfmini.distance_head * math.cos(math.radians(abs(corr)))
                                     
                                     if lane_reset == 1:
                                         enc.x = (150 - turn_trigger_distance) - 12
@@ -1529,7 +1531,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     counter = counter + 1                                
 
                                     lane_reset = counter % 4
-                                    turn_trigger_distance = tfmini.distance_head
+                                    turn_trigger_distance = tfmini.distance_head * math.cos(math.radians(abs(corr)))
 
                                     if lane_reset == 1:
                                         enc.x = (150 - (turn_trigger_distance)) - 12
