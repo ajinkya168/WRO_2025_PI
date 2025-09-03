@@ -717,7 +717,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     setPointC = 0
     power = 95
     prev_power = 0
-    last_counter = 12
+    last_counter = 4
 
     counter = turn_t = current_time = gp_time = rp_time = buff = c_time = green_count = red_count = 0
     heading_angle = 0
@@ -1747,12 +1747,20 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             power = 60
                             print("avoiding pink..")
                             if blue_flag:
-                                print("avoiding wall in p_flag")
-                                correctWall(tfmini.distance_left, 30, heading_angle, head.value)
+                                if time.time() - pink_time < 4:           
+                                    print("avoiding wall in p_flag")
+                                    correctWall(tfmini.distance_left, 30, heading_angle, head.value)
+                                else:
+                                    print("now correcting angle")
+                                    correctAngle(heading_angle, head,.value)
 
                             elif orange_flag:
-                                print("avoiding wall in p_flag")
-                                correctWall(30, tfmini.distance_right, heading_angle, head.value)
+                                if time.time() - pink_time < 4:        
+                                    print("avoiding wall in p_flag")
+                                    correctWall(30, tfmini.distance_right, heading_angle, head.value)
+                                else:
+                                    print("now correcting Angle")
+                                    correctAngle(heading_angle, head.value)
 
                         elif not lap_finish:
                             print("Going straight")
