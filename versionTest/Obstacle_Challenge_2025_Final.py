@@ -1126,7 +1126,11 @@
                                     print(f"correcting heading  blue time:{time.time() - timer_t} {x:.2f} {y:.2f} {head.value - heading_angle:.2f} {head.value} {tfmini.distance_head:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}")
                                     x, y = enc.get_position(head.value, counts.value)
                                     tfmini.getTFminiData()
-                                    correctAngle(heading_angle, head.value)
+                                    if tfmini.distance_right > 25:
+                                        correctAngle(heading_angle, head.value)
+                                    else:
+                                        correctAngle(heading_angle - 10, head.value)
+                                        
                                     power = 80
                                     prev_power = 0
                                     pwm.set_PWM_dutycycle(pwm_pin, int(2.5 * power))
@@ -1269,7 +1273,7 @@
                                         print(f"pink time {pink_time} ")
                                             
                                     else:
-                                        while tfmini.distance_head > 80 :
+                                        while tfmini.distance_head > 70:
                                             tfmini.getTFminiData()
                                             print(f"moving blue right ahead to correct heading x:{x} y:{y} lidar_f:{lidar_f.value:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}")
                                             correctAngle(heading_angle, head.value)
@@ -1279,7 +1283,7 @@
                                             pwm.set_PWM_dutycycle(pwm_pin, int(2.5 * power))
                                             pwm.write(direction_pin, 1)  # 0 = reverse, 1 = forward (per your wiring)
                                             x, y = enc.get_position(head.value, counts.value)
-                                        while tfmini.distance_head < 80 :
+                                        while tfmini.distance_head < 70 :
                                             tfmini.getTFminiData()
                                             print(f"moving blue ahead to correct heading x:{x} y:{y} lidar_f:{lidar_f.value:.2f} head_d: {tfmini.distance_head:.2f} left:{tfmini.distance_left:.2f}")
                                             correctReverseAngle(heading_angle, head.value)
@@ -1344,7 +1348,11 @@
                                     print(f"correcting orange heading counter:{counter} imu:{head.value:.2f} diff:{abs(norm_head - heading_angle):.2f} tfmini head: {tfmini.distance_head:.2f} norm_head:{norm_head}")
                                     x, y = enc.get_position(head.value, counts.value)
                                     tfmini.getTFminiData()
-                                    correctAngle(heading_angle, head.value)
+                                    if tfmini.distance_left > 25:
+                                        correctAngle(heading_angle, head.value)
+                                    else:
+                                        correctAngle(heading_angle + 10, head.value)
+
                                     power = 70
                                     prev_power = 0
                                     pwm.set_PWM_dutycycle(pwm_pin, int(1.8 * power))
@@ -1487,7 +1495,7 @@
                                         print(f"pink time {pink_time} ")
                                     else:
                                         
-                                        while tfmini.distance_head > 80 :
+                                        while tfmini.distance_head > 70 :
                                             tfmini.getTFminiData()
                                             print(f"moving ahead to correct heading x:{x} y:{y} lidar_f:{lidar_f.value} head_d: {tfmini.distance_head:.2f} left:{tfmini.distance_left:.2f}")
                                             correctAngle(heading_angle, head.value)
@@ -1497,7 +1505,7 @@
                                             pwm.set_PWM_dutycycle(pwm_pin, int(2.5 * power))
                                             pwm.write(direction_pin, 1)  # 0 = reverse, 1 = forward (per your wiring)
                                             x, y = enc.get_position(head.value, counts.value)
-                                        while tfmini.distance_head < 80 :
+                                        while tfmini.distance_head < 70 :
                                             tfmini.getTFminiData()
                                             print(f"moving ahead to correct heading x:{x} y:{y} lidar_f:{lidar_f.value} head_d: {tfmini.distance_head:.2f} left:{tfmini.distance_left:.2f}")
                                             correctReverseAngle(heading_angle, head.value)
