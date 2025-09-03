@@ -294,7 +294,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                     print(f"Counters are over")
                
                 if counter == -1:
-                    if counts.value > finish_count + 20000:
+                    if counts.value > finish_count + 18000:
                         print(f"Open Challenge Finished")
                         power = 0
                         pwm.set_PWM_dutycycle(12, power)  # Set duty cycle to 50% (128/255)
