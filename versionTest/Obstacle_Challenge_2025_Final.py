@@ -790,7 +790,15 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 else:
                     servo.setAngle(45)
         
-            
+            if green_b.value:
+                pwm.write(red_led, 0)
+                pwm.write(green_led, 1)
+            elif red_b.value:
+                pwm.write(red_led, 1)
+                pwm.write(green_led, 0)
+            else:
+                pwm.write(red_led, 0)
+                pwm.write(green_led, 0)
             if not button:
                 print(f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value} tf_h:{tf_h:.2f} diff:{(head.value - heading_angle):.2f} counts:{counts.value:.2f}")
                 #print(f"sp_angle:{sp_angle.value} F:{lidar_f.value:.2f} L:{lidar_l.value:.2f} R:{lidar_r.value:.2f} r:{tfmini.distance_right:.2f} l: {tfmini.distance_left:.2f} h:{tfmini.distance_head:.2f}")
@@ -1620,7 +1628,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                         encoder_counts_value = counts.value
                                         encoder_counter_store = True
                                         g_flag = False                                   
-
+                                        g_past = False
                                         print("encoder counts are stored for green")
                             else:
                                 if tf_r <= 30 or time.time() - green_time > 2:
@@ -1819,7 +1827,6 @@ def runEncoder(counts, head, imu_shared, sp_angle):
     pwm = pigpio.pi()
     print("Encoder Process Started")
     time.sleep(2)
-    pwm.write(green_led, 1)
     try:
         while True:
             line = ser.readline().decode('utf-8', errors = 'ignore').strip()
@@ -1830,7 +1837,6 @@ def runEncoder(counts, head, imu_shared, sp_angle):
                     head.value = float(esp_data[0])
                     imu_shared.value = head.value
                     counts.value = int(esp_data[1])
-                    pwm.write(red_led, 1)
                 except ValueError:
                     print(f"⚠️ Malformed ESP data: {esp_data}")
             else:

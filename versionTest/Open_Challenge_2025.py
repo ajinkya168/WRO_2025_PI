@@ -142,7 +142,6 @@ reset_imu = False
 
 
 def correctAngle(setPoint_gyro, left, right, trigger, heading, distance_h, distance_l, distance_r):
-    time.sleep(0.01)
     global glob, distance_right, distance_head, distance_left, corr, prev_time
     error_gyro = 0
     prevErrorGyro = 0
@@ -153,11 +152,13 @@ def correctAngle(setPoint_gyro, left, right, trigger, heading, distance_h, dista
     buff = 0
 
     error_gyro = heading - setPoint_gyro
-
+    print("ErrorBefore : ", error_gyro)
     if error_gyro > 180:
         error_gyro = error_gyro - 360
-
-    # print("Error : ", error_gyro)
+    if error_gyro < -180:
+        error_gyro = error_gyro + 360
+    
+    print("Error : ", error_gyro)
     pTerm = 0
     dTerm = 0
     iTerm = 0
@@ -255,6 +256,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
     target_count = 0
     turn_t = 0
     finish_count = 0
+    t_time = time.time()
     try:
         while True:
             tfmini.getTFminiData()
@@ -337,21 +339,23 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
 
                 if right_flag:
                     print("Right Flag is set")
-                    if (tfmini.distance_right > 150 and tfmini.distance_head < 100) and not trigger:
+                    if (tfmini.distance_right > 150 and tfmini.distance_head < 100) and not trigger and time.time()-t_time>1.5:
                         # time.sleep(0.5)
                         counter = counter + 1
                         heading_angle = ((90 * counter) % 360)
                         trigger = True
+                        t_time = time.time()
 
                     elif tfmini.distance_right < 100 and tfmini.distance_head > 100:
                         trigger = False
 
                 elif left_flag:
-                    if (tfmini.distance_left > 150 and tfmini.distance_head < 100) and not trigger:
+                    if (tfmini.distance_left > 150 and tfmini.distance_head < 100) and not trigger and time.time()-t_time>1.5:
                         # time.sleep(0.5)
                         counter = counter + 1
                         heading_angle = -(90 * counter) % 360
                         trigger = True
+                        t_time = time.time()
                     elif tfmini.distance_left < 100 and tfmini.distance_head > 100:
                         trigger = False
                 
@@ -366,7 +370,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                 heading_angle = 0
                 counter = 0
                 correctAngle(heading_angle, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
-            print(f"counts:{counts.value} finish_count: {finish_count} target_count: {finish_count + 20000}counter:{counter} trigger:{trigger}, trigger_b:{turn_trigger.value} right_flag:{right_flag} left_flag:{left_flag} heading_angle:{heading_angle}, head:{head.value} tf_h: {tfmini.distance_head}, tf_l: {tf_l}, tf_r: {tf_r} corr:{abs(corr)}")
+            print(f"counts:{counts.value} finish_count: {finish_count} target_count: {finish_count + 20000}counter:{counter} trigger:{trigger}, trigger_b:{turn_trigger.value} right_flag:{right_flag} left_flag:{left_flag} heading_angle:{heading_angle}, head:{head.value} tf_h: {tfmini.distance_head}, tf_l: {tf_l}, tf_r: {tf_r} corr:{corr}")
             #print(f"heading:{head.value} {heading_angle}  counter:{counter} {trigger},  target_count:{target_count}, encoder_c:{counts.value}, L C R:{distance_left} {distance_head} {distance_right}")
     except KeyboardInterrupt:
         power = 0
