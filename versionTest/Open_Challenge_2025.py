@@ -340,6 +340,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                 if right_flag:
                     print("Right Flag is set")
                     if (tfmini.distance_right > 150 and tfmini.distance_head < 100) and not trigger and time.time()-t_time>1.5:
+                        print("trigger is detected...")
                         # time.sleep(0.5)
                         counter = counter + 1
                         heading_angle = ((90 * counter) % 360)
@@ -350,7 +351,9 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                         trigger = False
 
                 elif left_flag:
+                    print("Left flag is set..")
                     if (tfmini.distance_left > 150 and tfmini.distance_head < 100) and not trigger and time.time()-t_time>1.5:
+                        print("trigger is detected..")
                         # time.sleep(0.5)
                         counter = counter + 1
                         heading_angle = -(90 * counter) % 360

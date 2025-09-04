@@ -796,9 +796,12 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             elif red_b.value:
                 pwm.write(red_led, 1)
                 pwm.write(green_led, 0)
+            elif pink_b.value:
+                pwm.write(blue_led, 1)
             else:
                 pwm.write(red_led, 0)
                 pwm.write(green_led, 0)
+                pwm.write(blue_led, 0)
             if not button:
                 print(f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value} tf_h:{tf_h:.2f} diff:{(head.value - heading_angle):.2f} counts:{counts.value:.2f}")
                 #print(f"sp_angle:{sp_angle.value} F:{lidar_f.value:.2f} L:{lidar_l.value:.2f} R:{lidar_r.value:.2f} r:{tfmini.distance_right:.2f} l: {tfmini.distance_left:.2f} h:{tfmini.distance_head:.2f}")
@@ -859,7 +862,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
             ################## IF PINK IS DETECTED THEN WHAT? ###############
 
-            if pink_b.value:  # DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
+            '''if pink_b.value:  # DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
                 #print(f"PINK IS DETECTED...")
                 if orange_flag and counter % 4 == 0:
                     setPointL = -15
@@ -869,10 +872,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     setPointR = 15
                     setPointL = -40
                     print(f"setPointR: {setPointR}")
-
-
-                pb_time = time.time()
-            # IF DOES NOT SEE PINK, KEEP THE SAME SETPOINT FOR 1 SECOND AND THEN CHANGE
             elif not pink_b.value and time.time() - pb_time > 1 and not lap_finish:
                 # print(f"Resetting setPoints...{pink_detected}")
                 if g_flag and not continue_parking:
@@ -894,7 +893,41 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     elif blue_flag:
                         if setPointR > 100:
                             setPointR = 100
+                    setPointL = -40'''
+
+            if counter%4 == 0:  # DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
+                #print(f"PINK IS DETECTED...")
+                if orange_flag:
+                    setPointL = -15
+                    setPointR = 40
+                    print(f"setPointL : {setPointL}")
+                elif blue_flag:
+                    setPointR = 15
                     setPointL = -40
+                    print(f"setPointR: {setPointR}")
+
+            else:
+                if g_flag and not continue_parking:
+                    print(f"away from green {g_past}")
+                    setPointL = setPointL - 1
+                    if orange_flag:
+                        if setPointL < -100:
+                            setPointL = -100
+                    elif blue_flag:
+                        if setPointL < -40:
+                            setPointL = -40
+                    setPointR = 40
+                elif r_flag and not continue_parking:
+                    print(f"away from red {r_past}")
+                    setPointR = setPointR + 1
+                    if orange_flag:
+                        if setPointR > 40:
+                            setPointR = 40
+                    elif blue_flag:
+                        if setPointR > 100:
+                            setPointR = 100
+                    setPointL = -40            
+
 
 
 
@@ -1579,9 +1612,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 trigger = False
                                 trigger_enc_flag = False
                                 print("Encoder counts done for trigger")
-                            pwm.write(blue_led, 0)
-
-
+                            
                         print(f"counts {counts.value} flag :{encoder_counter_store} encoder: {encoder_counts_value} encoder updated: {encoder_counts_value + off} ")
                         if encoder_counter_store:
                             g_flag = False
