@@ -717,7 +717,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     setPointC = 0
     power = 95
     prev_power = 0
-    last_counter = 4
+    last_counter = 12
     counter = turn_t = current_time = gp_time = rp_time = buff = c_time = green_count = red_count = 0
     heading_angle = 0
     i = l = lap_finish_time = prev_distance = turn_trigger_distance = target_count = offset = button_state = past_time = 0
@@ -1404,7 +1404,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                         pwm.write(direction_pin, 0)  # 0 = reverse, 1 = forward (per your wiring)
                                                                             
                                                                         
-                                    while tfmini.distance_head > 50 :
+                                    while tfmini.distance_head > 55 :
                                         tfmini.getTFminiData()
                                         print(f"moving blue right ahead to correct heading x:{x} y:{y} lidar_f:{lidar_f.value:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}")
                                         correctAngle(heading_angle, head.value)
@@ -1813,7 +1813,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             if red_b.value:
                                 red_time  = time.time()
                             if counter % 4 != 0:
-                                if tf_l <= 40 or time.time() - red_time > 2 :
+                                if (tf_l <= 40 and tf_l > 0)or time.time() - red_time > 2 :
                                 #if time.time() - red_time > 2.5:
 
                                     if not red_b.value and not encoder_counter_store:
@@ -1824,7 +1824,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             
                                         print("encoder counts stored for red")
                             else:
-                                if tf_l <= 30 or time.time() - red_time > 2 :
+                                if (tf_l <= 30 and tf_l > 0) or time.time() - red_time > 2 :
                                 #if time.time() - red_time > 2.5:
 
                                     if not red_b.value and not encoder_counter_store:
