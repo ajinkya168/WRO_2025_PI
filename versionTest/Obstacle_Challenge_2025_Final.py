@@ -28,8 +28,8 @@ import datetime
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 log_dir = "/home/pi/WRO_2025_PI/logs"
 
-#log_file = open(f"{log_dir}/log_obstacle_{timestamp}.txt", 'w')
-#sys.stdout = log_file
+log_file = open(f"{log_dir}/log_obstacle_2.txt", 'w')
+sys.stdout = log_file
 
 # PINS
 
@@ -717,7 +717,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     setPointC = 0
     power = 95
     prev_power = 0
-    last_counter = 12
+    last_counter = 4
     counter = turn_t = current_time = gp_time = rp_time = buff = c_time = green_count = red_count = 0
     heading_angle = 0
     i = l = lap_finish_time = prev_distance = turn_trigger_distance = target_count = offset = button_state = past_time = 0
@@ -767,6 +767,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     timer_t = time.time()
     state_init = 1
     enc_count = 0
+    parking_state = 1
+    pink_thresh = 0
+    blue_lap = False
     try:
         while True:
 
@@ -792,12 +795,12 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     servo.setAngle(45)
         
             
-            if counter%4 == 0:
+            if counter%4 == 0 and counter > 0:
                 if orange_flag:
                     if centr_x_red.value<200 and centr_x_red.value>0:
                         red_b.value = False
                 elif blue_flag:
-                    if centr_x_red.value>400:
+                    if centr_x_red.value>400 :
                         red_b.value = False
             if green_b.value:
                 pwm.write(red_led, 0)
@@ -838,7 +841,10 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 print("REACHED MAXIMUM COUNTS")
                 print(f"target:{target_count}")
                 if not finished:
-                    target_count = counts.value + 20000 #22000 - finish too late in the section
+                    if orange_flag:
+                        target_count = counts.value + 20000 #22000 - finish too late in the section
+                    elif blue_flag:
+                        target_count = counts.value + 24000
                     finished = True
                 if counts.value >= target_count and not reverse_trigger:
                     power = 0
@@ -866,7 +872,48 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                 elif blue_flag:
                     print("Correcting wall pid blue")
-                    correctWall(15, tfmini.distance_right, heading_angle, head.value)
+                    if parking_state == 1:
+                        correctReverseAngle2(heading_angle - 90, head.value)
+                        while abs(corr) > 5:
+                            x, y = enc.get_position(head.value, counts.value)
+
+                            tfmini.getTFminiData()
+                            power = 70
+                            prev_power = 0
+                            pwm.set_PWM_dutycycle(pwm_pin, int(1.2 * power))
+                            # 0 = reverse, 1 = forward (per your wiring)
+                            pwm.write(direction_pin, 0)
+                            correctReverseAngle2(heading_angle - 90, head.value)
+                        while tfmini.distance_head < 50:
+                            x, y = enc.get_position(head.value, counts.value)
+
+                            tfmini.getTFminiData()
+                            power = 70
+                            prev_power = 0
+                            pwm.set_PWM_dutycycle(pwm_pin, int(1.2 * power))
+                            # 0 = reverse, 1 = forward (per your wiring)
+                            pwm.write(direction_pin, 0)
+                            correctReverseAngle2(heading_angle - 90, head.value)
+                        parking_state = 2
+                    if parking_state == 2:
+                        correctAngle2(heading_angle, head.value)
+                        while abs(corr) > 5:
+                            x, y = enc.get_position(head.value, counts.value)
+
+                            tfmini.getTFminiData()
+                            power = 70
+                            prev_power = 0
+                            pwm.set_PWM_dutycycle(pwm_pin, int(1.2 * power))
+                            # 0 = reverse, 1 = forward (per your wiring)
+                            pwm.write(direction_pin, 1)
+                            correctAngle2(heading_angle, head.value)
+                        p_flag = True
+                        p_past = True
+                        continue_parking = True
+                        parking_state = 3
+                        pink_time = time.time()
+                        
+                    '''correctWall(15, tfmini.distance_right, heading_angle, head.value)'''
 
                 
 
@@ -980,6 +1027,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         elif blue_flag:
                             correctAngle2(heading_angle - 90, head.value)
                         while abs(corr) > 5:
+                            x, y = enc.get_position(head.value, counts.value)
+
                             tfmini.getTFminiData()
                             power = 70
                             prev_power = 0
@@ -992,6 +1041,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 correctAngle2(heading_angle - 90, head.value)
 
                         while tfmini.distance_head > 40:
+                            x, y = enc.get_position(head.value, counts.value)
 
                             if orange_flag:
                                 correctAngle2(heading_angle + 90, head.value)
@@ -1010,6 +1060,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             correctReverseAngle2(heading_angle, head.value) 
                         enc_count = counts.value
                         while abs(corr) > 5 or counts.value > enc_count - 6000:
+                            x, y = enc.get_position(head.value, counts.value)
+
                             power = 70
                             prev_power = 0
                             pwm.set_PWM_dutycycle(pwm_pin, int(1.2 * power))
@@ -1092,7 +1144,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             tfmini.getTFminiData()
                             parking_count_current = counts.value
                             
-                            if orange_flag:
+                            if orange_flag or blue_flag:
                                 print(f"prev_distance: {prev_distance}")
                                 if prev_distance - tfmini.distance_right >= 10:
                                     print("Breaking reverse loop..")
@@ -1101,13 +1153,13 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     
                                 prev_distance = tfmini.distance_right
                                     
-                            elif blue_flag:
+                            '''elif blue_flag:
                                 print(f"prev_distance: {prev_distance}")
                                 if prev_distance - tfmini.distance_left >= 10:
                                     print("breaking reverse loop..")
                                     full_park = True
                                     break
-                                prev_distance = tfmini.distance_left
+                                prev_distance = tfmini.distance_left'''
                             
                                 
                             print(f"Reversing backward... {counts.value} right:{tfmini.distance_right:.2f} left:{tfmini.distance_left:.2f} diff right: {prev_distance - tfmini.distance_right:.2f} diff left:{prev_distance - tfmini.distance_left:.2f}")
@@ -1138,7 +1190,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         print('state 1')
                     
                     if state == 2:                 
-                        if orange_flag:
+                        if orange_flag or blue_flag:
                             heading_angle = heading_angle - 90
                             correctReverseAngle2(heading_angle, head.value)
                             
@@ -1152,7 +1204,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 # Set duty cycle to 50% (128/255)
                                 pwm.set_PWM_dutycycle(pwm_pin, power)
                                 pwm.write(direction_pin, 0)  # Set pin 20 hig  
-                        elif blue_flag:
+                        '''elif blue_flag:
                             heading_angle = heading_angle + 90
                             correctReverseAngle2(heading_angle, head.value)
                             
@@ -1165,12 +1217,12 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 correctReverseAngle2(heading_angle, head.value)
                                 # Set duty cycle to 50% (128/255)
                                 pwm.set_PWM_dutycycle(pwm_pin, power)
-                                pwm.write(direction_pin, 0)  # Set pin 20 hig  
+                                pwm.write(direction_pin, 0)  # Set pin 20 hig'''  
                         state = 3
                     if state == 3:
                         if full_park:
                             print(f"Doing the full park..")
-                            if orange_flag:
+                            if orange_flag or blue_flag:
                                 heading_angle = heading_angle + 90
                                 correctReverseAngle2(heading_angle, head.value)
                                 while (tfmini.distance_right > 20) or abs(corr) > 5:
@@ -1183,7 +1235,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     # Set duty cycle to 50% (128/255)
                                     pwm.set_PWM_dutycycle(pwm_pin, power)
                                     pwm.write(direction_pin, 0)  # Set pin 20 hig 
-                            elif blue_flag:
+                            '''elif blue_flag:
                                 heading_angle = heading_angle - 90
                                 correctReverseAngle2(heading_angle, head.value)
                                 while (tfmini.distance_left > 20) or abs(corr) > 5:
@@ -1195,7 +1247,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     correctReverseAngle2(heading_angle, head.value)
                                     # Set duty cycle to 50% (128/255)
                                     pwm.set_PWM_dutycycle(pwm_pin, power)
-                                    pwm.write(direction_pin, 0)  # Set pin 20 hig                        
+                                    pwm.write(direction_pin, 0)  # Set pin 20 hig'''                        
                             state = 4
                         else:
                             print("Partial Park done")
@@ -1319,7 +1371,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 pink_b.value = False
                                 
                             else:
-                                if lap_finish:
+                                if lap_finish and not continue_parking:
                                     print("Lap is finished and it is inside 30")
                                     while tfmini.distance_head > 20 :
                                         tfmini.getTFminiData()
@@ -1541,7 +1593,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 pink_b.value = False
                                 reset_f = False
                             else:
-                                if lap_finish:
+                                if lap_finish and not continue_parking:
                                     print("Lap is finished and it is inside 30")
                                     while tfmini.distance_head > 20 or head.value > 180:
                                         tfmini.getTFminiData()
@@ -1661,8 +1713,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     pink_b.value = False
                     else:
                         # TRIGGGER CHECK VALUESSSS
-                                        
-                        if (turn_trigger.value and not trigger) and not trigger_enc_flag:
+                        if blue_flag and lap_finish:
+                            blue_lap = True    
+                        if (turn_trigger.value and not trigger) and not trigger_enc_flag and not blue_lap:
                             buff = 0
                             print("Trigger Detected...")
                             trigger = True
@@ -1788,9 +1841,13 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
                         elif p_past and continue_parking and not parking_flag:
                             print(f"time after reversing heading {time.time() - pink_time} distance_right:{tf_r} distance_left:{tf_l} prev_distance:{prev_distance}")
-                            if time.time() - pink_time > 4:
+                            if orange_flag:
+                                pink_thresh = 4
+                            elif blue_flag:
+                                pink_thresh = 1
+                            if time.time() - pink_time > pink_thresh:
                                 tfmini.getTFminiData()
-                                if orange_flag:
+                                if orange_flag or blue_flag:
                                     print(f"prev_distance: {prev_distance}, distance_right: {tfmini.distance_right} diff: {prev_distance - tfmini.distance_right} diff_flag:{(prev_distance - tfmini.distance_right) >= 10}")
                                     p_flag = True
                                     
@@ -1803,8 +1860,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                             print("Pink Avoidance Complete...")
                                     prev_distance = tfmini.distance_right
 
-                                elif blue_flag:
-
+                                '''elif blue_flag:
                                     print(f"prev_distance: {prev_distance}, distance_left: {tfmini.distance_left}  diff: {prev_distance - tfmini.distance_left} diff_flag:{(prev_distance - tfmini.distance_left) >= 10}")
                                     p_flag = True
                                     #if tfmini.distance_left <= 35 and ((prev_distance - tfmini.distance_left>= 10) and prev_distance > 0):
@@ -1816,7 +1872,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                             p_flag = False
                                             parking_flag = True
                                             print("Pink Avoidance Complete Blue...")
-                                    prev_distance = tfmini.distance_left
+                                    prev_distance = tfmini.distance_left'''
 
                             print('5')
                         else:
@@ -1848,12 +1904,13 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             power = 60
                             print("avoiding pink..")
                             if blue_flag:
-                                if time.time() - pink_time < 4:           
+                                correctAngle(heading_angle, head.value)
+                                '''if time.time() - pink_time < 4:           
                                     print("avoiding wall in p_flag")
                                     correctWall(tfmini.distance_left, 30, heading_angle, head.value)
                                 else:
                                     print("now correcting angle")
-                                    correctAngle(heading_angle, head.value)
+                                    correctAngle(heading_angle, head.value)'''
 
                             elif orange_flag:
                                 if time.time() - pink_time < 4:        
