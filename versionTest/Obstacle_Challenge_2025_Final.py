@@ -28,8 +28,8 @@ import datetime
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 log_dir = "/home/pi/WRO_2025_PI/logs"
 
-log_file = open(f"{log_dir}/log_obstacle_{timestamp}.txt", 'w')
-sys.stdout = log_file
+#log_file = open(f"{log_dir}/log_obstacle_{timestamp}.txt", 'w')
+#sys.stdout = log_file
 
 # PINS
 
@@ -765,7 +765,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     full_park = False
     servo.setAngle(45)
     timer_t = time.time()
-
+    state_init = 1
+    enc_count = 0
     try:
         while True:
 
@@ -784,12 +785,20 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             tf_r = tfmini.distance_right
         
             if not init:
-                if tf_h > 0 and pink_b.value:
+                if tf_h > 0 and head.value > 0:
                     correctAngle(heading_angle, head.value)
                     init = True
                 else:
                     servo.setAngle(45)
         
+            
+            if counter%4 == 0:
+                if orange_flag:
+                    if centr_x_red.value<200 and centr_x_red.value>0:
+                        red_b.value = False
+                elif blue_flag:
+                    if centr_x_red.value>400:
+                        red_b.value = False
             if green_b.value:
                 pwm.write(red_led, 0)
                 pwm.write(green_led, 1)
@@ -805,8 +814,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
             if not button:
                 print(f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value} tf_h:{tf_h:.2f} diff:{(head.value - heading_angle):.2f} counts:{counts.value:.2f}")
                 #print(f"sp_angle:{sp_angle.value} F:{lidar_f.value:.2f} L:{lidar_l.value:.2f} R:{lidar_r.value:.2f} r:{tfmini.distance_right:.2f} l: {tfmini.distance_left:.2f} h:{tfmini.distance_head:.2f}")
-                #print(f"centr_X:{centr_x_pink.value} centr_y:{centr_y_pink.value}")
+                print(f"centr_X:{centr_x_pink.value:.2f}   centr_x red:{centr_x_red.value:.2f} centr x green:{ centr_x.value:.2f}")
                 #print(f"corr:{corr}")
+            
             
             if (time.time() - last_time > debounce_delay):
                 previous_state = button_state
@@ -960,7 +970,60 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 print("-------------------------------------------------")
 
                 x, y = enc.get_position(imu_head, counts.value)
-                if time.time() < startPark and not parking_flag:
+                if inParkingatStart:
+                    t_time = time.time()
+                    print("in parking start")
+                    if state_init == 1:
+                        print("state init 1")
+                        if orange_flag:
+                            correctAngle2(heading_angle + 90, head.value)
+                        elif blue_flag:
+                            correctAngle2(heading_angle - 90, head.value)
+                        while abs(corr) > 5:
+                            tfmini.getTFminiData()
+                            power = 70
+                            prev_power = 0
+                            pwm.set_PWM_dutycycle(pwm_pin, int(1.2 * power))
+                            # 0 = reverse, 1 = forward (per your wiring)
+                            pwm.write(direction_pin, 1)
+                            if orange_flag:
+                                correctAngle2(heading_angle + 90, head.value)
+                            elif blue_flag:
+                                correctAngle2(heading_angle - 90, head.value)
+
+                        while tfmini.distance_head > 40:
+
+                            if orange_flag:
+                                correctAngle2(heading_angle + 90, head.value)
+                            elif blue_flag:
+                                correctAngle2(heading_angle - 90, head.value)
+                            tfmini.getTFminiData()
+                            power = 70
+                            prev_power = 0
+                            pwm.set_PWM_dutycycle(pwm_pin, int(1.9 * power))
+                        state_init = 2
+                    if state_init == 2:
+                        print("state init 2")
+                        if orange_flag:
+                            correctReverseAngle2(heading_angle , head.value)
+                        elif blue_flag:
+                            correctReverseAngle2(heading_angle, head.value) 
+                        enc_count = counts.value
+                        while abs(corr) > 5 or counts.value > enc_count - 6000:
+                            power = 70
+                            prev_power = 0
+                            pwm.set_PWM_dutycycle(pwm_pin, int(1.2 * power))
+                            # 0 = reverse, 1 = forward (per your wiring)
+                            pwm.write(direction_pin, 0)
+                            if orange_flag:
+                                correctReverseAngle2(heading_angle , head.value)
+                            elif blue_flag:
+                                correctReverseAngle2(heading_angle, head.value)                        
+                        state_init = 3
+                        inParkingatStart = False
+                    
+                            
+                '''if time.time() < startPark and not parking_flag:
                     red_b.value = False
                     green_b.value = False
                     pwm.set_PWM_dutycycle(pwm_pin, int(2.0*power))
@@ -979,7 +1042,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         startPark = time.time() + 0.8
                         exitPark = True
                     if abs(corr) < 10 and tf_h > 200:
-                        inParkingatStart = False
+                        inParkingatStart = False'''
                         
                 if red_b.value or green_b.value:
                     power = 55
@@ -1653,7 +1716,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
 
 
                             if counter % 4 != 0:
-                                if tf_r <= 40 or time.time() - green_time > 2:
+                                if (tf_r <= 40 and tf_r > 0) or time.time() - green_time > 2:
                                 #if time.time() - green_time > 2.5:
                                     if not green_b.value and not encoder_counter_store:
                                         encoder_counts_value = counts.value
@@ -1662,7 +1725,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                         g_past = False
                                         print("encoder counts are stored for green")
                             else:
-                                if tf_r <= 30 or time.time() - green_time > 2:
+                                if (tf_r <= 30 and tf_r > 0) or time.time() - green_time > 2:
                                 #if time.time() - green_time > 2.5:
 
                                     if not green_b.value and not encoder_counter_store:

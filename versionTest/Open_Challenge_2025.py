@@ -242,7 +242,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
     button = False
     reset_servo = False
     start_time = 0
-    power = 100
+    power = 50
     prev_power = 0
     count = 0
     turn_flag = False
@@ -269,7 +269,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
             if previous_state == 1 and button_state == 0:
                 button = not (button)
                 init_flag = True
-                power = 100
+                power = 70
 
                 print("Button is pressed")
 
@@ -318,16 +318,16 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
 
 
                 if right_flag:
-                    if tfmini.distance_left < 15:
+                    if tfmini.distance_left < 15 and tfmini.distance_left > 0:
                         correctAngle(heading_angle + 20, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
-                    elif tfmini.distance_right < 15:
+                    elif tfmini.distance_right < 15 and tfmini.distance_right > 0:
                         correctAngle(heading_angle - 20, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
                     else:
                         correctAngle(heading_angle, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
                 elif left_flag:
-                    if tfmini.distance_left < 15:
+                    if tfmini.distance_left < 15 and tfmini.distance_left > 0:
                         correctAngle(heading_angle + 20, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
-                    elif tfmini.distance_right < 15:
+                    elif tfmini.distance_right < 15 and tfmini.distance_right >0 :
                         correctAngle(heading_angle - 20, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
                     else:
                         correctAngle(heading_angle, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
@@ -339,7 +339,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
 
                 if right_flag:
                     print("Right Flag is set")
-                    if (tfmini.distance_right > 150 and tfmini.distance_head < 100) and not trigger and time.time()-t_time>1.5:
+                    if ((tfmini.distance_right > 150 and tfmini.distance_head < 100) or (tfmini.distance_head < 50 and tfmini.distance_right == 0)) and not trigger :
                         print("trigger is detected...")
                         # time.sleep(0.5)
                         counter = counter + 1
@@ -347,19 +347,21 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                         trigger = True
                         t_time = time.time()
 
-                    elif tfmini.distance_right < 100 and tfmini.distance_head > 100:
+                    #elif tfmini.distance_right < 100 and tfmini.distance_head > 100:
+                    elif time.time()-t_time>3:
                         trigger = False
 
                 elif left_flag:
                     print("Left flag is set..")
-                    if (tfmini.distance_left > 150 and tfmini.distance_head < 100) and not trigger and time.time()-t_time>1.5:
+                    if ((tfmini.distance_left > 150 and tfmini.distance_head < 100) or (tfmini.distance_head < 50 and tfmini.distance_left == 0)) and not trigger :
                         print("trigger is detected..")
                         # time.sleep(0.5)
                         counter = counter + 1
                         heading_angle = -(90 * counter) % 360
                         trigger = True
                         t_time = time.time()
-                    elif tfmini.distance_left < 100 and tfmini.distance_head > 100:
+                    #elif tfmini.distance_left < 100 and tfmini.distance_head > 100:
+                    elif time.time()-t_time > 3:
                         trigger = False
                 
 
