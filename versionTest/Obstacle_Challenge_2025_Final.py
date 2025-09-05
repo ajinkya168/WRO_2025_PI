@@ -795,7 +795,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     servo.setAngle(45)
         
             
-            if counter%4 == 0 and counter > 0:
+            if counter%4 == 0:
                 if orange_flag:
                     if centr_x_red.value<200 and centr_x_red.value>0:
                         red_b.value = False
