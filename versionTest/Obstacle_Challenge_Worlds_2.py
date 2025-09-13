@@ -416,8 +416,8 @@ def Live_Feed(color_b, stop_evt, red_b, green_b, pink_b, centr_y, centr_x, centr
             print("Label load warn:", e)
     FPS = 120
     cap = cv2.VideoCapture(CAM_INDEX)
-    #cap.set(cv2.CAP_PROP_FRAME_WIDTH,  640)
-    #cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH,  640)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
     cap.set(cv2.CAP_PROP_FPS,          FPS)
     # 0.25 means "manual mode" on many drivers
     cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25)
@@ -653,7 +653,10 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     pos = 0
     curr_head = 0
     target_count = 0    
-    avoid_state = 1    
+    avoid_state = 1
+    AVOID_COUNT = 3500 
+    AVOID_ANGLE = 55
+    motor_speed = 90   
     try:
         while True:
 
@@ -1701,7 +1704,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             if green_b.value:
                                 g_flag = True
                                 print("Green Detected...")
-                                pos = map_range(centr_x.value, 0, 540, LEFT_LIMIT, RIGHT_LIMIT)
+                                pos = map_range(centr_x.value, 0, 640, LEFT_LIMIT, RIGHT_LIMIT)
                                 if centr_y.value > Y_LIMIT:
                                     pos = 90
                                     green_avoid = True
@@ -1713,7 +1716,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             elif red_b.value:
                                 r_flag = True
                                 print("Red Detected..")
-                                pos = map_range(centr_x_red.value, 0, 540, LEFT_LIMIT, RIGHT_LIMIT)
+                                pos = map_range(centr_x_red.value, 0, 640, LEFT_LIMIT, RIGHT_LIMIT)
                                 if centr_y.value > Y_LIMIT:
                                     pos = 90
                                     red_avoid = True
@@ -1733,12 +1736,44 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             print(f"pos {pos} obstacle_state:{obstacle_state}")
                         if obstacle_state == 2:
                             print("Avoiding Obstacle")
-                            avoid_obstacle(green_avoid, red_avoid, curr_head, head.value, counts.value, target_count, heading_angle, avoid_state)
-                            if avoid_state == 5:               
+
+                            if avoid_state == 1:
+                                while counts.value < target_count + AVOID_COUNT:
+                                    runMotor(motor_speed, 1)
+                                    if green_avoid:
+                                        correctAngle(curr_head - AVOID_ANGLE, head.value)
+                                    elif red_avoid:
+                                        correctAngle(curr_head + AVOID_ANGLE, head.value)
+                                target_count = counts.value 
+                                curr_head = head.value     
+
+                                avoid_state = 2
+                            if avoid_state == 2:
+                                while counts.value < target_count + AVOID_COUNT:
+                                    runMotor(motor_speed, 1)
+                                    correctAngle(heading_angle, head.value)
+                                target_count = counts.value 
+                                curr_head = head.value     
+                                avoid_state = 3
+                            if avoid_state == 3:
+                                while counts.value < target_count + AVOID_COUNT:
+                                    runMotor(motor_speed, 1)
+                                    if green_avoid:
+                                        correctAngle(curr_head + AVOID_ANGLE, head.value)
+                                    elif red_avoid:
+                                        correctAngle(curr_head - AVOID_ANGLE, head.value)
+                                target_count = counts.value 
+                                curr_head = head.value     
+                                avoid_state = 4
+                            if avoid_state == 4:
+                                while counts.value < target_count + AVOID_COUNT:
+                                    runMotor(motor_speed, 1)
+                                    correctAngle(heading_angle , head.value)
+
                                 red_avoid = False
                                 green_avoid = False
                                 avoid_state = 1
-                                obstacle_state = 3
+                                obstacle_state = 3  
                         if obstacle_state == 3:
                             power = 0
                             prev_power = 0
@@ -1756,7 +1791,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 pwm.write(direction_pin, 1)  # Set pin 20 high
                 print("--------------------------------------------------------")
                 
-                print(f"red_avoid: {red_avoid} green_avoid:{green_avoid} avoid_state: {avoid_state}")
+                print(f"red_avoid: {red_avoid} green_avoid:{green_avoid} avoid_state: {avoid_state} target_Counts:{target_count}")
                 
                 print("--------------------------------------------------------")
 
@@ -1790,51 +1825,11 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
         #pwm.close()
 
 def runMotor(speed, direction):
-    pwm.set_PWM_dutycycle(12, speed)  # Stop motor
+    pwm.set_PWM_dutycycle(12, int(speed*2.0))  # Stop motor
     pwm.write(20, direction)              # Set direction pin low (optional)
 
-def avoid_obstacle(green, red, curr_head, head, enc_counts, target_c, heading_sp, avoid_state):
-    if avoid_state == 1:
-        while enc_counts < target_c + 2000:
-            runMotor(70, 1)
-            if green:
-                correctAngle(curr_head + 45, head)
-            elif red:
-                correctAngle(curr_head - 45, head)
-        target_c = enc_counts
-        curr_head = head     
 
-        avoid_state = 2
-    if avoid_state == 2:
-        while enc_counts < target_c + 2000:
-            runMotor(70, 1)
-            if green:
-                correctAngle(heading_sp, head.value)
-            elif red:
-                correctAngle(heading_sp, head.value)
-        target_c = enc_counts
-        curr_head = head     
-        avoid_state = 3
-    if avoid_state == 3:
-        while enc_counts < target_c + 2000:
-            runMotor(70, 1)
-            if green:
-                correctAngle(curr_head - 45, head.value)
-            elif red:
-                correctAngle(curr_head + 45, head.value)
-        target_c = enc_counts 
-        curr_head = head     
-        avoid_state = 4
-    if avoid_state == 4:
-        while enc_counts < target_c + 2000:
-            runMotor(70, 1)
-            if green:
-                correctAngle(heading_sp, head.value)
-            elif red:
-                correctAngle(heading_sp , head.value)
-        target_c = enc_counts 
-        curr_head = head  
-        avoid_state = 5       
+      
         
 
 def map_range(x, in_min, in_max, out_min, out_max):
