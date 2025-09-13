@@ -646,8 +646,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     state_init = parking_state = 1
     enc_count = 0
     pink_thresh = 0
-    LEFT_LIMIT = 45
-    RIGHT_LIMIT = 135
+    LEFT_LIMIT = 60
+    RIGHT_LIMIT = 120
     Y_LIMIT = 300
     obstacle_state = 1
     pos = 0
