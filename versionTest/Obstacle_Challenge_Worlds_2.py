@@ -798,45 +798,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         parking_state = 3
                         pink_time = time.time()
 
-                    '''correctWall(15, tfmini.distance_right, heading_angle, head.value)'''
-
-            ################## IF PINK IS DETECTED THEN WHAT? ###############
-
-            '''if pink_b.value:  # DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
-                #print(f"PINK IS DETECTED...")
-                if orange_flag and counter % 4 == 0:
-                    setPointL = -15
-                    setPointR = 40
-                    print(f"setPointL : {setPointL}")
-                elif blue_flag and counter % 4 == 0:
-                    setPointR = 15
-                    setPointL = -40
-                    print(f"setPointR: {setPointR}")
-            elif not pink_b.value and time.time() - pb_time > 1 and not lap_finish:
-                # print(f"Resetting setPoints...{pink_detected}")
-                if g_flag and not continue_parking:
-                    print(f"away from green {g_past}")
-                    setPointL = setPointL - 1
-                    if orange_flag:
-                        if setPointL < -100:
-                            setPointL = -100
-                    elif blue_flag:
-                        if setPointL < -40:
-                            setPointL = -40
-                    setPointR = 40
-                elif r_flag and not continue_parking:
-                    print(f"away from red {r_past}")
-                    setPointR = setPointR + 1
-                    if orange_flag:
-                        if setPointR > 40:
-                            setPointR = 40
-                    elif blue_flag:
-                        if setPointR > 100:
-                            setPointR = 100
-                    setPointL = -40'''
-
-
-
             ##################### DIRECTION DECISION #########################
             if not inParkingatStart and not left_f.value and not right_f.value:
                 print("Starting Parking at Start...")
@@ -1516,7 +1477,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                         ################### PANDAV 2.0 ####################
                         
                         if obstacle_state == 1:
-                            print("Going straight")
                             
                             if green_b.value:
                                 g_flag = True
@@ -1550,7 +1510,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             else:
                                 print("correcting servo..")
                                 servo.setAngle(pos)   
-                            print(f"pos {pos} obstacle_state:{obstacle_state}")
                         if obstacle_state == 2:
                             print("Avoiding Obstacle")
 
@@ -1590,7 +1549,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 red_avoid = False
                                 green_avoid = False
                                 avoid_state = 1
-                                obstacle_state = 3  
+                                obstacle_state = 1
                         if obstacle_state == 3:
                             power = 0
                             prev_power = 0
@@ -1607,14 +1566,10 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 
                 print("--------------------------------------------------------")
 
-                # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
             else:
                 power = 0
                 pwm.hardware_PWM(12, 55, 0)
                 counter = 0
-                # red_b.value = False
-                # green_b.value = False
-                # print("BUUTTTTON ELSE")
             # print(f"button:{button}")
 
     except Exception as e:
