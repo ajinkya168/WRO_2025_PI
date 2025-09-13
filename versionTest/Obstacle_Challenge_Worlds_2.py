@@ -687,7 +687,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     if centr_x_red.value < 200 and centr_x_red.value > 0:
                         red_b.value = False
                 elif blue_flag:
-                    if centr_x_red.value > 400:
+                    if centr_x_red.value > 300:
                         red_b.value = False
                         
             if green_b.value:
@@ -707,6 +707,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 print(f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value} tf_h:{tf_h:.2f} diff:{(head.value - heading_angle):.2f} counts:{counts.value:.2f}")
                 print(f"centr g:{centr_x.value} centr g y:{centr_y.value}")
                 print(f"centr r x:{centr_x_red.value} centr r y:{centr_y_red.value}")
+                print(f"blue: {blue_flag} orange: {orange_flag}")
                 # print(f"corr:{corr}")
 
             if (time.time() - last_time > debounce_delay):
@@ -834,65 +835,26 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             setPointR = 100
                     setPointL = -40'''
 
-            ################# WHAT TO DO WHEN PARKING IS AT COUNTER 0 (FIRST LANE) ############
-            if counter % 4 == 0:  # DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
-                # print(f"PINK IS DETECTED...")
-                if orange_flag:
-                    setPointL = -15
-                    setPointR = 40
-                    print(f"setPointL : {setPointL}")
-                elif blue_flag:
-                    setPointR = 15
-                    setPointC = 15
-                    setPointL = -40
-                    print(f"setPointR: {setPointR}")
 
-            else:
-                setPointC = 0
-                if g_flag and not continue_parking:
-                    print(f"away from green {g_past}")
-                    setPointL = setPointL - 1
-                    if orange_flag:
-                        if setPointL < -100:
-                            setPointL = -100
-                    elif blue_flag:
-                        if setPointL < -40:
-                            setPointL = -40
-                    setPointR = 40
-                elif r_flag and not continue_parking:
-                    print(f"away from red {r_past}")
-                    setPointR = setPointR + 1
-                    if orange_flag:
-                        if setPointR > 40:
-                            setPointR = 40
-                    elif blue_flag:
-                        if setPointR > 100:
-                            setPointR = 100
-                    setPointL = -40
 
             ##################### DIRECTION DECISION #########################
             if not inParkingatStart and not left_f.value and not right_f.value:
                 print("Starting Parking at Start...")
-                if tf_l < 25 and tf_h < 250 and tf_l > 0 and tf_h > 0 and pink_b.value:
+                if tf_l < 25 and tf_h < 250 and tf_l > 0 and tf_h > 0 :
                     print("Right side parking")
                     enc.x = 0
                     enc.y = 0 #-40
                     right_f.value = True
+                    orange_flag = True
                     inParkingatStart = True
-                elif tf_r < 25 and tf_h < 250 and tf_h > 0 and tf_r > 0 and pink_b.value:
+                elif tf_r < 25 and tf_h < 250 and tf_h > 0 and tf_r > 0 :
                     enc.x = 0
                     enc.y = 0 #40
                     print("Left side parking")
                     left_f.value = True
+                    blue_flag = True
                     inParkingatStart = True
-                
-
-            if right_f.value and not orange_flag:
-                orange_flag = True
-                blue_flag = False
-            elif left_f.value and not blue_flag:
-                blue_flag = True
-                orange_flag = False
+            
 
 
             ##################### BUTTON STARTS THE CODE ##################
