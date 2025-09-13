@@ -1439,9 +1439,9 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 trigger_enc_flag = False
                                 print("Encoder counts done for trigger")
 
-                        ################### PANDAV 2.0 ####################
+                        ################### BLOCK AVOIDANCE ####################
                         
-                        if obstacle_state == 1:
+                        if obstacle_state == 1: # This state checks if it has to follow green or red block or not
                             
                             if green_b.value:
                                 g_flag = True
@@ -1475,7 +1475,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             else:
                                 print("correcting servo..")
                                 servo.setAngle(pos)   
-                        if obstacle_state == 2:
+                        if obstacle_state == 2: # This state avoids the block
                             print("Avoiding Obstacle")
 
                             if avoid_state == 1:
@@ -1515,7 +1515,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 green_avoid = False
                                 avoid_state = 1
                                 obstacle_state = 1
-                        if obstacle_state == 3:
+                        if obstacle_state == 3: # state to stop the motor
                             power = 0
                             prev_power = 0
 
