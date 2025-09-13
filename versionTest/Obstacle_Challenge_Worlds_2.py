@@ -214,81 +214,6 @@ def correctPosition(setPoint, head, x, y, counter, blue, orange, reset, reverse,
 
     print(f"Error: {error}")
 
-
-    if not reset:
-        print(f"In not reset...")
-        tfmini.getTFminiData()
-        if (((setPoint == -15) and orange) or (counter == 0 and (centr_x_p < 300 and centr_x_p > 0) and ((centr_x_g or centr_x_r) > centr_x_p) and not blue and not orange) and not finish):
-            if distance_l <= 30:
-                correction = 20
-                print(f"Avoiding pink wall {correction}")
-
-            elif distance_r < 50:
-                if distance_r <= 35:
-                    correction = -45
-                    print(f"Avoiding pink wall {correction}")
-
-                else:
-                    correction = -10
-                    print(f"Avoiding pink wall else{correction}")
-            else:
-                print("setPoint was not -35")
-                pass
-
-        if (((setPoint == 15) and blue) or (counter == 0 and (centr_x_p < 300 and centr_x_p > 0) and ((centr_x_g or centr_x_r) < centr_y_p) and not blue and not orange) and not finish):
-
-            if distance_r <= 30:
-                correction = -20
-                print(f"Avoiding pink wall {correction}")
-
-            elif distance_l < 50:
-                if distance_l <= 35:
-                    correction = 45
-                    print(f"Avoiding pink wall {correction}")
-
-                else:
-                    correction = 20
-                    print(f"Avoiding pink wall else {correction}")
-            else:
-                print("setPoint was not 35")
-                pass
-
-        if not blue:
-
-            if heading > 180 and lane == 0:
-                n_head = heading - 360
-            else:
-                n_head = heading
-
-            if (setPoint <= -35) and distance_l <= 20:
-                print(f"Correcting Green Wall Orange")
-                correction = 15
-            elif (setPoint >= 35) and ((tfmini.distance_head <= 25 and (n_head - head > 35)) or distance_r <= 20):
-                print(
-                    f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
-                correction = -15
-            else:
-                print("No wall detected...")
-                pass
-
-        else:
-
-            if heading < 180 and lane == 0:
-                n_head = heading + 360
-            else:
-                n_head = heading
-
-            if (setPoint >= 40) and distance_r <= 20:
-                print(f"correctng red wall in blue")
-                correction = -15
-            elif (setPoint <= -40) and ((tfmini.distance_head <= 25 and abs((n_head - head) - 360) > 35) or distance_l <= 20):
-                print(
-                    f"Correcting Green Wall... diff:{abs((n_head - head) - 360):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
-                correction = 15
-            else:
-                print("No wall detected...")
-                pass
-
     if correction > 45:
         correction = 45
     elif correction < -45:
@@ -687,7 +612,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     full_park = False
     blue_lap = False
     encoder_counter_store = False
-    
+    red_avoid = green_avoid = False
     ############ VARIABLES ##################
     timer_v = 0
     setPointL = -40 
@@ -723,9 +648,12 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
     pink_thresh = 0
     LEFT_LIMIT = 45
     RIGHT_LIMIT = 135
+    Y_LIMIT = 300
     obstacle_state = 1
     pos = 0
-    centr_pos = 0
+    curr_head = 0
+    target_count = 0    
+    avoid_state = 1    
     try:
         while True:
 
@@ -774,9 +702,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                 
             if not button:
                 print(f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value} tf_h:{tf_h:.2f} diff:{(head.value - heading_angle):.2f} counts:{counts.value:.2f}")
-                # print(f"sp_angle:{sp_angle.value} F:{lidar_f.value:.2f} L:{lidar_l.value:.2f} R:{lidar_r.value:.2f} r:{tfmini.distance_right:.2f} l: {tfmini.distance_left:.2f} h:{tfmini.distance_head:.2f}")
-                print(
-                    f"centr_X:{centr_x_pink.value:.2f}   centr_x red:{centr_x_red.value:.2f} centr x green:{centr_x.value:.2f}")
+                print(f"centr g:{centr_x.value} centr g y:{centr_y.value}")
+                print(f"centr r x:{centr_x_red.value} centr r y:{centr_y_red.value}")
                 # print(f"corr:{corr}")
 
             if (time.time() - last_time > debounce_delay):
@@ -1773,20 +1700,27 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             
                             if green_b.value:
                                 g_flag = True
-                                centr_pos = centr_x.value
                                 print("Green Detected...")
                                 pos = map_range(centr_x.value, 0, 540, LEFT_LIMIT, RIGHT_LIMIT)
-                                '''if centr_y.value > 250:
+                                if centr_y.value > Y_LIMIT:
+                                    pos = 90
+                                    green_avoid = True
+                                    curr_head = head.value
+                                    target_count = counts.value
+
                                     avoided_time = time.time() + 0.3
-                                    obstacle_state = 2'''
+                                    obstacle_state = 2
                             elif red_b.value:
                                 r_flag = True
-                                centr_pos = centr_x_red.value
                                 print("Red Detected..")
                                 pos = map_range(centr_x_red.value, 0, 540, LEFT_LIMIT, RIGHT_LIMIT)
-                                '''if centr_y.value > 250:
+                                if centr_y.value > Y_LIMIT:
+                                    pos = 90
+                                    red_avoid = True
+                                    curr_head = head.value
+                                    target_count = counts.value
                                     avoided_time = time.time() + 0.3
-                                    obstacle_state = 2'''  
+                                    obstacle_state = 2 
                             else:
                                 r_flag = False
                                 g_flag = False                              
@@ -1796,181 +1730,36 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                             else:
                                 print("correcting servo..")
                                 servo.setAngle(pos)   
-                        print(f"pos {pos} obstacle_state:{obstacle_state}")
-                        #if obstacle_state == 2:
-                            
+                            print(f"pos {pos} obstacle_state:{obstacle_state}")
+                        if obstacle_state == 2:
+                            print("Avoiding Obstacle")
+                            avoid_obstacle(green_avoid, red_avoid, curr_head, head.value, counts.value, target_count, heading_angle, avoid_state)
+                            if avoid_state == 5:               
+                                red_avoid = False
+                                green_avoid = False
+                                avoid_state = 1
+                                obstacle_state = 3
+                        if obstacle_state == 3:
+                            power = 0
+                            prev_power = 0
 
 
-                        '''if green_b.value and not r_flag and not continue_parking and not g_flag and not reset_f and centr_y.value > 250 and not lap_finish:
-                            if rev_count < 1:
-                                if centr_x.value < 320 and centr_x.value > 0:
-                                    avoided_time = time.time() + 0.3
-                                    if orange_flag:
-                                        reverse_until = avoided_time + 0.7
-                                    else:
-                                        reverse_until = avoided_time + 0.7
-                                    rev_count += 1
-                            g_flag = True
-                            g_past = True
-                            print("Green detected")
-                            pwm.write(red_led, 0)
-                            pwm.write(green_led, 0)
-                            print('1')
-
-                        elif (g_past) and not continue_parking and not reset_f and not lap_finish:
-                            g_flag = True
-                            if green_b.value:
-                                green_time = time.time()
-
-                            if counter % 4 != 0:
-                                if (tf_r <= 40 and tf_r > 0) or time.time() - green_time > 2:
-                                    # if time.time() - green_time > 2.5:
-                                    if not green_b.value and not encoder_counter_store:
-                                        encoder_counts_value = counts.value
-                                        encoder_counter_store = True
-                                        g_flag = False
-                                        g_past = False
-                                        print(
-                                            "encoder counts are stored for green")
-                            else:
-                                if (tf_r <= 30 and tf_r > 0) or time.time() - green_time > 2:
-                                    # if time.time() - green_time > 2.5:
-
-                                    if not green_b.value and not encoder_counter_store:
-                                        encoder_counts_value = counts.value
-                                        encoder_counter_store = True
-                                        g_flag = False
-                                        g_past = False
-                                        print(
-                                            "encoder counts are stored for green")
-
-                            print('2')
-
-                        elif red_b.value and not g_flag and not continue_parking and not r_flag and not reset_f and centr_y_red.value > 250 and not lap_finish:
-                            r_flag = True
-                            r_past = True
-                            if rev_count < 1:
-                                if centr_x_red.value > 300:
-                                    avoided_time = time.time() + 0.3
-                                    if orange_flag:
-                                        reverse_until = avoided_time + 0.7
-                                    else:
-                                        reverse_until = avoided_time + 0.7
-                                rev_count += 1
-                            # print(f"x cent:{centr_x_red.value} centr y:{centr_y_red.value}")
-                            print("Red detected")
-                            pwm.write(red_led, 0)
-                            pwm.write(green_led, 0)
-
-                            print('3')
-
-                        elif (r_past) and not continue_parking and not reset_f and not lap_finish:
-                            r_flag = True
-                            if red_b.value:
-                                red_time = time.time()
-                            if counter % 4 != 0:
-                                if (tf_l <= 40 and tf_l > 0) or time.time() - red_time > 2:
-                                    # if time.time() - red_time > 2.5:
-
-                                    if not red_b.value and not encoder_counter_store:
-                                        encoder_counts_value = counts.value
-                                        encoder_counter_store = True
-                                        r_flag = False
-                                        r_past = False
-
-                                        print("encoder counts stored for red")
-                            else:
-                                if (tf_l <= 30 and tf_l > 0) or time.time() - red_time > 2:
-                                    # if time.time() - red_time > 2.5:
-
-                                    if not red_b.value and not encoder_counter_store:
-                                        encoder_counts_value = counts.value
-                                        encoder_counter_store = True
-                                        r_flag = False
-                                        r_past = False
-                                        print("encoder counts stored for red")
-
-                                        print(
-                                            "encoder counts stored for red else")
-
-                            print('4')
+                                
 
 
-                        else:
-                            g_flag = False
-                            r_flag = False
-                            p_flag = False
-                            r_past = False
-                            g_past = False
-                            p_past = False
-                            print("No flags set, moving forward")
-                            print('6')
 
-                            pwm.write(red_led, 0)
-                            pwm.write(green_led, 0)
-
-                        print(
-                            f"time after reversing heading {time.time() - pink_time}")
-
-                        if g_flag:
-                            print("avoiding green..")
-                            correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag,
-                                            reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r, red_b.value, green_b.value)
-                        elif r_flag:
-                            print("avoiding red...")
-                            correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag,
-                                            reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r, red_b.value, green_b.value)
-                        elif p_flag:
-                            power = 60
-                            print("avoiding pink..")
-                            if blue_flag:
-                                correctAngle(heading_angle, head.value)
-                                if time.time() - pink_time < 4:           
-                                    print("avoiding wall in p_flag")
-                                    correctWall(tfmini.distance_left, 30, heading_angle, head.value)
-                                else:
-                                    print("now correcting angle")
-                                    correctAngle(heading_angle, head.value)
-
-                            elif orange_flag:
-                                if time.time() - pink_time < 4:
-                                    print("avoiding wall in p_flag")
-                                    correctWall(
-                                        30, tfmini.distance_right, heading_angle, head.value)
-                                else:
-                                    print("now correcting Angle")
-                                    correctAngle(heading_angle, head.value)
-
-                        elif not lap_finish:
-                            print("Going straight")
-                            correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag,
-                                            reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r, red_b.value, green_b.value)'''
-
-                '''total_power = (power * 0.1) + (prev_power * 0.9)
+                total_power = (power * 0.1) + (prev_power * 0.9)
                 prev_power = total_power
                 # Set duty cycle to 50% (128/255)
                 pwm.set_PWM_dutycycle(pwm_pin, 2.55 * total_power)
 
-                pwm.write(direction_pin, 1)'''  # Set pin 20 high
+                pwm.write(direction_pin, 1)  # Set pin 20 high
+                print("--------------------------------------------------------")
+                
+                print(f"red_avoid: {red_avoid} green_avoid:{green_avoid} avoid_state: {avoid_state}")
+                
+                print("--------------------------------------------------------")
 
-                '''print(
-                    f"centr_x.value: {centr_x.value} centr_y.value: {centr_y.value} centr_red: {centr_x_red.value} centr_y_red:{centr_y_red.value} centr_pink: {centr_x_pink.value}")
-                print(
-                    f"left_b.value:{left_f.value} right_b.value:{right_f.value} orange_flag:{orange_flag} blue_flag:{blue_flag}")
-                print(
-                    f"trigger:{trigger} turn_trigger: {turn_trigger.value} reset_f:{reset_f} counter: {counter}, imu:{head.value:2f}")
-                print(
-                    f"red_b.value:{red_b.value} green_b.value:{green_b.value} pink_b.value:{pink_b.value}")
-                print(
-                    f"r_flag:{r_flag} g_flag:{g_flag} rev_count: {rev_count}")
-                print(
-                    f"r_past:{r_past} g_past:{g_past} p_past:{p_past} pass_c:{p_pass}")
-                print(
-                    f"x: {x:.2f}, y:{y:.2f} count:{counts.value} heading_angle:{heading_angle}")
-                print(f"F: {tf_h:.2f}  L: {l_left:.2f} R: {l_right:.2f} left:{tf_l} head:{(math.cos(math.radians(abs(corr))) * tfmini.distance_head):.2f} right: {tf_r} POWER = {power} corr: {abs(corr)}")
-                print(
-                    f"L: {setPointL} R: {setPointR} setPointC: {setPointC} off:{off}")
-                print("---------------------------------------------------")'''
                 # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
             else:
                 power = 0
@@ -2004,6 +1793,49 @@ def runMotor(speed, direction):
     pwm.set_PWM_dutycycle(12, speed)  # Stop motor
     pwm.write(20, direction)              # Set direction pin low (optional)
 
+def avoid_obstacle(green, red, curr_head, head, enc_counts, target_c, heading_sp, avoid_state):
+    if avoid_state == 1:
+        while enc_counts < target_c + 2000:
+            runMotor(70, 1)
+            if green:
+                correctAngle(curr_head + 45, head)
+            elif red:
+                correctAngle(curr_head - 45, head)
+        target_c = enc_counts
+        curr_head = head     
+
+        avoid_state = 2
+    if avoid_state == 2:
+        while enc_counts < target_c + 2000:
+            runMotor(70, 1)
+            if green:
+                correctAngle(heading_sp, head.value)
+            elif red:
+                correctAngle(heading_sp, head.value)
+        target_c = enc_counts
+        curr_head = head     
+        avoid_state = 3
+    if avoid_state == 3:
+        while enc_counts < target_c + 2000:
+            runMotor(70, 1)
+            if green:
+                correctAngle(curr_head - 45, head.value)
+            elif red:
+                correctAngle(curr_head + 45, head.value)
+        target_c = enc_counts 
+        curr_head = head     
+        avoid_state = 4
+    if avoid_state == 4:
+        while enc_counts < target_c + 2000:
+            runMotor(70, 1)
+            if green:
+                correctAngle(heading_sp, head.value)
+            elif red:
+                correctAngle(heading_sp , head.value)
+        target_c = enc_counts 
+        curr_head = head  
+        avoid_state = 5       
+        
 
 def map_range(x, in_min, in_max, out_min, out_max):
     return out_min + ((x - in_min) * (out_max - out_min)) / (in_max - in_min)
