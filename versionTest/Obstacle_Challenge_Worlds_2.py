@@ -99,23 +99,15 @@ lidar_right = 0
 #########  MULTIPROCESSING VARIABLE ###########
 
 counts = multiprocessing.Value('i', 0)
-color_b = multiprocessing.Value('b', False)
 red_b = multiprocessing.Value('b', False)
 green_b = multiprocessing.Value('b', False)
 pink_b = multiprocessing.Value('b', False)
-orange_o = multiprocessing.Value('b', False)
-blue_c = multiprocessing.Value('b', False)
-orange_c = multiprocessing.Value('b', False)
-white_c = multiprocessing.Value('b', False)
 centr_y = multiprocessing.Value('f', 0.0)
 centr_x = multiprocessing.Value('f', 0.0)
 centr_y_red = multiprocessing.Value('f', 0.0)
 centr_x_red = multiprocessing.Value('f', 0.0)
 centr_x_pink = multiprocessing.Value('f', 0.0)
 centr_y_pink = multiprocessing.Value('f', 0.0)
-centr_y_b = multiprocessing.Value('f', 0.0)
-centr_y_o = multiprocessing.Value('f', 0.0)
-prev_b = multiprocessing.Value('f', 0.0)
 head = multiprocessing.Value('f', 0.0)
 sp_angle = multiprocessing.Value('i', 0)
 turn_trigger = multiprocessing.Value('b', False)
@@ -123,8 +115,6 @@ turn_trigger = multiprocessing.Value('b', False)
 lidar_angle = multiprocessing.Value('d', 0.0)
 lidar_distance = multiprocessing.Value('d', 0.0)
 imu_shared = multiprocessing.Value('d', 0.0)
-specific_angle = multiprocessing.Array(
-    c_float, 3)  # shared array of 3 integers
 lidar_f = multiprocessing.Value('d', 0.0)
 lidar_l = multiprocessing.Value('d', 0.0)
 lidar_r = multiprocessing.Value('d', 0.0)
@@ -991,20 +981,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 # Set duty cycle to 50% (128/255)
                                 pwm.set_PWM_dutycycle(pwm_pin, power)
                                 pwm.write(direction_pin, 0)  # Set pin 20 hig
-                        '''elif blue_flag:
-                            heading_angle = heading_angle + 90
-                            correctReverseAngle2(heading_angle, head.value)
-                            
-                            while (tfmini.distance_right > 50) or abs(corr) > 15:
-                                tfmini.getTFminiData()
-                                print(f"corr:{abs(corr)} head:{tfmini.distance_head} right:{tfmini.distance_right}")
-                                print("Reversing backward...")
-                                power = 85
-                                prev_power = 0
-                                correctReverseAngle2(heading_angle, head.value)
-                                # Set duty cycle to 50% (128/255)
-                                pwm.set_PWM_dutycycle(pwm_pin, power)
-                                pwm.write(direction_pin, 0)  # Set pin 20 hig'''
+
                         state = 3
                     if state == 3:
                         if full_park:
@@ -1025,19 +1002,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                     pwm.set_PWM_dutycycle(pwm_pin, power)
                                     # Set pin 20 hig
                                     pwm.write(direction_pin, 0)
-                            '''elif blue_flag:
-                                heading_angle = heading_angle - 90
-                                correctReverseAngle2(heading_angle, head.value)
-                                while (tfmini.distance_left > 20) or abs(corr) > 5:
-                                    tfmini.getTFminiData()
-                                    print(f"corr:{abs(corr)} head:{tfmini.distance_head} right:{tfmini.distance_left}")
-                                    print("Reversing backward...")
-                                    power = 85
-                                    prev_power = 0
-                                    correctReverseAngle2(heading_angle, head.value)
-                                    # Set duty cycle to 50% (128/255)
-                                    pwm.set_PWM_dutycycle(pwm_pin, power)
-                                    pwm.write(direction_pin, 0)  # Set pin 20 hig'''
+
                             state = 4
                         else:
                             print("Partial Park done")
