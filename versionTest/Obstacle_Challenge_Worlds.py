@@ -592,8 +592,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     state_init = parking_state = 1
     enc_count = 0
     pink_thresh = 0
-    LEFT_LIMIT = 50
-    RIGHT_LIMIT = 140
+    LEFT_LIMIT = 45
+    RIGHT_LIMIT = 135
     Y_LIMIT = 300
     obstacle_state = 1
     pos = 0
@@ -762,7 +762,12 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 # time.sleep(0.01)
 
                 print("-------------------------------------------------")
-
+                if time.time() < avoided_time:
+                    pwm.set_PWM_dutycycle(pwm_pin, 0)
+                    pwm.write(direction_pin, 0)
+                    # correctAngle(heading_angle, imu_head)  # still steer if needed
+                    print("block spotted")
+                    continue  # skip the drive code below
                 # x, y co ordinates of the robot.
                 x, y = enc.get_position(imu_head, counts.value)
                 if inParkingatStart:
@@ -1325,8 +1330,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 g_flag = True
                                 CENTR_VAL =centr_x .value
                                 print(f"Green Detected.. {centr_y.value}")
-                                pos = map_range(
-                                    centr_x.value, 0, 640, LEFT_LIMIT, RIGHT_LIMIT)
+                                pos = map_range(centr_x.value, 0, 640, LEFT_LIMIT, RIGHT_LIMIT)
+                                pos = constraint(pos, LEFT_LIMIT + 15, RIGHT_LIMIT - 15)
                                 if centr_y.value > Y_LIMIT:
 
                                     green_avoid = True
@@ -1339,6 +1344,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 CENTR_VAL =centr_x_red.value
                                 print(f"Red Detected.. {centr_y_red.value}")
                                 pos = map_range(centr_x_red.value, 0, 640, LEFT_LIMIT, RIGHT_LIMIT)
+                                pos = constraint(pos, LEFT_LIMIT + 15, RIGHT_LIMIT - 15)
+
                                 if centr_y_red.value > Y_LIMIT:
                                     red_avoid = True
                                     curr_head = head.value
@@ -1389,8 +1396,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             if avoid_state == 4:
                                 while counts.value < target_count + AVOID_COUNT:
                                     runMotor(motor_speed, 1)
-                                    correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value,
-                                                centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r, red_b.value, green_b.value)
+                                    correctAngle(heading_angle, head.value, 1)
+                                    #correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r, red_b.value, green_b.value)
                                 red_avoid = False
                                 green_avoid = False
                                 avoid_state = 1
@@ -1446,6 +1453,8 @@ def runMotor(speed, direction):  # direction 0 - reverse 1- forward
 def map_range(x, in_min, in_max, out_min, out_max):
     return out_min + ((x - in_min) * (out_max - out_min)) / (in_max - in_min)
 
+def constraint(val, min_val, max_val):
+    return min(max_val, max(min_val, val))
 
 def runEncoder(counts, head):
     pwm = pigpio.pi()
