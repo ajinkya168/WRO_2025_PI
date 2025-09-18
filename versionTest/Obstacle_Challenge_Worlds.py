@@ -275,6 +275,39 @@ def correctAngle(setPoint_gyro, heading, multiplier):
     servo.setAngle(90 - correction)
 
 
+def correctBlock(centr_current, centr_target, head, sp):
+    global corr
+    error_b = 0
+    prevErroorB = 0
+    totalErrorB = 0
+    correctionB = 0
+    totalErrorB = 0
+    prevErrorB = 0
+
+    error_b = centr_current - centr_target
+    corr = error_b
+    # print("Error : ", error_gyro)
+    pTerm = 0
+    dTerm = 0
+    iTerm = 0
+
+    pTerm = kp * error_b 
+    dTerm = kd * (error_b - prevErrorB)
+    totalErrorB += error_b
+    iTerm = ki * totalErrorB
+    correction = pTerm + iTerm + dTerm
+
+
+    if correction > 30:
+        correction = 30
+    elif correction < -30:
+        correction = -30
+       
+
+    prevErrorB = error_b
+    correctAngle(sp + correction, head)
+
+
 def correctReverseAngle(setPoint_gyro, heading, multiplier):
     global corr
     error_gyro = 0
@@ -571,6 +604,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     AVOID_COUNT = 3500
     AVOID_ANGLE = 55
     motor_speed = 70
+    CENTR_VALUE = 0
     try:
         while True:
             reverse_trigger = False
@@ -1289,6 +1323,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
 
                             if green_b.value:
                                 g_flag = True
+                                CENTR_VAL =centr_x .value
                                 print(f"Green Detected.. {centr_y.value}")
                                 pos = map_range(
                                     centr_x.value, 0, 640, LEFT_LIMIT, RIGHT_LIMIT)
@@ -1301,6 +1336,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     obstacle_state = 2
                             elif red_b.value:
                                 r_flag = True
+                                CENTR_VAL =centr_x_red.value
                                 print(f"Red Detected.. {centr_y_red.value}")
                                 pos = map_range(centr_x_red.value, 0, 640, LEFT_LIMIT, RIGHT_LIMIT)
                                 if centr_y_red.value > Y_LIMIT:
@@ -1318,7 +1354,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                                 centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r, red_b.value, green_b.value)
                             else:
                                 print("correcting servo..")
-                                servo.setAngle(pos)
+                                correctBlock(CENTR_VAL, 0, head.value, heading_angle)
+                                #servo.setAngle(pos)
                         if obstacle_state == 2:  # This state avoids the block
                             print("Avoiding Obstacle")
 
