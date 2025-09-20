@@ -1183,55 +1183,64 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 norm_head = head.value + 360
                             else:
                                 norm_head = head.value
-                            timer_t = time.time()
-                            # abs((norm_head - heading_angle) - 360) > 8 or tfmini.distance_head > 60:
-                            while (abs((norm_head - heading_angle) - 360) > 8 or tfmini.distance_head > 60) and time.time() - timer_t < 1.5:
-                                if head.value < 180 and lane_reset == 0:
-                                    norm_head = head.value + 360
-                                else:
-                                    norm_head = head.value
-                                print(
-                                    f"correcting heading  blue time:{time.time() - timer_t} {x:.2f} {y:.2f} {head.value - heading_angle:.2f} {head.value} {tfmini.distance_head:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}")
-                                x, y = enc.get_position(head.value, counts.value)
-                                tfmini.getTFminiData()
-                                correctAngle(heading_angle, head.value, 1.5)
-
-                                power = 60
-                                prev_power = 0
-                                runMotor(power, 1)
-
-                            if tfmini.distance_right > 30:
+                            if reset_state == 1:
                                 timer_t = time.time()
-                                correctAngle(heading_angle + 20,head.value, 1.5)
-                                while (tfmini.distance_head > 20 or abs(corr) > 5) and time.time() - timer_t < 1.5:
-                                    tfmini.getTFminiData()
-                                    print(f"moving ahead blue to correct heading timer {time.time() - timer_t} x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f} corr:{abs(corr)}")
-                                    correctAngle(
-                                        heading_angle + 20, head.value, 1.5)
-                                    power = 90
-                                    prev_power = 0
-                                    runMotor(power, 1)
-                                    x, y = enc.get_position(
-                                        head.value, counts.value)
-
-                            elif tfmini.distance_right < 30:
-                                timer_t = time.time()
-                                correctAngle(heading_angle - 20, head.value, 1.5)
-                                while (tfmini.distance_head > 20 or abs(corr) > 5) and time.time() - timer_t < 1.5:
-                                    tfmini.getTFminiData()
+                                # abs((norm_head - heading_angle) - 360) > 8 or tfmini.distance_head > 60:
+                                while (abs((norm_head - heading_angle) - 360) > 8 or tfmini.distance_head > 60) and time.time() - timer_t < 1.5:
+                                    if head.value < 180 and lane_reset == 0:
+                                        norm_head = head.value + 360
+                                    else:
+                                        norm_head = head.value
                                     print(
-                                        f"moving ahead blue to correct heading timer {time.time() - timer_t} x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f} corr:{abs(corr)}")
-                                    correctAngle(heading_angle - 20, head.value, 1.5)
-                                    power = 90
+                                        f"correcting heading  blue time:{time.time() - timer_t} {x:.2f} {y:.2f} {head.value - heading_angle:.2f} {head.value} {tfmini.distance_head:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}")
+                                    x, y = enc.get_position(head.value, counts.value)
+                                    tfmini.getTFminiData()
+                                    correctAngle(heading_angle, head.value, 1.5)
+
+                                    power = 60
                                     prev_power = 0
                                     runMotor(power, 1)
+                                reset_state = 2
+                            
+                            if reset_state == 2:
+                                if lap_finish:
+                                    reset_state = 4
+                                else:
+                                    if tfmini.distance_right > 30 :
+                                        timer_t = time.time()
+                                        correctAngle(heading_angle + 20,head.value, 1.5)
+                                        while (tfmini.distance_head > 20 or abs(corr) > 5) and time.time() - timer_t < 1.5:
+                                            tfmini.getTFminiData()
+                                            print(f"moving ahead blue to correct heading timer {time.time() - timer_t} x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f} corr:{abs(corr)}")
+                                            correctAngle(
+                                                heading_angle + 20, head.value, 1.5)
+                                            power = 90
+                                            prev_power = 0
+                                            runMotor(power, 1)
+                                            x, y = enc.get_position(
+                                                head.value, counts.value)
+                                        reset_state = 3
 
-                                    x, y = enc.get_position(
-                                        head.value, counts.value)
-                                power = 0
-                                prev_power = 0
-                                # Set duty cycle to 50% (128/255)
-                                pwm.set_PWM_dutycycle(pwm_pin, power)
+                                    elif tfmini.distance_right < 30:
+                                        timer_t = time.time()
+                                        correctAngle(heading_angle - 20, head.value, 1.5)
+                                        while (tfmini.distance_head > 20 or abs(corr) > 5) and time.time() - timer_t < 1.5:
+                                            tfmini.getTFminiData()
+                                            print(
+                                                f"moving ahead blue to correct heading timer {time.time() - timer_t} x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f} corr:{abs(corr)}")
+                                            correctAngle(heading_angle - 20, head.value, 1.5)
+                                            power = 90
+                                            prev_power = 0
+                                            runMotor(power, 1)
+
+                                            x, y = enc.get_position(
+                                                head.value, counts.value)
+                                        power = 0
+                                        prev_power = 0
+                                        # Set duty cycle to 50% (128/255)
+                                        pwm.set_PWM_dutycycle(pwm_pin, power)
+                                        reset_state = 3
+                            if reset_state == 3:
                                 x, y = enc.get_position(imu_head, counts.value)
                                 buff = 4
 
@@ -1292,22 +1301,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 red_b.value = False
                                 pink_b.value = False
 
-                            else:
-                                if lap_finish and not continue_parking:
-                                    print("Lap is finished and it is inside 30")
-                                    while tfmini.distance_head > 20:
-                                        tfmini.getTFminiData()
-                                        print(
-                                            f"moving right ahead to correct heading x:{x} y:{y} lidar_f:{lidar_f.value:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}")
-                                        correctAngle(
-                                            heading_angle - 20, head.value, 1.5)
-                                        power = 90
-                                        prev_power = 0
-                                        runMotor(power, 1)
-
-                                        x, y = enc.get_position(
-                                            head.value, counts.value)
-
+                            if reset_state == 4:
                                     heading_angle = heading_angle + 90
                                     if head.value < 180 and lane_reset == 0:
                                         norm_head = head.value + 360
@@ -1380,37 +1374,40 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 print(f"distance_left:{tfmini.distance_left:.2f} distance_head:{tfmini.distance_head:.2f} after correction")
 
                             if reset_state == 2:
-                                if tfmini.distance_left > 30:
-                                    timer_t = time.time()
-                                    correctAngle(heading_angle - 20, head.value, 1.5)
-                                    while (tfmini.distance_head > 20 or abs(corr) > 5) and (time.time() - timer_t < 1.5):
-                                        tfmini.getTFminiData()
-                                        print(
-                                            f"moving ahead to correct heading x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} counter:{counter} imu:{head.value} {tfmini.distance_head:.2f} corr:{abs(corr)}")
+                                if lap_finish:
+                                    reset_state = 4
+                                else:
+                                    if tfmini.distance_left > 30:
+                                        timer_t = time.time()
                                         correctAngle(heading_angle - 20, head.value, 1.5)
-                                        power = 90
-                                        prev_power = 0
-                                        runMotor(power, 1)
-                                        x, y = enc.get_position(
-                                            head.value, counts.value)
-                                        
-                                    reset_state = 3
-                                elif tfmini.distance_left < 30:
-                                    timer_t = time.time()
-                                    correctAngle(heading_angle + 20, head.value, 1.5)
-                                    while (tfmini.distance_head > 20 or abs(corr) > 5) and (time.time() - timer_t < 1.5):
-                                        tfmini.getTFminiData()
-                                        print(
-                                            f"moving ahead to correct heading x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} counter:{counter} imu:{head.value} {tfmini.distance_head:.2f} corr:{abs(corr)}")
+                                        while (tfmini.distance_head > 20 or abs(corr) > 5) and (time.time() - timer_t < 1.5):
+                                            tfmini.getTFminiData()
+                                            print(
+                                                f"moving ahead to correct heading x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} counter:{counter} imu:{head.value} {tfmini.distance_head:.2f} corr:{abs(corr)}")
+                                            correctAngle(heading_angle - 20, head.value, 1.5)
+                                            power = 90
+                                            prev_power = 0
+                                            runMotor(power, 1)
+                                            x, y = enc.get_position(
+                                                head.value, counts.value)
+                                            
+                                        reset_state = 3
+                                    elif tfmini.distance_left < 30:
+                                        timer_t = time.time()
                                         correctAngle(heading_angle + 20, head.value, 1.5)
-                                        power = 90
-                                        prev_power = 0
-                                        runMotor(power, 1)
+                                        while (tfmini.distance_head > 20 or abs(corr) > 5) and (time.time() - timer_t < 1.5):
+                                            tfmini.getTFminiData()
+                                            print(
+                                                f"moving ahead to correct heading x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} counter:{counter} imu:{head.value} {tfmini.distance_head:.2f} corr:{abs(corr)}")
+                                            correctAngle(heading_angle + 20, head.value, 1.5)
+                                            power = 90
+                                            prev_power = 0
+                                            runMotor(power, 1)
 
-                                        x, y = enc.get_position(
-                                            head.value, counts.value)
-                                    reset_state = 3
-                                    
+                                            x, y = enc.get_position(
+                                                head.value, counts.value)
+                                        reset_state = 3
+                                        
                             if reset_state == 3:
                                 tfmini.getTFminiData()
                                 x, y = enc.get_position(imu_head, counts.value)
@@ -1471,20 +1468,8 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                 power = 70
                                 reset_f = False
                                 reset_state = 4
-                            else:
+                            if reset_state == 4:
                                 if lap_finish and not continue_parking:
-                                    print("Lap is finished and it is inside 30")
-                                    while tfmini.distance_head > 20 or head.value > 180:
-                                        tfmini.getTFminiData()
-                                        print(
-                                            f"moving blue right ahead to correct heading x:{x} y:{y} lidar_f:{lidar_f.value} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}")
-                                        correctAngle(
-                                            heading_angle + 20, head.value, 1.5)
-                                        power = 80
-                                        prev_power = 0
-                                        runMotor(power, 1)
-                                        x, y = enc.get_position(
-                                            head.value, counts.value, 1.5)
 
                                     heading_angle = heading_angle - 90
                                     if head.value > 180 and lane_reset == 0:
@@ -1501,8 +1486,7 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                                         x, y = enc.get_position(
                                             head.value, counts.value)
                                         tfmini.getTFminiData()
-                                        correctReverseAngle(
-                                            heading_angle, head.value, 1)
+                                        correctReverseAngle(heading_angle, head.value, 1)
                                         power = 90
                                         prev_power = 0
                                         runMotor(90, 0)
