@@ -144,7 +144,7 @@ corr_pos = 0
 ###################################################
 
 
-def correctPosition( setPoint, head, x, y, counter, blue, orange, reset, reverse, heading, centr_x_p, centr_x_r, centr_x_g, centr_y_g, centr_y_r, centr_y_p, finish, distance_h, distance_l, distance_r, red, green ): # print("INSIDE CORRECT")
+def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr_x_p, centr_x_r, centr_x_g, centr_y_g, centr_y_r, centr_y_p, distance_h, distance_l, distance_r, red, green ): # print("INSIDE CORRECT")
     # getTFminiData()
     global prevError, totalError, prevErrorGyro, totalErrorGyro, corr_pos
 
@@ -182,6 +182,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, reset, reverse
         elif blue:
             error = x + (100 + setPoint)
             (f"lane:{lane} error:{error} target:{(55 + setPoint)}, x:{x} y {y}")
+
     corr_pos = error
     pTerm_e = kp_e * error
     dTerm_e = kd_e * (error - prevError)
@@ -191,14 +192,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, reset, reverse
 
     print(f"Error: {error}")
 
-    if ( ((setPoint == -15) and orange)
-        or ( counter == 0 and (centr_x_p < 300 and centr_x_p > 0)
-            and ((centr_x_g or centr_x_r) > centr_x_p)
-            and not blue
-            and not orange
-        )
-        and not finish
-    ):
+    if (setPoint == -15 and orange):
         if distance_l <= 30:
             correction = 20
             print(f"Avoiding pink wall {correction}")
@@ -212,14 +206,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, reset, reverse
         else:
             print('setPoint was not -35')
             pass
-    if ( ((setPoint == 15) and blue)
-        or ( counter == 0 and (centr_x_p < 300 and centr_x_p > 0)
-            and ((centr_x_g or centr_x_r) < centr_y_p)
-            and not blue
-            and not orange
-        )
-        and not finish
-    ):
+    if (setPoint == 15 and blue):
         if distance_r <= 30:
             correction = -20
             print(f"Avoiding pink wall {correction}")
@@ -228,21 +215,15 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, reset, reverse
                 correction = 45
                 print(f"Avoiding pink wall {correction}")
             else:
-                correction = 20
+                correction = 10
                 print(f"Avoiding pink wall else {correction}")
         else:
             print('setPoint was not 35')
             pass
-    if not blue:
-        if heading > 180 and lane == 0:
-            n_head = heading - 360
-        else:
-            n_head = heading
-    else:
-        if heading < 180 and lane == 0:
-            n_head = heading + 360
-        else:
-            n_head = heading
+
+
+    n_head = normalize_angle(heading, blue, orange, lane)
+
     if green and distance_l <= 20:
         print(f"Correcting Green Wall Orange")
         correction = 15
@@ -252,10 +233,9 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, reset, reverse
     else:
         print('No wall detected...')
         pass
-    if correction > 45:
-        correction = 45
-    elif correction < -45:
-        correction = -45
+
+    correction = max(-45, min(45, correction))
+
     print( f"diff:{(heading - head):.2f} heading:{heading:.2f} head:{head:.2f} right {distance_r} head_d:{tfmini.distance_head} correction:{correction}" )
 
     prevError = error
@@ -283,10 +263,9 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h):
     iTerm = 0 * totalError_d
     correction = pTerm + iTerm + dTerm
 
-    if correction > 35:
-        correction = 35
-    elif correction < -35:
-        correction = -35
+
+    correction = max(-35, min(35, correction))
+
     prevError_d = error_d
     correctAngle(sp_h + correction, imu_h, 1.5)
 
@@ -317,15 +296,10 @@ def correctAngle(setPoint_gyro, heading, multiplier):
     correction = pTerm + iTerm + dTerm
 
     if multiplier == 3:
-        if correction > 60:
-            correction = 60
-        elif correction < -60:
-            correction = -60
+        correction = max(-60, min(60, correction))
     else:
-        if correction > 30:
-            correction = 30
-        elif correction < -30:
-            correction = -30
+        correction = max(-30, min(30, correction))
+
     prevErrorGyro = error_gyro
     servo.setAngle(90 - correction)
 
@@ -356,15 +330,10 @@ def correctReverseAngle(setPoint_gyro, heading, multiplier):
     correction = pTerm + iTerm + dTerm
 
     if multiplier == 3:
-        if correction > 50:
-            correction = 50
-        elif correction < -50:
-            correction = -50
+        correction = max(-50, min(50, correction))
     else:
-        if correction > 30:
-            correction = 30
-        elif correction < -30:
-            correction = -30
+        correction = max(-30, min(30, correction))
+
     prevErrorGyro = error_gyro
     servo.setAngle(90 + correction)
 
@@ -544,7 +513,7 @@ def Live_Feed( red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_re
     finally:
         cap.release()
         cv2.destroyAllWindows()
-        
+
 def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, head, sp_angle, turn_trigger, lidar_f, lidar_l, lidar_r, left_f, right_f):
     pwm = pigpio.pi()
     global imu, corr, corr_pos
@@ -571,7 +540,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     calc_time = False
     lap_finish = continue_parking = parking_heading = parking_flag = False
     turn_flag = reset_flags = counter_reset = False
-    finished = finish = False
+    finished = False
     red_time = green_time = False
     ############ VARIABLES ##################
     setPointL = -40
@@ -582,12 +551,12 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     last_counter = 12
     counter = turn_t = current_time = gp_time = rp_time = buff = c_time = 0
     heading_angle = 0
-    lap_finish_time = ( prev_distance ) = turn_trigger_distance = target_count = offset = button_STATE = 0 
-    time_p = prev_time = 0 
-    fps_time2 = 0 
-    debounce_delay = 0.2 
-    last_time = 0 
-    avoided = False 
+    lap_finish_time = ( prev_distance ) = turn_trigger_distance = target_count = offset = button_STATE = 0
+    time_p = prev_time = 0
+    fps_time2 = 0
+    debounce_delay = 0.2
+    last_time = 0
+    avoided = False
     avoided_time = time.time()
     reverse_until = 0
     encoder_counter_store = False
@@ -662,9 +631,9 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     enc.y = -40
                     right_f.value = True
                     inParkingatStart = True
-                elif ( tf_r < 25 and tf_h < 250 and tf_h > 0 and tf_r > 0 and pink_b.value ): 
-                    enc.x = 0 
-                    enc.y = 40 
+                elif ( tf_r < 25 and tf_h < 250 and tf_h > 0 and tf_r > 0 and pink_b.value ):
+                    enc.x = 0
+                    enc.y = 40
                     print('Left side parking')
                     left_f.value = True
                     inParkingatStart = True
@@ -971,28 +940,42 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         g_flag = False
                         r_flag = False
                         rev_count = 0
-                        if blue_flag:
-                            if RESET_STATE == 1:
-                                timer_t = time.time()
-                                norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
-                                # abs((norm_head - heading_angle) - 360) > 8 or tfmini.distance_head > 60:
-                                while ( abs((norm_head - heading_angle) - 360) > 8 or tfmini.distance_head > 60 ) and time.time() - timer_t < 1.5: 
+                        if RESET_STATE == 1:
+                            timer_t = time.time()
+                            norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
+                            # abs((norm_head - heading_angle) - 360) > 8 or tfmini.distance_head > 60:
+                            if blue_flag:
+                                while ( abs((norm_head - heading_angle) - 360) > 8 or tfmini.distance_head > 60 ) and time.time() - timer_t < 1.5:
                                     norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
                                     print( f"correcting heading  blue time:{time.time() - timer_t} {x:.2f} {y:.2f} {head.value - heading_angle:.2f} {head.value} {tfmini.distance_head:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}" )
                                     x, y = enc.get_position( head.value, counts.value)
                                     tfmini.getTFminiData()
                                     correctAngle( heading_angle, head.value, 1.5)
-
                                     power = 60
                                     prev_power = 0
                                     runMotor(power, 1)
-                                RESET_STATE = 2
-                            if RESET_STATE == 2:
-                                if tfmini.distance_right > 30:
-                                    timer_t = time.time()
-                                    correctAngle(heading_angle +
-                                                 20, head.value, 1.5)
-                                    while ( tfmini.distance_head > 20 or abs( corr) > 5 ) and time.time() - timer_t < 1.5: 
+                            elif orange_flag:
+                                while ( abs(norm_head - heading_angle) > 8 or tfmini.distance_head > 60 ) and (time.time() - timer_t < 1.5):
+                                    norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
+                                    print( f"correcting orange heading counter:{counter} imu:{head.value:.2f} diff:{abs(norm_head - heading_angle):.2f} tfmini head: {tfmini.distance_head:.2f} norm_head:{norm_head}" )
+                                    x, y = enc.get_position( head.value, counts.value)
+                                    tfmini.getTFminiData()
+                                    correctAngle( heading_angle, head.value, 1.5)
+                                    power = 70
+                                    prev_power = 0
+                                    runMotor(power, 1)
+                            RESET_STATE = 2
+                        if RESET_STATE == 2:
+                            tfmni.getTFminiData()
+                            if blue_flag:
+                                thresh_distance = tfmini.distance_right
+                            elif orange_flag:
+                                thresh_distance = tfmini.distance_left
+                            if thresh_distance > 30:
+                                timer_t = time.time()
+                                if blue_flag:
+                                    correctAngle(heading_angle + 20, head.value, 1.5)
+                                    while ( tfmini.distance_head > 20 or abs( corr) > 5 ) and time.time() - timer_t < 1.5:
                                         tfmini.getTFminiData()
                                         print( f"moving ahead blue to correct heading timer {time.time() - timer_t} x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f} corr:{abs(corr)}" )
                                         correctAngle( heading_angle + 20, head.value, 1.5 )
@@ -1000,51 +983,59 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         prev_power = 0
                                         runMotor(power, 1)
                                         x, y = enc.get_position( head.value, counts.value )
-                                    if lap_finish:
-                                        RESET_STATE = 4
-                                    else:
-                                        RESET_STATE = 3
-                                elif tfmini.distance_right < 30:
-                                    timer_t = time.time()
-                                    correctAngle(heading_angle -
-                                                 20, head.value, 1.5)
-                                    while ( tfmini.distance_head > 20 or abs( corr) > 5 ) and time.time() - timer_t < 1.5: 
+
+                                elif orange_flag:
+                                    correctAngle(heading_angle - 20, head.value, 1.5)
+                                    while (tfmini.distance_head > 20 or abs(corr)> 5) and (time.time() - timer_t < 1.5):
+                                        tfmini.getTFminiData()
+                                        print(f"moving ahead to correct heading x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} counter:{counter} imu:{head.value} {tfmini.distance_head:.2f} corr:{abs(corr)}")
+                                        correctAngle(heading_angle - 20, head.value,1.5)
+                                        power = 90
+                                        prev_power = 0
+                                        runMotor(power, 1)
+                                        x, y = enc.get_position(head.value, counts.value)
+                                if lap_finish:
+                                    RESET_STATE = 4
+                                else:
+                                    RESET_STATE = 3
+                            elif thresh_distance < 30:
+                                timer_t = time.time()
+                                if blue_flag:
+                                    correctAngle(heading_angle - 20, head.value, 1.5)
+                                    while ( tfmini.distance_head > 20 or abs( corr) > 5 ) and time.time() - timer_t < 1.5:
                                         tfmini.getTFminiData()
                                         print( f"moving ahead blue to correct heading timer {time.time() - timer_t} x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f} corr:{abs(corr)}" )
                                         correctAngle( heading_angle - 20, head.value, 1.5 )
                                         power = 90
                                         prev_power = 0
                                         runMotor(power, 1)
-
                                         x, y = enc.get_position( head.value, counts.value )
-                                    power = 0
-                                    prev_power = 0
-                                    # Set duty cycle to 50% (128/255)
-                                    pwm.set_PWM_dutycycle(pwm_pin, power)
-                                    if lap_finish:
-                                        RESET_STATE = 4
-                                    else:
-                                        RESET_STATE = 3
-                            if RESET_STATE == 3:
-                                x, y = enc.get_position(imu_head, counts.value)
-                                buff = 4
-
-                                counter = counter + 1
-                                lane_reset = counter % 4
-                                heading_angle = -((90 * counter) % 360)
-                                sp_angle.value = heading_angle
-
-                                timer_v = time.time()
-
-                                if head.value < 180 and lane_reset == 1:
-                                    norm_head = head.value + 360
+                                elif orange_flag:
+                                    correctAngle(heading_angle + 20, head.value, 1.5)
+                                    while (tfmini.distance_head > 20 or abs(corr) > 5) and (time.time() - timer_t < 1.5):
+                                        tfmini.getTFminiData()
+                                        print(f"moving ahead to correct heading x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} counter:{counter} imu:{head.value} {tfmini.distance_head:.2f} corr:{abs(corr)}")
+                                        correctAngle(heading_angle + 20, head.value, 1.5)
+                                        power = 90
+                                        prev_power = 0
+                                        runMotor(power, 1)
+                                        x, y = enc.get_position(head.value, counts.value)
+                                if lap_finish:
+                                    RESET_STATE = 4
                                 else:
-                                    norm_head = head.value
-                                while ( abs((norm_head - heading_angle) - 360) > 8 and time.time() - timer_v < 2.5 ): 
-                                    if head.value < 180 and lane_reset == 1: 
-                                        norm_head = head.value + 360 
-                                    else: 
-                                        norm_head = head.value 
+                                    RESET_STATE = 3
+                        if RESET_STATE == 3:
+                            x, y = enc.get_position(imu_head, counts.value)
+                            buff = 4
+                            counter = counter + 1
+                            lane_reset = counter % 4
+                            heading_angle = update_heading( counter, heading_angle, blue_flag, orange_flag)
+                            sp_angle.value = heading_angle
+                            timer_v = time.time()
+                            norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
+                            if blue_flag:
+                                while ( abs((norm_head - heading_angle) - 360) > 8 and time.time() - timer_v < 2.5 ):
+                                    norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
                                     print( f"reversing servo {head.value:.2f} {heading_angle} diff: {(heading_angle - head.value) + 360:.2f} rev_diff: {(head.value - heading_angle) - 360:.2f} {counts.value} x:{x:.2f} y:{y:.2f}  head_r :{tfmini.distance_right:.2f} head_d:{tfmini.distance_head:.2f}" )
                                     x, y = enc.get_position( head.value, counts.value)
                                     tfmini.getTFminiData()
@@ -1052,33 +1043,39 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     power = 90
                                     prev_power = 0
                                     runMotor(power, 0)
-                                power = 0
-                                prev_power = 0
-                                runMotor(power, 0)
+                            elif orange_flag:
+                                while ( abs(norm_head - heading_angle) > 8 and time.time() - timer_v < 2.5):
+                                    norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
+                                    print( f"reversing servo counter:{counter} imu:{head.value:.2f} diff:{abs(norm_head - heading_angle):.2f} tfmini head: {tfmini.distance_head:.2f} tfmini left:{tfmini.distance_left}" )
+                                    x, y = enc.get_position( head.value, counts.value)
+                                    tfmini.getTFminiData()
+                                    correctReverseAngle( heading_angle, head.value, 1)
+                                    power = 90
+                                    prev_power = 0
+                                    runMotor(power, 0)
+                            power = 0
+                            prev_power = 0
+                            runMotor(power, 0)
 
-                                c_time = time.time()
+                            c_time = time.time()
 
-                                time.sleep(0.5)
-                                tfmini.getTFminiData()
+                            time.sleep(0.5)
+                            tfmini.getTFminiData()
 
-                                turn_trigger_distance = tfmini.distance_right
-                                enc.x, enc.y = reset_coordinates( turn_trigger_distance, lane_reset, orange_flag, blue_flag, x, y )
-
-                                print(f"enc.x: {enc.x:.2f} enc.y:{enc.y:.2f}")
-                                power = 90
-
-                                if not trigger_enc_flag:
-                                    print('Encoder counts are stored for trigger')
-                                    trigger_enc = counts.value
-                                    trigger_enc_flag = True
-                                reset_f = False
-                                green_b.value = False
-                                red_b.value = False
-                                pink_b.value = False
-                            if RESET_STATE == 4:
+                            turn_trigger_distance = tfmini.distance_right
+                            enc.x, enc.y = reset_coordinates( turn_trigger_distance, lane_reset, orange_flag, blue_flag, x, y )
+                            print(f"enc.x: {enc.x:.2f} enc.y:{enc.y:.2f}")
+                            power = 90
+                            trigger_enc = counts.value
+                            print('Encoder counts are stored for trigger')
+                            reset_f = False
+                            green_b.value = False
+                            red_b.value = False
+                            pink_b.value = False
+                        if RESET_STATE == 4:
+                            norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
+                            if blue_flag:
                                 heading_angle = heading_angle + 90
-                                norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
-
                                 while abs((norm_head - heading_angle) - 360) > 8:
                                     norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
                                     print( f"reversing servo {head.value:.2f} {heading_angle} diff: {(heading_angle - head.value) + 360:.2f} rev_diff: {(head.value - heading_angle) - 360:.2f} {counts.value} x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f}" )
@@ -1097,152 +1094,42 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     runMotor(power, 1)
                                     x, y = enc.get_position( head.value, counts.value)
                                 heading_angle = heading_angle + 90
-                                p_flag = True
-                                p_past = True
-                                continue_parking = True
-                                reset_f = False
-                                runMotor(0, 1)
-                                power = 70
-                                prev_power = 0
-                                print('Calculating pink time...')
-                                pink_time = time.time()
-                                print(f"pink time {pink_time} ")
-                        elif orange_flag:  # Reset Orange
-                            norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
-                            if RESET_STATE == 1:
-                                timer_t = time.time()
-                                while ( abs(norm_head - heading_angle) > 8 or tfmini.distance_head > 60 ) and (time.time() - timer_t < 1.5): 
-                                    norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
-                                    print( f"correcting orange heading counter:{counter} imu:{head.value:.2f} diff:{abs(norm_head - heading_angle):.2f} tfmini head: {tfmini.distance_head:.2f} norm_head:{norm_head}" )
-                                    x, y = enc.get_position( head.value, counts.value)
+                            elif orange_flag:
+                                heading_angle = heading_angle - 90
+                                while abs((norm_head - heading_angle)) > 8:
+                                    norm_head = normalize_angle(head.value, blue_flag, orange_flag, lane_reset)
+                                    print(f"reversing servo {head.value:.2f} {heading_angle} diff: {(heading_angle - head.value) + 360:.2f} rev_diff: {(head.value - heading_angle) - 360:.2f} {counts.value} x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f}")
+                                    x, y = enc.get_position(head.value, counts.value)
                                     tfmini.getTFminiData()
-                                    correctAngle( heading_angle, head.value, 1.5)
-                                    power = 70
-                                    prev_power = 0
-                                    runMotor(power, 1)
-                                RESET_STATE = 2
-                                print( f"distance_left:{tfmini.distance_left:.2f} distance_head:{tfmini.distance_head:.2f} after correction" )
-                            if RESET_STATE == 2:
-                                if lap_finish:
-                                    RESET_STATE = 4
-                                else:
-                                    if tfmini.distance_left > 30:
-                                        timer_t = time.time()
-                                        correctAngle( heading_angle - 20, head.value, 1.5 )
-                                        while ( tfmini.distance_head > 20 or abs( corr) > 5 ) and (time.time() - timer_t < 1.5): 
-                                            tfmini.getTFminiData()
-                                            print( f"moving ahead to correct heading x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} counter:{counter} imu:{head.value} {tfmini.distance_head:.2f} corr:{abs(corr)}" )
-                                            correctAngle( heading_angle - 20, head.value, 1.5 )
-                                            power = 90
-                                            prev_power = 0
-                                            runMotor(power, 1)
-                                            x, y = enc.get_position( head.value, counts.value )
-                                        if lap_finish:
-                                            RESET_STATE = 4
-                                        else:
-                                            RESET_STATE = 3
-                                    elif tfmini.distance_left < 30:
-                                        timer_t = time.time()
-                                        correctAngle( heading_angle + 20, head.value, 1.5 )
-                                        while ( tfmini.distance_head > 20 or abs( corr) > 5 ) and (time.time() - timer_t < 1.5): 
-                                            tfmini.getTFminiData()
-                                            print( f"moving ahead to correct heading x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} counter:{counter} imu:{head.value} {tfmini.distance_head:.2f} corr:{abs(corr)}" )
-                                            correctAngle( heading_angle + 20, head.value, 1.5 )
-                                            power = 90
-                                            prev_power = 0
-                                            runMotor(power, 1)
-
-                                            x, y = enc.get_position( head.value, counts.value )
-                                        if lap_finish:
-                                            RESET_STATE = 4
-                                        else:
-                                            RESET_STATE = 3
-                            if RESET_STATE == 3:
-                                tfmini.getTFminiData()
-                                x, y = enc.get_position(imu_head, counts.value)
-                                buff = 4
-
-                                c_time = time.time()
-                                counter = counter + 1
-                                lane_reset = counter % 4
-
-                                heading_angle = (90 * counter) % 360
-                                sp_angle.value = heading_angle
-
-                                timer_v = time.time()
-
-                                norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
-
-                                while ( abs(norm_head - heading_angle) > 8 and time.time() - timer_v < 2.5 ): 
-                                    norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
-                                    print( f"reversing servo counter:{counter} imu:{head.value:.2f} diff:{abs(norm_head - heading_angle):.2f} tfmini head: {tfmini.distance_head:.2f} tfmini left:{tfmini.distance_left}" )
-                                    x, y = enc.get_position( head.value, counts.value)
-                                    tfmini.getTFminiData()
-                                    correctReverseAngle( heading_angle, head.value, 1)
+                                    correctReverseAngle(heading_angle, head.value, 1)
                                     power = 90
                                     prev_power = 0
-                                    runMotor(power, 0)
-                                power = 0
-                                prev_power = 0
-                                # Set duty cycle to 50% (128/255)
-                                pwm.set_PWM_dutycycle(pwm_pin, power)
-                                time.sleep(0.5)
-                                tfmini.getTFminiData()
-
-                                turn_trigger_distance = tfmini.distance_left
-
-                                enc.x, enc.y = reset_coordinates( turn_trigger_distance, lane_reset, orange_flag, blue_flag, x, y )
-
-                                power = 90
-                                print(f"enc.x: {enc.x:.2f} enc.y:{enc.y:.2f}")
-                                if not trigger_enc_flag:
-                                    print('Encoder counts are stored for trigger')
-                                    trigger_enc = counts.value
-                                    trigger_enc_flag = True
-                                power = 70
-                                reset_f = False
-                            if RESET_STATE == 4:
-                                if lap_finish and not continue_parking:
-                                    heading_angle = heading_angle - 90
-                                    norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
-
-                                    while abs((norm_head - heading_angle)) > 8:
-                                        norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
-                                        print( f"reversing servo {head.value:.2f} {heading_angle} diff: {(heading_angle - head.value) + 360:.2f} rev_diff: {(head.value - heading_angle) - 360:.2f} {counts.value} x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f}" )
-                                        x, y = enc.get_position( head.value, counts.value )
-                                        tfmini.getTFminiData()
-                                        correctReverseAngle( heading_angle, head.value, 1 )
-                                        power = 90
-                                        prev_power = 0
-                                        runMotor(90, 0)
-                                    while tfmini.distance_head > 50:
-                                        tfmini.getTFminiData()
-                                        print( f"moving blue right ahead to correct heading x:{x} y:{y} lidar_f:{lidar_f.value} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}" )
-                                        correctAngle( heading_angle, head.value, 1.5)
-                                        power = 70
-                                        prev_power = 0
-                                        runMotor(70, 1)
-                                        x, y = enc.get_position( head.value, counts.value )
-                                    heading_angle = heading_angle - 90
-                                    p_flag = True
-                                    continue_parking = True
-                                    reset_f = False
-                                    power = 0
-                                    prev_power = 0
-                                    pwm.set_PWM_dutycycle(pwm_pin, power)
+                                    runMotor(90, 0)
+                                while tfmini.distance_head > 50:
+                                    tfmini.getTFminiData()
+                                    print(f"moving blue right ahead to correct heading x:{x} y:{y} lidar_f:{lidar_f.value} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}")
+                                    correctAngle(heading_angle, head.value,1.5)
                                     power = 70
                                     prev_power = 0
-                                    print('Calculating pink time...')
-                                    pink_time = time.time()
-                                    print(f"pink time {pink_time} ")
+                                    runMotor(70, 1)
+                                    x, y = enc.get_position(head.value, counts.value)
+                                heading_angle = heading_angle - 90
+                            p_flag = True
+                            p_past = True
+                            continue_parking = True
+                            reset_f = False
+                            runMotor(0, 1)
+                            power = 70
+                            prev_power = 0
+                            print('Calculating pink time...')
+                            pink_time = time.time()
+                            print(f"pink time {pink_time} ")
+
                     else:
                         # TRIGGGER CHECK VALUESSSS
                         if blue_flag and lap_finish:
                             blue_lap = True
-                        if ( (turn_trigger.value and not trigger)
-                            and not trigger_enc_flag
-                            and not blue_lap
-                        ):
+                        if ( (turn_trigger.value and not trigger) and not trigger_enc_flag and not blue_lap):
                             buff = 0
                             print('Trigger Detected...')
                             trigger = True
@@ -1256,6 +1143,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 trigger = False
                                 trigger_enc_flag = False
                                 print('Encoder counts done for trigger')
+
                         ################## PANDAV 3.0 ###################
                         if not lap_finish:
                             if OBSTACLE_STATE == 1:
@@ -1268,7 +1156,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                             else:
                                                 reverse_until = avoided_time + 0.7
                                         g_flag = True
-                                        g_past = True
                                         OBSTACLE_STATE = 2
                                         print('Obstacle STATE changed to 2')
                                 elif red_b.value and not g_flag and not r_flag:
@@ -1280,11 +1167,10 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                             else:
                                                 reverse_until = avoided_time + 0.7
                                         r_flag = True
-                                        r_past = True
                                         OBSTACLE_STATE = 2
                                         print('Obstacle STATE changed to 2')
                                 else:
-                                    correctPosition( setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r, red_b.value, green_b.value )
+                                    correctPosition( setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
                                     g_flag = False
                                     r_flag = False
                                     p_flag = False
@@ -1294,27 +1180,27 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             if OBSTACLE_STATE == 2:
                                 if g_flag:
                                     print('avoiding green..')
-                                    correctPosition( setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r, red_b.value, green_b.value )
+                                    correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
                                     if green_b.value:
                                         green_time = time.time()
-                                    if ( tf_r <= 40 and tf_r > 0 ) or time.time() - green_time > 2: 
-                                        if ( not green_b.value and not encoder_counter_store ): 
-                                            encoder_counts_value = counts.value 
-                                            encoder_counter_store = True 
-                                            g_flag = False 
-                                            OBSTACLE_STATE = 1 
+                                    if ( tf_r <= 40 and tf_r > 0 ) or time.time() - green_time > 2:
+                                        if (not green_b.value and not encoder_counter_store ):
+                                            encoder_counts_value = counts.value
+                                            encoder_counter_store = True
+                                            g_flag = False
+                                            OBSTACLE_STATE = 1
                                             print('Obstacle STATE changed to 1')
                                 elif r_flag:
                                     print('avoiding red...')
-                                    correctPosition( setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, finish, tf_h, tf_l, tf_r, red_b.value, green_b.value )
+                                    correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, reset_f, reverse, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
                                     if red_b.value:
                                         red_time = time.time()
-                                    if ( tf_l <= 40 and tf_l > 0 ) or time.time() - red_time > 2: 
-                                        if ( not red_b.value and not encoder_counter_store ): 
-                                            encoder_counts_value = counts.value 
-                                            encoder_counter_store = True 
-                                            r_flag = False 
-                                            OBSTACLE_STATE = 1 
+                                    if ( tf_l <= 40 and tf_l > 0 ) or time.time() - red_time > 2:
+                                        if ( not red_b.value and not encoder_counter_store ):
+                                            encoder_counts_value = counts.value
+                                            encoder_counter_store = True
+                                            r_flag = False
+                                            OBSTACLE_STATE = 1
                                             print('Obstacle STATE changed to 1')
                         else:
                             if p_flag and continue_parking and not parking_flag:
@@ -1339,21 +1225,18 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     if orange_flag or blue_flag:
                                         print( f"prev_distance: {prev_distance}, distance_right: {tfmini.distance_right} diff: {prev_distance - tfmini.distance_right} diff_flag:{(prev_distance - tfmini.distance_right) >= 10}" )
                                         p_flag = True
-
                                         # if tfmini.distance_right <= 35 and ((prev_distance - tfmini.distance_right) >= 10 and prev_distance > 0):
-                                        if ( tfmini.distance_left > 150 and tfmini.distance_left < 500 ): 
-                                            p_pass = 2 
-                                            if p_pass == 2: 
-                                                p_past = False 
-                                                parking_flag = True 
+                                        if ( tfmini.distance_left > 150 and tfmini.distance_left < 500 ):
+                                            p_pass = 2
+                                            if p_pass == 2:
+                                                p_past = False
+                                                parking_flag = True
                                                 print( 'Pink Avoidance Complete...')
                                         prev_distance = tfmini.distance_right
                                 print('5')
                 total_power = (power * 0.1) + (prev_power * 0.9)
                 prev_power = total_power
-                pwm.set_PWM_dutycycle(pwm_pin, 2.55 * total_power)
-
-                pwm.write(direction_pin, 1)  # Set pin 20 high
+                runMotor(total_power, 1)
 
                 print( f"centr_x.value: {centr_x.value} centr_y.value: {centr_y.value} centr_red: {centr_x_red.value} centr_y_red:{centr_y_red.value} centr_pink: {centr_x_pink.value}" )
                 print( f"left_b.value:{left_f.value} right_b.value:{right_f.value} orange_flag:{orange_flag} blue_flag:{blue_flag}" )
@@ -1390,6 +1273,12 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
         pwm.stop()
         # pwm.close()
 
+
+def update_heading(counter, heading_angle, blue, orange):
+    if blue:
+        return -((90 * counter) % 360)
+    elif orange:
+        return (90 * counter) % 360
 
 def runMotor(speed, direction):  # direction 0 - reverse 1- forward
     pwm.set_PWM_dutycycle(12, int(speed * 2.55))  # Stop motor
@@ -1541,11 +1430,11 @@ def read_lidar( lidar_angle, lidar_distance, sp_angle, turn_trigger, lidar_f, li
                         lidar_right = lidar_distance.value
                         R = ( 0.2 * R + 0.8 * lidar_distance.value if license else lidar_distance.value )
                         lidar_r.value = R
-                        
+
                     if (F <= 950 and R >= 1500) and right_f.value and not left_f.value:
                         turn_trigger.value = True
-                    elif ( (F <= 950 and L >= 1500) and left_f.value and not right_f.value ): 
-                        turn_trigger.value = True 
+                    elif ( (F <= 950 and L >= 1500) and left_f.value and not right_f.value ):
+                        turn_trigger.value = True
                     else: turn_trigger.value = False # print(f"front: {F:.2f}. right:{R:.2f} left:{L:.2f}  turn_trigger:{turn_trigger.value} imu:{imu_r} sp_angle: {sp} right_f.value:{right_f.value} left_f.value:{left_f.value}")
             # print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left}  turn_trigger:{turn_trigger.value} diff:{time.time() - trig_time}  imu:{imu_r} sp_angle: {sp_angle.value}")
             # print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
@@ -1560,20 +1449,11 @@ if __name__ == '__main__':
         E = multiprocessing.Process(target=runEncoder, args=(counts, head))
         lidar_proc = multiprocessing.Process( target=read_lidar, args=(lidar_angle, lidar_distance, sp_angle, turn_trigger, lidar_f, lidar_l, lidar_r, left_f, right_f, head))  # noqa  # Launch the lidar reader process  # C = multiprocessing.Process(target=color_SP, args=(blue_c, orange_c, white_c))
 
-        print('Image Process Start')
         P.start()
-        print('Image Process Started')
         E.start()
-        print('Starting lidar process')
         lidar_proc.start()
-        print('lidar process startes')
-
-        print('Servo Process Start')
         S.start()
-        print('Servo Process Started')
-        print('Encoder Process Start')
 
-        print('Encoder Process Started')
     except KeyboardInterrupt:
         ser.close()
         E.terminate()
