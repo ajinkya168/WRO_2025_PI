@@ -853,7 +853,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     if not calc_time:
                         c_time = time.time()
                         calc_time = True
-                    time_p = 2.5
+                    time_p = 2
                     if STATE == 1:
                         while time.time() - c_time < time_p:
                             tfmini.getTFminiData()
@@ -1226,7 +1226,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         print( f"prev_distance: {prev_distance}, distance_right: {tfmini.distance_right} diff: {prev_distance - tfmini.distance_right} diff_flag:{(prev_distance - tfmini.distance_right) >= 10}" )
                                         p_flag = True
                                         # if tfmini.distance_right <= 35 and ((prev_distance - tfmini.distance_right) >= 10 and prev_distance > 0):
-                                        if ( tfmini.distance_left > 150 and tfmini.distance_left < 500 ):
+                                        #if ( tfmini.distance_left > 150 and tfmini.distance_left < 500 ):
+                                        if tfmini.distance_head < 90:
                                             p_pass = 2
                                             if p_pass == 2:
                                                 p_past = False
