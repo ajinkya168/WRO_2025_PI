@@ -671,7 +671,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         correctReverseAngle(heading_angle - 90, head.value, 3)
                         while abs(corr) > 5:
                             x, y = enc.get_position(head.value, counts.value)
-
                             tfmini.getTFminiData()
                             power = 70
                             prev_power = 0
@@ -681,7 +680,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             correctReverseAngle( heading_angle - 90, head.value, 3)
                         while tfmini.distance_head < 50:
                             x, y = enc.get_position(head.value, counts.value)
-
                             tfmini.getTFminiData()
                             power = 70
                             prev_power = 0
@@ -707,6 +705,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         continue_parking = True
                         parking_STATE = 3
                         pink_time = time.time()
+                        
             ################# LANE 0 DECISIONS #####################
 
             if counter % 4 == 0:  # DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
@@ -746,9 +745,11 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         if setPointR > 100:
                             setPointR = 100
                     setPointL = -40
+                    
             if not button:
                 print( f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value} tf_h:{tf_h:.2f} diff:{(head.value - heading_angle):.2f} counts:{counts.value:.2f}" )
                 print( f"centr_X:{centr_x_pink.value:.2f}   centr_x red:{centr_x_red.value:.2f} centr x green:{centr_x.value:.2f}" )
+                
             if time.time() - last_time > debounce_delay:
                 previous_STATE = button_STATE
                 button_STATE = pwm.read(5)
@@ -787,7 +788,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 correctAngle(heading_angle - 90, head.value, 3)
                         while tfmini.distance_head > 40:
                             x, y = enc.get_position(head.value, counts.value)
-
                             if orange_flag:
                                 correctAngle(heading_angle + 90, head.value, 3)
                             elif blue_flag:
