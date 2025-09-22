@@ -1424,18 +1424,19 @@ def read_lidar( lidar_angle, lidar_distance, sp_angle, turn_trigger, lidar_f, li
                         lidar_f.value = F
                     if int(lidar_angle.value) == (90 + imu_r + sp) % 360:
                         lidar_left = lidar_distance.value
-                        L = ( 0.2 * L + 0.8 * lidar_distance.value if R else lidar_distance.value )
+                        L = ( 0.2 * L + 0.8 * lidar_distance.value if L else lidar_distance.value )
                         lidar_l.value = L
                     if int(lidar_angle.value) == (270 + imu_r + sp) % 360:
                         lidar_right = lidar_distance.value
-                        R = ( 0.2 * R + 0.8 * lidar_distance.value if license else lidar_distance.value )
+                        R = ( 0.2 * R + 0.8 * lidar_distance.value if R else lidar_distance.value )
                         lidar_r.value = R
 
                     if (F <= 950 and R >= 1500) and right_f.value and not left_f.value:
                         turn_trigger.value = True
                     elif ( (F <= 950 and L >= 1500) and left_f.value and not right_f.value ):
                         turn_trigger.value = True
-                    else: turn_trigger.value = False # print(f"front: {F:.2f}. right:{R:.2f} left:{L:.2f}  turn_trigger:{turn_trigger.value} imu:{imu_r} sp_angle: {sp} right_f.value:{right_f.value} left_f.value:{left_f.value}")
+                    else: 
+                        turn_trigger.value = False # print(f"front: {F:.2f}. right:{R:.2f} left:{L:.2f}  turn_trigger:{turn_trigger.value} imu:{imu_r} sp_angle: {sp} right_f.value:{right_f.value} left_f.value:{left_f.value}")
             # print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left}  turn_trigger:{turn_trigger.value} diff:{time.time() - trig_time}  imu:{imu_r} sp_angle: {sp_angle.value}")
             # print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
 
