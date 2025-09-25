@@ -224,10 +224,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     n_head = normalize_angle(heading, blue, orange, lane)
 
-    if setPoint <= -40 and distance_l <= 20:
+    if setPoint <= -40 and distance_l <= 25:
         print(f"Correcting Green Wall Orange")
         correction = 15
-    elif setPoint >= 40 and distance_r <= 20:
+    elif setPoint >= 40 and distance_r <= 25:
         print( f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}" )
         correction = -15
     else:
@@ -606,6 +606,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
             l_right = lidar_r.value
             tf_l = tfmini.distance_left
             tf_r = tfmini.distance_right
+            x, y = enc.get_position(head.value, counts.value)
 
             if not init:
                 if tf_h > 0 and head.value > 0:
@@ -630,12 +631,12 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 if tf_l < 25 and tf_h < 250 and tf_l > 0 and tf_h > 0 and pink_b.value:
                     print('Right side parking')
                     enc.x = 0
-                    enc.y = -40
+                    enc.y = tfmini.distance_right - 100 #-40
                     right_f.value = True
                     inParkingatStart = True
                 elif ( tf_r < 25 and tf_h < 250 and tf_h > 0 and tf_r > 0 and pink_b.value ):
                     enc.x = 0
-                    enc.y = 40
+                    enc.y = 100 - tfmini.distance_left#40
                     print('Left side parking')
                     left_f.value = True
                     inParkingatStart = True
@@ -662,7 +663,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     print(f"Vehicle is stopped...")
             if lap_finish and not continue_parking:
                 if not counter_reset:
-                    counter = counter % last_counier
+                    counter = counter % last_counter
                     counter_reset = True
                 if orange_flag:
                     print('Correcting wall pid orange')
@@ -784,7 +785,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 correctAngle(heading_angle + 90, head.value, 3)
                             elif blue_flag:
                                 correctAngle(heading_angle - 90, head.value, 3)
-                        while tfmini.distance_head > 40:
+                        while tfmini.distance_head > 30:
                             x, y = enc.get_position(head.value, counts.value)
                             if orange_flag:
                                 correctAngle(heading_angle + 90, head.value, 3)
@@ -1167,6 +1168,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     g_flag = False
                                     r_flag = False
                                     p_flag = False
+                                    encoder_counter_store = False
                                     rev_count = 0
                                     print('Obstacle STATE changed to 0')
                                     print('No flags set, moving forward')
@@ -1177,9 +1179,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     if green_b.value:
                                         green_time = time.time()
                                     if ( tf_r <= 40 and tf_r > 0 ) or time.time() - green_time > 2:
-                                        if (not green_b.value and not encoder_counter_store ):
-                                            encoder_counts_value = counts.value
-                                            encoder_counter_store = True
+                                        if (not green_b.value):
                                             g_flag = False
                                             OBSTACLE_STATE = 1
                                             print('Obstacle STATE changed to 1')
@@ -1189,9 +1189,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     if red_b.value:
                                         red_time = time.time()
                                     if ( tf_l <= 40 and tf_l > 0 ) or time.time() - red_time > 2:
-                                        if ( not red_b.value and not encoder_counter_store ):
-                                            encoder_counts_value = counts.value
-                                            encoder_counter_store = True
+                                        if ( not red_b.value):
                                             r_flag = False
                                             OBSTACLE_STATE = 1
                                             print('Obstacle STATE changed to 1')
