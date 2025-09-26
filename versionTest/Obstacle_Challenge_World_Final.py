@@ -28,8 +28,8 @@ time.sleep(5)
 timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
 log_dir = '/home/pi/WRO_2025_PI/logs'
 
-log_file = open(f"{log_dir}/log_obstacle_2.txt", 'w')
-sys.stdout = log_file
+#log_file = open(f"{log_dir}/log_obstacle_2.txt", 'w')
+#sys.stdout = log_file
 
 # PINS
 

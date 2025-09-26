@@ -32,7 +32,7 @@ ExecStartPre=/usr/bin/python3 -c 'import pigpio; pi=pigpio.pi(); \
   [ (lambda p: (pi.bb_serial_read_close(p), None))[0] for p in (23,24,25,27) if True ]; pi.stop()'
 
 # --- run your app using your venv python ---
-ExecStart=/home/pi/coral-py39-env/bin/python /home/pi/WRO_2025_PI/versionTest/Obstacle_Challenge_2025_Final.py
+ExecStart=/home/pi/coral-py39-env/bin/python /home/pi/WRO_2025_PI/versionTest/Obstacle_Challenge_World_Final.py
 
 Restart=on-failure
 RestartSec=3
