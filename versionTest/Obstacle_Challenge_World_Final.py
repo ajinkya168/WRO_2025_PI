@@ -655,8 +655,16 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 print(f"target:{target_count}")
                 if not finished:
                     if orange_flag:
-                        target_count = ( counts.value + 20000 )  # 22000 - finish too late in the section elif blue_flag: target_count = counts.value + 24000 finished = True if counts.value >= target_count: power = 0 pink_b.value = False # Set duty cycle to 50% (128/255)
-                    pwm.set_PWM_dutycycle(pwm_pin, power)
+                        target_count = counts.value + 20000 #22000 - finish too late in the section
+                    elif blue_flag:
+                        target_count = counts.value + 24000
+                    finished = True
+                    
+                if counts.value >= target_count:
+                    power = 0
+                    pink_b.value = False
+                    # Set duty cycle to 50% (128/255)
+                    runMotor(power, 1)
                     time.sleep(3)
                     pink_b.value = False
                     power = 70
