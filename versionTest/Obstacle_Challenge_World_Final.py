@@ -241,7 +241,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     prevError = error
 
     if setPoint == 15:
-        correctAngle(head + correction, heading, 0.7)
+        correctAngle(head + correction, heading, 1) #0.85
     else:
         correctAngle(head + correction, heading, 1.5)
         
@@ -861,7 +861,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     if not calc_time:
                         c_time = time.time()
                         calc_time = True
-                    time_p = 2
+                    time_p = 0 #2
                     if STATE == 1:
                         while time.time() - c_time < time_p:
                             tfmini.getTFminiData()
@@ -869,10 +869,11 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
 
                             if orange_flag or blue_flag:
                                 print(f"prev_distance: {prev_distance}")
-                                if prev_distance - tfmini.distance_right >= 10:
+                                full_park = True
+                                '''if prev_distance - tfmini.distance_right >= 10:
                                     print('Breaking reverse loop..')
                                     full_park = True
-                                    break
+                                    break'''
                                 prev_distance = tfmini.distance_right
                             print( f"Reversing backward... {counts.value} right:{tfmini.distance_right:.2f} left:{tfmini.distance_left:.2f} diff right: {prev_distance - tfmini.distance_right:.2f} diff left:{prev_distance - tfmini.distance_left:.2f}" )
                             power = 70
@@ -1232,7 +1233,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         p_flag = True
                                         # if tfmini.distance_right <= 35 and ((prev_distance - tfmini.distance_right) >= 10 and prev_distance > 0):
                                         #if ( tfmini.distance_left > 150 and tfmini.distance_left < 500 ):
-                                        if tfmini.distance_head < 90:
+                                        if tfmini.distance_head < 85: #90
                                             p_pass = 2
                                             if p_pass == 2:
                                                 p_past = False
