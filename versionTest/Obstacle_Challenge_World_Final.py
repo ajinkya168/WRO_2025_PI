@@ -867,14 +867,15 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             tfmini.getTFminiData()
                             parking_count_current = counts.value
 
-                            if orange_flag or blue_flag:
+                            '''if orange_flag or blue_flag:
                                 print(f"prev_distance: {prev_distance}")
                                 full_park = True
-                                '''if prev_distance - tfmini.distance_right >= 10:
+                                if prev_distance - tfmini.distance_right >= 10:
                                     print('Breaking reverse loop..')
                                     full_park = True
-                                    break'''
-                                prev_distance = tfmini.distance_right
+                                    break
+                                prev_distance = tfmini.distance_right'''
+                            full_park = True
                             print( f"Reversing backward... {counts.value} right:{tfmini.distance_right:.2f} left:{tfmini.distance_left:.2f} diff right: {prev_distance - tfmini.distance_right:.2f} diff left:{prev_distance - tfmini.distance_left:.2f}" )
                             power = 70
                             prev_power = 0
@@ -1081,7 +1082,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             green_b.value = False
                             red_b.value = False
                             pink_b.value = False
-                            RESET_STATE = 1
+                            RESET_STATE = 0
                             OBSTACLE_STATE = 1
                         if RESET_STATE == 4:
                             norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
@@ -1129,6 +1130,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             p_past = True
                             continue_parking = True
                             reset_f = False
+                            trigger = False
                             runMotor(0, 1)
                             power = 70
                             prev_power = 0
@@ -1141,7 +1143,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         # TRIGGGER CHECK VALUESSSS
                         if blue_flag and lap_finish:
                             blue_lap = True
-                        if ( (turn_trigger.value and not trigger) and not trigger_enc_flag and not blue_lap):
+                        if ( (turn_trigger.value and not trigger) and not trigger_enc_flag and not blue_lap) and not continue_parking:
                             buff = 0
                             print('Trigger Detected...')
                             trigger = True
@@ -1149,7 +1151,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             RESET_STATE = 1
                             avoided_time = time.time() + 0.3
                             turn_t = time.time()
-                        elif counts.value > trigger_enc + 22000:
+                        elif counts.value > trigger_enc + 22000 and not continue_parking:
                             print( f"Trigger enc flag is set: {trigger_enc_flag} counts:{counts.value} trigger_enc:{trigger_enc + 22000}" )
                             trigger = False
                             trigger_enc_flag = False
