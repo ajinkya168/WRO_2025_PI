@@ -191,7 +191,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     correction = pTerm_e + iTerm_e + dTerm_e
 
     print(f"Error: {error}")
-
+ 
     if (setPoint == -15 and orange):
         if distance_l <= 30:
             correction = 20
@@ -239,7 +239,12 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     print( f"diff:{(heading - head):.2f} heading:{heading:.2f} head:{head:.2f} right {distance_r} head_d:{tfmini.distance_head} correction:{correction}" )
 
     prevError = error
-    correctAngle(head + correction, heading, 1.5)
+
+    if setPoint == 15:
+        correctAngle(head + correction, heading, 0.7)
+    else:
+        correctAngle(head + correction, heading, 1.5)
+        
 
 
 def correctWall(setPoint_distance, dist, sp_h, imu_h):
