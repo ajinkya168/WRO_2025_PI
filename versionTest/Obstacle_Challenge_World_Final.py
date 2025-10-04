@@ -614,6 +614,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     init = True
                 else:
                     servo.setAngle(45)
+                    
             if green_b.value:
                 pwm.write(red_led, 0)
                 pwm.write(green_led, 1)
@@ -626,6 +627,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 pwm.write(red_led, 0)
                 pwm.write(green_led, 0)
                 pwm.write(blue_led, 0)
+                
             if not inParkingatStart and not left_f.value and not right_f.value:
                 print('Starting Parking at Start...')
                 if tf_l < 25 and tf_h < 250 and tf_l > 0 and tf_h > 0 and pink_b.value:
@@ -661,6 +663,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     prev_power = 0
                     lap_finish = True
                     print(f"Vehicle is stopped...")
+                    
             if lap_finish and not continue_parking:
                 if not counter_reset:
                     counter = counter % last_counter
@@ -695,7 +698,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         correctAngle(heading_angle, head.value, 3)
                         while abs(corr) > 5:
                             x, y = enc.get_position(head.value, counts.value)
-
                             tfmini.getTFminiData()
                             power = 70
                             prev_power = 0
@@ -704,7 +706,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             pwm.write(direction_pin, 1)
                             correctAngle(heading_angle, head.value, 3)
                         p_flag = True
-                        p_past = True
                         continue_parking = True
                         parking_STATE = 3
                         pink_time = time.time()
