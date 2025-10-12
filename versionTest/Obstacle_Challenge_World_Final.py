@@ -600,6 +600,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     pink_thresh = 0
     blue_lap = False
     avoid_thres = 2
+    buff_time = time.time()
     try:
         while True:
             imu_head = head.value
@@ -1149,6 +1150,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         # TRIGGGER CHECK VALUESSSS
                         if blue_flag and lap_finish:
                             blue_lap = True
+                            
                         if ( (turn_trigger.value and not trigger) and not trigger_enc_flag and not blue_lap) and not continue_parking:
                             buff = 0
                             print('Trigger Detected...')
@@ -1162,57 +1164,9 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             trigger = False
                             trigger_enc_flag = False
                             print('Encoder counts done for trigger')
-
                         ################## PANDAV 3.0 ###################
-                        if not lap_finish and not reset_f:
-                            if OBSTACLE_STATE == 1:
-                                if green_b.value and not g_flag and not r_flag and centr_y.value > 250 :
-                                    if centr_x.value < 320 and centr_x.value > 0:
-                                        avoided_time = time.time() + 0.3
-                                        reverse_until = avoided_time + 0.7       
-                                    g_flag = True
-                                    if blue_flag:
-                                        avoid_thres = avoid_thres + 1
-                                    OBSTACLE_STATE = 2
-                                    print('Obstacle STATE changed to 2')
-                                elif red_b.value and not g_flag and not r_flag and centr_y_red.value > 250 :
-                                    if centr_x_red.value > 300:
-                                        avoided_time = time.time() + 0.3
-                                        reverse_until = avoided_time + 0.7
-                                    r_flag = True
-                                    if orange_flag:
-                                        avoid_thres = avoid_thres + 1
-                                    OBSTACLE_STATE = 2
-                                    print('Obstacle STATE changed to 2')
-                                else:
-                                    correctPosition( setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
-                                    p_flag = False
-                                    encoder_counter_store = False
-                                    g_flag = False
-                                    r_flag = False
-                                    rev_count = 0
-                                    print('Obstacle STATE changed to 0')
-                                    print('No flags set, moving forward')
-                            if OBSTACLE_STATE == 2:
-                                if g_flag:
-                                    print(f'avoiding green..green avoid: {time.time() - green_time}')
-                                    correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
-                                    if green_b.value:
-                                        green_time = time.time()
-                                    if ( tf_r <= 40 and tf_r > 0) or (time.time() - green_time > avoid_thres and not green_b.value): 
-                                        g_flag = False
-                                        OBSTACLE_STATE = 1
-                                        print('Obstacle STATE changed to 1')
-                                elif r_flag:
-                                    print(f'avoiding red... time avoid : {time.time() - red_time}')
-                                    correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
-                                    if red_b.value:
-                                        red_time = time.time() 
-                                    if ( tf_l <= 40 and tf_l > 0 ) or (time.time() - red_time > avoid_thres and not red_b.value): 
-                                        r_flag = False
-                                        OBSTACLE_STATE = 1
-                                        print('Obstacle STATE changed to 1')
-                        elif lap_finish:
+      
+                        if lap_finish:
                             if p_flag and continue_parking and not parking_flag:
                                 power = 60
                                 print('avoiding pink..')
@@ -1244,7 +1198,61 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                                 parking_flag = True
                                                 print( 'Pink Avoidance Complete...')
                                         prev_distance = tfmini.distance_right
-                                print('5')
+                        else:
+                            if OBSTACLE_STATE == 1:
+                                if green_b.value and not g_flag and not r_flag and centr_y.value > 250 :
+                                    if centr_x.value < 320 and centr_x.value > 0:
+                                        avoided_time = time.time() + 0.3
+                                        reverse_until = avoided_time + 0.7       
+                                    g_flag = True
+                                    OBSTACLE_STATE = 2
+                                    print('Obstacle STATE changed to 2')
+                                elif red_b.value and not g_flag and not r_flag and centr_y_red.value > 250 :
+                                    if centr_x_red.value > 300:
+                                        avoided_time = time.time() + 0.3
+                                        reverse_until = avoided_time + 0.7
+                                    r_flag = True
+
+                                    OBSTACLE_STATE = 2
+                                    print('Obstacle STATE changed to 2')
+                                else:
+                                    correctPosition( setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
+                                    p_flag = False
+                                    encoder_counter_store = False
+                                    g_flag = False
+                                    r_flag = False
+                                    rev_count = 0
+                                    print('Obstacle STATE changed to 0')
+                                    print('No flags set, moving forward')
+                            if OBSTACLE_STATE == 2:
+                                if g_flag:
+                                    print(f'avoiding green..green avoid: {time.time() - green_time}')
+                                    correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
+                                    if green_b.value:
+                                        green_time = time.time()
+                                    if ( tf_r <= 40 and tf_r > 0) or (time.time() - green_time > avoid_thres and not green_b.value): 
+                                        g_flag = False
+                                        OBSTACLE_STATE = 3
+                                        buff_time = time.time()
+                                        print('Obstacle STATE changed to 1')
+                                elif r_flag:
+                                    print(f'avoiding red... time avoid : {time.time() - red_time}')
+                                    correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
+                                    if red_b.value:
+                                        red_time = time.time() 
+                                    if ( tf_l <= 40 and tf_l > 0 ) or (time.time() - red_time > avoid_thres and not red_b.value): 
+                                        r_flag = False
+                                        OBSTACLE_STATE = 3
+                                        buff_time = time.time()
+                                        print('Obstacle STATE changed to 1')
+                            if OBSTACLE_STATE == 3:
+                                r_flag = False
+                                g_flag = False
+                                correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
+                                if time.time() - buff_time > 1.2:
+                                    OBSTACLE_STATE = 1
+
+                                
                 total_power = (power * 0.1) + (prev_power * 0.9)
                 prev_power = total_power
                 runMotor(total_power, 1)
