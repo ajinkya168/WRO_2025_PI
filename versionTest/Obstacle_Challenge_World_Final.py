@@ -1164,13 +1164,15 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             print('Encoder counts done for trigger')
 
                         ################## PANDAV 3.0 ###################
-                        if not lap_finish:
+                        if not lap_finish and not reset_f:
                             if OBSTACLE_STATE == 1:
                                 if green_b.value and not g_flag and not r_flag and centr_y.value > 250 :
                                     if centr_x.value < 320 and centr_x.value > 0:
                                         avoided_time = time.time() + 0.3
                                         reverse_until = avoided_time + 0.7       
                                     g_flag = True
+                                    if blue_flag:
+                                        avoid_thres = avoid_thres + 1
                                     OBSTACLE_STATE = 2
                                     print('Obstacle STATE changed to 2')
                                 elif red_b.value and not g_flag and not r_flag and centr_y_red.value > 250 :
@@ -1178,6 +1180,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         avoided_time = time.time() + 0.3
                                         reverse_until = avoided_time + 0.7
                                     r_flag = True
+                                    if orange_flag:
+                                        avoid_thres = avoid_thres + 1
                                     OBSTACLE_STATE = 2
                                     print('Obstacle STATE changed to 2')
                                 else:
@@ -1191,8 +1195,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     print('No flags set, moving forward')
                             if OBSTACLE_STATE == 2:
                                 if g_flag:
-                                    if blue_flag:
-                                        avoid_thres = avoid_thres + 1
                                     print(f'avoiding green..green avoid: {time.time() - green_time}')
                                     correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
                                     if green_b.value:
@@ -1202,8 +1204,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         OBSTACLE_STATE = 1
                                         print('Obstacle STATE changed to 1')
                                 elif r_flag:
-                                    if orange_flag:
-                                        avoid_thres = avoid_thres + 1
                                     print(f'avoiding red... time avoid : {time.time() - red_time}')
                                     correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
                                     if red_b.value:
