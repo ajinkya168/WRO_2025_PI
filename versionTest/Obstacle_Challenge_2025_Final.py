@@ -28,7 +28,7 @@ import datetime
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 log_dir = "/home/pi/WRO_2025_PI/logs"
 
-log_file = open(f"{log_dir}/log_obstacle_2.txt", 'w')
+log_file = open(f"{log_dir}/log_obstacle_3.txt", 'w')
 sys.stdout = log_file
 
 # PINS
