@@ -590,7 +590,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     parking_count = 500
     parking_count_current = 0
     full_park = False
-    servo.setAngle(45)
+    servo.setAngle(40)#45
     timer_t = time.time()
     STATE_INIT = 1
     enc_count = 0
@@ -815,7 +815,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         elif blue_flag:
                             correctReverseAngle(heading_angle, head.value, 3)
                         enc_count = counts.value
-                        while abs(corr) > 5 or counts.value > enc_count - 6000:
+                        while abs(corr) > 5 or counts.value > enc_count - 5000: #enc_COUNT-6000
                             x, y = enc.get_position(head.value, counts.value)
                             runMotor(70, 0)
                             # 0 = reverse, 1 = forward (per your wiring)
@@ -887,7 +887,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         if full_park:
                             while counts.value > parking_count_current - parking_count:
                                 print( f"Reversing backward full park...{counts.value} {parking_count_current - parking_count}" )
-                                power = 70
+                                power = 90#70
                                 prev_power = 0
                                 correctReverseAngle( heading_angle, head.value, 1)
                                 # Set duty cycle to 50% (128/255)
@@ -1151,7 +1151,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             RESET_STATE = 1
                             avoided_time = time.time() + 0.3
                             turn_t = time.time()
-                        elif counts.value > trigger_enc + 22000 and not continue_parking:
+                        elif counts.value > trigger_enc + 24000 and not continue_parking: #22000
                             print( f"Trigger enc flag is set: {trigger_enc_flag} counts:{counts.value} trigger_enc:{trigger_enc + 22000}" )
                             trigger = False
                             trigger_enc_flag = False
@@ -1163,27 +1163,20 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 if green_b.value and not g_flag and not r_flag and centr_y.value > 250:
                                     if centr_x.value < 320 and centr_x.value > 0:
                                         avoided_time = time.time() + 0.3
-                                        if orange_flag:
-                                            reverse_until = avoided_time + 0.7
-                                        else:
-                                            reverse_until = avoided_time + 0.7
+                                        reverse_until = avoided_time + 0.7
                                     g_flag = True
                                     OBSTACLE_STATE = 2
                                     print('Obstacle STATE changed to 2')
                                 elif red_b.value and not g_flag and not r_flag and centr_y_red.value > 250:
                                     if centr_x_red.value > 300:
                                         avoided_time = time.time() + 0.3
-                                        if orange_flag:
-                                            reverse_until = avoided_time + 0.7
-                                        else:
-                                            reverse_until = avoided_time + 0.7
+                                        reverse_until = avoided_time + 0.7
+                                        
                                     r_flag = True
                                     OBSTACLE_STATE = 2
                                     print('Obstacle STATE changed to 2')
                                 else:
                                     correctPosition( setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
-                                    g_flag = False
-                                    r_flag = False
                                     p_flag = False
                                     encoder_counter_store = False
                                     rev_count = 0
