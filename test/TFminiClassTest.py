@@ -15,7 +15,7 @@ if __name__ == "__main__":
 		while True:
 			tfmini.getTFminiData()
 			
-			avg_d = (tfmini.distance_right* 0.01) + (avg_d * 0.99)
+			#avg_d = (tfmini.distance_right* 0.01) + (avg_d * 0.99)
 			print(
 				f"average: {avg_d:.3f} head : {tfmini.distance_head:.3f}, left: {tfmini.distance_left:.3f}, right: {tfmini.distance_right:.3f} back:{tfmini.distance_back} sum_horizontal:{tfmini.distance_right + tfmini.distance_left}")
 	except Exception as e:
