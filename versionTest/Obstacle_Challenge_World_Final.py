@@ -776,7 +776,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     if centr_x_red.value < 200 and centr_x_red.value > 0:
                         red_b.value = False
                 elif blue_flag:
-                    if centr_x_red.value > 150:
+                    if centr_x_red.value > 200:
                         red_b.value = False
                 if orange_flag:
                     setPointL = -15
@@ -861,7 +861,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         elif blue_flag:
                             correctReverseAngle(heading_angle, head.value, 3)
                         enc_count = counts.value
-                        while abs(corr) > 5 or counts.value > enc_count - 5000: #enc_COUNT-6000
+                        while abs(corr) > 5 or counts.value > enc_count - 7000: #enc_COUNT-6000
                             x, y = enc.get_position(head.value, counts.value)
                             runMotor(70, 0)
                             # 0 = reverse, 1 = forward (per your wiring)
@@ -1314,7 +1314,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
                                     if green_b.value:
                                         green_time = time.time()
-                                    if ( tf_r <= 40 and tf_r > 0) or (time.time() - green_time > avoid_thres and not green_b.value): 
+                                    if ( tf_r <= 40 and tf_r > 0 and counter%4 != 0) or (time.time() - green_time > avoid_thres): 
                                         g_flag = False
                                         OBSTACLE_STATE = 3
                                         buff_time = time.time()
@@ -1324,7 +1324,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
                                     if red_b.value:
                                         red_time = time.time() 
-                                    if ( tf_l <= 40 and tf_l > 0 ) or (time.time() - red_time > avoid_thres and not red_b.value): 
+                                    if ( tf_l <= 40 and tf_l > 0 ) or (time.time() - red_time > avoid_thres): 
                                         r_flag = False
                                         OBSTACLE_STATE = 3
                                         buff_time = time.time()
