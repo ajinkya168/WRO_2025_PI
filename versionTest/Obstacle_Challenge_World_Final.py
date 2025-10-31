@@ -699,7 +699,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             # 0 = reverse, 1 = forward (per your wiring)
                             pwm.write(direction_pin, 0)
                             correctReverseAngle( heading_angle + 90, head.value, 3)
-                        while tfmini.distance_head < 50:
+                        while tfmini.distance_head < 60:
                             x, y = enc.get_position(head.value, counts.value)
                             tfmini.getTFminiData()
                             power = 70
@@ -845,7 +845,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 correctAngle(heading_angle + 90, head.value, 3)
                             elif blue_flag:
                                 correctAngle(heading_angle - 90, head.value, 3)
-                        while tfmini.distance_head > 30:
+                        while tfmini.distance_head > 50:
                             x, y = enc.get_position(head.value, counts.value)
                             if orange_flag:
                                 correctAngle(heading_angle + 90, head.value, 3)
@@ -1321,7 +1321,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                             buff_time = time.time()
                                             print('Obstacle STATE changed to 1')
                                     elif orange_flag:
-                                        if ( tf_r <= 40 and tf_r > 0 ) or (time.time() - green_time > avoid_thres): 
+                                        if ( tf_r <= 40 and tf_r > 0) or (time.time() - green_time > avoid_thres): 
                                             g_flag = False
                                             OBSTACLE_STATE = 3
                                             buff_time = time.time()
