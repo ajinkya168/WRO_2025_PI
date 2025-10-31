@@ -616,7 +616,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
             x, y = enc.get_position(head.value, counts.value)
 
             if not init:
-                if tf_h > 0 and head.value > 0:
+                if tf_h > 0 and head.value > 0 and (pink_b.value or red_b.value or green_b.value):
                     correctAngle(heading_angle, head.value, 1.5)
                     init = True
                 else:
@@ -916,15 +916,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             while time.time() - c_time <= time_p:
                                 tfmini.getTFminiData()
                                 parking_count_current = counts.value
-
-                                '''if orange_flag or blue_flag:
-                                    print(f"prev_distance: {prev_distance}")
-                                    full_park = True
-                                    if prev_distance - tfmini.distance_right >= 10:
-                                        print('Breaking reverse loop..')
-                                        full_park = True
-                                        break
-                                    prev_distance = tfmini.distance_right'''
                                 full_park = True
                                 print( f"Reversing backward... {counts.value} right:{tfmini.distance_right:.2f} left:{tfmini.distance_left:.2f} diff right: {prev_distance - tfmini.distance_right:.2f} diff left:{prev_distance - tfmini.distance_left:.2f}" )
                                 power = 70
@@ -967,7 +958,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             pass
                         STATE = 2
                         print('STATE 1')
-                        
                     if STATE == 2:
                         if blue_flag:
                             heading_angle = heading_angle - 90
@@ -993,7 +983,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 power = 85
                                 prev_power = 0
                                 correctReverseAngle( heading_angle, head.value, 3)
-                                # Set duty cycle to 50% (128/255)
                                 pwm.set_PWM_dutycycle(pwm_pin, power)
                                 pwm.write(direction_pin, 0)  # Set pin 20 hig
                         STATE = 3
