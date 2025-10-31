@@ -662,7 +662,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 print(f"target:{target_count}")
                 if not finished:
                     if orange_flag:
-                        target_count = counts.value + 23000 #22000 - finish too late in the section
+                        target_count = counts.value + 30000 #22000 - finish too late in the section
                     elif blue_flag:
                         target_count = counts.value + 23000
                     finished = True
@@ -688,7 +688,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 if orange_flag:
                     print('Correcting wall pid orange')
                     if parking_STATE == 1:
-                        correctReverseAngle(heading_angle - 90, head.value, 3)
+                        correctReverseAngle(heading_angle + 90, head.value, 3)
                         while abs(corr) > 5:
                             x, y = enc.get_position(head.value, counts.value)
                             tfmini.getTFminiData()
@@ -698,7 +698,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             print ("mid turn ", abs(corr))
                             # 0 = reverse, 1 = forward (per your wiring)
                             pwm.write(direction_pin, 0)
-                            correctReverseAngle( heading_angle - 90, head.value, 3)
+                            correctReverseAngle( heading_angle + 90, head.value, 3)
                         while tfmini.distance_head < 50:
                             x, y = enc.get_position(head.value, counts.value)
                             tfmini.getTFminiData()
@@ -707,11 +707,11 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             pwm.set_PWM_dutycycle(pwm_pin, int(1.2 * power))
                             # 0 = reverse, 1 = forward (per your wiring)
                             pwm.write(direction_pin, 0)
-                            correctReverseAngle(heading_angle - 90, head.value, 3)
+                            correctReverseAngle(heading_angle + 90, head.value, 3)
                             print("p state 1 ")
                         parking_STATE = 2
                     if parking_STATE == 2:
-                        heading_angle = heading_angle - 90
+                        heading_angle = heading_angle + 180
                         correctAngle(heading_angle, head.value, 3)
                         print("corr is", abs(corr))
                         while abs(corr) > 5:
@@ -912,7 +912,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     time_p = 0 #1.3
                     full_park = True
                     if STATE == 1:
-                        if blue_flag:
+                        if blue_flag or orange_flag:
                             while time.time() - c_time <= time_p:
                                 tfmini.getTFminiData()
                                 parking_count_current = counts.value
@@ -934,34 +934,12 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 pwm.set_PWM_dutycycle(pwm_pin, power)
                                 pwm.write(direction_pin, 0)  # Set pin 20 hig
                                 prev_time = time.time()
-                        if orange_flag:
-                            time_p = 0
-                            while time.time() - c_time <= time_p:
-                                tfmini.getTFminiData()
-                                parking_count_current = counts.value
 
-                                '''if orange_flag or blue_flag:
-                                    print(f"prev_distance: {prev_distance}")
-                                    full_park = True
-                                    if prev_distance - tfmini.distance_right >= 10:
-                                        print('Breaking reverse loop..')
-                                        full_park = True
-                                        break
-                                    prev_distance = tfmini.distance_right'''
-                                full_park = True
-                                print( f"Reversing backward... {counts.value} right:{tfmini.distance_right:.2f} left:{tfmini.distance_left:.2f} diff right: {prev_distance - tfmini.distance_right:.2f} diff left:{prev_distance - tfmini.distance_left:.2f}" )
-                                power = 70
-                                prev_power = 0
-                                correctReverseAngle(heading_angle, head.value, 1)
-                                # Set duty cycle to 50% (128/255)
-                                pwm.set_PWM_dutycycle(pwm_pin, power)
-                                pwm.write(direction_pin, 1)  # Set pin 20 hig
-                                prev_time = time.time()
                         if full_park:
                             parking_count_current = counts.value
                             tfmini.getTFminiData()
                             if orange_flag:
-                                parking_count = 300
+                                parking_count = 1 #300
                             while counts.value > parking_count_current - parking_count:
                                 if blue_flag:
                                     print( f"Reversing backward full park...{counts.value} {parking_count_current - parking_count}" )
@@ -1040,9 +1018,9 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     print("state 3 turn is happening")
                                
                             if orange_flag:
-                                heading_angle = heading_angle - 90
+                                heading_angle = heading_angle + 90
                                 correctReverseAngle( heading_angle, head.value, 3)
-                                while (tfmini.distance_left > 20) or abs(corr) > 5:
+                                while (tfmini.distance_right > 20) or abs(corr) > 5:
                                     tfmini.getTFminiData()
                                     print( f"corr:{abs(corr)} head:{tfmini.distance_head} left:{tfmini.distance_right}" )
                                     print('Reversing forward...')
