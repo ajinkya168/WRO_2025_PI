@@ -1299,7 +1299,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         correctAngle( heading_angle, head.value, 1.5)
                                     print( f"time after reversing heading {time.time() - pink_time} distance_right:{tf_r} distance_left:{tf_l} prev_distance:{prev_distance}" )'''
                                 if orange_flag:
-                                    pink_thresh = 0 # 4
+                                    pink_thresh = 1.5 # 4
                                 elif blue_flag:
                                     pink_thresh = 1.5
                                 if time.time() - pink_time > pink_thresh:
