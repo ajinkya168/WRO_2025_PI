@@ -1249,9 +1249,10 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         ################## PANDAV 3.0 ###################
       
                         if lap_finish:
+                            sp_angle.value = heading_angle
                             if p_flag and continue_parking and not parking_flag:
                                 power = 60
-                                print(f'avoiding pink..{lidar_f.value}')
+                                print(f'avoiding pink..{lidar_f.value} {lidar_l.value}')
                                 if blue_flag:
                                     correctAngle( heading_angle, head.value, 1.5)
                                 elif orange_flag:
@@ -1265,17 +1266,17 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         correctAngle( heading_angle, head.value, 1.5)
                                     print( f"time after reversing heading {time.time() - pink_time} distance_right:{tf_r} distance_left:{tf_l} prev_distance:{prev_distance}" )'''
                                 if orange_flag:
-                                    pink_thresh = 2 # 4
+                                    pink_thresh = 1.5 # 4
                                 elif blue_flag:
-                                    pink_thresh = 2
+                                    pink_thresh = 1.5
                                 if time.time() - pink_time > pink_thresh:
                                     tfmini.getTFminiData()
                                     if orange_flag or blue_flag:
-                                        print( f"lidar_f:{lidar_f.value} prev_distance: {prev_distance}, distance_right: {tfmini.distance_right} diff: {prev_distance - tfmini.distance_right} diff_flag:{(prev_distance - tfmini.distance_right) >= 10}" )
+                                        print( f"lidar_f:{lidar_f.value} right: {lidar_l.value} prev_distance: {prev_distance}, distance_right: {tfmini.distance_right} diff: {prev_distance - tfmini.distance_right} diff_flag:{(prev_distance - tfmini.distance_right) >= 10}" )
                                         p_flag = True
                                         # if tfmini.distance_right <= 35 and ((prev_distance - tfmini.distance_right) >= 10 and prev_distance > 0):
                                         #if ( tfmini.distance_left > 150 and tfmini.distance_left < 500 ):
-                                        if lidar_f.value < 900 and lidar_r.value > 1200: 
+                                        if lidar_f.value < 900 and lidar_l.value > 1200: 
                                             p_pass = 2
                                             if p_pass == 2:
                                                 p_past = False
