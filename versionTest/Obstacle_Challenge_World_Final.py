@@ -699,7 +699,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             # 0 = reverse, 1 = forward (per your wiring)
                             pwm.write(direction_pin, 0)
                             correctReverseAngle( heading_angle + 90, head.value, 3)
-                        while tfmini.distance_head < 60:
+                        while tfmini.distance_head < 55:
                             x, y = enc.get_position(head.value, counts.value)
                             tfmini.getTFminiData()
                             power = 70
@@ -845,7 +845,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 correctAngle(heading_angle + 90, head.value, 3)
                             elif blue_flag:
                                 correctAngle(heading_angle - 90, head.value, 3)
-                        while tfmini.distance_head > 50:
+                        while tfmini.distance_head > 40:
                             x, y = enc.get_position(head.value, counts.value)
                             if orange_flag:
                                 correctAngle(heading_angle + 90, head.value, 3)
@@ -1276,7 +1276,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         p_flag = True
                                         # if tfmini.distance_right <= 35 and ((prev_distance - tfmini.distance_right) >= 10 and prev_distance > 0):
                                         #if ( tfmini.distance_left > 150 and tfmini.distance_left < 500 ):
-                                        if lidar_f.value < 900 and lidar_l.value > 1200: 
+                                        if lidar_f.value < 1000 and lidar_l.value > 1200: 
                                             p_pass = 2
                                             if p_pass == 2:
                                                 p_past = False
