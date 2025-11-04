@@ -875,7 +875,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         inParkingatStart = False
                 if red_b.value or green_b.value:
                     power = 55
-                elif not g_flag and not r_flag:
+                elif not red_b.value and not green_b.value:
                     power = 85
                 else:
                     power = 80
@@ -1275,7 +1275,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         p_flag = True
                                         # if tfmini.distance_right <= 35 and ((prev_distance - tfmini.distance_right) >= 10 and prev_distance > 0):
                                         #if ( tfmini.distance_left > 150 and tfmini.distance_left < 500 ):
-                                        if tfmini.distance_head < 90: 
+                                        if lidar_f.value < 900: 
                                             p_pass = 2
                                             if p_pass == 2:
                                                 p_past = False
