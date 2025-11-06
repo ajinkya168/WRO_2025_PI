@@ -1254,12 +1254,20 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
                                     if green_b.value:
                                         green_time = time.time()
+                                            
                                     if blue_flag:
-                                        if ( tf_r <= 40 and tf_r > 0 and counter%4 != 0 ) or (time.time() - green_time > avoid_thres): 
-                                            g_flag = False
-                                            OBSTACLE_STATE = 3
-                                            buff_time = time.time()
-                                            print('Obstacle STATE changed to 1')
+                                        if counter % 4 == 0 :
+                                            if (time.time() - green_time > avoid_thres):
+                                                print('Obstacle STATE changed to 1')
+                                                g_flag = False
+                                                OBSTACLE_STATE = 3
+                                                buff_time = time.time()
+                                        elif counter % 4 != 0:
+                                            if ( tf_r <= 40 and tf_r > 0) or (time.time() - green_time > avoid_thres):
+                                                print('Obstacle STATE changed to 1')
+                                                g_flag = False
+                                                OBSTACLE_STATE = 3
+                                                buff_time = time.time()                                            
                                     elif orange_flag:
                                         if ( tf_r <= 40 and tf_r > 0) or (time.time() - green_time > avoid_thres): 
                                             g_flag = False
