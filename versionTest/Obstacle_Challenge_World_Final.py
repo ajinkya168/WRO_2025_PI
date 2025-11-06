@@ -241,7 +241,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     prevError = error
 
     if setPoint == 15 or setPoint == -15:
-        correctAngle(head + correction, heading, 0.8) #0.85
+        correctAngle(head + correction, heading, 0.75) #0.85
     else:
         correctAngle(head + correction, heading, 1.5)
         
@@ -683,7 +683,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
 
                     print(f"Vehicle is stopped...")
                     
-            if lap_finish and not continue_parking:
+            if lap_finish and not continue_parking and:
                 if not counter_reset:
                     counter = counter % last_counter
                     counter_reset = True
@@ -1195,7 +1195,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 power = 60
                                 print(f'avoiding pink..{lidar_f.value} {lidar_l.value}')
                                 if blue_flag:
-                                    correctAngle( heading_angle, head.value, 1.5)
+                                    correctAngle(heading_angle, head.value, 1.5)
                                 elif orange_flag:
                                     correctAngle(heading_angle,head.value,1.5)
                                     '''if time.time() - pink_time < 4: #4
@@ -1224,7 +1224,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                                 parking_flag = True
                                                 print( 'Pink Avoidance Complete...')
                                         prev_distance = tfmini.distance_right
-                        else:
+                        elif not lap_finish:
                             if OBSTACLE_STATE == 1:
                                 if green_b.value and not g_flag and not r_flag and centr_y.value > 250 :
                                     if centr_x.value < 320 and centr_x.value > 0:
