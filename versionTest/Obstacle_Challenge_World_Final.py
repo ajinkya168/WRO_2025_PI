@@ -240,8 +240,8 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     prevError = error
 
-    if setPoint == 15:
-        correctAngle(head + correction, heading, 0.75) #0.85
+    if setPoint == 15 or setPoint == -15:
+        correctAngle(head + correction, heading, 0.8) #0.85
     else:
         correctAngle(head + correction, heading, 1.5)
         
@@ -601,6 +601,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     blue_lap = False
     avoid_thres = 2
     buff_time = time.time()
+    start_enc_thresh = 0
     try:
         while True:
             imu_head = head.value
@@ -664,7 +665,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 print(f"target:{target_count}")
                 if not finished:
                     if orange_flag:
-                        target_count = counts.value + 30000 #22000 - finish too late in the section
+                        target_count = counts.value + 27000 #22000 - finish too late in the section
                     elif blue_flag:
                         target_count = counts.value + 23000
                     finished = True
@@ -859,10 +860,13 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         print('STATE init 2')
                         if orange_flag:
                             correctReverseAngle(heading_angle, head.value, 3)
+                            start_enc_thresh = 7000
                         elif blue_flag:
                             correctReverseAngle(heading_angle, head.value, 3)
-                        enc_count = counts.value
-                        while abs(corr) > 5 or counts.value > enc_count - 7000: #enc_COUNT-6000
+                            enc_count = counts.value
+                            start_enc_thresh = 9000
+                            
+                        while abs(corr) > 5 or counts.value > enc_count - start_enc_thresh: #enc_COUNT-6000
                             x, y = enc.get_position(head.value, counts.value)
                             runMotor(70, 0)
                             # 0 = reverse, 1 = forward (per your wiring)
@@ -1170,7 +1174,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         if blue_flag and lap_finish:
                             blue_lap = True
                             
-                        if ( (turn_trigger.value and not trigger) and not trigger_enc_flag and not blue_lap) and not continue_parking:
+                        if ( (turn_trigger.value and not trigger) and not trigger_enc_flag) and not continue_parking:
                             buff = 0
                             print('Trigger Detected...')
                             trigger = True
@@ -1185,7 +1189,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             print('Encoder counts done for trigger')
                         ################## PANDAV 3.0 ###################
       
-                        if lap_finish:
+                        if lap_finish and not continue_parking:
                             sp_angle.value = heading_angle
                             if p_flag and continue_parking and not parking_flag:
                                 power = 60
@@ -1234,7 +1238,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         avoided_time = time.time() + 0.3
                                         reverse_until = avoided_time + 0.7
                                     r_flag = True
-
                                     OBSTACLE_STATE = 2
                                     print('Obstacle STATE changed to 2')
                                 else:
