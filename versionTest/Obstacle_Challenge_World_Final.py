@@ -1189,7 +1189,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             print('Encoder counts done for trigger')
                         ################## PANDAV 3.0 ###################
       
-                        if lap_finish and not continue_parking:
+                        if lap_finish:
                             sp_angle.value = heading_angle
                             if p_flag and continue_parking and not parking_flag:
                                 power = 60
