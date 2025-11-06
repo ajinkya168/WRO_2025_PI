@@ -31,6 +31,7 @@ cls_name = None
 t_prev = time.time()
 pairs = []
 dets =[]
+x0 = y0 = x1 = y1 = cx = cy = 0
 try:
     while True:
         ok, frame_bgr = cap.read()
@@ -55,7 +56,9 @@ try:
             x0, y0, x1, y1 = int(obj.bbox.xmin * scale_x), int(obj.bbox.ymin * scale_y), int(obj.bbox.xmax * scale_x), int(obj.bbox.ymax * scale_y)
             cv2.rectangle(frame_bgr, (x0, y0), (x1, y1), (0, 255, 0), 2)
             cv2.putText(frame_bgr, f"{name} {obj.score:.2f}", (x0, y0 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
-            dets.append((name))
+            dets.append((name)) 
+            cx = (x0 + x1) // 2
+            cy = (y0 + y1) // 2
         pairs=[]
         if len(dets) >= 2:
             # Normal case: take only the first detected pair
@@ -69,8 +72,8 @@ try:
 
         now = time.time()
         fps = 1.0 / max(1e-3, (now - t_prev)); t_prev = now
-        print(f"cls_name:{cls_name} fps: {fps} pair:{pairs}")
-        cv2.imshow("Coral SSD Live", frame_bgr)
+        print(f"cls_name:{cls_name} fps: {fps} pair:{pairs} cx:{cx} cy:{cy}")
+        #cv2.imshow("Coral SSD Live", frame_bgr)
         if cv2.waitKey(1) & 0xFF == 27:  # ESC
             break
 finally:

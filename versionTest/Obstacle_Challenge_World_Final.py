@@ -241,7 +241,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     prevError = error
 
     if setPoint == 15:
-        correctAngle(head + correction, heading, 1) #0.85
+        correctAngle(head + correction, heading, 0.75) #0.85
     else:
         correctAngle(head + correction, heading, 1.5)
         
