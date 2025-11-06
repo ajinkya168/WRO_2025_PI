@@ -859,7 +859,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         print('STATE init 2')
                         if orange_flag:
                             correctReverseAngle(heading_angle, head.value, 3)
-                            start_enc_thresh = 7000
+                            start_enc_thresh = 6000
                         elif blue_flag:
                             correctReverseAngle(heading_angle, head.value, 3)
                             enc_count = counts.value
