@@ -659,7 +659,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
             ##### STOP CONDITION ######
             if counter == last_counter and not lap_finish:
                 reset_f = False
-                trigger = False
                 print( f"centr_y :{centr_y.value} centr_y_red:{centr_y_red.value}")
                 print('REACHED MAXIMUM COUNTS')
                 print(f"target:{target_count}")
