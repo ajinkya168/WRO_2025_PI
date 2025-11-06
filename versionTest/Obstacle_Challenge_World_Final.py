@@ -683,7 +683,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
 
                     print(f"Vehicle is stopped...")
                     
-            if lap_finish and not continue_parking and:
+            if lap_finish and not continue_parking:
                 if not counter_reset:
                     counter = counter % last_counter
                     counter_reset = True
