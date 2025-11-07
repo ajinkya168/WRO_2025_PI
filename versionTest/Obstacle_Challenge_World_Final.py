@@ -599,7 +599,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     RESET_STATE = 1
     pink_thresh = 0
     blue_lap = False
-    avoid_thres = 2
+    avoid_thres = 1.5
     buff_time = time.time()
     start_enc_thresh = 0
     corr_thresh = 0
@@ -860,6 +860,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         print('STATE init 2')
                         if orange_flag:
                             correctReverseAngle(heading_angle, head.value, 3)
+                            enc_count = counts.value
                             start_enc_thresh = 6000
                             corr_thresh = 8
                         elif blue_flag:
@@ -871,6 +872,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         while abs(corr) > corr_thresh or counts.value > enc_count - start_enc_thresh: #enc_COUNT-6000
                             x, y = enc.get_position(head.value, counts.value)
                             runMotor(70, 0)
+                            print(f"corr at start {abs(corr)} {counts.value} {enc_count - start_enc_thresh} corr: {abs(corr) > corr_thresh} {counts.value > enc_count - start_enc_thresh}", )
                             # 0 = reverse, 1 = forward (per your wiring)
                             if orange_flag:
                                 correctReverseAngle( heading_angle, head.value, 3)
@@ -1306,7 +1308,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 r_flag = False
                                 g_flag = False
                                 correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
-                                if time.time() - buff_time > 1.2:
+                                if time.time() - buff_time > 1:
                                     OBSTACLE_STATE = 1
                                     print('Obstacle STATE changed to 1')                                        
 
