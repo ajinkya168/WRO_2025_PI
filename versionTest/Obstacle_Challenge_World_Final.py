@@ -888,18 +888,14 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     power = 85
                 else:
                     power = 80
+                    
                 if time.time() < avoided_time:
-                    pwm.set_PWM_dutycycle(pwm_pin, 0)
-                    pwm.write(direction_pin, 0)
+                    runMotor(0, 1)
                     print('block spotted')
                     continue  # skip the drive code below
                 if avoided_time > 0 and time.time() < reverse_until:
+                    runMotor(36,0)
                     # non-blocking reverse
-                    power = 70
-                    prev_power = 0
-                    pwm.set_PWM_dutycycle(pwm_pin, int(1.3 * power))
-                    # 0 = reverse, 1 = forward (per your wiring)
-                    pwm.write(direction_pin, 0)
                     # keep the robot straight while reversing (or add bias if you want to angle out)
                     print('reverse after block spotted')
                     if red_b.value and not reset_f:
@@ -1233,7 +1229,9 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 if green_b.value and not g_flag and not r_flag and centr_y.value > 250 :
                                     if centr_x.value < 320 and centr_x.value > 0:
                                         avoided_time = time.time() + 0.3
-                                        reverse_until = avoided_time + 0.7       
+                                        reverse_until = avoided_time + 0.7
+                                        g_flag = True
+                                        OBSTACLE_STATE = 2       
                                     g_flag = True
                                     OBSTACLE_STATE = 2
                                     print('Obstacle STATE changed to 2')
@@ -1241,6 +1239,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     if centr_x_red.value > 300:
                                         avoided_time = time.time() + 0.3
                                         reverse_until = avoided_time + 0.7
+                                        r_flag = True
+                                        OBSTACLE_STATE = 2
                                     r_flag = True
                                     OBSTACLE_STATE = 2
                                     print('Obstacle STATE changed to 2')
