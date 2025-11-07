@@ -891,18 +891,18 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     
                 if time.time() < avoided_time:
                     runMotor(0, 1)
-                    print('block spotted')
+                    print(f'block spotted OBSTACLE_STATE {OBSTACLE_STATE}')
                     continue  # skip the drive code below
                 if avoided_time > 0 and time.time() < reverse_until:
                     runMotor(36,0)
                     # non-blocking reverse
                     # keep the robot straight while reversing (or add bias if you want to angle out)
-                    print('reverse after block spotted')
+                    print(f'reverse after block spotted OBSTACLE_STATE {OBSTACLE_STATE}')
                     if red_b.value and not reset_f:
-                        print('Red Detected, setting servo to 60 degrees')
+                        print(f'Red Detected, setting servo to 60 degrees OBSTACLE_STATE {OBSTACLE_STATE}')
                         servo.setAngle(70)
                     elif green_b.value and not reset_f:
-                        print('Green Detected, setting servo to 120 degrees')
+                        print(f'Green Detected, setting servo to 120 degrees {OBSTACLE_STATE}')
                         servo.setAngle(110)
                     continue  # still skip forward-drive code
                 ################        PARKING         ################
@@ -1198,14 +1198,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     correctAngle(heading_angle, head.value, 1.5)
                                 elif orange_flag:
                                     correctAngle(heading_angle,head.value,1.5)
-                                    '''if time.time() - pink_time < 4: #4
-                                        print('avoiding wall in p_flag')
-                                        correctAngle( heading_angle, head.value, 1.5)
-                                        #correctWall( 30, tfmini.distance_right, heading_angle, head.value )
-                                    else:
-                                        print('now correcting Angle')
-                                        correctAngle( heading_angle, head.value, 1.5)
-                                    print( f"time after reversing heading {time.time() - pink_time} distance_right:{tf_r} distance_left:{tf_l} prev_distance:{prev_distance}" )'''
                                 if orange_flag:
                                     pink_thresh = 1.5 # 4
                                 elif blue_flag:
@@ -1215,8 +1207,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     if orange_flag or blue_flag:
                                         print( f"lidar_f:{lidar_f.value} right: {lidar_l.value} prev_distance: {prev_distance}, distance_right: {tfmini.distance_right} diff: {prev_distance - tfmini.distance_right} diff_flag:{(prev_distance - tfmini.distance_right) >= 10}" )
                                         p_flag = True
-                                        # if tfmini.distance_right <= 35 and ((prev_distance - tfmini.distance_right) >= 10 and prev_distance > 0):
-                                        #if ( tfmini.distance_left > 150 and tfmini.distance_left < 500 ):
                                         if lidar_f.value < 1000 and lidar_l.value > 1200: 
                                             p_pass = 2
                                             if p_pass == 2:
@@ -1237,10 +1227,13 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     print('Obstacle STATE changed to 2')
                                 elif red_b.value and not g_flag and not r_flag and centr_y_red.value > 250 :
                                     if centr_x_red.value > 300:
+                                        print("stopped")
                                         avoided_time = time.time() + 0.3
                                         reverse_until = avoided_time + 0.7
+                                        print("reverse complete")
                                         r_flag = True
                                         OBSTACLE_STATE = 2
+                                        print('r flag is true in state 1')
                                     r_flag = True
                                     OBSTACLE_STATE = 2
                                     print('Obstacle STATE changed to 2')
