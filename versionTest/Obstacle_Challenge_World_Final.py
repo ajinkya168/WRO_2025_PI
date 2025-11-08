@@ -855,6 +855,14 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 correctAngle(heading_angle - 90, head.value, 3)
                             tfmini.getTFminiData()
                             runMotor(70, 1)
+                        while tfmini.distance_head < 50:
+                            x, y = enc.get_position(head.value, counts.value)
+                            if orange_flag:
+                                correctAngle(heading_angle + 90, head.value, 3)
+                            elif blue_flag:
+                                correctAngle(heading_angle - 90, head.value, 3)
+                            tfmini.getTFminiData()
+                            runMotor(70, 0)
                         STATE_INIT = 2
                     if STATE_INIT == 2:
                         print('STATE init 2')
@@ -862,7 +870,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             correctReverseAngle(heading_angle, head.value, 3)
                             enc_count = counts.value
                             start_enc_thresh = 6000
-                            corr_thresh = 8
+                            corr_thresh = 5
                         elif blue_flag:
                             correctReverseAngle(heading_angle, head.value, 3)
                             enc_count = counts.value
@@ -1199,9 +1207,9 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 elif orange_flag:
                                     correctAngle(heading_angle,head.value,1.5)
                                 if orange_flag:
-                                    pink_thresh = 1.5 # 4
+                                    pink_thresh = 1.25 # 4
                                 elif blue_flag:
-                                    pink_thresh = 1.5
+                                    pink_thresh = 1.25
                                 if time.time() - pink_time > pink_thresh:
                                     tfmini.getTFminiData()
                                     if orange_flag or blue_flag:
