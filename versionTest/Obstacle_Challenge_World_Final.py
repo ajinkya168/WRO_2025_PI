@@ -25,7 +25,7 @@ os.system('sudo pkill pigpiod')
 os.system('sudo pigpiod')
 time.sleep(5)
 
-timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+timestamp = datetime.datetime.now().strftime('%d%m%y_%H%M')
 log_dir = '/home/pi/WRO_2025_PI/logs'
 
 log_file = open(f"{log_dir}/obstacle_{timestamp}.txt", 'w')
@@ -147,7 +147,7 @@ corr_pos = 0
 def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr_x_p, centr_x_r, centr_x_g, centr_y_g, centr_y_r, centr_y_p, distance_h, distance_l, distance_r, red, green): # print("INSIDE CORRECT")
     # getTFminiData()
     global prevError, totalError, prevErrorGyro, totalErrorGyro, corr_pos
-
+    print("--------------------------------------------------------------------------------")
     error = 0
     correction = 0
     pTerm_e = 0
@@ -237,9 +237,22 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         print('No wall detected...')
         pass
 
+    if setPoint == -7:
+        if distance_r < 55:
+            correction = -10
+            print(f"wall is inside 45 in lane 0 {correction}")
+    elif setPoint == 7:
+        if distance_l < 55:
+            correction = 10
+            print(f"wall is inside 45 in lane 0 {correction}")
+
+    else:
+        pass
+
+
     correction = max(-45, min(45, correction))
 
-    print( f"diff:{(heading - head):.2f} heading:{heading:.2f} head:{head:.2f} right {distance_r} head_d:{tfmini.distance_head} correction:{correction}" )
+    print( f"diff:{(heading - head):.2f} heading:{heading:.2f} head:{head:.2f} right {distance_r} left {distance_l}head_d:{tfmini.distance_head} correction:{correction}" )
 
     prevError = error
 
@@ -247,7 +260,8 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         correctAngle(head + correction, heading, 0.9) #0.85
     else:
         correctAngle(head + correction, heading, 1.5)
-        
+    print("--------------------------------------------------------------------------------")
+     
 
 
 def correctWall(setPoint_distance, dist, sp_h, imu_h):
@@ -645,13 +659,13 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 if tf_l < 25 and tf_h < 250 and tf_l > 0 and tf_h > 0 and pink_b.value:
                     print('Right side parking')
                     enc.x = 0
-                    enc.y = tfmini.distance_left - 100
+                    enc.y = tfmini.distance_left - 40
                     #enc.y = 50 - tfmini.distance_right #-40
                     right_f.value = True
                     inParkingatStart = True
                 elif ( tf_r < 25 and tf_h < 250 and tf_h > 0 and tf_r > 0 and pink_b.value ):
                     enc.x = 0
-                    enc.y = 100 - tfmini.distance_right
+                    enc.y = 40 - tfmini.distance_right
                     #enc.y = tfmini.distance_left - 50#40
                     print('Left side parking')
                     left_f.value = True
@@ -776,11 +790,11 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     if centr_x_red.value > 200:
                         red_b.value = False
                 if orange_flag:
-                    setPointL = -5
+                    setPointL = -7
                     setPointR = 40
                     print(f"setPointL : {setPointL}")
                 elif blue_flag:
-                    setPointR = 5
+                    setPointR = 7
                     setPointL = -40
                     print(f"setPointR: {setPointR}")
             else:
@@ -823,7 +837,10 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
             ##################### BUTTON STARTS THE CODE ##################
             if button:  # THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
                 print('-------------------------------------------------')
-
+                if red_b.value or green_b.value:
+                    power = 55
+                elif not red_b.value and not green_b.value:
+                    power = 80
                 x, y = enc.get_position(imu_head, counts.value)
                 if inParkingatStart:
                     t_time = time.time()
@@ -850,14 +867,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 correctAngle(heading_angle - 90, head.value, 3)
                             tfmini.getTFminiData()
                             runMotor(70, 1)
-                        while tfmini.distance_head < 35:
-                            x, y = enc.get_position(head.value, counts.value)
-                            if orange_flag:
-                                correctAngle(heading_angle + 90, head.value, 3)
-                            elif blue_flag:
-                                correctAngle(heading_angle - 90, head.value, 3)
-                            tfmini.getTFminiData()
-                            runMotor(70, 0)
+
                         STATE_INIT = 2
                     if STATE_INIT == 2:
                         print('STATE init 2')
@@ -885,12 +895,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         OBSTACLE_STATE = 1
                         RESET_STATE = 0
                         inParkingatStart = False
-                if red_b.value or green_b.value:
-                    power = 55
-                elif not red_b.value and not green_b.value:
-                    power = 85
-                else:
-                    power = 80
+
                     
                 if time.time() < avoided_time:
                     runMotor(0, 1)
