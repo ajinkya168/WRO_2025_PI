@@ -191,7 +191,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     correction = pTerm_e + iTerm_e + dTerm_e
 
     print(f"Error: {error}")
- 
+
+    '''if (setPoint == -15 and orange):
+        if distance_l    
+
     if (setPoint == -15 and orange):
         if distance_l <= 30:
             correction = 20
@@ -219,7 +222,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
                 print(f"Avoiding pink wall else {correction}")
         else:
             print('setPoint was not 35')
-            pass
+            pass'''
 
 
     n_head = normalize_angle(heading, blue, orange, lane)
@@ -241,7 +244,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     prevError = error
 
     if setPoint == 15 or setPoint == -15:
-        correctAngle(head + correction, heading, 0.8) #0.85
+        correctAngle(head + correction, heading, 0.9) #0.85
     else:
         correctAngle(head + correction, heading, 1.5)
         
@@ -559,7 +562,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     lap_finish_time = ( prev_distance ) = turn_trigger_distance = target_count = offset = button_STATE = 0
     time_p = prev_time = 0
     fps_time2 = 0
-    debounce_delay = 0.2
+    debounce_delay = 0.1
     last_time = 0
     avoided = False
     avoided_time = time.time()
