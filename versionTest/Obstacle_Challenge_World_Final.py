@@ -645,12 +645,12 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 if tf_l < 25 and tf_h < 250 and tf_l > 0 and tf_h > 0 and pink_b.value:
                     print('Right side parking')
                     enc.x = 0
-                    enc.y = 55 - tfmini.distance_right #-40
+                    enc.y = 50 - tfmini.distance_right #-40
                     right_f.value = True
                     inParkingatStart = True
                 elif ( tf_r < 25 and tf_h < 250 and tf_h > 0 and tf_r > 0 and pink_b.value ):
                     enc.x = 0
-                    enc.y = tfmini.distance_left - 55#40
+                    enc.y = tfmini.distance_left - 50#40
                     print('Left side parking')
                     left_f.value = True
                     inParkingatStart = True
