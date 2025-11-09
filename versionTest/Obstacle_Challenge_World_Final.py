@@ -645,12 +645,14 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 if tf_l < 25 and tf_h < 250 and tf_l > 0 and tf_h > 0 and pink_b.value:
                     print('Right side parking')
                     enc.x = 0
-                    enc.y = 50 - tfmini.distance_right #-40
+                    enc.y = tfmini.distance_left - 100
+                    #enc.y = 50 - tfmini.distance_right #-40
                     right_f.value = True
                     inParkingatStart = True
                 elif ( tf_r < 25 and tf_h < 250 and tf_h > 0 and tf_r > 0 and pink_b.value ):
                     enc.x = 0
-                    enc.y = tfmini.distance_left - 50#40
+                    enc.y = 100 - tfmini.distance_right
+                    #enc.y = tfmini.distance_left - 50#40
                     print('Left side parking')
                     left_f.value = True
                     inParkingatStart = True
@@ -743,20 +745,12 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         while abs(corr) > 5:
                             x, y = enc.get_position(head.value, counts.value)
                             tfmini.getTFminiData()
-                            power = 70
-                            prev_power = 0
-                            pwm.set_PWM_dutycycle(pwm_pin, int(1.2 * power))
-                            # 0 = reverse, 1 = forward (per your wiring)
-                            pwm.write(direction_pin, 0)
+                            runMotor(36, 0)
                             correctReverseAngle( heading_angle - 90, head.value, 3)
                         while tfmini.distance_head < 50:
                             x, y = enc.get_position(head.value, counts.value)
                             tfmini.getTFminiData()
-                            power = 70
-                            prev_power = 0
-                            pwm.set_PWM_dutycycle(pwm_pin, int(1.2 * power))
-                            # 0 = reverse, 1 = forward (per your wiring)
-                            pwm.write(direction_pin, 0)
+                            runMotor(36, 0)
                             correctReverseAngle( heading_angle - 90, head.value, 3)
                         parking_STATE = 2
                     if parking_STATE == 2:
@@ -764,11 +758,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         while abs(corr) > 5:
                             x, y = enc.get_position(head.value, counts.value)
                             tfmini.getTFminiData()
-                            power = 70
-                            prev_power = 0
-                            pwm.set_PWM_dutycycle(pwm_pin, int(1.2 * power))
-                            # 0 = reverse, 1 = forward (per your wiring)
-                            pwm.write(direction_pin, 1)
+                            runMotor(36, 1)
                             correctAngle(heading_angle, head.value, 3)
                         p_flag = True
                         continue_parking = True
@@ -860,7 +850,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 correctAngle(heading_angle - 90, head.value, 3)
                             tfmini.getTFminiData()
                             runMotor(70, 1)
-                        while tfmini.distance_head < 40:
+                        while tfmini.distance_head < 35:
                             x, y = enc.get_position(head.value, counts.value)
                             if orange_flag:
                                 correctAngle(heading_angle + 90, head.value, 3)
