@@ -243,7 +243,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     prevError = error
 
-    if setPoint == 15 or setPoint == -15:
+    if setPoint == 5 or setPoint == -5:
         correctAngle(head + correction, heading, 0.9) #0.85
     else:
         correctAngle(head + correction, heading, 1.5)
@@ -707,11 +707,13 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         while tfmini.distance_head < 55:
                             x, y = enc.get_position(head.value, counts.value)
                             tfmini.getTFminiData()
-                            power = 70
-                            prev_power = 0
-                            pwm.set_PWM_dutycycle(pwm_pin, int(1.2 * power))
-                            # 0 = reverse, 1 = forward (per your wiring)
-                            pwm.write(direction_pin, 0)
+                            runMotor(33, 0)
+                            correctReverseAngle(heading_angle + 90, head.value, 3)
+                            print("p state 1 ")
+                        while tfmini.distance_head > 55:
+                            x, y = enc.get_position(head.value, counts.value)
+                            tfmini.getTFminiData()
+                            runMotor(33, 1)
                             correctReverseAngle(heading_angle + 90, head.value, 3)
                             print("p state 1 ")
                         parking_STATE = 2
@@ -784,11 +786,11 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     if centr_x_red.value > 200:
                         red_b.value = False
                 if orange_flag:
-                    setPointL = -15
+                    setPointL = -5
                     setPointR = 40
                     print(f"setPointL : {setPointL}")
                 elif blue_flag:
-                    setPointR = 15
+                    setPointR = 5
                     setPointL = -40
                     print(f"setPointR: {setPointR}")
             else:
@@ -858,7 +860,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 correctAngle(heading_angle - 90, head.value, 3)
                             tfmini.getTFminiData()
                             runMotor(70, 1)
-                        while tfmini.distance_head < 50:
+                        while tfmini.distance_head < 40:
                             x, y = enc.get_position(head.value, counts.value)
                             if orange_flag:
                                 correctAngle(heading_angle + 90, head.value, 3)
