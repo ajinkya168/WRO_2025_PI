@@ -239,11 +239,15 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     if setPoint == -7:
         if distance_r < 55:
-            correction = -10
+            correction = -15
+        elif distance_l < 45:
+            correction = 0
             print(f"wall is inside 45 in lane 0 {correction}")
     elif setPoint == 7:
         if distance_l < 55:
-            correction = 10
+            correction = 15
+        elif distance_r < 30:
+            correction = 0
             print(f"wall is inside 45 in lane 0 {correction}")
 
     else:
@@ -726,15 +730,9 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             runMotor(33, 0)
                             correctReverseAngle(heading_angle + 90, head.value, 3)
                             print("p state 1 ")
-                        while tfmini.distance_head > 55:
-                            x, y = enc.get_position(head.value, counts.value)
-                            tfmini.getTFminiData()
-                            runMotor(33, 1)
-                            correctReverseAngle(heading_angle + 90, head.value, 3)
-                            print("p state 1 ")
                         parking_STATE = 2
                     if parking_STATE == 2:
-                        heading_angle = heading_angle + 180
+                        heading_angle = heading_angle + 180 #gs
                         correctAngle(heading_angle, head.value, 3)
                         print("corr is", abs(corr))
                         while abs(corr) > 5:
@@ -922,8 +920,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     if not calc_time:
                         c_time = time.time()
                         calc_time = True
-                    time_p = 0 #1.3
-                    full_park = True
+                    time_p = 0.25 #1.3
                     if STATE == 1:
                         if blue_flag or orange_flag:
                             while time.time() - c_time <= time_p:
@@ -943,13 +940,13 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             parking_count_current = counts.value
                             tfmini.getTFminiData()
                             if orange_flag:
-                                parking_count = 1 #300
+                                parking_count = 150 #300
                             while counts.value > parking_count_current - parking_count:
                                 if blue_flag:
                                     print( f"Reversing backward full park...{counts.value} {parking_count_current - parking_count}" )
                                     power = 70#70
                                     prev_power = 0
-                                    correctReverseAngle( heading_angle, head.value, 1)
+                                    correctReverseAngle(heading_angle, head.value, 1)
                                     # Set duty cycle to 50% (128/255)
                                     tfmini.getTFminiData()
                                     pwm.set_PWM_dutycycle(pwm_pin, power)
