@@ -247,7 +247,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         if distance_l < 55:
             correction = 15
         elif distance_r < 30:
-            correction = 0
+            correction = 5
             print(f"wall is inside 45 in lane 0 {correction}")
 
     else:
@@ -920,7 +920,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     if not calc_time:
                         c_time = time.time()
                         calc_time = True
-                    time_p = 0.25 #1.3
+                    time_p = 0 #1.3
+                    full_park = True
                     if STATE == 1:
                         if blue_flag or orange_flag:
                             while time.time() - c_time <= time_p:
@@ -940,7 +941,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             parking_count_current = counts.value
                             tfmini.getTFminiData()
                             if orange_flag:
-                                parking_count = 150 #300
+                                parking_count = 1 #300
                             while counts.value > parking_count_current - parking_count:
                                 if blue_flag:
                                     print( f"Reversing backward full park...{counts.value} {parking_count_current - parking_count}" )
