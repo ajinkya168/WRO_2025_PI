@@ -1405,7 +1405,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 r_flag = False
                                 g_flag = False
                                 correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
-                                if time.time() - buff_time > 0.9:
+                                if time.time() - buff_time > 0.7:
                                     OBSTACLE_STATE = 1
                                     print('Obstacle STATE changed to 1')                                        
 
