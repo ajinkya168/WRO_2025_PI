@@ -38,6 +38,7 @@ RX_Left = 24
 RX_Right = 25
 RX_Back = 27
 button_pin = 5
+exit_pin = 7
 servo_pin = 8
 blue_led = 26
 red_led = 10
@@ -237,22 +238,38 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         print('No wall detected...')
         pass
 
-    if setPoint == -7:
-        if distance_r < 55:
+    '''if setPoint == -7:
+        if distance_r < 60 or (distance_r > 100):
             correction = -15
-        elif distance_l < 45:
+            print(f"wall is inside 60 in lane 0 {correction}")
+        elif distance_l < 45 :
             correction = 0
             print(f"wall is inside 45 in lane 0 {correction}")
     elif setPoint == 7:
-        if distance_l < 55:
+        if distance_l < 60 or (distance_l > 100):
             correction = 15
-        elif distance_r < 30:
-            correction = 5
+            print(f"wall is inside 60 in lane 0 {correction}")
+        elif distance_r < 45:
+            correction = 0
             print(f"wall is inside 45 in lane 0 {correction}")
-
+    else:
+        pass'''
+    if setPoint == -7:
+        if lidar_r.value < 500 or (lidar_r.value > 1000):
+            correction = -15
+            print(f"wall is inside 60 in lane 0 {correction} right_lidar:{lidar_r.value}")
+        elif lidar_l.value < 450 :
+            correction = 0
+            print(f"wall is inside 45 in lane 0 {correction} left_lidar:{lidar_l.value}")
+    elif setPoint == 7:
+        if lidar_l.value < 500 or lidar_l.value > 1000:
+            correction = 15
+            print(f"wall is inside 60 in lane 0 {correction} left_lidar:{lidar_l.value}")
+        elif lidar_r.value < 450:
+            correction = 0
+            print(f"wall is inside 45 in lane 0 {correction} right_lidar:{lidar_r.value}")
     else:
         pass
-
 
     correction = max(-45, min(45, correction))
 
@@ -570,6 +587,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     red_time = green_time = False
     parking_right = True
     parking_left = False
+    exit_flag = False
     ############ VARIABLES ##################
     setPointL = -40
     setPointR = 40
@@ -579,11 +597,12 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     last_counter = 12 #12
     counter = turn_t = current_time = gp_time = rp_time = buff = c_time = 0
     heading_angle = 0
-    lap_finish_time = ( prev_distance ) = turn_trigger_distance = target_count = offset = button_STATE = 0
+    lap_finish_time = ( prev_distance ) = turn_trigger_distance = target_count = offset = button_STATE = exit_STATE = 0
     time_p = prev_time = 0
     fps_time2 = 0
     debounce_delay = 0.1
     last_time = 0
+    exit_last_time = 0
     avoided = False
     avoided_time = time.time()
     reverse_until = 0
@@ -627,6 +646,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     start_enc_thresh = 0
     corr_thresh = 0
     parking_distance = 0
+    pink_wall_lane = 0
     ############ MAIN LOOP ##############
 
     try:
@@ -798,7 +818,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         
             ################# LANE 0 DECISIONS #####################
 
-            if counter % 4 == 0:  # DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
+            if counter % 4 == pink_wall_lane:  # DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
                 # print(f"PINK IS DETECTED...")
                 if orange_flag:
                     if centr_x_red.value < 200 and centr_x_red.value > 0:
@@ -809,11 +829,11 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 if orange_flag:
                     setPointL = -7
                     setPointR = 40
-                    print(f"setPointL : {setPointL}")
+                    print(f" pink setPointL : {setPointL}")
                 elif blue_flag:
                     setPointR = 7
                     setPointL = -40
-                    print(f"setPointR: {setPointR}")
+                    print(f"pink setPointR: {setPointR}")
             else:
                 if g_flag and not continue_parking:
                     print(f"away from green {g_past}")
@@ -843,7 +863,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 print(f"tfmini head:{tfmini.distance_head} left:{tfmini.distance_left} right:{tfmini.distance_right}")
             if time.time() - last_time > debounce_delay:
                 previous_STATE = button_STATE
-                button_STATE = pwm.read(5)
+                button_STATE = pwm.read(button_pin)
                 # time.sleep(0.03)
 
                 if previous_STATE == 1 and button_STATE == 0:
@@ -851,6 +871,22 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     last_time = time.time()
                     print( f"🔘 Button toggled! Drive {'started' if button else 'stopped'}" )
                     power = 95
+            if time.time() - exit_last_time > debounce_delay:
+                previous_EXIT_STATE = exit_STATE
+                exit_STATE = pwm.read(exit_pin)
+                # time.sleep(0.03)
+
+                if previous_EXIT_STATE == 1 and exit_STATE == 0:
+                    exit_flag = not(exit_flag)
+                    exit_last_time = time.time()
+                    print( f"🔘 Button toggled! Drive {'started' if button else 'stopped'}" )
+                    power = 95 
+            
+            if exit_flag:
+                print("Shutting down the program")
+                sys.exit(0)
+                    
+                    #exit_pin
             ##################### BUTTON STARTS THE CODE ##################
             if button:  # THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
                 print('-------------------------------------------------')
@@ -1322,20 +1358,20 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         green_time = time.time()
                                             
                                     if blue_flag:
-                                        if counter % 4 == 0 :
+                                        if counter % 4 == pink_wall_lane :
                                             if (time.time() - green_time > avoid_thres):
                                                 print('Obstacle STATE changed to 3')
                                                 g_flag = False
                                                 OBSTACLE_STATE = 3
                                                 buff_time = time.time()
-                                        elif counter % 4 != 0:
-                                            if ( tf_r <= 40 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres):
+                                        elif counter % 4 != pink_wall_lane:
+                                            if ( tf_r <= 40 and tf_r > 0) or (time.time() - green_time > avoid_thres):
                                                 print('Obstacle STATE changed to 3')
                                                 g_flag = False
                                                 OBSTACLE_STATE = 3
                                                 buff_time = time.time()                                            
                                     elif orange_flag:
-                                        if ( tf_r <= 40 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres): 
+                                        if ( tf_r <= 40 and tf_r > 0) or (time.time() - green_time > avoid_thres): 
                                             g_flag = False
                                             OBSTACLE_STATE = 3
                                             buff_time = time.time()
@@ -1346,20 +1382,20 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     if red_b.value:
                                         red_time = time.time()
                                     if orange_flag:
-                                        if counter % 4 == 0 :
+                                        if counter % 4 == pink_wall_lane :
                                             if (time.time() - red_time > avoid_thres):
                                                 print('Obstacle STATE changed to 3')
                                                 r_flag = False
                                                 OBSTACLE_STATE = 3
                                                 buff_time = time.time()
-                                        elif counter % 4 != 0:
-                                            if ( tf_l <= 40 and tf_l > 0 and not red_b.value) or (time.time() - red_time > avoid_thres):
+                                        elif counter % 4 != pink_wall_lane:
+                                            if ( tf_l <= 40 and tf_l > 0) or (time.time() - red_time > avoid_thres):
                                                 print('Obstacle STATE changed to 3')
                                                 r_flag = False
                                                 OBSTACLE_STATE = 3
                                                 buff_time = time.time()                                            
                                     elif blue_flag:
-                                        if ( tf_l <= 40 and tf_l > 0 and not red_b.value) or (time.time() - red_time > avoid_thres): 
+                                        if ( tf_l <= 40 and tf_l > 0) or (time.time() - red_time > avoid_thres): 
                                             r_flag = False
                                             OBSTACLE_STATE = 3
                                             buff_time = time.time()
