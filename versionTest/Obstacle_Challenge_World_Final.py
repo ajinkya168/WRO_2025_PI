@@ -239,7 +239,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         pass
 
     if setPoint == -7:
-        if lidar_r.value <= 650 and (lidar_l.value <= 350):
+        if lidar_r.value <= 650 or (lidar_r.value > 1000):
             correction = -25
             print(f"wall is inside 60 in lane 0 {correction} right_lidar:{lidar_r.value}")
         elif lidar_r.value > 650 :
@@ -247,7 +247,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
             print(f"wall is inside 45 in lane 0 {correction} left_lidar:{lidar_l.value}")
 
     elif setPoint == 7:
-        if lidar_l.value <= 650 and lidar_r.value <= 350:
+        if lidar_l.value <= 650 or lidar_l.value >= 1000:
             correction = 25
             print(f"wall is inside 60 in lane 0 {correction} left_lidar:{lidar_l.value}")
         elif lidar_l.value > 650:
@@ -1341,6 +1341,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         green_time = time.time()
                                             
                                     if blue_flag:
+                                        avoid_thres = 1.5
                                         if counter % 4 == pink_wall_lane :
                                             if (time.time() - green_time > avoid_thres):
                                                 print('Obstacle STATE changed to 3')
@@ -1373,6 +1374,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     if red_b.value:
                                         red_time = time.time()
                                     if orange_flag:
+                                        avoid_thres = 1.5
                                         if counter % 4 == pink_wall_lane :
                                             if (time.time() - red_time > avoid_thres):
                                                 print('Obstacle STATE changed to 3')
