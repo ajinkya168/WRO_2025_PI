@@ -1506,19 +1506,19 @@ def reset_coordinates(distance, lane, orange, blue, x, y):
         
 def reset_coordinates_lidar(distance, lane, orange, blue, x, y):
     if lane == 1:
-        return (1500 - distance) - 50, y
+        return ((1500 - distance) - 50)/10, y
     if lane == 2:
         if orange:
-            return x, (2500 - distance) - 50
+            return x, ((2500 - distance) - 50)/10
         elif blue:
-            return x, (distance - 2500) + 50
+            return x, ((distance - 2500) + 50)/10
     if lane == 3:
-        return (distance - 1500) + 50, y
+        return ((distance - 1500) + 50)/10, y
     if lane == 0:
         if orange:
-            return x, ((distance) - 500) + 50
+            return x, ((distance - 500) + 50)/10
         elif blue:
-            return x, (500 - distance) - 50
+            return x, ((500 - distance) - 50)/10
 
 def runEncoder(counts, head):
     pwm = pigpio.pi()
