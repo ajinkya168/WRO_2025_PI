@@ -242,7 +242,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         if lidar_r.value <= 650 or (lidar_r.value > 1000):
             correction = -25
             print(f"wall is inside 60 in lane 0 {correction} right_lidar:{lidar_r.value}")
-        elif lidar_r.value > 650 :
+        elif lidar_l.value < 350 :
             correction = 0
             print(f"wall is inside 45 in lane 0 {correction} left_lidar:{lidar_l.value}")
 
@@ -250,7 +250,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         if lidar_l.value <= 650 or lidar_l.value >= 1000:
             correction = 25
             print(f"wall is inside 60 in lane 0 {correction} left_lidar:{lidar_l.value}")
-        elif lidar_l.value > 650:
+        elif lidar_r.value < 350:
             correction = 0
             print(f"wall is inside 45 in lane 0 {correction} right_lidar:{lidar_r.value}")
 
@@ -668,16 +668,16 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 
             if not inParkingatStart and not left_f.value and not right_f.value:
                 print('Starting Parking at Start...')
-                if tf_l < 25 and tf_h < 250 and tf_l > 0 and tf_h > 0 and pink_b.value:
+                if tf_l < 25 and tf_h < 250 and tf_l > 0 and tf_h > 0 and lidar_l.value > 0 and pink_b.value:
                     print('Right side parking')
                     enc.x = 0
-                    enc.y = tfmini.distance_left - 40
+                    enc.y = (lidar_l.value - 400)/10
                     #enc.y = 50 - tfmini.distance_right #-40
                     right_f.value = True
                     inParkingatStart = True
-                elif ( tf_r < 25 and tf_h < 250 and tf_h > 0 and tf_r > 0 and pink_b.value ):
+                elif ( tf_r < 25 and tf_h < 250 and tf_h > 0 and tf_r > 0 and lidar_r.value > 0 and pink_b.value ):
                     enc.x = 0
-                    enc.y = 40 - tfmini.distance_right
+                    enc.y = (400 - lidar_r.value)/10
                     #enc.y = tfmini.distance_left - 50#40
                     print('Left side parking')
                     left_f.value = True
