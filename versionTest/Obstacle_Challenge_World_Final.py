@@ -242,7 +242,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         if lidar_l.value < 850:
             correction = -15
             print(f"wall is inside 60 in lane 0 {correction} right_lidar:{lidar_r.value}")
-        elif lidar_l.value < 500 :
+        elif lidar_l.value < 400 :
             correction = 0
             print(f"wall is inside 45 in lane 0 {correction} left_lidar:{lidar_l.value}")
 
@@ -250,7 +250,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         if lidar_r.value < 850:
             correction = 15
             print(f"wall is inside 60 in lane 0 {correction} left_lidar:{lidar_l.value}")
-        elif lidar_r.value < 500:
+        elif lidar_r.value < 400:
             correction = 0
             print(f"wall is inside 45 in lane 0 {correction} right_lidar:{lidar_r.value}")
 
