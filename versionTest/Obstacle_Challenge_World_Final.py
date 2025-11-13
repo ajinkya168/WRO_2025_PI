@@ -228,10 +228,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     n_head = normalize_angle(heading, blue, orange, lane)
 
-    if setPoint <= -40 and distance_l <= 25:
+    if setPoint <= -40 and lidar_l.value <= 250:
         print(f"Correcting Green Wall Orange")
         correction = 15
-    elif setPoint >= 40 and distance_r <= 25:
+    elif setPoint >= 40 and lidar_r.value <= 250:
         print( f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}" )
         correction = -15
     else:
@@ -255,21 +255,19 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     else:
         pass'''
     if setPoint == -7:
-        if lidar_r.value < 500 or (lidar_r.value > 1000):
+        if lidar_r.value <= 550 and (lidar_l.value <= 450):
             correction = -15
             print(f"wall is inside 60 in lane 0 {correction} right_lidar:{lidar_r.value}")
-        elif lidar_l.value < 450 :
+        elif lidar_r.value > 550 :
             correction = 0
             print(f"wall is inside 45 in lane 0 {correction} left_lidar:{lidar_l.value}")
     elif setPoint == 7:
-        if lidar_l.value < 500 or lidar_l.value > 1000:
+        if lidar_l.value <= 550 and lidar_r.value <= 450:
             correction = 15
             print(f"wall is inside 60 in lane 0 {correction} left_lidar:{lidar_l.value}")
-        elif lidar_r.value < 450:
+        elif lidar_l.value > 550:
             correction = 0
             print(f"wall is inside 45 in lane 0 {correction} right_lidar:{lidar_r.value}")
-    else:
-        pass
 
     correction = max(-45, min(45, correction))
 
@@ -641,7 +639,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     RESET_STATE = 1
     pink_thresh = 0
     blue_lap = False
-    avoid_thres = 1.2
+    avoid_thres = 1.5
     buff_time = time.time()
     start_enc_thresh = 0
     corr_thresh = 0
@@ -1251,10 +1249,10 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             time.sleep(0.5)
                             tfmini.getTFminiData()
                             if orange_flag:
-                                turn_trigger_distance = tfmini.distance_left
+                                turn_trigger_distance = lidar_l.value #tfmini.distance_left
                             elif blue_flag:
-                                turn_trigger_distance = tfmini.distance_right
-                            enc.x, enc.y = reset_coordinates( turn_trigger_distance, lane_reset, orange_flag, blue_flag, x, y )
+                                turn_trigger_distance = lidar_r.value #tfmini.distance_right
+                            enc.x, enc.y = reset_coordinates_lidar( turn_trigger_distance, lane_reset, orange_flag, blue_flag, x, y )
                             print(f"enc.x: {enc.x:.2f} enc.y:{enc.y:.2f}")
                             power = 90
                             trigger_enc = counts.value
@@ -1371,11 +1369,18 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                                 OBSTACLE_STATE = 3
                                                 buff_time = time.time()                                            
                                     elif orange_flag:
-                                        if ( tf_r <= 40 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres): 
-                                            g_flag = False
-                                            OBSTACLE_STATE = 3
-                                            buff_time = time.time()
-                                            print('Obstacle STATE changed to 3')
+                                        if counter % 4 == pink_wall_lane : 
+                                            if ( tf_r <= 40 and tf_r > 0) or (time.time() - green_time > avoid_thres): 
+                                                g_flag = False
+                                                OBSTACLE_STATE = 3
+                                                buff_time = time.time()
+                                                print('Obstacle STATE changed to 3')
+                                        elif counter % 4 != pink_wall_lane:
+                                            if ( tf_r <= 40 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres): 
+                                                g_flag = False
+                                                OBSTACLE_STATE = 3
+                                                buff_time = time.time()
+                                                print('Obstacle STATE changed to 3')
                                 elif r_flag:
                                     print(f'avoiding red... time avoid : {time.time() - red_time}')
                                     correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
@@ -1395,17 +1400,25 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                                 OBSTACLE_STATE = 3
                                                 buff_time = time.time()                                            
                                     elif blue_flag:
-                                        if ( tf_l <= 40 and tf_l > 0 and not red_b.value) or (time.time() - red_time > avoid_thres): 
-                                            r_flag = False
-                                            OBSTACLE_STATE = 3
-                                            buff_time = time.time()
-                                            print('Obstacle STATE changed to 3')                                        
+                                        if counter % 4 == pink_wall_lane :
+                                            if ( tf_l <= 40 and tf_l > 0) or (time.time() - red_time > avoid_thres): 
+                                                r_flag = False
+                                                OBSTACLE_STATE = 3
+                                                buff_time = time.time()
+                                                print('Obstacle STATE changed to 3')
+                                        elif counter % 4 != pink_wall_lane:
+                                            if ( tf_l <= 40 and tf_l > 0 and not red_b.value) or (time.time() - red_time > avoid_thres): 
+                                                r_flag = False
+                                                OBSTACLE_STATE = 3
+                                                buff_time = time.time()
+                                                print('Obstacle STATE changed to 3')
+                                            
 
                             if OBSTACLE_STATE == 3:
                                 r_flag = False
                                 g_flag = False
                                 correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
-                                if time.time() - buff_time > 0.7:
+                                if time.time() - buff_time > 1:
                                     OBSTACLE_STATE = 1
                                     print('Obstacle STATE changed to 1')                                        
 
@@ -1420,7 +1433,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 print( f"trigger:{trigger} turn_trigger: {turn_trigger.value} reset_f:{reset_f} counter: {counter}, imu:{head.value:2f}" )
                 print( f"red_b.value:{red_b.value} green_b.value:{green_b.value} pink_b.value:{pink_b.value}" )
                 print( f"r_flag:{r_flag} g_flag:{g_flag} rev_count: {rev_count}")
-                print( f"r_past:{r_past} g_past:{g_past} p_past:{p_past} pass_c:{p_pass}" )
                 print( f"x: {x:.2f}, y:{y:.2f} count:{counts.value} heading_angle:{heading_angle}" )
                 print( f"F: {tf_h:.2f}  L: {l_left:.2f} R: {l_right:.2f} left:{tf_l} " )
                 print( f"OBSTACLE_STATE: {OBSTACLE_STATE} RESET_STATE: {RESET_STATE}" )
@@ -1491,7 +1503,22 @@ def reset_coordinates(distance, lane, orange, blue, x, y):
             return x, ((distance) - 50) + 5
         elif blue:
             return x, (50 - distance) - 5
-
+        
+def reset_coordinates_lidar(distance, lane, orange, blue, x, y):
+    if lane == 1:
+        return (1500 - distance) - 50, y
+    if lane == 2:
+        if orange:
+            return x, (2500 - distance) - 50
+        elif blue:
+            return x, (distance - 2500) + 50
+    if lane == 3:
+        return (distance - 1500) + 50, y
+    if lane == 0:
+        if orange:
+            return x, ((distance) - 500) + 50
+        elif blue:
+            return x, (500 - distance) - 50
 
 def runEncoder(counts, head):
     pwm = pigpio.pi()
@@ -1612,10 +1639,7 @@ def read_lidar( lidar_angle, lidar_distance, sp_angle, turn_trigger, lidar_f, li
                     elif ( (F <= 950 and L >= 1500) and left_f.value and not right_f.value ):
                         turn_trigger.value = True
                     else: 
-                        turn_trigger.value = False # print(f"front: {F:.2f}. right:{R:.2f} left:{L:.2f}  turn_trigger:{turn_trigger.value} imu:{imu_r} sp_angle: {sp} right_f.value:{right_f.value} left_f.value:{left_f.value}")
-            # print(f"front: {lidar_front}. right:{lidar_right} left:{lidar_left}  turn_trigger:{turn_trigger.value} diff:{time.time() - trig_time}  imu:{imu_r} sp_angle: {sp_angle.value}")
-            # print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
-
+                        turn_trigger.value = False 
 
 if __name__ == '__main__':
     try:
