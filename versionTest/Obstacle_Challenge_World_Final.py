@@ -239,7 +239,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         pass
 
     if setPoint == -7:
-        if lidar_r.value <= 650 or (lidar_r.value > 1000 and lidar_l.value < 650):
+        if lidar_l.value < 650:
             correction = -25
             print(f"wall is inside 60 in lane 0 {correction} right_lidar:{lidar_r.value}")
         elif lidar_l.value < 350 :
@@ -247,7 +247,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
             print(f"wall is inside 45 in lane 0 {correction} left_lidar:{lidar_l.value}")
 
     elif setPoint == 7:
-        if lidar_l.value <= 650 or (lidar_l.value >= 1000 and lidar_r.value < 650):
+        if lidar_r.value < 650:
             correction = 25
             print(f"wall is inside 60 in lane 0 {correction} left_lidar:{lidar_l.value}")
         elif lidar_r.value < 350:
@@ -1413,7 +1413,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 r_flag = False
                                 g_flag = False
                                 correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
-                                if time.time() - buff_time > 1:
+                                if time.time() - buff_time > 1.2:
                                     OBSTACLE_STATE = 1
                                     print('Obstacle STATE changed to 1')                                        
 
