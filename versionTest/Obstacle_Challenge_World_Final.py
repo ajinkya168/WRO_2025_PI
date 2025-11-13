@@ -238,32 +238,17 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         print('No wall detected...')
         pass
 
-    '''if setPoint == -7:
-        if distance_r < 60 or (distance_r > 100):
-            correction = -15
-            print(f"wall is inside 60 in lane 0 {correction}")
-        elif distance_l < 45 :
-            correction = 0
-            print(f"wall is inside 45 in lane 0 {correction}")
-    elif setPoint == 7:
-        if distance_l < 60 or (distance_l > 100):
-            correction = 15
-            print(f"wall is inside 60 in lane 0 {correction}")
-        elif distance_r < 45:
-            correction = 0
-            print(f"wall is inside 45 in lane 0 {correction}")
-    else:
-        pass'''
     if setPoint == -7:
         if lidar_r.value <= 550 and (lidar_l.value <= 450):
-            correction = -15
+            correction = -20
             print(f"wall is inside 60 in lane 0 {correction} right_lidar:{lidar_r.value}")
         elif lidar_r.value > 550 :
             correction = 0
             print(f"wall is inside 45 in lane 0 {correction} left_lidar:{lidar_l.value}")
+
     elif setPoint == 7:
         if lidar_l.value <= 550 and lidar_r.value <= 450:
-            correction = 15
+            correction = 20
             print(f"wall is inside 60 in lane 0 {correction} left_lidar:{lidar_l.value}")
         elif lidar_l.value > 550:
             correction = 0
@@ -275,7 +260,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     prevError = error
 
-    if setPoint == 5 or setPoint == -5:
+    if setPoint == 7 or setPoint == -7:
         correctAngle(head + correction, heading, 0.9) #0.85
     else:
         correctAngle(head + correction, heading, 1.5)
@@ -1420,7 +1405,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 r_flag = False
                                 g_flag = False
                                 correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value )
-                                if time.time() - buff_time > 1:
+                                if time.time() - buff_time > 0.8:
                                     OBSTACLE_STATE = 1
                                     print('Obstacle STATE changed to 1')                                        
 
