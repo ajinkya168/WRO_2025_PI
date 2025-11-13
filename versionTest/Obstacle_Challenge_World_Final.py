@@ -230,10 +230,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     if setPoint <= -40 and lidar_l.value <= 250:
         print(f"Correcting Green Wall Orange")
-        correction = 15
+        correction = 10
     elif setPoint >= 40 and lidar_r.value <= 250:
         print( f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}" )
-        correction = -15
+        correction = -10
     else:
         print('No wall detected...')
         pass
