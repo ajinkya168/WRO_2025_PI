@@ -131,11 +131,11 @@ correcion = 0
 totalError = 0
 prevError = 0
 
-kp = 0.6
+kp = 0.6 #0.6
 ki = 0
 kd = 0.1
 
-kp_e = 3  # 12
+kp_e = 3  #3 # 12
 ki_e = 0
 kd_e = 40  # 40if
 
@@ -263,7 +263,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     if setPoint == 7 or setPoint == -7:
         correctAngle(head + correction, heading, 0.9) #0.85
     else:
-        correctAngle(head + correction, heading, 1.5)
+        correctAngle(head + correction, heading, 2)
     print("--------------------------------------------------------------------------------")
      
 
@@ -1487,25 +1487,25 @@ def reset_coordinates(distance, lane, orange, blue, x, y):
         return (distance - 150) + 5, y
     if lane == 0:
         if orange:
-            return x, ((distance) - 50) + 5
+            return x, (distance - 50) + 5
         elif blue:
             return x, (50 - distance) - 5
         
 def reset_coordinates_lidar(distance, lane, orange, blue, x, y):
     if lane == 1:
-        return ((1500 - distance) - 50)/10, y
+        return (1500 - distance)/10, y
     if lane == 2:
         if orange:
-            return x, ((2500 - distance) - 50)/10
+            return x, (2500 - distance)/10
         elif blue:
-            return x, ((distance - 2500) + 50)/10
+            return x, (distance - 2500)/10
     if lane == 3:
-        return ((distance - 1500) + 50)/10, y
+        return (distance - 1500)/10, y
     if lane == 0:
         if orange:
-            return x, ((distance - 500) + 50)/10
+            return x, (distance - 500)/10
         elif blue:
-            return x, ((500 - distance) - 50)/10
+            return x, (500 - distance)/10
 
 def runEncoder(counts, head):
     pwm = pigpio.pi()
