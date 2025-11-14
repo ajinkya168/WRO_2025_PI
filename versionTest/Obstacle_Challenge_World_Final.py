@@ -1326,7 +1326,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                                 avoid_thres = 1.5
                                             else:
                                                 avoid_thres = 0.7
-                                            if ( tf_r <= 40 and tf_r > 0) or (time.time() - green_time > avoid_thres): 
+                                            if ( tf_r <= 40 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres): 
                                                 g_flag = False
                                                 OBSTACLE_STATE = 3
                                                 buff_time = time.time()
@@ -1366,7 +1366,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                                 avoid_thres = 1.5
                                             else:
                                                 avoid_thres = 0.7
-                                            if ( tf_l <= 40 and tf_l > 0) or (time.time() - red_time > avoid_thres): 
+                                            if ( tf_l <= 40 and tf_l > 0 and not red_b.value) or (time.time() - red_time > avoid_thres): 
                                                 r_flag = False
                                                 OBSTACLE_STATE = 3
                                                 buff_time = time.time()
