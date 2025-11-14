@@ -662,7 +662,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     if orange_flag:
                         if parking_right:
                             target_count = counts.value + 27000 #22000 - finish too late in the section
-                        elif parking_left: counts.value + 22000
+                        elif parking_left: 
+                            target_count = counts.value + 22000
                     elif blue_flag:
                         if parking_right:
                             target_count = counts.value + 22000
@@ -1229,9 +1230,9 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 elif orange_flag:
                                     correctAngle(heading_angle,head.value,1.5)
                                 if orange_flag:
-                                    pink_thresh = 1.25 # 4
+                                    pink_thresh = 1 # 1.25
                                 elif blue_flag:
-                                    pink_thresh = 1.25
+                                    pink_thresh = 1
                                 if time.time() - pink_time > pink_thresh:
                                     tfmini.getTFminiData()
                                     if orange_flag or blue_flag:
