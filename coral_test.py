@@ -59,6 +59,7 @@ try:
             dets.append((name)) 
             cx = (x0 + x1) // 2
             cy = (y0 + y1) // 2
+            
         pairs=[]
         if len(dets) >= 2:
             # Normal case: take only the first detected pair
@@ -69,7 +70,6 @@ try:
         else:
             # No detections at all
             pairs.append((None, None))
-
         now = time.time()
         fps = 1.0 / max(1e-3, (now - t_prev)); t_prev = now
         print(f"cls_name:{cls_name} fps: {fps} pair:{pairs} cx:{cx} cy:{cy}")

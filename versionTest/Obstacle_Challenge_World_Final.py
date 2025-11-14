@@ -770,7 +770,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     if centr_x_red.value < 200 and centr_x_red.value > 0:
                         red_b.value = False
                 elif blue_flag:
-                    if centr_x_red.value > 200:
+                    if centr_x_red.value > 300:
                         red_b.value = False
  
  
