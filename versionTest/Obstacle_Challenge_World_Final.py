@@ -172,7 +172,7 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h):
         correction = 0
 
     prevError_d = error_d
-    correctAngle(sp_h + correction, imu_h)
+    correctAngle(sp_h + correction, imu_h, 1)
 
 
 def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr_x_p, centr_x_r, centr_x_g, centr_y_g, centr_y_r, centr_y_p, distance_h, distance_l, distance_r, red, green, pink_l): # print("INSIDE CORRECT")
