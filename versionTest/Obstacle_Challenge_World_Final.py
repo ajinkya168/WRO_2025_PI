@@ -236,7 +236,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         pass
 
 
-    if counter % 4 == pink_l:
+    '''if counter % 4 == pink_l:
         if setPoint <= -40 and orange:
             if lidar_l.value <= 400:
                 correction = 0
@@ -244,7 +244,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         elif setPoint >= 40 and blue:
             if lidar_r.value <= 400:
                 correction = 0
-                print("correction is 0")
+                print("correction is 0")'''
 
     correction = max(-45, min(45, correction))
 
@@ -252,10 +252,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     prevError = error
 
-    if counter % 4 == pink_l:
+    '''if counter % 4 == pink_l:
         correctAngle(head + correction, heading, 0.75)
-    else:
-        correctAngle(head + correction, heading, 1.85)
+    else:'''
+    correctAngle(head + correction, heading, 1.85)
     print("--------------------------------------------------------------------------------")
      
 
