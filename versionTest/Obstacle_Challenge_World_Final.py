@@ -1333,7 +1333,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 if g_flag:
                                     print(f'avoiding green..green avoid: {time.time() - green_time}')
                                     if counter % 4 == pink_wall_lane and orange_flag:
-                                        correctWall(400, lidar_r.value, heading_angle, head.value)
+                                        correctWall(lidar_l.value, 400, heading_angle, head.value)
                                     else:
                                         correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
                                     if green_b.value:
@@ -1374,7 +1374,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 elif r_flag:
                                     print(f'avoiding red... time avoid : {time.time() - red_time}')
                                     if counter % 4 == pink_wall_lane and blue_flag:
-                                        correctWall(lidar_l.value, 400, heading_angle, head.value)
+                                        correctWall(400, lidar_r.value, heading_angle, head.value)
                                     else:
                                         correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
                                     if red_b.value:
