@@ -224,9 +224,9 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     prevError = error
 
     if counter % 4 == pink_l:
-        correctAngle(head + correction, heading, 0.8)
+        correctAngle(head + correction, heading, 0.75)
     else:
-        correctAngle(head + correction, heading, 1.95)
+        correctAngle(head + correction, heading, 1.85)
     print("--------------------------------------------------------------------------------")
      
 
@@ -661,7 +661,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 if not finished:
                     if orange_flag:
                         if parking_right:
-                            target_count = counts.value + 27000 #22000 - finish too late in the section
+                            target_count = counts.value + 29000 #22000 - finish too late in the section
                         elif parking_left: 
                             target_count = counts.value + 22000
                     elif blue_flag:
@@ -763,6 +763,20 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         continue_parking = True
                         parking_STATE = 3
                         pink_time = time.time()
+ 
+
+            ################# LANE 0 DECISIONS #####################
+
+            if counter % 4 == pink_wall_lane:  # DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
+                # print(f"PINK IS DETECTED...")
+                if orange_flag:
+                    if centr_x_red.value < 200 and centr_x_red.value > 0:
+                        red_b.value = False
+                elif blue_flag:
+                    if centr_x_red.value > 200:
+                        red_b.value = False
+ 
+ 
                         
             if g_flag and not continue_parking:
                 print(f"away from green {g_past}")
@@ -1230,7 +1244,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 elif orange_flag:
                                     correctAngle(heading_angle,head.value,1.5)
                                 if orange_flag:
-                                    pink_thresh = 1 # 1.25
+                                    pink_thresh = 0.75 # 1
                                 elif blue_flag:
                                     pink_thresh = 1
                                 if time.time() - pink_time > pink_thresh:
