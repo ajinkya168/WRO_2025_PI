@@ -206,21 +206,16 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         print('No wall detected...')
         pass
 
-    if setPoint == -7:
-        if lidar_l.value < 850 and lidar_l.value >= 400:
-            correction = -25
-            print(f"wall is inside 60 in lane 0 {correction} right_lidar:{lidar_r.value}")
-        elif lidar_l.value < 400 :
-            correction = 5
-            print(f"wall is inside 45 in lane 0 {correction} left_lidar:{lidar_l.value}")
 
-    elif setPoint == 7:
-        if lidar_r.value < 850 and lidar_r.value >= 400:
-            correction = 25
-            print(f"wall is inside 60 in lane 0 {correction} left_lidar:{lidar_l.value}")
-        elif lidar_r.value < 400:
-            correction = -5
-            print(f"wall is inside 45 in lane 0 {correction} right_lidar:{lidar_r.value}")
+    if counter % 4 == 0:
+        if setPoint <= -40 and orange:
+            if lidar_l.value <= 400:
+                correction = 0
+                print("correction is 0")
+        elif setPoint >= 40 and blue:
+            if lidar_r.value <= 400:
+                correction = 0
+                print("correction is 0")
 
     correction = max(-45, min(45, correction))
 
@@ -228,10 +223,8 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     prevError = error
 
-    if setPoint == 7 or setPoint == -7:
-        correctAngle(head + correction, heading, 1) #0.85
-    else:
-        correctAngle(head + correction, heading, 1.95)
+
+    correctAngle(head + correction, heading, 1.95)
     print("--------------------------------------------------------------------------------")
      
 
@@ -768,45 +761,22 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         parking_STATE = 3
                         pink_time = time.time()
                         
-            ################# LANE 0 DECISIONS #####################
-
-            if counter % 4 == pink_wall_lane:  # DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
-                # print(f"PINK IS DETECTED...")
+            if g_flag and not continue_parking:
+                print(f"away from green {g_past}")
+                setPointL = setPointL - 1
                 if orange_flag:
-                    if centr_x_red.value < 200 and centr_x_red.value > 0:
-                        red_b.value = False
+                    setPointL = min(0, max(-100, setPointL))
                 elif blue_flag:
-                    if centr_x_red.value > 200:
-                        red_b.value = False
+                    setPointL = min(0, max(-40, setPointL))
+                setPointR = 40
+            elif r_flag and not continue_parking:
+                print(f"away from red {r_past}")
+                setPointR = setPointR + 1
                 if orange_flag:
-                    setPointL = -7
-                    setPointR = 40
-                    print(f" pink setPointL : {setPointL}")
+                    setPointR = max(0, min(40, setPointR))
                 elif blue_flag:
-                    setPointR = 7
-                    setPointL = -40
-                    print(f"pink setPointR: {setPointR}")
-            else:
-                if g_flag and not continue_parking:
-                    print(f"away from green {g_past}")
-                    setPointL = setPointL - 1
-                    if orange_flag:
-                        if setPointL < -100:
-                            setPointL = -100
-                    elif blue_flag:
-                        if setPointL < -40:
-                            setPointL = -40
-                    setPointR = 40
-                elif r_flag and not continue_parking:
-                    print(f"away from red {r_past}")
-                    setPointR = setPointR + 1
-                    if orange_flag:
-                        if setPointR > 40:
-                            setPointR = 40
-                    elif blue_flag:
-                        if setPointR > 100:
-                            setPointR = 100
-                    setPointL = -40
+                    setPointR = max(0, min(100, setPointR))
+                setPointL = -40
                     
             if not button:
                 print( f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value} tf_h:{tf_h:.2f} diff:{(head.value - heading_angle):.2f} counts:{counts.value:.2f}" )
