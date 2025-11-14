@@ -630,6 +630,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     corr_thresh = 0
     parking_distance = 0
     pink_wall_lane = 0
+    forward_time = time.time()
     ############ MAIN LOOP ##############
 
     try:
@@ -895,6 +896,15 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 correctAngle(heading_angle + 90, head.value, 3)
                             elif blue_flag:
                                 correctAngle(heading_angle - 90, head.value, 3)
+                        forward_time = time.time()
+                        while time.time() - forward_time < 0.5:
+                            x, y = enc.get_position(head.value, counts.value)
+                            if orange_flag:
+                                correctAngle(heading_angle + 90, head.value, 3)
+                            elif blue_flag:
+                                correctAngle(heading_angle - 90, head.value, 3)
+                            tfmini.getTFminiData()
+                            runMotor(70, 1)
                         while tfmini.distance_head > 40:
                             x, y = enc.get_position(head.value, counts.value)
                             if orange_flag:
