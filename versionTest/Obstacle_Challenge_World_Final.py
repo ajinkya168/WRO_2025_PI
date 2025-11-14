@@ -806,7 +806,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     print( f"🔘 Button toggled! Drive {'started' if button else 'stopped'}" )
                     power = 95 
             
-            if exit_flag:
+            if exit_flag and button:
                 print("Shutting down the program")
                 sys.exit(0)
                     
