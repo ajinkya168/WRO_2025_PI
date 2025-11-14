@@ -145,7 +145,7 @@ corr_pos = 0
 ###################################################
 
 
-def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr_x_p, centr_x_r, centr_x_g, centr_y_g, centr_y_r, centr_y_p, distance_h, distance_l, distance_r, red, green): # print("INSIDE CORRECT")
+def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr_x_p, centr_x_r, centr_x_g, centr_y_g, centr_y_r, centr_y_p, distance_h, distance_l, distance_r, red, green, pink_c): # print("INSIDE CORRECT")
     # getTFminiData()
     global prevError, totalError, prevErrorGyro, totalErrorGyro, corr_pos
     print("--------------------------------------------------------------------------------")
@@ -207,7 +207,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         pass
 
 
-    if counter % 4 == 0:
+    if counter % 4 == pink_c:
         if setPoint <= -40 and orange:
             if lidar_l.value <= 400:
                 correction = 0
@@ -223,8 +223,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     prevError = error
 
-
-    correctAngle(head + correction, heading, 1.95)
+    if counter % 4 == pink_c:
+        correctAngle(head + correction, heading, 0.8)
+    else:
+        correctAngle(head + correction, heading, 1.95)
     print("--------------------------------------------------------------------------------")
      
 
