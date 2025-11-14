@@ -898,6 +898,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 correctAngle(heading_angle - 90, head.value, 3)
                         forward_time = time.time()
                         while time.time() - forward_time < 0.5:
+                            print(f"time taken {time.time() - forward_time}")
                             x, y = enc.get_position(head.value, counts.value)
                             if orange_flag:
                                 correctAngle(heading_angle + 90, head.value, 3)
