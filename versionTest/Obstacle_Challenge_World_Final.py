@@ -143,6 +143,35 @@ corr = 0
 corr_pos = 0
 
 ###################################################
+def correctWall(setPoint_distance, dist, sp_h, imu_h):
+
+    error_d = 0
+    prevError_d = 0
+    totalError_d = 0
+    correction_d = 0
+    totalError_d = 0
+    prevError_d = 0
+
+    error_d = dist - setPoint_distance
+
+    # print("Error : ", error_gyro)
+    pTerm = 0
+    dTerm = 0
+    iTerm = 0
+
+    pTerm = 2 * error_d
+    dTerm = 0 * (error_d - prevError_d)
+    totalError_d += error_d
+    iTerm = 0 * totalError_d
+    correction = pTerm + iTerm + dTerm
+
+    if correction > 35:
+        correction = 35
+    elif correction < -35:
+        correction = -35
+
+    prevError_d = error_d
+    correctAngle(sp_h + correction, imu_h)
 
 
 def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr_x_p, centr_x_r, centr_x_g, centr_y_g, centr_y_r, centr_y_p, distance_h, distance_l, distance_r, red, green, pink_l): # print("INSIDE CORRECT")
@@ -1302,7 +1331,10 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             if OBSTACLE_STATE == 2:
                                 if g_flag:
                                     print(f'avoiding green..green avoid: {time.time() - green_time}')
-                                    correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
+                                    if counter % 4 == pink_wall_lane and orange_flag:
+                                        correctWall(lidar_r.value, 400, heading_angle, head.value)
+                                    else:
+                                        correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
                                     if green_b.value:
                                         green_time = time.time()
                                             
@@ -1340,7 +1372,10 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                                 print('Obstacle STATE changed to 3')
                                 elif r_flag:
                                     print(f'avoiding red... time avoid : {time.time() - red_time}')
-                                    correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
+                                    if counter % 4 == pink_wall_lane and blue_flag:
+                                        correctWall(lidar_l.value, 400, heading_angle, head.value)
+                                    else:
+                                        correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
                                     if red_b.value:
                                         red_time = time.time()
                                     if orange_flag:
