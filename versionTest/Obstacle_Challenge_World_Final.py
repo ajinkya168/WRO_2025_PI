@@ -208,18 +208,18 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     if setPoint == -7:
         if lidar_l.value < 850 and lidar_l.value >= 400:
-            correction = -20
+            correction = -25
             print(f"wall is inside 60 in lane 0 {correction} right_lidar:{lidar_r.value}")
         elif lidar_l.value < 400 :
-            correction = 0
+            correction = 5
             print(f"wall is inside 45 in lane 0 {correction} left_lidar:{lidar_l.value}")
 
     elif setPoint == 7:
         if lidar_r.value < 850 and lidar_r.value >= 400:
-            correction = 20
+            correction = 25
             print(f"wall is inside 60 in lane 0 {correction} left_lidar:{lidar_l.value}")
         elif lidar_r.value < 400:
-            correction = 0
+            correction = -5
             print(f"wall is inside 45 in lane 0 {correction} right_lidar:{lidar_r.value}")
 
     correction = max(-45, min(45, correction))
@@ -229,9 +229,9 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     prevError = error
 
     if setPoint == 7 or setPoint == -7:
-        correctAngle(head + correction, heading, 0.9) #0.85
+        correctAngle(head + correction, heading, 1) #0.85
     else:
-        correctAngle(head + correction, heading, 1.8)
+        correctAngle(head + correction, heading, 1.95)
     print("--------------------------------------------------------------------------------")
      
 
@@ -1339,7 +1339,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                                 avoid_thres = 1.5
                                             else:
                                                 avoid_thres = 0.7
-                                            if ( tf_r <= 40 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres): 
+                                            if ( tf_r <= 40 and tf_r > 0) or (time.time() - green_time > avoid_thres): 
                                                 g_flag = False
                                                 OBSTACLE_STATE = 3
                                                 buff_time = time.time()
@@ -1376,7 +1376,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                                 avoid_thres = 1.5
                                             else:
                                                 avoid_thres = 0.7
-                                            if ( tf_l <= 40 and tf_l > 0 and not red_b.value) or (time.time() - red_time > avoid_thres): 
+                                            if ( tf_l <= 40 and tf_l > 0) or (time.time() - red_time > avoid_thres): 
                                                 r_flag = False
                                                 OBSTACLE_STATE = 3
                                                 buff_time = time.time()
