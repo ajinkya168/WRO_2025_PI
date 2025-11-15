@@ -143,7 +143,7 @@ corr = 0
 corr_pos = 0
 
 ###################################################
-def correctWall(setPoint_distance, dist, sp_h, orange, blue):
+def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue):
 
     error_d = 0
     prevError_d = 0
@@ -169,9 +169,9 @@ def correctWall(setPoint_distance, dist, sp_h, orange, blue):
     correction = max(-35, min(35, correction))
 
 
-    if orange and lidar_l.value < 300:
+    if orange and lidar_l.value < 400:
         correction = 0
-    elif blue and lidar_r.value < 300:
+    elif blue and lidar_r.value < 400:
         correction = 0
 
 
@@ -595,6 +595,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     parking_distance = 0
     pink_wall_lane = 0
     forward_time = time.time()
+    reset_lane = 0
     ############ MAIN LOOP ##############
 
     try:
@@ -931,7 +932,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     if not calc_time:
                         c_time = time.time()
                         calc_time = True
-                    time_p = 0.2 #0
+                    time_p = 0.1 #0
                     #full_park = True
                     if STATE == 1:
                         if blue_flag or orange_flag:
@@ -1217,7 +1218,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             OBSTACLE_STATE = 1
                     else:
                         # TRIGGGER CHECK VALUESSSS
-                        if blue_flag and lap_finish:
+                        if blue_flag and lap_inish:
                             blue_lap = True
                             
                         if ( (turn_trigger.value and not trigger) and not trigger_enc_flag) and not continue_parking:
@@ -1304,7 +1305,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 if g_flag:
                                     print(f'avoiding green..green avoid: {time.time() - green_time}')
                                     if counter % 4 == pink_wall_lane and orange_flag:
-                                        correctWall(lidar_f.value, 400, heading_angle, head.value, orange_flag, blue_flag)
+                                        correctWall(tfmini.distance_left, 40, heading_angle, head.value, orange_flag, blue_flag)
                                     else:
                                         correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
                                     if green_b.value:
@@ -1312,6 +1313,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                             
                                     if blue_flag:
                                         avoid_thres = 1.5
+                                        reset_lane = 1.2
                                         if counter % 4 == pink_wall_lane :
                                             if (time.time() - green_time > avoid_thres):
                                                 print('Obstacle STATE changed to 3')
@@ -1333,6 +1335,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                             if ( tf_r <= 40 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres): 
                                                 g_flag = False
                                                 OBSTACLE_STATE = 3
+                                                reset_lane = 0.7
                                                 buff_time = time.time()
                                                 print('Obstacle STATE changed to 3')
                                         elif counter % 4 != pink_wall_lane:
@@ -1340,6 +1343,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                             if ( tf_r <= 40 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres): 
                                                 g_flag = False
                                                 OBSTACLE_STATE = 3
+                                                reset_lane = 1.2
                                                 buff_time = time.time()
                                                 print('Obstacle STATE changed to 3')
                                 elif r_flag:
@@ -1357,22 +1361,26 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                                 print('Obstacle STATE changed to 3')
                                                 r_flag = False
                                                 OBSTACLE_STATE = 3
+                                                reset_lane = 1.2
                                                 buff_time = time.time()
                                         elif counter % 4 != pink_wall_lane:
                                             if ( tf_l <= 40 and tf_l > 0 and not red_b.value) or (time.time() - red_time > avoid_thres):
                                                 print('Obstacle STATE changed to 3')
                                                 r_flag = False
+                                                reset_lane = 1.2
                                                 OBSTACLE_STATE = 3
                                                 buff_time = time.time()                                            
                                     elif blue_flag:
                                         if counter % 4 == pink_wall_lane :
                                             if counter == 0:
                                                 avoid_thres = 1.5
+                                
                                             else:
                                                 avoid_thres = 0.7
                                             if ( tf_l <= 40 and tf_l > 0 and not red_b.value) or (time.time() - red_time > avoid_thres): 
                                                 r_flag = False
                                                 OBSTACLE_STATE = 3
+                                                reset_lane = 0.7
                                                 buff_time = time.time()
                                                 print('Obstacle STATE changed to 3')
                                         elif counter % 4 != pink_wall_lane:
@@ -1380,6 +1388,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                             if ( tf_l <= 40 and tf_l > 0 and not red_b.value) or (time.time() - red_time > avoid_thres): 
                                                 r_flag = False
                                                 OBSTACLE_STATE = 3
+                                                reset_lane = 1.2
                                                 buff_time = time.time()
                                                 print('Obstacle STATE changed to 3')
                                             
@@ -1388,7 +1397,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 r_flag = False
                                 g_flag = False
                                 correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
-                                if time.time() - buff_time > 1.2:
+                                if time.time() - buff_time > reset_line:
                                     OBSTACLE_STATE = 1
                                     print('Obstacle STATE changed to 1')                                        
 
