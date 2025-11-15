@@ -120,7 +120,7 @@ if __name__ == '__main__':
                 count = int(esp_data[1])
            
             imu.value = esp_angle
-            #print(f"count: {count} angle: {esp_angle} imu: {imu.value}")
+            print(f"count: {count} angle: {esp_angle} imu: {imu.value}")
             #print(f"imu: {imu.value}")
 
 
