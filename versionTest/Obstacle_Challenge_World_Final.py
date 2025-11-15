@@ -168,8 +168,7 @@ def correctWall(setPoint_distance, dist, sp_h, orange, blue):
 
     correction = max(-35, min(35, correction))
 
-   ''' if dist < 30:
-        correction = 0'''
+
     if orange and lidar_l.value < 300:
         correction = 0
     elif blue and lidar_r.value < 300:
