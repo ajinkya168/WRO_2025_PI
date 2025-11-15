@@ -1218,7 +1218,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             OBSTACLE_STATE = 1
                     else:
                         # TRIGGGER CHECK VALUESSSS
-                        if blue_flag and lap_inish:
+                        if blue_flag and lap_finish:
                             blue_lap = True
                             
                         if ( (turn_trigger.value and not trigger) and not trigger_enc_flag) and not continue_parking:
