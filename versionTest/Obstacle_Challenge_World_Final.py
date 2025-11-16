@@ -595,6 +595,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     pink_wall_lane = 0
     forward_time = time.time()
     reset_lane = 0
+    final_park = time.time()
     ############ MAIN LOOP ##############
 
     try:
@@ -1055,16 +1056,16 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 elif parking_left:
                                     heading_angle = heading_angle - 90
                                     parking_distance = tfmini.distance_left
-
+                                final_park = time.time()
                                 correctReverseAngle( heading_angle, head.value, 3)
-                                while (parking_distance > 20) or abs(corr) > 5:
+                                while ((parking_distance > 20) or abs(corr) > 5) or (time.time() - final_park < 2.1):
                                     tfmini.getTFminiData()
                                     if parking_right:
                                         parking_distance = tfmini.distance_right
                                     elif parking_left:
                                         parking_distance = tfmini.distance_left
                                     print( f"corr:{abs(corr)} head:{tfmini.distance_head} left:{tfmini.distance_right}" )
-                                    print('Reversing forward...')
+                                    print(f'Reversing forward... {time.time() - final_park}')
                                     runMotor(33.3, 0)
 
                                     correctReverseAngle( heading_angle, head.value, 3)
