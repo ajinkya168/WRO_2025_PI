@@ -143,7 +143,7 @@ corr = 0
 corr_pos = 0
 
 ###################################################
-def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue):
+def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, counter):
 
     error_d = 0
     prevError_d = 0
@@ -169,9 +169,9 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue):
     correction = max(-35, min(35, correction))
 
 
-    if orange and dist < 30:
+    if orange and dist < 30 and counter % 4 == pink_l:
         correction = 0
-    elif blue and  dist < 30:
+    elif blue and  dist < 30 and counter % 4 == pink_l:
         correction = 0
 
 
@@ -1296,10 +1296,10 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     print('Obstacle STATE changed to 2')
                                 else:
                                     if orange_flag:
-                                        correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag)
+                                        correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                         print("Correcting middle wall")
                                     elif blue_flag:
-                                        correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag)
+                                        correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                         print("correcting middle wall")                           
                                     #correctPosition( setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
                                     p_flag = False
@@ -1314,7 +1314,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 if g_flag:
                                     print(f'avoiding green..green avoid: {time.time() - green_time}')
                                     if counter % 4 == pink_wall_lane and orange_flag:
-                                        correctWall(tfmini.distance_left, 35, heading_angle, head.value, orange_flag, blue_flag)
+                                        correctWall(tfmini.distance_left, 35, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     else:
                                         correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
                                     if green_b.value:
@@ -1351,7 +1351,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 elif r_flag:
                                     print(f'avoiding red... time avoid : {time.time() - red_time}')
                                     if counter % 4 == pink_wall_lane and blue_flag:
-                                        correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag)
+                                        correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     else:
                                         correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
                                     if red_b.value:
@@ -1389,10 +1389,10 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 r_flag = False
                                 g_flag = False
                                 if orange_flag:
-                                    correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag)
+                                    correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     print("Correcting middle wall")
                                 elif blue_flag:
-                                    correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag)
+                                    correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     print("correcting middle wall")                           
                                 #correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
                                 if time.time() - buff_time > reset_lane:
