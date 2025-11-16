@@ -169,9 +169,9 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue):
     correction = max(-35, min(35, correction))
 
 
-    if orange and lidar_l.value < 350:
+    if orange and (lidar_l.value < 350 or dist < 35):
         correction = 0
-    elif blue and lidar_r.value < 350:
+    elif blue and (lidar_r.value < 350 or dist < 35):
         correction = 0
 
 
@@ -665,10 +665,10 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         if parking_right:
                             target_count = counts.value + 29000 #22000 - finish too late in the section
                         elif parking_left: 
-                            target_count = counts.value + 21000
+                            target_count = counts.value + 22000
                     elif blue_flag:
                         if parking_right:
-                            target_count = counts.value + 21000
+                            target_count = counts.value + 22000
                         elif parking_left:
                             target_count = counts.value + 29000
                     finished = True
@@ -1033,7 +1033,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     parking_distance = tfmini.distance_left
                                 final_park = time.time()
                                 correctReverseAngle( heading_angle, head.value, 3)
-                                while (parking_distance > 20) or abs(corr) > 5 or (time.time() - final_park < 2.1):
+                                while (parking_distance > 20) or abs(corr) > 5 or (time.time() - final_park < 1.9):
                                     tfmini.getTFminiData()
                                     if parking_right:
                                         parking_distance = tfmini.distance_right
@@ -1059,7 +1059,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     parking_distance = tfmini.distance_left
                                 final_park = time.time()
                                 correctReverseAngle( heading_angle, head.value, 3)
-                                while ((parking_distance > 20) or abs(corr) > 5) or (time.time() - final_park < 2.1):
+                                while ((parking_distance > 20) or abs(corr) > 5) or (time.time() - final_park < 1.9):
                                     tfmini.getTFminiData()
                                     if parking_right:
                                         parking_distance = tfmini.distance_right
