@@ -249,7 +249,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     prevError = error
     if counter % 4 == pink_l:
-        correctAngle(head + correction, heading, 1.75)
+        correctAngle(head + correction, heading, 1)
     else:
         correctAngle(head + correction, heading, 2)
     print("--------------------------------------------------------------------------------")
@@ -665,10 +665,10 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         if parking_right:
                             target_count = counts.value + 29000 #22000 - finish too late in the section
                         elif parking_left: 
-                            target_count = counts.value + 23000
+                            target_count = counts.value + 21000
                     elif blue_flag:
                         if parking_right:
-                            target_count = counts.value + 23000
+                            target_count = counts.value + 21000
                         elif parking_left:
                             target_count = counts.value + 29000
                     finished = True
@@ -1031,15 +1031,16 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 elif parking_left:
                                     heading_angle = heading_angle - 90
                                     parking_distance = tfmini.distance_left
+                                final_park = time.time()
                                 correctReverseAngle( heading_angle, head.value, 3)
-                                while (parking_distance > 20) or abs(corr) > 5:
+                                while (parking_distance > 20) or abs(corr) > 5 or (time.time() - final_park < 2.1):
                                     tfmini.getTFminiData()
                                     if parking_right:
                                         parking_distance = tfmini.distance_right
                                     elif parking_left:
                                         parking_distance = tfmini.distance_left
                                     print( f"corr:{abs(corr)} head:{tfmini.distance_head} left:{tfmini.distance_right}" )
-                                    print('Reversing backward...')
+                                    print(f'Reversing backward... {time.time() - final_park}')
                                     runMotor(33.3, 0)
 
                                     correctReverseAngle( heading_angle, head.value, 3)
