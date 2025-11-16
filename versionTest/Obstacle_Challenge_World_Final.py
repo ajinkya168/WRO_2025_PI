@@ -169,9 +169,9 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue):
     correction = max(-35, min(35, correction))
 
 
-    if orange and lidar_l.value < 400:
+    if orange and lidar_l.value < 350:
         correction = 0
-    elif blue and lidar_r.value < 400:
+    elif blue and lidar_r.value < 350:
         correction = 0
 
 
@@ -1305,7 +1305,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 if g_flag:
                                     print(f'avoiding green..green avoid: {time.time() - green_time}')
                                     if counter % 4 == pink_wall_lane and orange_flag:
-                                        correctWall(tfmini.distance_left, 40, heading_angle, head.value, orange_flag, blue_flag)
+                                        correctWall(tfmini.distance_left, 35, heading_angle, head.value, orange_flag, blue_flag)
                                     else:
                                         correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
                                     if green_b.value:
@@ -1345,7 +1345,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 elif r_flag:
                                     print(f'avoiding red... time avoid : {time.time() - red_time}')
                                     if counter % 4 == pink_wall_lane and blue_flag:
-                                        correctWall(40, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag)
+                                        correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag)
                                     else:
                                         correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
                                     if red_b.value:
