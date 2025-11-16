@@ -159,7 +159,7 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, coun
     dTerm = 0
     iTerm = 0
 
-    pTerm = 3.5 * error_d
+    pTerm = 2.5 * error_d
     dTerm = 0 * (error_d - prevError_d)
     totalError_d += error_d
     iTerm = 0 * totalError_d
@@ -1299,16 +1299,9 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     print('Obstacle STATE changed to 2')
                                 else:
                                     if orange_flag:
-                                        if lidar_r.value > 300:
-                                            correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
-                                        else:
-                                            correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                         print("Correcting middle wall")
                                     elif blue_flag:
-                                        if lidar_l.value < 300:
-                                            correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
-                                        else:
-                                            correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                         correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                         print("correcting middle wall")                           
                                     #correctPosition( setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
@@ -1342,7 +1335,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                             if ( tf_r <= 40 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres):
                                                 print('Obstacle STATE changed to 3')
                                                 g_flag = False
-                                                OBSTACLE_STATE = 3
+                                                OBSTACLE_STATE = 1
                                                 buff_time = time.time()                                            
                                     elif orange_flag:
 
@@ -1355,7 +1348,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         elif counter % 4 != pink_wall_lane:
                                             if ( tf_r <= 40 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres): 
                                                 g_flag = False
-                                                OBSTACLE_STATE = 3 
+                                                OBSTACLE_STATE = 1
                                                 buff_time = time.time()
                                                 print('Obstacle STATE changed to 3')
                                 elif r_flag:
@@ -1378,7 +1371,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                             if ( tf_l <= 40 and tf_l > 0 and not red_b.value) or (time.time() - red_time > avoid_thres):
                                                 print('Obstacle STATE changed to 3')
                                                 r_flag = False
-                                                OBSTACLE_STATE = 3
+                                                OBSTACLE_STATE = 1
                                                 buff_time = time.time()                                            
                                     elif blue_flag:
                                         if counter % 4 == pink_wall_lane:
@@ -1390,7 +1383,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         elif counter % 4 != pink_wall_lane:
                                             if ( tf_l <= 40 and tf_l > 0 and not red_b.value) or (time.time() - red_time > avoid_thres): 
                                                 r_flag = False
-                                                OBSTACLE_STATE = 3
+                                                OBSTACLE_STATE = 1
                                                 buff_time = time.time()
                                                 print('Obstacle STATE changed to 3')
                                             
@@ -1399,17 +1392,11 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 r_flag = False
                                 g_flag = False
                                 if orange_flag:
-                                    if lidar_r.value > 300:
-                                        correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
-                                    else:
-                                        correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                    correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     print("Correcting middle wall")
                                 elif blue_flag:
-                                    if lidar_l.value < 300:
-                                        correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
-                                    else:
-                                        correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)                           
-                                #correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
+                                    correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                    print("correcting middle wall")                                 #correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
                                 if time.time() - buff_time > reset_lane:
                                     OBSTACLE_STATE = 1
                                     print('Obstacle STATE changed to 1')                                        
