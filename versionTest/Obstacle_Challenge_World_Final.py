@@ -233,10 +233,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     n_head = normalize_angle(heading, blue, orange, lane)
 
-    if setPoint <= -35 and (lidar_l.value <= 250 ):
+    if setPoint <= -30 and (lidar_l.value <= 250 ):
         print(f"Correcting Green Wall Orange")
         correction = 0
-    elif setPoint >= 35 and (lidar_r.value <= 250): 
+    elif setPoint >= 30 and (lidar_r.value <= 250): 
         print( f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}" )
         correction = 0
     else:
@@ -538,8 +538,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     parking_left = False
     exit_flag = False
     ############ VARIABLES ##################
-    setPointL = -35
-    setPointR = 35
+    setPointL = -30
+    setPointR = 30
     setPointC = 0
     power = 95
     prev_power = 0
@@ -789,16 +789,16 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 if orange_flag:
                     setPointL = min(0, max(-100, setPointL))
                 elif blue_flag:
-                    setPointL = min(0, max(-35, setPointL))
-                setPointR = 35
+                    setPointL = min(0, max(-30, setPointL))
+                setPointR = 30
             elif r_flag and not continue_parking:
                 print(f"away from red {r_past}")
                 setPointR = setPointR + 1
                 if orange_flag:
-                    setPointR = max(0, min(35, setPointR))
+                    setPointR = max(0, min(30, setPointR))
                 elif blue_flag:
                     setPointR = max(0, min(100, setPointR))
-                setPointL = -35
+                setPointL = -30
                     
             if not button:
                 print( f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value} tf_h:{tf_h:.2f} diff:{(head.value - heading_angle):.2f} counts:{counts.value:.2f}" )
