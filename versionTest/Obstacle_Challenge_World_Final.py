@@ -230,12 +230,11 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     print(f"Error: {error}")
 
-    tfmini.getTFminiData()
     n_head = normalize_angle(heading, blue, orange, lane)
-    if setPoint <= -30 and (lidar_l.value <= 200 or (tfmini.distance_head < 25 and corr_h >= 40)):
+    if setPoint <= -30 and (lidar_l.value <= 200 ):
         print(f"Correcting Green Wall Orange")
         correction = 0
-    elif setPoint >= 30 and (lidar_r.value <= 200 or (tfmini.distance_head < 25 and corr_h >= 40)): 
+    elif setPoint >= 30 and (lidar_r.value <= 200): 
         print( f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}" )
         correction = 0
     else:
@@ -1278,7 +1277,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                             prev_distance = tfmini.distance_right                                            
                         elif not lap_finish:
                             if OBSTACLE_STATE == 1:
-                                if green_b.value and not g_flag and not r_flag and centr_y.value > 240 :
+                                if green_b.value and not g_flag and not r_flag and centr_y.value > 250 :
                                     if centr_x.value < 320 and centr_x.value > 0:
                                         avoided_time = time.time() + 0.3
                                         reverse_until = avoided_time + 0.7
@@ -1287,7 +1286,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     g_flag = True
                                     OBSTACLE_STATE = 2
                                     print('Obstacle STATE changed to 2')
-                                elif red_b.value and not g_flag and not r_flag and centr_y_red.value > 240:
+                                elif red_b.value and not g_flag and not r_flag and centr_y_red.value > 250:
                                     if centr_x_red.value > 300:
                                         print("stopped")
                                         avoided_time = time.time() + 0.3
@@ -1314,7 +1313,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     rev_count = 0
                                     print('No flags set, moving forward')
                             if OBSTACLE_STATE == 2:
-                                avoid_thres = 1.5
+                                avoid_thres = 1.2
                                 reset_lane = 0.5
                                 if g_flag:
                                     print(f'avoiding green..green avoid: {time.time() - green_time}')
