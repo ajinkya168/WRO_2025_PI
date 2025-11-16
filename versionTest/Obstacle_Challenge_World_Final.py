@@ -169,9 +169,9 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue):
     correction = max(-35, min(35, correction))
 
 
-    if orange and (lidar_l.value < 400 and dist < 35):
+    if orange and  dist < 25:
         correction = 0
-    elif blue and (lidar_r.value < 400 and dist < 35):
+    elif blue and  dist < 25:
         correction = 0
 
 
