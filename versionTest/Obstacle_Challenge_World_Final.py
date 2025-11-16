@@ -233,10 +233,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     n_head = normalize_angle(heading, blue, orange, lane)
 
-    if setPoint <= -40 and lidar_l.value <= 250:
+    if setPoint <= -40 and (lidar_l.value <= 250 or (lidar_l.value>= 2000 and lidar_l.value < 2500)):
         print(f"Correcting Green Wall Orange")
         correction = 0
-    elif setPoint >= 40 and lidar_r.value <= 250:
+    elif setPoint >= 40 and (lidar_r.value <= 250 or (lidar_r.value>= 2000 and lidar_r.value < 2500)): 
         print( f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}" )
         correction = 0
     else:
