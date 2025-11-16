@@ -248,7 +248,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     print( f"diff:{(heading - head):.2f} heading:{heading:.2f} head:{head:.2f} right {distance_r} left {distance_l}head_d:{tfmini.distance_head} correction:{correction}" )
 
     prevError = error
-    correctAngle(head + correction, heading, 2)
+    if counter % 4 == pink_l:
+        correctAngle(head + correction, heading, 1.75)
+    else:
+        correctAngle(head + correction, heading, 2)
     print("--------------------------------------------------------------------------------")
      
 
