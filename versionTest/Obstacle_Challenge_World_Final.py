@@ -1206,9 +1206,9 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             correctAngle(heading_angle, head.value, 1)
                             print(f"abs corr is {abs(corr)}")
                             if orange_flag:
-                                turn_trigger_distance = round(tfmini.distance_left * math.cos(abs(corr)))
+                                turn_trigger_distance = round(tfmini.distance_left * math.cos(math.radians(abs(corr))))
                             elif blue_flag:
-                                turn_trigger_distance = round(tfmini.distance_right * math.cos(abs(corr)))
+                                turn_trigger_distance = round(tfmini.distance_right * math.cos(Math.radians(abs(corr))))
                             print(f"distance from wall is {turn_trigger_distance}")
                             enc.x, enc.y = reset_coordinates( turn_trigger_distance, lane_reset, orange_flag, blue_flag, x, y )
                             print(f"enc.x: {enc.x:.2f} enc.y:{enc.y:.2f}")
