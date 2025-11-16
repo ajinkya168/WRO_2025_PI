@@ -179,7 +179,7 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, coun
     if counter % 4 == pink_l:
         correctAngle(sp_h + correction, imu_h, 1)
     else:
-        correctAngle(sp_h + correction, imu_h, 2)
+        correctAngle(sp_h + correction, imu_h, 1.4)
 
 
 def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr_x_p, centr_x_r, centr_x_g, centr_y_g, centr_y_r, centr_y_p, distance_h, distance_l, distance_r, red, green, pink_l): # print("INSIDE CORRECT")
@@ -1299,10 +1299,22 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     print('Obstacle STATE changed to 2')
                                 else:
                                     if orange_flag:
-                                        correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        if tfmini.distance_left < 25:
+                                            correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                            print("Correcting middle wall")
+                                        elif tfmini_distance_right < 25:
+                                            correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+
+                                        #correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                         print("Correcting middle wall")
                                     elif blue_flag:
-                                        correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        if tfmini.distance_left < 25:
+                                            correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                            print("Correcting middle wall")
+                                        elif tfmini_distance_right < 25:
+                                            correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+
+                                        #correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                         print("correcting middle wall")                           
                                     #correctPosition( setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
                                     p_flag = False
@@ -1392,11 +1404,27 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 r_flag = False
                                 g_flag = False
                                 if orange_flag:
+                                    if tfmini.distance_left < 25:
+                                        correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        print("Correcting middle wall")
+                                    elif tfmini_distance_right < 25:
+                                        correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+
+                                    #correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                    print("Correcting middle wall")
+                                elif blue_flag:
+                                    if tfmini.distance_left < 25:
+                                        correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        print("Correcting middle wall")
+                                    elif tfmini_distance_right < 25:
+                                        correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+
+                                '''if orange_flag:
                                     correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     print("Correcting middle wall orange")
                                 elif blue_flag:
                                     correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
-                                    print("correcting middle wall blue")                           
+                                    print("correcting middle wall blue")'''                           
                                 #correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
                                 if time.time() - buff_time > reset_lane:
                                     OBSTACLE_STATE = 1
