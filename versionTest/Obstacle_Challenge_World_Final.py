@@ -248,11 +248,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     print( f"diff:{(heading - head):.2f} heading:{heading:.2f} head:{head:.2f} right {distance_r} left {distance_l}head_d:{tfmini.distance_head} correction:{correction}" )
 
     prevError = error
-
-    '''if counter % 4 == pink_l:
-        correctAngle(head + correction, heading, 0.75)
-    else:'''
-    correctAngle(head + correction, heading, 1.85)
+    correctAngle(head + correction, heading, 2)
     print("--------------------------------------------------------------------------------")
      
 
@@ -1302,6 +1298,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     rev_count = 0
                                     print('No flags set, moving forward')
                             if OBSTACLE_STATE == 2:
+                                avoid_thres = 1.5
+                                reset_lane = 1 
                                 if g_flag:
                                     print(f'avoiding green..green avoid: {time.time() - green_time}')
                                     if counter % 4 == pink_wall_lane and orange_flag:
@@ -1310,10 +1308,9 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
                                     if green_b.value:
                                         green_time = time.time()
-                                            
+                                          
                                     if blue_flag:
-                                        avoid_thres = 1.5
-                                        reset_lane = 1.3
+
                                         if counter % 4 == pink_wall_lane :
                                             if (time.time() - green_time > avoid_thres):
                                                 print('Obstacle STATE changed to 3')
@@ -1327,8 +1324,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                                 OBSTACLE_STATE = 3
                                                 buff_time = time.time()                                            
                                     elif orange_flag:
-                                        avoid_thres = 1.5
-                                        reset_lane = 1.2
+
                                         if counter % 4 == pink_wall_lane :
                                             if ( tf_r <= 40 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres): 
                                                 g_flag = False
@@ -1336,7 +1332,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                                 buff_time = time.time()
                                                 print('Obstacle STATE changed to 3')
                                         elif counter % 4 != pink_wall_lane:
-                                            avoid_thres = 1.5
                                             if ( tf_r <= 40 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres): 
                                                 g_flag = False
                                                 OBSTACLE_STATE = 3 
@@ -1351,8 +1346,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     if red_b.value:
                                         red_time = time.time()
                                     if orange_flag:
-                                        avoid_thres = 1.5
-                                        reset_lane = 1.3
+
                                         if counter % 4 == pink_wall_lane :
                                             if (time.time() - red_time > avoid_thres):
                                                 print('Obstacle STATE changed to 3')
@@ -1366,16 +1360,13 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                                 OBSTACLE_STATE = 3
                                                 buff_time = time.time()                                            
                                     elif blue_flag:
-                                        if counter % 4 == pink_wall_lane :
-                                            avoid_thres = 1.5
-                                            reset_lane = 1.3
+                                        if counter % 4 == pink_wall_lane:
                                             if ( tf_l <= 40 and tf_l > 0 and not red_b.value) or (time.time() - red_time > avoid_thres): 
                                                 r_flag = False
                                                 OBSTACLE_STATE = 1
                                                 buff_time = time.time()
                                                 print('Obstacle STATE changed to 3')
                                         elif counter % 4 != pink_wall_lane:
-                                            avoid_thres = 1.5
                                             if ( tf_l <= 40 and tf_l > 0 and not red_b.value) or (time.time() - red_time > avoid_thres): 
                                                 r_flag = False
                                                 OBSTACLE_STATE = 3
