@@ -169,9 +169,9 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue):
     correction = max(-35, min(35, correction))
 
 
-    if orange and  lidar_l.value < 400:
+    if orange and dist < 30:
         correction = 0
-    elif blue and  lidar_r.value < 400:
+    elif blue and  dist < 30:
         correction = 0
 
 
@@ -1471,19 +1471,19 @@ def reset_coordinates(distance, lane, orange, blue, x, y):
         
 def reset_coordinates_lidar(distance, lane, orange, blue, x, y):
     if lane == 1:
-        return (1500 - distance)/10, y
+        return ((1500 - distance)/10)-10, y
     if lane == 2:
         if orange:
-            return x, (2500 - distance)/10
+            return x, ((2500 - distance)/10)-10
         elif blue:
-            return x, (distance - 2500)/10
+            return x, ((distance - 2500)/10) +10
     if lane == 3:
-        return (distance - 1500)/10, y
+        return ((distance - 1500)/10)-10, y
     if lane == 0:
         if orange:
-            return x, (distance - 500)/10
+            return x, ((distance - 500)/10)-10
         elif blue:
-            return x, (500 - distance)/10
+            return x, ((500 - distance)/10)+10
 
 def runEncoder(counts, head):
     pwm = pigpio.pi()
