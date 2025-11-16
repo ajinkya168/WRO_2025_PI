@@ -935,7 +935,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     if not calc_time:
                         c_time = time.time()
                         calc_time = True
-                    time_p = 0.1 #0
+                    time_p = 0.5 #0
                     #full_park = True
                     if STATE == 1:
                         if blue_flag or orange_flag:
