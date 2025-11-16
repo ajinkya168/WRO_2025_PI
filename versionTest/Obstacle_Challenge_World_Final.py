@@ -1302,7 +1302,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         if tfmini.distance_left < 25:
                                             correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                             print("Correcting middle wall")
-                                        elif tfmini_distance_right < 25:
+                                        elif tfmini.distance_right < 25:
                                             correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
 
                                         #correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
@@ -1416,7 +1416,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     if tfmini.distance_left < 25:
                                         correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                         print("Correcting middle wall")
-                                    elif tfmini_distance_right < 25:
+                                    elif tfmini.distance_right < 25:
                                         correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
 
                                 '''if orange_flag:
