@@ -232,10 +232,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     tfmini.getTFminiData()
     n_head = normalize_angle(heading, blue, orange, lane)
-    if setPoint <= -30 and (lidar_l.value <= 200 or (tfmini.distance_front < 25 and corr_h >= 40)):
+    if setPoint <= -30 and (lidar_l.value <= 200 or (tfmini.distance_head < 25 and corr_h >= 40)):
         print(f"Correcting Green Wall Orange")
         correction = 0
-    elif setPoint >= 30 and (lidar_r.value <= 200 or (tfmini.distance_front < 25 and corr_h >= 40)): 
+    elif setPoint >= 30 and (lidar_r.value <= 200 or (tfmini.distance_head < 25 and corr_h >= 40)): 
         print( f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}" )
         correction = 0
     else:
