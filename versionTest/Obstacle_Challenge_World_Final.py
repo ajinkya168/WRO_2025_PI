@@ -166,7 +166,7 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, coun
     correction = pTerm + iTerm + dTerm
 
 
-    correction = max(-35, min(35, correction))
+    correction = max(-45, min(45, correction))
 
 
     if orange and dist < 30 and counter % 4 == pink_l:
@@ -179,7 +179,7 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, coun
     if counter % 4 == pink_l:
         correctAngle(sp_h + correction, imu_h, 1)
     else:
-        correctAngle(sp_h + correction, imu_h, 1.4)
+        correctAngle(sp_h + correction, imu_h, 1.5)
 
 
 def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr_x_p, centr_x_r, centr_x_g, centr_y_g, centr_y_r, centr_y_p, distance_h, distance_l, distance_r, red, green, pink_l): # print("INSIDE CORRECT")
