@@ -182,7 +182,7 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, coun
         correctAngle(sp_h + correction, imu_h, 1.5)
 
 
-def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr_x_p, centr_x_r, centr_x_g, centr_y_g, centr_y_r, centr_y_p, distance_h, distance_l, distance_r, red, green, pink_l): # print("INSIDE CORRECT")
+def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr_x_p, centr_x_r, centr_x_g, centr_y_g, centr_y_r, centr_y_p, distance_h, distance_l, distance_r, red, green, pink_l, corr_h): # print("INSIDE CORRECT")
     # getTFminiData()
     global prevError, totalError, prevErrorGyro, totalErrorGyro, corr_pos
     print("--------------------------------------------------------------------------------")
@@ -230,13 +230,12 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     print(f"Error: {error}")
 
-
+    tfmini.getTFminiData()
     n_head = normalize_angle(heading, blue, orange, lane)
-
-    if setPoint <= -30 and (lidar_l.value <= 200 ):
+    if setPoint <= -30 and (lidar_l.value <= 200 or (tfmini.distance_front < 25 and corr_h >= 40)):
         print(f"Correcting Green Wall Orange")
         correction = 0
-    elif setPoint >= 30 and (lidar_r.value <= 200): 
+    elif setPoint >= 30 and (lidar_r.value <= 200 or (tfmini.distance_front < 25 and corr_h >= 40)): 
         print( f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}" )
         correction = 0
     else:
@@ -1307,7 +1306,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     elif blue_flag:
                                         correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                         print("correcting middle wall")'''                           
-                                    correctPosition( setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
+                                    correctPosition( setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr) )
                                     p_flag = False
                                     encoder_counter_store = False
                                     g_flag = False
@@ -1322,7 +1321,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     if counter % 4 == pink_wall_lane and orange_flag:
                                         correctWall(tfmini.distance_left, 35, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     else:
-                                        correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
+                                        correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr) )
                                     if green_b.value:
                                         green_time = time.time()
                                           
@@ -1359,7 +1358,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     if counter % 4 == pink_wall_lane and blue_flag:
                                         correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     else:
-                                        correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
+                                        correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane,  abs(corr) )
                                     if red_b.value:
                                         red_time = time.time()
                                     if orange_flag:
@@ -1400,7 +1399,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 elif blue_flag:
                                     correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     print("correcting middle wall")'''                                 
-                                correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane )
+                                correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane,  abs(corr) )
                                 if time.time() - buff_time > reset_lane:
                                     OBSTACLE_STATE = 1
                                     print('Obstacle STATE changed to 1')                                        
