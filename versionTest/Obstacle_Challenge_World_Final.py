@@ -286,7 +286,7 @@ def correctAngle(setPoint_gyro, heading, multiplier):
     correction = pTerm + iTerm + dTerm
 
     if multiplier == 3:
-        correction = max(-60, min(60, correction))
+        correction = max(-50, min(50, correction))
     else:
         correction = max(-30, min(30, correction))
 
@@ -320,7 +320,7 @@ def correctReverseAngle(setPoint_gyro, heading, multiplier):
     correction = pTerm + iTerm + dTerm
 
     if multiplier == 3:
-        correction = max(-50, min(50, correction))
+        correction = max(-45, min(45, correction))
     else:
         correction = max(-30, min(30, correction))
 
