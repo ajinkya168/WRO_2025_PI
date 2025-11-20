@@ -320,7 +320,7 @@ def correctReverseAngle(setPoint_gyro, heading, multiplier):
     correction = pTerm + iTerm + dTerm
 
     if multiplier == 3:
-        correction = max(-45, min(45, correction))
+        correction = max(-50, min(50, correction))
     else:
         correction = max(-30, min(30, correction))
 
@@ -1094,10 +1094,12 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             timer_t = time.time()
                             norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
                             # abs((norm_head - heading_angle) - 360) > 8 or tfmini.distance_head > 60:
+                            correctAngle( heading_angle, head.value, 1.5)
+
                             if blue_flag:
-                                while ( abs((norm_head - heading_angle) - 360) > 8 or tfmini.distance_head > 60 ) and time.time() - timer_t < 1.5:
+                                while ( abs(corr) > 5 or tfmini.distance_head > 60 ) and time.time() - timer_t < 1.5:
                                     norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
-                                    print( f"correcting heading  blue time:{time.time() - timer_t} {x:.2f} {y:.2f} {head.value - heading_angle:.2f} {head.value} {tfmini.distance_head:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}" )
+                                    print( f"correcting heading  blue time:{time.time() - timer_t} {x:.2f} {y:.2f} {abs(corr):.2f} {head.value} {tfmini.distance_head:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}" )
                                     x, y = enc.get_position( head.value, counts.value)
                                     tfmini.getTFminiData()
                                     correctAngle( heading_angle, head.value, 1.5)
@@ -1105,9 +1107,9 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     prev_power = 0
                                     runMotor(power, 1)
                             elif orange_flag:
-                                while ( abs(norm_head - heading_angle) > 8 or tfmini.distance_head > 60 ) and (time.time() - timer_t < 1.5):
+                                while ( abs(corr) > 5 or tfmini.distance_head > 60 ) and (time.time() - timer_t < 1.5):
                                     norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
-                                    print( f"correcting orange heading counter:{counter} imu:{head.value:.2f} diff:{abs(norm_head - heading_angle):.2f} tfmini head: {tfmini.distance_head:.2f} norm_head:{norm_head}" )
+                                    print( f"correcting orange heading counter:{counter} imu:{head.value:.2f} diff:{abs(corr):.2f} tfmini head: {tfmini.distance_head:.2f} norm_head:{norm_head}" )
                                     x, y = enc.get_position( head.value, counts.value)
                                     tfmini.getTFminiData()
                                     correctAngle( heading_angle, head.value, 1.5)
@@ -1177,8 +1179,11 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             sp_angle.value = heading_angle
                             timer_v = time.time()
                             norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
+                            correctReverseAngle( heading_angle, head.value, 1)
+
                             if blue_flag:
-                                while ( abs((norm_head - heading_angle) - 360) > 8 and time.time() - timer_v < 2.5 ):
+                                #while ( abs((norm_head - heading_angle) - 360) > 8 and time.time() - timer_v < 2.5 ):
+                                while ( abs(corr) > 8 and time.time() - timer_v < 2.5 ):
                                     norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
                                     print( f"reversing servo {head.value:.2f} {heading_angle} diff: {(heading_angle - head.value) + 360:.2f} rev_diff: {(head.value - heading_angle) - 360:.2f} {counts.value} x:{x:.2f} y:{y:.2f}  head_r :{tfmini.distance_right:.2f} head_d:{tfmini.distance_head:.2f}" )
                                     x, y = enc.get_position( head.value, counts.value)
@@ -1188,7 +1193,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     prev_power = 0
                                     runMotor(power, 0)
                             elif orange_flag:
-                                while ( abs(norm_head - heading_angle) > 8 and time.time() - timer_v < 2.5):
+                                while ( abs(corr) > 8 and time.time() - timer_v < 2.5):
                                     norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
                                     print( f"reversing servo counter:{counter} imu:{head.value:.2f} diff:{abs(norm_head - heading_angle):.2f} tfmini head: {tfmini.distance_head:.2f} tfmini left:{tfmini.distance_left}" )
                                     x, y = enc.get_position( head.value, counts.value)
@@ -1305,18 +1310,18 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     print('No flags set, moving forward')
                             if OBSTACLE_STATE == 2:
                                 avoid_thres = 1.2
-                                reset_lane = 0.5
+                                reset_lane = 1
                                 if g_flag:
                                     print(f'avoiding green..green avoid: {time.time() - green_time}')
                                     if counter % 4 == pink_wall_lane and orange_flag:
-                                        correctWall(tfmini.distance_left, 35, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        correctWall(tfmini.distance_left, 30, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     else:
                                         correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr) )
                                     if green_b.value:
                                         green_time = time.time()
                                     if blue_flag:
                                         if counter % 4 == pink_wall_lane :
-                                            avoid_thres = 0.7
+                                            avoid_thres = 0.8
                                             if (time.time() - green_time > avoid_thres):
                                                 print('Obstacle STATE changed to 3')
                                                 g_flag = False
@@ -1331,7 +1336,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     elif orange_flag:
 
                                         if counter % 4 == pink_wall_lane :
-                                            avoid_thres = 0.7
+                                            avoid_thres = 0.8
                                             if ( tf_r <= 40 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres):
                                                 g_flag = False
                                                 OBSTACLE_STATE = 1
@@ -1346,15 +1351,14 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 elif r_flag:
                                     print(f'avoiding red... time avoid : {time.time() - red_time}')
                                     if counter % 4 == pink_wall_lane and blue_flag:
-                                        correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        correctWall(30, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     else:
                                         correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane,  abs(corr) )
                                     if red_b.value:
                                         red_time = time.time()
                                     if orange_flag:
-
                                         if counter % 4 == pink_wall_lane :
-                                            avoid_thres = 0.7
+                                            avoid_thres = 0.8
                                             if (time.time() - red_time > avoid_thres):
                                                 print('Obstacle STATE changed to 3')
                                                 r_flag = False
@@ -1368,7 +1372,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                                 buff_time = time.time()
                                     elif blue_flag:
                                         if counter % 4 == pink_wall_lane:
-                                            avoid_thres = 0.7
+                                            avoid_thres = 0.8
                                             if ( tf_l <= 40 and tf_l > 0 and not red_b.value) or (time.time() - red_time > avoid_thres):
                                                 r_flag = False
                                                 OBSTACLE_STATE = 1
