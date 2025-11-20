@@ -933,7 +933,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     if not calc_time:
                         c_time = time.time()
                         calc_time = True
-                    time_p = 0.4 #0
+                    time_p = 0.3 #0
                     #full_park = True
                     if STATE == 1:
                         if blue_flag or orange_flag:
@@ -959,13 +959,13 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 if blue_flag:
                                     print( f"Reversing backward full park...{counts.value} {parking_count_current - parking_count}" )
                                     runMotor(27.45, 0)
-                                    correctReverseAngle(heading_angle, head.value, 1)
+                                    correctReverseAngle(heading_angle, head.value, 3)
                                     # Set duty cycle to 50% (128/255)
                                     tfmini.getTFminiData()
                                     prev_time = time.time()
                                 if orange_flag:
                                     print( f"Reversing backward full park...{counts.value} {parking_count_current - parking_count}" )
-                                    correctReverseAngle((heading_angle), (head.value), 1)
+                                    correctReverseAngle((heading_angle), (head.value), 3)
                                     print("state 1 turn is happening")
                                     # Set duty cycle to 50% (128/255)
                                     tfmini.getTFminiData()
@@ -1319,8 +1319,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     rev_count = 0
                                     print('No flags set, moving forward')
                             if OBSTACLE_STATE == 2:
-                                avoid_thres = 0.95
-                                reset_lane = 1
+                                avoid_thres = 1.5
+                                
                                 if g_flag:
                                     print(f'avoiding green..green avoid: {time.time() - green_time}')
                                     if counter % 4 == pink_wall_lane and orange_flag:
@@ -1399,6 +1399,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             if OBSTACLE_STATE == 3:
                                 r_flag = False
                                 g_flag = False
+                                reset_lane = 1
                                 correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane,  abs(corr) )
                                 if time.time() - buff_time > reset_lane:
                                     OBSTACLE_STATE = 1
