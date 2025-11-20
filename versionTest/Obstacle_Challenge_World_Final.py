@@ -1319,8 +1319,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     rev_count = 0
                                     print('No flags set, moving forward')
                             if OBSTACLE_STATE == 2:
-                                avoid_thres = 1.2
-                                reset_lane = 0.8
+                                avoid_thres = 0.95
+                                reset_lane = 1
                                 if g_flag:
                                     print(f'avoiding green..green avoid: {time.time() - green_time}')
                                     if counter % 4 == pink_wall_lane and orange_flag:
