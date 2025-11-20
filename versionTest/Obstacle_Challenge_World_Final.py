@@ -286,7 +286,7 @@ def correctAngle(setPoint_gyro, heading, multiplier):
     correction = pTerm + iTerm + dTerm
 
     if multiplier == 3:
-        correction = max(-50, min(50, correction))
+        correction = max(-58, min(58, correction))
     else:
         correction = max(-30, min(30, correction))
 
@@ -388,7 +388,6 @@ def Live_Feed( red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_re
                 cx = (x1 + x2) // 2
                 cy = (y1 + y2) // 2
                 """cx = (bbox.xmax + bbox.xmin) //2
-
                 cy = (bbox.ymax + bbox.ymin) // 2"""
                 area = max(0, (x2 - x1)) * max(0, (y2 - y1))
                 name = labels.get(obj.id, str(obj.id))
@@ -915,7 +914,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     continue  # skip the drive code below
                 if avoided_time > 0 and time.time() < reverse_until:
                     runMotor(36,0)
-                    # non-blocking reverse
                     # keep the robot straight while reversing (or add bias if you want to angle out)
                     print(f'reverse after block spotted OBSTACLE_STATE {OBSTACLE_STATE}')
                     if red_b.value and not reset_f:
@@ -925,6 +923,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                         print(f'Green Detected, setting servo to 120 degrees {OBSTACLE_STATE}')
                         servo.setAngle(110)
                     continue  # still skip forward-drive code
+                
                 ################        PARKING         ################
 
                 if parking_flag:
@@ -1051,7 +1050,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
 
                             if orange_flag:
                                 tfmini.getTFminiData()
-
                                 if parking_right:
                                     heading_angle = heading_angle + 90
                                     parking_distance = tfmini.distance_right
