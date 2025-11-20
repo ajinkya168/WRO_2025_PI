@@ -286,7 +286,7 @@ def correctAngle(setPoint_gyro, heading, multiplier):
     correction = pTerm + iTerm + dTerm
 
     if multiplier == 3:
-        correction = max(-58, min(58, correction))
+        correction = max(-60, min(60, correction))
     else:
         correction = max(-30, min(30, correction))
 
@@ -1251,7 +1251,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 if blue_flag:
                                     correctAngle(heading_angle, head.value, 1.5)
                                 elif orange_flag:
-                                    correctAngle(heading_angle,head.value,1.5)
+                                    correctAngle(heading_angle, head.value ,1.5)
                                 if orange_flag:
                                     pink_thresh = 0.75 # 1
                                 elif blue_flag:
