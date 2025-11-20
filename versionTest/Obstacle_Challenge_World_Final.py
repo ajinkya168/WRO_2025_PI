@@ -243,8 +243,15 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
 
 
-
     correction = max(-45, min(45, correction))
+
+
+    if setPoint == 0 and (lidar_l.value <= 500 and lidar_l.value >= 550):
+        correction = 0
+    elif setPoint == 0 and (lidar_r.value <= 500 and lidar_r.value >= 550):
+        correction = 0
+    else:
+        pass
 
     print( f"diff:{(heading - head):.2f} heading:{heading:.2f} head:{head:.2f} right {distance_r} left {distance_l}head_d:{tfmini.distance_head} correction:{correction}" )
 
@@ -1254,16 +1261,16 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 print(f'avoiding pink..{lidar_f.value} {lidar_l.value}')
                                 if blue_flag:
                                     if parking_right:
-                                        correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        correctWall(34, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     elif parking_left:
-                                        correctWall(tfmini.distance_left, 35, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        correctWall(tfmini.distance_left, 34, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
 
                                     #correctAngle(heading_angle, head.value, 1.5)
                                 elif orange_flag:
                                     if parking_right:
-                                        correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        correctWall(34, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     elif parking_left:
-                                        correctWall(tfmini.distance_left, 35, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        correctWall(tfmini.distance_left, 34, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
 
                                     #correctAngle(heading_angle, head.value ,1.5)
                                 if orange_flag:
@@ -1351,7 +1358,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                             avoid_thres = 1
                                             print(f"avoid thresh : {avoid_thres}")
 
-                                            if ( tf_r <= 40 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres):
+                                            if ( tf_r <= 40 and tf_r > 0) or (time.time() - green_time > avoid_thres):
                                                 g_flag = False
                                                 OBSTACLE_STATE = 1
                                                 buff_time = time.time()
