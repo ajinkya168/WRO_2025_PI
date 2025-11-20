@@ -596,6 +596,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     forward_time = time.time()
     reset_lane = 0
     final_park = time.time()
+    front_thresh = 1000
+    parking_timeout = 1.5
     ############ MAIN LOOP ##############
 
     try:
@@ -933,32 +935,32 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     if not calc_time:
                         c_time = time.time()
                         calc_time = True
-                    time_p = 0.3 #0
+                    #time_p = 0.3 #0
                     #full_park = True
                     if STATE == 1:
                         if blue_flag or orange_flag:
-                            while time.time() - c_time <= time_p:
+                            #while time.time() - c_time <= time_p:
+                            while lidar_f.value > front_thresh:
                                 tfmini.getTFminiData()
                                 parking_count_current = counts.value
                                 full_park = True
                                 print( f"Reversing backward... {counts.value} right:{tfmini.distance_right:.2f} left:{tfmini.distance_left:.2f} diff right: {prev_distance - tfmini.distance_right:.2f} diff left:{prev_distance - tfmini.distance_left:.2f}" )
-                                power = 70
+                                power = 28
                                 prev_power = 0
                                 correctReverseAngle(heading_angle, head.value, 1)
                                 # Set duty cycle to 50% (128/255)
-                                pwm.set_PWM_dutycycle(pwm_pin, power)
-                                pwm.write(direction_pin, 0)  # Set pin 20 hig
+                                runMotor(power, 0)
                                 prev_time = time.time()
-
+                        full_park = True
                         if full_park:
                             parking_count_current = counts.value
                             tfmini.getTFminiData()
                             if orange_flag or blue_flag:
-                                parking_count = 10 #300
-                            while counts.value > parking_count_current - parking_count:
+                                parking_count = 0 #300
+                            while counts.value >= parking_count_current - parking_count:
                                 if blue_flag:
                                     print( f"Reversing backward full park...{counts.value} {parking_count_current - parking_count}" )
-                                    runMotor(27.45, 0)
+                                    runMotor(28, 0)
                                     correctReverseAngle(heading_angle, head.value, 3)
                                     # Set duty cycle to 50% (128/255)
                                     tfmini.getTFminiData()
@@ -969,7 +971,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     print("state 1 turn is happening")
                                     # Set duty cycle to 50% (128/255)
                                     tfmini.getTFminiData()
-                                    runMotor(27.45, 0)
+                                    runMotor(28, 0)
                                     prev_time = time.time()
                         else:
                             print('Going for a partial park')
@@ -994,7 +996,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     parking_distance = tfmini.distance_right
                                 print( f"corr:{abs(corr)} head:{tfmini.distance_head} left:{tfmini.distance_left}" )
                                 print('Reversing backward...')
-                                runMotor(33.3, 0)
+                                runMotor(36, 0)
                                 correctReverseAngle( heading_angle, head.value, 3)
                                 # Set duty cycle to 50% (128/255)
 
@@ -1016,7 +1018,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     parking_distance = tfmini.distance_right
                                 print( f"corr:{abs(corr)} head:{tfmini.distance_head} left:{tfmini.distance_left}" )
                                 print('Reversing backward...')
-                                runMotor(33.3, 0)
+                                runMotor(36, 0)
                                 correctReverseAngle( heading_angle, head.value, 3)
 
                         STATE = 3
@@ -1034,7 +1036,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     parking_distance = tfmini.distance_left
                                 final_park = time.time()
                                 correctReverseAngle( heading_angle, head.value, 3)
-                                while ((parking_distance > 20) or abs(corr) > 10) and (time.time() - final_park < 1.5):
+                                while ((parking_distance > 20) or abs(corr) > 8) and (time.time() - final_park < parking_timeout):
                                     tfmini.getTFminiData()
                                     if parking_right:
                                         parking_distance = tfmini.distance_right
@@ -1042,7 +1044,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         parking_distance = tfmini.distance_left
                                     print( f"corr:{abs(corr)} head:{tfmini.distance_head} left:{tfmini.distance_right}" )
                                     print(f'Reversing backward... {time.time() - final_park}')
-                                    runMotor(33.3, 0)
+                                    runMotor(36, 0)
 
                                     correctReverseAngle( heading_angle, head.value, 3)
 
@@ -1059,7 +1061,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     parking_distance = tfmini.distance_left
                                 final_park = time.time()
                                 correctReverseAngle( heading_angle, head.value, 3)
-                                while ((parking_distance > 20) or abs(corr) > 10) and (time.time() - final_park < 1.5):
+                                while ((parking_distance > 20) or abs(corr) > 8) and (time.time() - final_park < parking_timeout):
                                     tfmini.getTFminiData()
                                     if parking_right:
                                         parking_distance = tfmini.distance_right
@@ -1067,7 +1069,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         parking_distance = tfmini.distance_left
                                     print( f"corr:{abs(corr)} head:{tfmini.distance_head} left:{tfmini.distance_right}" )
                                     print(f'Reversing forward... {time.time() - final_park}')
-                                    runMotor(33.3, 0)
+                                    runMotor(36, 0)
 
                                     correctReverseAngle( heading_angle, head.value, 3)
                                     # Set duty cycle to 50% (128/255)

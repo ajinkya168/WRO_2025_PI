@@ -60,7 +60,7 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu):
                         specific_angle[1] = lidar_distance.value
                     if(int(lidar_angle.value) == (270 + imu_r +sp_angle) % 360):
                         specific_angle[2] = lidar_distance.value                                    
-                    #print(f"angles: {specific_angle} imu: {imu.value} total:{imu.value + lidar_angle.value}")
+                    print(f"angles: {specific_angle} imu: {imu.value} total:{imu.value + lidar_angle.value}")
                    
                 if(distance != 0): 
                     with lidar_angle.get_lock(), lidar_distance.get_lock(), previous_angle.get_lock(), imu.get_lock():
@@ -75,7 +75,7 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu):
                             specific_angle[1] = lidar_distance.value
                         if(int(lidar_angle.value) == (270 + imu_r + sp_angle) % 360  ):
                             specific_angle[2] = lidar_distance.value                                       
-                        #print(f"angles: {specific_angle}, imu: {imu.value} total:{imu_r + lidar_angle.value}")
+                        print(f"angles: {specific_angle}, imu: {imu.value} total:{imu_r + lidar_angle.value}")
                         #print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
 
     except KeyboardInterrupt:
@@ -120,7 +120,7 @@ if __name__ == '__main__':
                 count = int(esp_data[1])
            
             imu.value = esp_angle
-            print(f"count: {count} angle: {esp_angle} imu: {imu.value}")
+            #print(f"count: {count} angle: {esp_angle} imu: {imu.value}")
             #print(f"imu: {imu.value}")
 
 
