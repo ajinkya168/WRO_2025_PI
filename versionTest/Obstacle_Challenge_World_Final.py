@@ -842,33 +842,33 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     if STATE_INIT == 1:
                         print('STATE init 1')
                         if orange_flag:
-                            correctAngle(heading_angle + 90, head.value, 3)
+                            correctAngle(heading_angle + 90, head.value, 2.5)
                         elif blue_flag:
-                            correctAngle(heading_angle - 90, head.value, 3)
+                            correctAngle(heading_angle - 90, head.value, 2.5)
                         while abs(corr) > 5:
                             x, y = enc.get_position(head.value, counts.value)
                             tfmini.getTFminiData()
                             runMotor(70, 1)
                             if orange_flag:
-                                correctAngle(heading_angle + 90, head.value, 3)
+                                correctAngle(heading_angle + 90, head.value, 2.5)
                             elif blue_flag:
-                                correctAngle(heading_angle - 90, head.value, 3)
+                                correctAngle(heading_angle - 90, head.value, 2.5)
                         forward_time = time.time()
                         while time.time() - forward_time < 0.5:
                             print(f"time taken {time.time() - forward_time}")
                             x, y = enc.get_position(head.value, counts.value)
                             if orange_flag:
-                                correctAngle(heading_angle + 90, head.value, 3)
+                                correctAngle(heading_angle + 90, head.value, 2.5)
                             elif blue_flag:
-                                correctAngle(heading_angle - 90, head.value, 3)
+                                correctAngle(heading_angle - 90, head.value, 2.5)
                             tfmini.getTFminiData()
                             runMotor(70, 1)
                         while tfmini.distance_head > 40:
                             x, y = enc.get_position(head.value, counts.value)
                             if orange_flag:
-                                correctAngle(heading_angle + 90, head.value, 3)
+                                correctAngle(heading_angle + 90, head.value, 2.5)
                             elif blue_flag:
-                                correctAngle(heading_angle - 90, head.value, 3)
+                                correctAngle(heading_angle - 90, head.value, 2.5)
                             tfmini.getTFminiData()
                             runMotor(70, 1)
 
@@ -876,21 +876,21 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                     if STATE_INIT == 2:
                         print('STATE init 2')
                         if orange_flag:
-                            correctReverseAngle(heading_angle, head.value, 3)
+                            correctReverseAngle(heading_angle, head.value, 2.5)
                             enc_count = counts.value
                             if parking_right:
                                 start_enc_thresh = 6000
                             elif parking_left:
                                 start_enc_thresh = 9000
-                            corr_thresh = 5
+                            corr_thresh = 8
                         elif blue_flag:
-                            correctReverseAngle(heading_angle, head.value, 3)
+                            correctReverseAngle(heading_angle, head.value, 2.5)
                             enc_count = counts.value
                             if parking_right:
                                 start_enc_thresh = 9000
                             elif parking_left:
                                 start_enc_thresh = 6000
-                            corr_thresh = 5
+                            corr_thresh = 8
 
                         while abs(corr) > corr_thresh or counts.value > enc_count - start_enc_thresh: #enc_COUNT-6000
                             x, y = enc.get_position(head.value, counts.value)
@@ -899,9 +899,9 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             print(f"corr at start {abs(corr)} {counts.value} {enc_count - start_enc_thresh} corr: {abs(corr) > corr_thresh} {counts.value > enc_count - start_enc_thresh}", )
                             # 0 = reverse, 1 = forward (per your wiring)
                             if orange_flag:
-                                correctReverseAngle( heading_angle, head.value, 3)
+                                correctReverseAngle( heading_angle, head.value, 2.5)
                             elif blue_flag:
-                                correctReverseAngle( heading_angle, head.value, 3)
+                                correctReverseAngle( heading_angle, head.value, 2.5)
                         STATE_INIT = 3
                         OBSTACLE_STATE = 1
                         RESET_STATE = 0
