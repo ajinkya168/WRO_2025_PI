@@ -241,6 +241,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         print('No wall detected...')
         pass
 
+    
 
 
     correction = max(-45, min(45, correction))
@@ -1219,7 +1220,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             print(f"abs corr is {abs(corr)} {heading_angle} {head.value}")
                             if orange_flag:
                                 #turn_trigger_distance = round(tfmini.distance_left * math.cos(math.radians(abs(corr))))
-                                turn_trigger_distance = lidar_f.value
+                                turn_trigger_distance = lidar_l.value
 
                             elif blue_flag:
                                 #turn_trigger_distance = round(tfmini.distance_right * math.cos(math.radians(abs(corr))))
