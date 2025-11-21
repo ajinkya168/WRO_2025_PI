@@ -246,9 +246,9 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     correction = max(-45, min(45, correction))
 
 
-    if setPoint == 0 and (lidar_l.value >= 460 and lidar_l.value <= 500 and lidar_r.value < 100):
+    if setPoint == 0 and (lidar_l.value >= 500 and lidar_l.value <= 520):
         correction = 0
-    elif setPoint == 0 and (lidar_r.value >= 460 and lidar_r.value <= 500 and lidar_l.value < 100):
+    if setPoint == 0 and (lidar_r.value >= 500 and lidar_r.value <= 520):
         correction = 0
 
     print( f"diff:{(heading - head):.2f} heading:{heading:.2f} head:{head:.2f} right {distance_r} left {distance_l}head_d:{tfmini.distance_head} correction:{correction}" )
