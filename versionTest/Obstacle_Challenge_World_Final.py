@@ -172,10 +172,11 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, coun
     correction = max(-35, min(35, correction))
 
 
-    if orange and dist < 30 and counter % 4 == pink_l:
+    if dist < 30 and setPoint_distance == 35:
         correction = 0
-    elif blue and  dist < 30 and counter % 4 == pink_l:
+    if setPoint_distance == 60 and dist < 20:
         correction = 0
+        
 
     print(f"dist is {dist}")
 
@@ -1272,16 +1273,13 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     if parking_right:
                                         correctWall(60, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, True, False)
 
-                                        #correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     elif parking_left:
-                                        #correctWall(tfmini.distance_left, 35, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                         correctWall(60, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
 
                                     #correctAngle(heading_angle, head.value, 1.5)
                                 elif orange_flag:
                                     if parking_right:
                                         correctWall(60, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, True, False)
-                                        #correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     elif parking_left:
                                         #correctWall(tfmini.distance_left, 35, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                         correctWall(60, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
