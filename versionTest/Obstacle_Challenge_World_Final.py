@@ -247,9 +247,9 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
 
     if setPoint == 0 and (lidar_l.value <= 500 and lidar_l.value >= 550):
-        correction = 0
+        correction = -5
     elif setPoint == 0 and (lidar_r.value <= 500 and lidar_r.value >= 550):
-        correction = 0
+        correction = 5
     else:
         pass
 
