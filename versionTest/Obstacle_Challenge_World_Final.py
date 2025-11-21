@@ -143,7 +143,7 @@ corr = 0
 corr_pos = 0
 
 ###################################################
-def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, counter):
+def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, counter, left, right): #first parameter is the setPoint for correcting right wall
 
     error_d = 0
     prevError_d = 0
@@ -152,7 +152,10 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, coun
     totalError_d = 0
     prevError_d = 0
 
-    error_d = dist - setPoint_distance
+    if right:
+        error_d = dist - setPoint_distance
+    elif left:
+        error_d = setPoint_distance - dist
 
     # print("Error : ", error_gyro)
     pTerm = 0
@@ -174,6 +177,7 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, coun
     elif blue and  dist < 30 and counter % 4 == pink_l:
         correction = 0
 
+    print(f"dist is {dist}")
 
     prevError_d = error_d
     if counter % 4 == pink_l:
@@ -231,10 +235,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     print(f"Error: {error}")
 
     n_head = normalize_angle(heading, blue, orange, lane)
-    if setPoint <= -40 and (lidar_l.value <= 200 ):
+    if setPoint <= -40 and (lidar_l.value <= 250 ):
         print(f"Correcting Green Wall Orange")
         correction = 5
-    elif setPoint >= 40 and (lidar_r.value <= 200):
+    elif setPoint >= 40 and (lidar_r.value <= 250):
         print( f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}" )
         correction = -5
     else:
@@ -254,7 +258,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     if counter % 4 == pink_l:
         correctAngle(head + correction, heading, 1)
     else:
-        correctAngle(head + correction, heading, 2)
+        correctAngle(head + correction, heading, 1.5)
     print("--------------------------------------------------------------------------------")
 
 
@@ -1266,16 +1270,21 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 print(f'avoiding pink..{lidar_f.value} {lidar_l.value}')
                                 if blue_flag:
                                     if parking_right:
-                                        correctWall(34, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        correctWall(60, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, True, False)
+
+                                        #correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     elif parking_left:
-                                        correctWall(tfmini.distance_left, 34, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        #correctWall(tfmini.distance_left, 35, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        correctWall(60, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
 
                                     #correctAngle(heading_angle, head.value, 1.5)
                                 elif orange_flag:
                                     if parking_right:
-                                        correctWall(34, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        correctWall(60, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, True, False)
+                                        #correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
                                     elif parking_left:
-                                        correctWall(tfmini.distance_left, 34, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        #correctWall(tfmini.distance_left, 35, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        correctWall(60, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
 
                                     #correctAngle(heading_angle, head.value ,1.5)
                                 if orange_flag:
@@ -1328,9 +1337,9 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     print('Obstacle STATE changed to 2')
                                 else:
                                     if lidar_l.value > lidar_r.value:
-                                        correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
                                     elif lidar_r.value > lidar_l.value:
-                                        correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        correctWall(45, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, True, False)
                                     #correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr) )
                                     p_flag = False
                                     g_flag = False
@@ -1342,7 +1351,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 if g_flag:
                                     print(f'avoiding green.. {avoid_thres} green avoid: {time.time() - green_time}')
                                     if counter % 4 == pink_wall_lane and orange_flag:
-                                        correctWall(tfmini.distance_left, 35, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        correctWall(35, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, True, False)
                                     else:
                                         correctPosition(setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr) )
                                     if green_b.value:
@@ -1381,7 +1390,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                 elif r_flag:
                                     print(f'avoiding red...{avoid_thres} time avoid : {time.time() - red_time}')
                                     if counter % 4 == pink_wall_lane and blue_flag:
-                                        correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                        correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
                                     else:
                                         correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane,  abs(corr) )
                                     if red_b.value:
