@@ -233,16 +233,15 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     n_head = normalize_angle(heading, blue, orange, lane)
     if setPoint <= -40 and (lidar_l.value <= 200 ):
         print(f"Correcting Green Wall Orange")
-        correction = 15
+        correction = 5
     elif setPoint >= 40 and (lidar_r.value <= 200):
         print( f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}" )
-        correction = -15
+        correction = -5
     else:
         print('No wall detected...')
         pass
 
     
-
 
     correction = max(-45, min(45, correction))
 
@@ -1322,11 +1321,11 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     OBSTACLE_STATE = 2
                                     print('Obstacle STATE changed to 2')
                                 else:
-                                    if(lidar_l.value >= 520 and lidar_l.value <= 550) or (lidar_r.value >= 520 and lidar_r.value <= 550):
-                                        print("Middle lane correction is 0")
-                                        correctAngle(heading_angle, head.value, 1.5)
-                                    else:
-                                        correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr) )
+                                    if lidar_l.value > lidar_r.value:
+                                        correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                    elif lidar_r.value > lidar_l.value:
+                                        correctWall(tfmini.distance_left, 45, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter)
+                                    #correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr) )
                                     p_flag = False
                                     g_flag = False
                                     r_flag = False
