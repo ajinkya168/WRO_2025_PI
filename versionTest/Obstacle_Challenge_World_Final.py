@@ -248,6 +248,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
 
     if setPoint == 0 and ((lidar_l.value >= 520 and lidar_l.value <= 550) or (lidar_r.value >= 520 and lidar_r.value <= 550)):
+        print("Middle lane correction is 0")
         correction = 0
 
     print( f"diff:{(heading - head):.2f} heading:{heading:.2f} head:{head:.2f} right {distance_r} left {distance_l}head_d:{tfmini.distance_head} correction:{correction}" )
@@ -1219,15 +1220,15 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
 
                             print(f"abs corr is {abs(corr)} {heading_angle} {head.value}")
                             if orange_flag:
-                                #turn_trigger_distance = round(tfmini.distance_left * math.cos(math.radians(abs(corr))))
-                                turn_trigger_distance = lidar_l.value
+                                turn_trigger_distance = round(tfmini.distance_left * math.cos(math.radians(abs(corr))))
+                                #turn_trigger_distance = lidar_l.value
 
                             elif blue_flag:
-                                #turn_trigger_distance = round(tfmini.distance_right * math.cos(math.radians(abs(corr))))
-                                turn_trigger_distance = lidar_r.value
+                                turn_trigger_distance = round(tfmini.distance_right * math.cos(math.radians(abs(corr))))
+                                #turn_trigger_distance = lidar_r.value
 
                             print(f"distance from wall is {turn_trigger_distance}")
-                            enc.x, enc.y = reset_coordinates_lidar(turn_trigger_distance, lane_reset, orange_flag, blue_flag, x, y )
+                            enc.x, enc.y = reset_coordinates(turn_trigger_distance, lane_reset, orange_flag, blue_flag, x, y )
                             print(f"enc.x: {enc.x:.2f} enc.y:{enc.y:.2f}")
                             power = 90
                             trigger_enc = counts.value
@@ -1430,7 +1431,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 print( f"red_b.value:{red_b.value} green_b.value:{green_b.value} pink_b.value:{pink_b.value}" )
                 print( f"r_flag:{r_flag} g_flag:{g_flag} rev_count: {rev_count}")
                 print( f"x: {x:.2f}, y:{y:.2f} count:{counts.value} heading_angle:{heading_angle}" )
-                print( f"F: {tf_h:.2f}  L: {l_left:.2f} R: {l_right:.2f} left:{tf_l} " )
+                print( f"F: {tf_h:.2f}  L: {l_left:.2f} R: {l_right:.2f} left:{tf_l} right: {tf_r} front:{tfmini.distance_head} " )
                 print( f"OBSTACLE_STATE: {OBSTACLE_STATE} RESET_STATE: {RESET_STATE}" )
                 print('---------------------------------------------------')
                 # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
