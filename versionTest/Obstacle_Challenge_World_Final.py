@@ -154,9 +154,10 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, coun
 
     if right:
         error_d = dist - setPoint_distance
+        print(f"right error: {error_d}")
     elif left:
         error_d = setPoint_distance - dist
-
+        print(f"left error: {error_d}")
     # print("Error : ", error_gyro)
     pTerm = 0
     dTerm = 0
