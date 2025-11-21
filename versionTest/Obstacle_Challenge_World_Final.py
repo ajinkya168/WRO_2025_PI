@@ -1335,6 +1335,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     OBSTACLE_STATE = 2
                                     print('Obstacle STATE changed to 2')
                                 else:
+
                                     if lidar_l.value > lidar_r.value and tfmini.distance_right > 30:
                                         print("Correcting wall to right")
                                         correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
