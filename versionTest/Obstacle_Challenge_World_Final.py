@@ -236,10 +236,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     print(f"Error: {error}")
 
     n_head = normalize_angle(heading, blue, orange, lane)
-    if (setPoint <= -35 or setPoint == 0) and (lidar_l.value <= 250 ):
+    if (setPoint <= -35 ) and (lidar_l.value <= 250 ):
         print(f"Correcting Green Wall Orange")
         correction = 0
-    elif (setPoint >= 35 or setPoint == 0) and (lidar_r.value <= 250):
+    elif (setPoint >= 35 ) and (lidar_r.value <= 250):
         print( f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}" )
         correction = 0
     else:
@@ -1334,10 +1334,10 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     OBSTACLE_STATE = 2
                                     print('Obstacle STATE changed to 2')
                                 else:
-                                    if lidar_l.value > lidar_r.value:
+                                    if lidar_l.value > lidar_r.value and tfmini.distance_right > 30:
                                         print("Correcting wall to right")
                                         correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
-                                    elif lidar_r.value > lidar_l.value:
+                                    elif lidar_r.value > lidar_l.value and tfmini.distance_left > 30:
                                         print("Correcting wall to left")
                                         correctWall(45, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, True, False)
                                     #correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr) )
