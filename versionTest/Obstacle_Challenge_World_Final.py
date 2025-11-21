@@ -236,10 +236,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     print(f"Error: {error}")
 
     n_head = normalize_angle(heading, blue, orange, lane)
-    if setPoint <= -40 and (lidar_l.value <= 280 ):
+    if setPoint <= -35 and (lidar_l.value <= 250 ):
         print(f"Correcting Green Wall Orange")
         correction = 0
-    elif setPoint >= 40 and (lidar_r.value <= 280):
+    elif setPoint >= 35 and (lidar_r.value <= 250):
         print( f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}" )
         correction = 0
     else:
@@ -542,8 +542,8 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     parking_left = False
     exit_flag = False
     ############ VARIABLES ##################
-    setPointL = -40
-    setPointR = 40
+    setPointL = -35
+    setPointR = 35
     setPointC = 0
     power = 95
     prev_power = 0
@@ -798,16 +798,16 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 if orange_flag:
                     setPointL = min(0, max(-100, setPointL))
                 elif blue_flag:
-                    setPointL = min(0, max(-40, setPointL))
-                setPointR = 40
+                    setPointL = min(0, max(-35, setPointL))
+                setPointR = 35
             elif r_flag and not continue_parking:
                 print(f"away from red {r_past}")
                 setPointR = setPointR + 1
                 if orange_flag:
-                    setPointR = max(0, min(40, setPointR))
+                    setPointR = max(0, min(35, setPointR))
                 elif blue_flag:
                     setPointR = max(0, min(100, setPointR))
-                setPointL = -40
+                setPointL = -35
 
             if not button:
                 print( f"red_b:{red_b.value}, green_b:{green_b.value}, pink_b:{pink_b.value} tf_h:{tf_h:.2f} diff:{(head.value - heading_angle):.2f} counts:{counts.value:.2f}" )
@@ -1448,7 +1448,6 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 print( f"F: {tf_h:.2f}  L: {l_left:.2f} R: {l_right:.2f} left:{tf_l} right: {tf_r} front:{tfmini.distance_head} " )
                 print( f"OBSTACLE_STATE: {OBSTACLE_STATE} RESET_STATE: {RESET_STATE}" )
                 print('---------------------------------------------------')
-                # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
             else:
                 power = 0
                 pwm.hardware_PWM(12, 55, 0)
