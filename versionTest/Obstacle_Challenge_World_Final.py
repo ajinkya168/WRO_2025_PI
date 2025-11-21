@@ -169,7 +169,7 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, coun
     correction = pTerm + iTerm + dTerm
 
 
-    correction = max(-35, min(35, correction))
+    correction = max(-40, min(40, correction))
 
 
     if dist < 30 and setPoint_distance == 35:
@@ -184,7 +184,7 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, coun
     if counter % 4 == pink_l:
         correctAngle(sp_h + correction, imu_h, 1)
     else:
-        correctAngle(sp_h + correction, imu_h, 1.5)
+        correctAngle(sp_h + correction, imu_h, 1.8)
 
 
 def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr_x_p, centr_x_r, centr_x_g, centr_y_g, centr_y_r, centr_y_p, distance_h, distance_l, distance_r, red, green, pink_l, corr_h): # print("INSIDE CORRECT")
@@ -236,12 +236,12 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     print(f"Error: {error}")
 
     n_head = normalize_angle(heading, blue, orange, lane)
-    if setPoint <= -40 and (lidar_l.value <= 250 ):
+    if setPoint <= -40 and (lidar_l.value <= 280 ):
         print(f"Correcting Green Wall Orange")
-        correction = 5
-    elif setPoint >= 40 and (lidar_r.value <= 250):
+        correction = 0
+    elif setPoint >= 40 and (lidar_r.value <= 280):
         print( f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}" )
-        correction = -5
+        correction = 0
     else:
         print('No wall detected...')
         pass
