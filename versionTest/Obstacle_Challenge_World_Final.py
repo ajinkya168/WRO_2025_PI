@@ -548,7 +548,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     setPointC = 0
     power = 95
     prev_power = 0
-    last_counter = 12 #12
+    last_counter = 4 #12
     counter = turn_t = current_time = gp_time = rp_time = buff = c_time = 0
     heading_angle = 0
     lap_finish_time = ( prev_distance ) = turn_trigger_distance = target_count = offset = button_STATE = exit_STATE = 0
@@ -607,6 +607,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     front_thresh = 1000
     parking_timeout = 1.5
     finish_thresh = 1100
+    before_finish = 0
     ############ MAIN LOOP ##############
 
     try:
@@ -668,27 +669,30 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
             ##### STOP CONDITION ######
             if counter == last_counter and not lap_finish:
                 reset_f = False
-                print( f"centr_y :{centr_y.value} centr_y_red:{centr_y_red.value}")
                 print('REACHED MAXIMUM COUNTS')
-                print(f"target:{target_count}")
+                print(f"target:{target_count} front lidar:{lidar_f.value} counts: {counts.value}")
                 if not finished:
                     if orange_flag:
                         if parking_right:
                             finish_thresh = 1100
+                            before_finish = 3000
                             target_count = counts.value + 28000 #22000 - finish too late in the section
                         elif parking_left:
+                            before_finish = 0
                             finish_thresh = 1600
                             target_count = counts.value + 22500
                     elif blue_flag:
                         if parking_right:
                             finish_thresh = 1600
+                            before_finish = 0
                             target_count = counts.value + 22500
                         elif parking_left:
                             finish_thresh = 1100
+                            before_finish = 3000
                             target_count = counts.value + 28000
                     finished = True
 
-                if (counts.value >= target_count) or (counts.value >= 20000 and lidar_f.value < finish_thresh):
+                if (counts.value >= target_count) or (counts.value >= target_count - before_finish and lidar_f.value < finish_thresh):
                     power = 0
                     pink_b.value = False
                     # Set duty cycle to 50% (128/255)
