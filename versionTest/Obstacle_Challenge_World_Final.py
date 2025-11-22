@@ -263,10 +263,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     if setPoint == 0 and abs(error) < 10:
         if lidar_l.value > lidar_r.value:
             print("Correcting wall to right")
-            correctWall(45, tfmini.distance_right, heading, head, orange, blue, pink_l, counter, False, True)
+            correctWall(45, tfmini.distance_right, head, heading, orange, blue, pink_l, counter, False, True)
         elif lidar_r.value > lidar_l.value:
             print("Correcting wall to left")
-            correctWall(45, tfmini.distance_left, heading, head, orange, blue, pink_l, counter, True, False)
+            correctWall(45, tfmini.distance_left, head, heading, orange, blue, pink_l, counter, True, False)
     else:
         if counter % 4 == pink_l:
             correctAngle(head + correction, heading, 1)
