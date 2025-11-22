@@ -174,10 +174,13 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, coun
 
 
     if dist < 30 and setPoint_distance == 35:
+        print("correction 0 35")
         correction = 0
     if setPoint_distance == 60 and dist < 20:
+        print("correction 0 60")
         correction = 0
     if setPoint_distance == 45 and dist < 20:
+        print("correction 0 is 45")
         correction = 0
         
 
@@ -263,10 +266,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     prevError = error
     tfmini.getTFminiData()
     if setPoint == 0 and abs(error) < 10:
-        if lidar_l.value > lidar_r.value:
+        if blue:
             print("Correcting wall to right")
             correctWall(45, tfmini.distance_right, head, heading, orange, blue, pink_l, counter, False, True)
-        elif lidar_r.value > lidar_l.value:
+        elif orange:
             print("Correcting wall to left")
             correctWall(45, tfmini.distance_left, head, heading, orange, blue, pink_l, counter, True, False)
     else:
