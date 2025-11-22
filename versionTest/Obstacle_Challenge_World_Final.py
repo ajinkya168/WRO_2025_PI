@@ -674,7 +674,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 if not finished:
                     if orange_flag:
                         if parking_right:
-                            finish_thresh = 1100
+                            finish_thresh = 1200
                             before_finish = 3000
                             target_count = counts.value + 28000 #22000 - finish too late in the section
                         elif parking_left:
@@ -687,7 +687,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             before_finish = 0
                             target_count = counts.value + 22500
                         elif parking_left:
-                            finish_thresh = 1100
+                            finish_thresh = 1200
                             before_finish = 3000
                             target_count = counts.value + 28000
                     finished = True
