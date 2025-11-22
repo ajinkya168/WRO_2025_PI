@@ -606,6 +606,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
     final_park = time.time()
     front_thresh = 1000
     parking_timeout = 1.5
+    finish_thresh = 1100
     ############ MAIN LOOP ##############
 
     try:
@@ -673,17 +674,21 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                 if not finished:
                     if orange_flag:
                         if parking_right:
+                            finish_thresh = 1100
                             target_count = counts.value + 28000 #22000 - finish too late in the section
                         elif parking_left:
+                            finish_thresh = 1600
                             target_count = counts.value + 22500
                     elif blue_flag:
                         if parking_right:
+                            finish_thresh = 1600
                             target_count = counts.value + 22500
                         elif parking_left:
+                            finish_thresh = 1100
                             target_count = counts.value + 28000
                     finished = True
 
-                if counts.value >= target_count:
+                if (counts.value >= target_count) or (counts.value >= 20000 and lidar_f.value < finish_thresh):
                     power = 0
                     pink_b.value = False
                     # Set duty cycle to 50% (128/255)
@@ -887,7 +892,15 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             tfmini.getTFminiData()
                             runMotor(70, 1)
                             print("approaching wall")
-
+                        while tfmini.distance_head < 40:
+                            x, y = enc.get_position(head.value, counts.value)
+                            if orange_flag:
+                                correctAngle(heading_angle + 90, head.value, 3)
+                            elif blue_flag:
+                                correctAngle(heading_angle - 90, head.value, 3)
+                            tfmini.getTFminiData()
+                            runMotor(70, 0)
+                            print("approaching wall")
                         STATE_INIT = 2
                     if STATE_INIT == 2:
                         print('STATE init 2')
