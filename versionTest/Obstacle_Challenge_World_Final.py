@@ -177,6 +177,8 @@ def correctWall(setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, coun
         correction = 0
     if setPoint_distance == 60 and dist < 20:
         correction = 0
+    if setPoint_distance == 45 and dist < 20:
+        correction = 0
         
 
     print(f"dist is {dist}")
