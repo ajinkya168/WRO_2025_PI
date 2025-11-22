@@ -199,6 +199,8 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     iTerm_e = 0
     lane = counter % 4
     n_head = 0
+    
+
     # if(time.time() - last_time > 0.001):
     if lane == 0:
         error = setPoint - y
@@ -227,7 +229,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
             error = x + (100 + setPoint)
             (f"lane:{lane} error:{error} target:{(55 + setPoint)}, x:{x} y {y}")
 
-    corr_pos = error
+    corr_pos = error        
     pTerm_e = kp_e * error
     dTerm_e = kd_e * (error - prevError)
     totalError += error
@@ -257,10 +259,18 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     print( f"diff:{(heading - head):.2f} heading:{heading:.2f} head:{head:.2f} right {distance_r} left {distance_l}head_d:{tfmini.distance_head} correction:{correction}" )
 
     prevError = error
-    if counter % 4 == pink_l:
-        correctAngle(head + correction, heading, 1)
+    if setPoint == 0 and abs(error) < 10:
+        if lidar_l.value > lidar_r.value:
+            print("Correcting wall to right")
+            correctWall(45, tfmini.distance_right, heading, head, orange, blue, pink_l, counter, False, True)
+        elif lidar_r.value > lidar_l.value:
+            print("Correcting wall to left")
+            correctWall(45, tfmini.distance_left, heading, head, orange, blue, pink_l, counter, True, False)
     else:
-        correctAngle(head + correction, heading, 1.5)
+        if counter % 4 == pink_l:
+            correctAngle(head + correction, heading, 1)
+        else:
+            correctAngle(head + correction, heading, 1.5)
     print("--------------------------------------------------------------------------------")
 
 
@@ -1352,15 +1362,14 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     print('Obstacle STATE changed to 2')
                                 else:
 
-                                    if lidar_l.value > lidar_r.value and tfmini.distance_right < 100:
+                                    '''if lidar_l.value > lidar_r.value and tfmini.distance_right < 100:
                                         print("Correcting wall to right")
                                         correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
                                     elif lidar_r.value > lidar_l.value and tfmini.distance_left < 100:
                                         print("Correcting wall to left")
-                                        correctWall(45, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, True, False)
-                                    else:
-                                        print("correct position")
-                                        correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr) )
+                                        correctWall(45, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, True, False)'''                                            
+                                    print("correct position")
+                                    correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr) )
                                     p_flag = False
                                     g_flag = False
                                     r_flag = False
