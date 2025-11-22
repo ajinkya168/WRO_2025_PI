@@ -1117,8 +1117,6 @@ def servoDrive(color_b, stop_evt, red_b, green_b, pink_b, counts, centr_y, centr
                     pwm.set_PWM_dutycycle(pwm_pin, int(1.3 * power))
                     # 0 = reverse, 1 = forward (per your wiring)
                     pwm.write(direction_pin, 0)
-                    # keep the robot straight while reversing (or add bias if you want to angle out)
-                    # correctAngle(sp_angle.value, imu_head)
                     print("reverse after block spotted")
                     if red_b.value and not reset_f:
                         print("Red Detected, setting servo to 60 degrees")
@@ -2077,7 +2075,6 @@ def read_lidar(lidar_angle, lidar_distance, imu_shared, sp_angle, turn_trigger, 
                     R = 0.2*R + 0.8*lidar_distance.value if R else lidar_distance.value
                     lidar_r.value = R
                 
-                #print("in while loop...")    
                 if (F <= 950 and R >= 1500) and right_f.value and not left_f.value:
                     turn_trigger.value = True
                 elif (F <= 950 and L >= 1500) and left_f.value and not right_f.value:
