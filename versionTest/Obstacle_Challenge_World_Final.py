@@ -232,7 +232,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
             print( f"lane:{lane} error:{error:.2f} target:{(setPoint - 100)}, x: {x} y {y} setPoint:{setPoint}" )
         elif blue:
             error = x + (100 + setPoint)
-            (f"lane:{lane} error:{error} target:{(55 + setPoint)}, x:{x} y {y}")
+            print(f"lane:{lane} error:{error} target:{(55 + setPoint)}, x:{x} y {y}")
 
     corr_pos = error        
     pTerm_e = kp_e * error
@@ -350,7 +350,6 @@ def correctReverseAngle(setPoint_gyro, heading, multiplier):
 
     prevErrorGyro = error_gyro
     servo.setAngle(90 + correction)
-
 
 def Live_Feed( red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink ):
     MODEL_PATH = '/home/pi/WRO_2025_PI/limelight_neural_detector_8bit_edgetpu.tflite'  # put your label file here (id -> name), or set to None
@@ -1481,16 +1480,15 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
         # pwm.close()
 
 
+def runMotor(speed, direction):  # direction 0 - reverse 1- forward
+    pwm.set_PWM_dutycycle(12, int(speed * 2.55))  # Stop motor
+    pwm.write(20, direction)  # Set direction pin low (optional)
+
 def update_heading(counter, heading_angle, blue, orange):
     if blue:
         return -((90 * counter) % 360)
     elif orange:
         return (90 * counter) % 360
-
-def runMotor(speed, direction):  # direction 0 - reverse 1- forward
-    pwm.set_PWM_dutycycle(12, int(speed * 2.55))  # Stop motor
-    pwm.write(20, direction)  # Set direction pin low (optional)
-
 
 def normalize_angle(angle, blue, orange, lane):
     """Normalize angle to be within the range of -180 to 180 degrees."""
