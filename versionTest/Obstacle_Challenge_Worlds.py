@@ -627,7 +627,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
     forward_time = time.time()
     reset_lane = 0
     final_park = time.time()
-    front_thresh = 1000
+    front_thresh = 850
     parking_timeout = 1.7
     finish_thresh = 1100
     before_finish = 0
@@ -1500,6 +1500,21 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
 
                 pwm.write(direction_pin, 1)  # Set pin 20 high
                 if(time.time() - itr_prev_time > 1):
+                    correctReverseAngle(heading_angle, head.value, 1)
+                    while abs(corr) > 5:
+                        correctReverseAngle(heading_angle, head.value, 1)
+                    tfmini.getTFminiData()
+                    x, y = enc.get_position( head.value, counts.value)
+
+                    print(f"abs corr is {abs(corr)} {heading_angle} {head.value}")
+                    if orange_flag:
+                        turn_trigger_distance = round(tfmini.distance_left * math.cos(math.radians(abs(corr))))
+                        # turn_trigger_distance = lidar_l.value
+                    elif blue_flag:
+                        turn_trigger_distance = round(tfmini.distance_right * math.cos(math.radians(abs(corr))))
+                        # turn_trigger_distance = lidar_r.value
+                    print(f"distance from wall is {turn_trigger_distance}")
+                    enc.x, enc.y = reset_coordinates(turn_trigger_distance, lane_reset, orange_flag, blue_flag, x, y )
                     print("iteration skipped")
                     
                 print(f"{time.time() - itr_prev_time}")
