@@ -9,7 +9,7 @@ import multiprocessing
 import pigpio
 #import board
 from ctypes import c_float
-import subprocess
+import subprocess 
 from Encoder import EncoderCounter
 import serial
 import sys
@@ -74,6 +74,8 @@ ser = serial.Serial('/dev/UART_USB', 115200)
 ################# MULTIPROCESSING VARIABLES ############
 distance = multiprocessing.Value("f", 0.0)
 block = multiprocessing.Value("i", 0)
+lane_counter = multiprocessing.Value("i", 0)
+
 counts = multiprocessing.Value('i', 0)
 head = multiprocessing.Value('f', 0.0)
 head = multiprocessing.Value('f', 0.0)
@@ -222,7 +224,7 @@ def setAngle(angle):
     pwm.set_servo_pulsewidth(servo, 500 + round(angle * 11.11))  # 0 degree
 
 
-def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigger, left_f, right_f):
+def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigger, left_f, right_f, lane_counter):
     print("ServoProcess started")
     global heading
     global distance_right, distance_head, distance_left
@@ -319,23 +321,22 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
 
                 if right_flag:
                     if tfmini.distance_left < 15 and tfmini.distance_left > 0:
-                        correctAngle(heading_angle + 20, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
+                        correctAngle(heading_angle + 10, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
                     elif tfmini.distance_right < 15 and tfmini.distance_right > 0:
-                        correctAngle(heading_angle - 20, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
+                        correctAngle(heading_angle - 10, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
                     else:
                         correctAngle(heading_angle, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
                 elif left_flag:
                     if tfmini.distance_left < 15 and tfmini.distance_left > 0:
-                        correctAngle(heading_angle + 20, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
+                        correctAngle(heading_angle + 10, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
                     elif tfmini.distance_right < 15 and tfmini.distance_right >0 :
-                        correctAngle(heading_angle - 20, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
+                        correctAngle(heading_angle - 10, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
                     else:
                         correctAngle(heading_angle, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
                 else:
                     correctAngle(heading_angle, left_flag, right_flag, trigger, head.value, tf_h, tf_l, tf_r)
                     
-                    
-
+                lane_counter.value = counter                    
 
                 if right_flag:
                     print("Right Flag is set")
@@ -364,6 +365,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
                     elif time.time()-t_time > 3:
                         trigger = False
                 
+                
 
 
             else:
@@ -383,17 +385,24 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
     except Exception as e:
         print(f"Exception: {e}")
 
-def runEncoder(counts, head):
+def runEncoder(counts, head, lane_counter, left_f, right_f):
+    pwm = pigpio.pi()
     print("Encoder Process Started")
-
+    time.sleep(2)
     try:
         while True:
-            line = ser.readline().decode('utf-8', errors = 'ignore').strip()
+            line = ser.readline().decode("utf-8", errors="ignore").strip()
             esp_data = line.split()
             # print(f"esp_data: {esp_data}")
             if len(esp_data) >= 2:
                 try:
-                    head.value = float(esp_data[0])
+                    #head.value = float(esp_data[0]) 
+                    if right_f.value:
+                        head.value = float(esp_data[0]) + (0.57 * lane_counter.value)
+                    elif left_f.value:
+                        head.value = float(esp_data[0]) - (0.57 * lane_counter.value)
+                    else:
+                        head.value = float(esp_data[0]) 
                     counts.value = int(esp_data[1])
                 except ValueError:
                     print(f"⚠️ Malformed ESP data: {esp_data}")
@@ -512,8 +521,8 @@ if __name__ == "__main__":
     try:
 
         
-        S = multiprocessing.Process(target=servoDrive, args=(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigger, left_f, right_f))
-        E = multiprocessing.Process(target=runEncoder, args=(counts, head,))
+        S = multiprocessing.Process(target=servoDrive, args=(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigger, left_f, right_f, lane_counter))
+        E = multiprocessing.Process(target=runEncoder, args=(counts, head, lane_counter, left_f, right_f))
         lidar_proc = multiprocessing.Process(target=read_lidar, args=(lidar_angle, lidar_distance, sp_angle, turn_trigger, specific_angle, lidar_f, head, left_f, right_f))
 
         S.start()
