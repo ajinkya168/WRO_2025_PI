@@ -627,7 +627,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
     forward_time = time.time()
     reset_lane = 0
     final_park = time.time()
-    front_thresh = 950
+    front_thresh = 890
     parking_timeout = 1.7
     finish_thresh = 1000
     before_finish = 0
@@ -705,11 +705,11 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             target_count = counts.value + 28000  # 22000 - finish too late in the section
                         elif parking_left:
                             before_finish = 1000
-                            finish_thresh = 1900
+                            finish_thresh = 1500
                             target_count = counts.value + 22500
                     elif blue_flag:
                         if parking_right:
-                            finish_thresh = 1900
+                            finish_thresh = 1500
                             before_finish = 1000
                             target_count = counts.value + 22500
                         elif parking_left:
@@ -1029,7 +1029,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 print(
                                     f"Reversing backward... {counts.value} right:{tfmini.distance_right:.2f} left:{tfmini.distance_left:.2f} diff right: {prev_distance - tfmini.distance_right:.2f} diff left:{prev_distance - tfmini.distance_left:.2f}"
                                 )
-                                power = 15
+                                power = 10
                                 prev_power = 0
                                 correctReverseAngle(heading_angle, head.value, 1)
                                 # Set duty cycle to 50% (128/255)
@@ -1374,7 +1374,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                         print( f"lidar_f:{lidar_f.value} right: {lidar_l.value} prev_distance: {prev_distance}, distance_right: {tfmini.distance_right} diff: {prev_distance - tfmini.distance_right} diff_flag:{(prev_distance - tfmini.distance_right) >= 10}" )
                                         p_flag = True
                                         if parking_right:
-                                            if lidar_f.value < 940 :
+                                            if lidar_f.value < 880 :
                                                 p_pass = 2
                                                 if p_pass == 2:
                                                     p_past = False
@@ -1382,7 +1382,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                                     print( 'Pink Avoidance Complete...')
                                             prev_distance = tfmini.distance_right
                                         elif parking_left:
-                                            if lidar_f.value < 940 :
+                                            if lidar_f.value < 880 :
                                                 p_pass = 2
                                                 if p_pass == 2:
                                                     p_past = False
