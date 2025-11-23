@@ -1162,12 +1162,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             correctAngle(heading_angle, head.value, 1.5)
 
                             if blue_flag:
-                                while True:
-                                    if time.time() - timer_t > 1.5:
-                                        break
-                                    
-                                    if abs(corr) < 10 or tfmini.distance_head < 60:
-                                        break  
+                                while ( abs(corr) > 8 or tfmini.distance_head > 60) and time.time() - timer_t < 1.5:
                                     norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
                                     print( f"correcting heading  blue time:{time.time() - timer_t} {x:.2f} {y:.2f} {abs(corr):.2f} {head.value} {tfmini.distance_head:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f}" )
                                     x, y = enc.get_position( head.value, counts.value)
@@ -1177,12 +1172,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     prev_power = 0
                                     runMotor(power, 1)
                             elif orange_flag:
-                                while True:
-                                    if time.time() - timer_t > 1:
-                                        break
-                                    
-                                    if abs(corr) < 10 or tfmini.distance_head < 60:
-                                        break                                      
+                                while ( abs(corr) > 8 or tfmini.distance_head > 60) and time.time() - timer_t < 1.5:
                                     norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
                                     print( f"correcting orange heading counter:{counter} imu:{head.value:.2f} diff:{abs(corr):.2f} tfmini head: {tfmini.distance_head:.2f} norm_head:{norm_head}" )
                                     x, y = enc.get_position( head.value, counts.value)
