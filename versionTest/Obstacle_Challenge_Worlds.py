@@ -1505,7 +1505,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                     correctReverseAngle(heading_angle, head.value, 1)
                     while abs(corr) > 8:
                         print(f"resetting backwards {abs(corr)}")
-                        runMotor(50, 1)
+                        runMotor(50, 0)
                         correctReverseAngle(heading_angle, head.value, 1.5)
                     tfmini.getTFminiData()
                     x, y = enc.get_position( head.value, counts.value)
