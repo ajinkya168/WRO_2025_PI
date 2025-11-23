@@ -1451,14 +1451,14 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                         if g_flag:
                             print("avoiding green..")
                             if counter % 4 == pink_wall_lane and orange_flag:
-                                correctWall(35, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
+                                correctWall(35, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, True, False)
                             else:
                                 correctPosition( setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr))
                         elif r_flag:
                             if counter % 4 == pink_wall_lane and blue_flag:
                                 correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
                             else:
-                                correctPosition( setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr))
+                                correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr))
                         else:
                             print("Going straight")
                             correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr))
