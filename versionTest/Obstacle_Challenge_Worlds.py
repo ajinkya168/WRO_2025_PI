@@ -226,10 +226,10 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     prevError = error
     tfmini.getTFminiData()
     if setPoint == 0 :
-        if blue and lidar_r.value > 300:
+        if blue and lidar_r.value > 250:
             print("Correcting wall to right")
             correctWall(45, tfmini.distance_right, head, heading, orange, blue, pink_l, counter, False, True)
-        elif orange and lidar_l.value > 300:
+        elif orange and lidar_l.value > 250:
             print("Correcting wall to left")
             correctWall(45, tfmini.distance_left, head, heading, orange, blue, pink_l, counter, True, False)
     else:
@@ -1241,11 +1241,14 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             if blue_flag:
                                 while True:
                                     if abs(corr) < 5:
+                                        print("break because corr less than 5")
                                         break   
+                                
                                     if time.time() - timer_v > 2.5:
+                                        print("break because timer is more than 2.5")
                                         break
                                     norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
-                                    print( f"reversing servo {head.value:.2f} {heading_angle} diff: {(heading_angle - head.value) + 360:.2f} rev_diff: {(head.value - heading_angle) - 360:.2f} {counts.value} x:{x:.2f} y:{y:.2f}  head_r :{tfmini.distance_right:.2f} head_d:{tfmini.distance_head:.2f}" )
+                                    print( f"reversing servo {head.value:.2f} {heading_angle} diff: {abs(corr):.2f} rev_diff: {(head.value - heading_angle) - 360:.2f} {counts.value} x:{x:.2f} y:{y:.2f}  head_r :{tfmini.distance_right:.2f} head_d:{tfmini.distance_head:.2f}" )
                                     x, y = enc.get_position( head.value, counts.value)
                                     tfmini.getTFminiData()
                                     correctReverseAngle( heading_angle, head.value, 1)
@@ -1255,11 +1258,13 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             elif orange_flag:
                                 while True:
                                     if abs(corr) < 5:
+                                        print("break because corr less than 5")
                                         break   
                                     if time.time() - timer_v > 2.5:
+                                        print("break because timer is more than 2.5")
                                         break
                                     norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
-                                    print( f"reversing servo counter:{counter} imu:{head.value:.2f} diff:{abs(norm_head - heading_angle):.2f} tfmini head: {tfmini.distance_head:.2f} tfmini left:{tfmini.distance_left}" )
+                                    print( f"reversing servo {head.value:.2f} {heading_angle} diff: {abs(corr):.2f}  {counts.value} x:{x:.2f} y:{y:.2f}  head_r :{tfmini.distance_right:.2f} head_d:{tfmini.distance_head:.2f}" )
                                     x, y = enc.get_position( head.value, counts.value)
                                     tfmini.getTFminiData()
                                     correctReverseAngle( heading_angle, head.value, 1)
