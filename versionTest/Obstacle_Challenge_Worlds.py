@@ -1610,9 +1610,9 @@ def runEncoder(counts, head, lane_counter, left_f, right_f):
                 try:
                     #head.value = float(esp_data[0]) 
                     if right_f.value:
-                        head.value = float(esp_data[0]) + (0.55 * lane_counter.value)
+                        head.value = float(esp_data[0]) + (0.57 * lane_counter.value)
                     elif left_f.value:
-                        head.value = float(esp_data[0]) - (0.55 * lane_counter.value)
+                        head.value = float(esp_data[0]) - (0.57 * lane_counter.value)
                     else:
                         head.value = float(esp_data[0]) 
                     counts.value = int(esp_data[1])
