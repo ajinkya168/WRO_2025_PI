@@ -225,11 +225,11 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     prevError = error
     tfmini.getTFminiData()
-    if setPoint == 0 and  (lidar_r.value > 300 or lidar_l.value > 300):
-        if blue:
+    if setPoint == 0 :
+        if blue and lidar_r.value > 300:
             print("Correcting wall to right")
             correctWall(45, tfmini.distance_right, head, heading, orange, blue, pink_l, counter, False, True)
-        elif orange :
+        elif orange and lidar_l.value > 300:
             print("Correcting wall to left")
             correctWall(45, tfmini.distance_left, head, heading, orange, blue, pink_l, counter, True, False)
     else:
@@ -1477,6 +1477,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                 print(f"x: {x:.2f}, y:{y:.2f} count:{counts.value} heading_angle:{heading_angle}")
                 print(f"F: {tf_h:.2f}  L: {l_left:.2f} R: {l_right:.2f} left:{tf_l} head:{(math.cos(math.radians(abs(corr))) * tfmini.distance_head):.2f} right: {tf_r} POWER = {power} corr: {abs(corr)}")
                 print(f"L: {setPointL} R: {setPointR} setPointC: {setPointC} off:{off}")
+                print(f"{time.time()}")
                 print("---------------------------------------------------")
                 # print(f"color_s:{color_s} color_n:{color_n} centr_y_b.value: {centr_y_b.value} centr_x:{centr_x.value} centr_red: {centr_x_red.value} centr_pink:{centr_x_pink.value} setPointL:{setPointL} setPointR:{setPointR} g_count:{green_count} r_count:{red_count} x: {x}, y: {y} counts: {counts.value}, prev_distance: {prev_distance}, head_d: {tfmini.distance_head} right_d: {tfmini.distance_right}, left_d: {tfmini.distance_left}, back_d:{tfmini.distance_back} imu: {imu_head}, heading: {heading_angle}, cp: {continue_parking}, counter: {counter}, pink_b: {pink_b.value} p_flag = {p_flag}, g_flag: {g_flag} r_flag: {r_flag} p_past: {p_past}, g_past: {g_past}, r_past: {r_past} , red_stored:{red_stored} green_stored:{green_stored}")
             else:
