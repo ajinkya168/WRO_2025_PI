@@ -700,20 +700,20 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                 if not finished:
                     if orange_flag:
                         if parking_right:
-                            finish_thresh = 1400
+                            finish_thresh = 1200
                             before_finish = 4000
                             target_count = counts.value + 28000  # 22000 - finish too late in the section
                         elif parking_left:
-                            before_finish = 100
+                            before_finish = 500
                             finish_thresh = 1900
                             target_count = counts.value + 22500
                     elif blue_flag:
                         if parking_right:
                             finish_thresh = 1900
-                            before_finish = 100
+                            before_finish = 500
                             target_count = counts.value + 22500
                         elif parking_left:
-                            finish_thresh = 1400
+                            finish_thresh = 1200
                             before_finish = 4000
                             target_count = counts.value + 28000
                     finished = True
@@ -937,8 +937,8 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             elif blue_flag:
                                 correctAngle(heading_angle - 90, head.value, 3)
                             tfmini.getTFminiData()
-                            runMotor(70, 0)
-                            print("approaching wall")
+                            runMotor(40, 0)
+                            print("reverse approaching wall")
                         STATE_INIT = 2
                     if STATE_INIT == 2:
                         print('STATE init 2')
