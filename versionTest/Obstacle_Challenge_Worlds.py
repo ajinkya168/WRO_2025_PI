@@ -1072,7 +1072,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 heading_angle = heading_angle + 90
                                 parking_distance = tfmini.distance_right
                             correctReverseAngle(heading_angle, head.value, 3)
-                            while (parking_distance > 50) or abs(corr) > 8:
+                            while (parking_distance > 50) or abs(corr) > 15:
                                 itr_prev_time = time.time()
                                 tfmini.getTFminiData()
                                 if parking_right:
@@ -1093,7 +1093,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 heading_angle = heading_angle + 90
                                 parking_distance = tfmini.distance_right
                             correctReverseAngle(heading_angle, head.value, 3)
-                            while (parking_distance > 50) or abs(corr) > 8:
+                            while (parking_distance > 50) or abs(corr) > 15:
                                 itr_prev_time = time.time()
                                 tfmini.getTFminiData()
                                 if parking_right:
