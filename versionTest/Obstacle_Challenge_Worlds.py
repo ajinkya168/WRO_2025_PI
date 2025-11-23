@@ -571,7 +571,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
     setPointC = 0
     power = 95
     prev_power = 0
-    last_counter = 12#12
+    last_counter = 4#12
     counter = turn_t = current_time = gp_time = rp_time = buff = c_time = 0
     heading_angle = 0
     lap_finish_time = ( prev_distance ) = turn_trigger_distance = target_count = offset = button_STATE = exit_STATE = 0
@@ -629,7 +629,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
     final_park = time.time()
     front_thresh = 950
     parking_timeout = 1.7
-    finish_thresh = 1100
+    finish_thresh = 1000
     before_finish = 0
     try:
 
@@ -700,20 +700,20 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                 if not finished:
                     if orange_flag:
                         if parking_right:
-                            finish_thresh = 1200
+                            finish_thresh = 1100
                             before_finish = 4000
                             target_count = counts.value + 28000  # 22000 - finish too late in the section
                         elif parking_left:
-                            before_finish = 500
+                            before_finish = 1000
                             finish_thresh = 1900
                             target_count = counts.value + 22500
                     elif blue_flag:
                         if parking_right:
                             finish_thresh = 1900
-                            before_finish = 500
+                            before_finish = 1000
                             target_count = counts.value + 22500
                         elif parking_left:
-                            finish_thresh = 1200
+                            finish_thresh = 1100
                             before_finish = 4000
                             target_count = counts.value + 28000
                     finished = True
@@ -1029,7 +1029,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 print(
                                     f"Reversing backward... {counts.value} right:{tfmini.distance_right:.2f} left:{tfmini.distance_left:.2f} diff right: {prev_distance - tfmini.distance_right:.2f} diff left:{prev_distance - tfmini.distance_left:.2f}"
                                 )
-                                power = 28
+                                power = 15
                                 prev_power = 0
                                 correctReverseAngle(heading_angle, head.value, 1)
                                 # Set duty cycle to 50% (128/255)
@@ -1374,7 +1374,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                         print( f"lidar_f:{lidar_f.value} right: {lidar_l.value} prev_distance: {prev_distance}, distance_right: {tfmini.distance_right} diff: {prev_distance - tfmini.distance_right} diff_flag:{(prev_distance - tfmini.distance_right) >= 10}" )
                                         p_flag = True
                                         if parking_right:
-                                            if lidar_f.value < 1000 and lidar_l.value > 1200:
+                                            if lidar_f.value < 940 :
                                                 p_pass = 2
                                                 if p_pass == 2:
                                                     p_past = False
@@ -1382,7 +1382,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                                     print( 'Pink Avoidance Complete...')
                                             prev_distance = tfmini.distance_right
                                         elif parking_left:
-                                            if lidar_f.value < 1000 and lidar_r.value > 1200:
+                                            if lidar_f.value < 940 :
                                                 p_pass = 2
                                                 if p_pass == 2:
                                                     p_past = False
