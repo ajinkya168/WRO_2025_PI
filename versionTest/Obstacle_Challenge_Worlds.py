@@ -979,28 +979,32 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                 elif not red_b.value and not green_b.value:
                     power = 75
 
-                if time.time() < avoided_time:
+                while time.time() < avoided_time:
                     pwm.set_PWM_dutycycle(pwm_pin, 0)
                     pwm.write(direction_pin, 0)
+                    itr_prev_time = time.time()
+                    
                     # correctAngle(heading_angle, imu_head)  # still steer if needed
-                    print("block spotted")
-                    continue  # skip the drive code below
+                    print(f"block spotted {time.time() - avoided_time}")
+                    # skip the drive code below
 
-                if avoided_time > 0 and time.time() < reverse_until:
+                while avoided_time > 0 and time.time() < reverse_until:
+                    itr_prev_time = time.time()
+
                     # non-blocking reverse
                     power = 70
                     prev_power = 0
                     pwm.set_PWM_dutycycle(pwm_pin, int(1.3 * power))
                     # 0 = reverse, 1 = forward (per your wiring)
                     pwm.write(direction_pin, 0)
-                    print("reverse after block spotted")
+                    print(f"reverse after block spotted {time.time() - reverse_until}")
                     if r_flag and not reset_f:
                         print("Red Detected, setting servo to 60 degrees")
                         servo.setAngle(70)
                     elif g_flag and not reset_f:
                         print("Green Detected, setting servo to 120 degrees")
                         servo.setAngle(110)
-                    continue  # still skip forward-drive code
+                        # still skip forward-drive code
 
                 ################        PARKING         ################
 
