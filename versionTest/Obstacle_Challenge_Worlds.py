@@ -1431,35 +1431,35 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                             r_past = False
 
                                 print('4')
-                        else:
-                            g_flag = False
-                            r_flag = False
-                            p_flag = False
-                            r_past = False
-                            g_past = False
-                            p_past = False
-                            print("No flags set, moving forward")
-                            print('6')
+                            else:
+                                g_flag = False
+                                r_flag = False
+                                p_flag = False
+                                r_past = False
+                                g_past = False
+                                p_past = False
+                                print("No flags set, moving forward")
+                                print('6')
 
                             pwm.write(red_led, 0)
                             pwm.write(green_led, 0)
 
-                        print(f"time after reversing heading {time.time() - pink_time}")
+                            print(f"time after reversing heading {time.time() - pink_time}")
 
-                        if g_flag:
-                            print("avoiding green..")
-                            if counter % 4 == pink_wall_lane and orange_flag:
-                                correctWall(35, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, True, False)
+                            if g_flag:
+                                print("avoiding green..")
+                                if counter % 4 == pink_wall_lane and orange_flag:
+                                    correctWall(35, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, True, False)
+                                else:
+                                    correctPosition( setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr))
+                            elif r_flag:
+                                if counter % 4 == pink_wall_lane and blue_flag:
+                                    correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
+                                else:
+                                    correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr))
                             else:
-                                correctPosition( setPointL, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr))
-                        elif r_flag:
-                            if counter % 4 == pink_wall_lane and blue_flag:
-                                correctWall(35, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
-                            else:
-                                correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr))
-                        else:
-                            print("Going straight")
-                            correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr))
+                                print("Going straight")
+                                correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr))
 
                 total_power = (power * 0.1) + (prev_power * 0.9)
                 prev_power = total_power
