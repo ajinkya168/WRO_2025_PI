@@ -850,16 +850,15 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                 # print(f"corr:{corr}")
 
             if time.time() - last_time > debounce_delay:
-                previous_state = button_state
-                button_state = pwm.read(5)
+                previous_STATE = button_STATE
+                button_STATE = pwm.read(button_pin)
                 # time.sleep(0.03)
 
-                if previous_state == 1 and button_state == 0:
+                if previous_STATE == 1 and button_STATE == 0:
                     button = not (button)
                     last_time = time.time()
-                    print(f"🔘 Button toggled! Drive {'started' if button else 'stopped'}")
+                    print( f"🔘 Button toggled! Drive {'started' if button else 'stopped'}" )
                     power = 95
-
             ##################### BUTTON STARTS THE CODE ##################
             if button:  # THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
                 # time.sleep(0.01)
