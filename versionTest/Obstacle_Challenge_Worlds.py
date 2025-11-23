@@ -983,14 +983,16 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                     pwm.set_PWM_dutycycle(pwm_pin, 0)
                     pwm.write(direction_pin, 0)
                     itr_prev_time = time.time()
-                    
+                    x, y = enc.get_position(head.value, counts.value)
+                    tfmini.getTFminiData()
                     # correctAngle(heading_angle, imu_head)  # still steer if needed
                     print(f"block spotted {time.time() - avoided_time}")
                     # skip the drive code below
 
                 while avoided_time > 0 and time.time() < reverse_until:
                     itr_prev_time = time.time()
-
+                    x, y = enc.get_position(head.value, counts.value)
+                    tfmini.getTFminiData()
                     # non-blocking reverse
                     power = 70
                     prev_power = 0
