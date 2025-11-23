@@ -225,11 +225,11 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     prevError = error
     tfmini.getTFminiData()
-    if setPoint == 0 and abs(error) < 20:
+    if setPoint == 0 and  (lidar_r.value > 300 or lidar_l.value > 300):
         if blue:
             print("Correcting wall to right")
             correctWall(45, tfmini.distance_right, head, heading, orange, blue, pink_l, counter, False, True)
-        elif orange:
+        elif orange :
             print("Correcting wall to left")
             correctWall(45, tfmini.distance_left, head, heading, orange, blue, pink_l, counter, True, False)
     else:
@@ -1376,7 +1376,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     green_time = time.time()
                                 avoid_thres = 2
                                 if counter % 4 != pink_wall_lane:
-                                    if (tf_r <= 30 and tf_r > 0) or (time.time() - green_time > avoid_thres):
+                                    if (tf_r <= 30 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres):
                                         g_flag = False
                                         g_past = False
                                 elif counter % 4 == pink_wall_lane:
@@ -1414,7 +1414,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     red_time = time.time()
                                 avoid_thres = 2
                                 if counter % 4 != pink_wall_lane:
-                                    if (tf_l <= 30 and tf_l > 0) or (time.time() - red_time > avoid_thres):
+                                    if (tf_l <= 30 and tf_l > 0 and not red_b.value) or (time.time() - red_time > avoid_thres):
                                         r_flag = False
                                         r_past = False
                                 elif counter % 4 == pink_wall_lane:
