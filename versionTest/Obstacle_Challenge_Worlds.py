@@ -977,7 +977,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
 
                 ################        PARKING         ################
 
-                if parking_flag and not stop_flag:
+                if parking_flag:
                     print(f"PARKING -|-----> distance_head : {tfmini.distance_head}")
                     print("Inside Parking Loop")
                     tfmini.getTFminiData()
