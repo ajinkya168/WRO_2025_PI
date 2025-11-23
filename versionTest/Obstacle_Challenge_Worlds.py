@@ -39,6 +39,8 @@ RX_Left = 24
 RX_Right = 25
 RX_Back = 27
 button_pin = 5
+exit_pin = 7
+
 servo_pin = 8
 blue_led = 26
 red_led = 10
@@ -857,6 +859,21 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                     last_time = time.time()
                     print( f"🔘 Button toggled! Drive {'started' if button else 'stopped'}" )
                     power = 95
+                    
+            if time.time() - exit_last_time > debounce_delay:
+                previous_EXIT_STATE = exit_STATE
+                exit_STATE = pwm.read(exit_pin)
+                # time.sleep(0.03)
+
+                if previous_EXIT_STATE == 1 and exit_STATE == 0:
+                    exit_flag = not(exit_flag)
+                    exit_last_time = time.time()
+                    print( f"🔘 Button toggled! Drive {'started' if button else 'stopped'}" )
+                    power = 95
+
+            if exit_flag and button:
+                print("Shutting down the program")
+                sys.exit(0)
             ##################### BUTTON STARTS THE CODE ##################
             if button:  # THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
                 # time.sleep(0.01)
@@ -1235,11 +1252,14 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             heading_angle = update_heading( counter, heading_angle, blue_flag, orange_flag)
                             sp_angle.value = heading_angle
                             timer_v = time.time()
+                            print(f"timer v:{timer_v}")
                             norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
                             correctReverseAngle( heading_angle, head.value, 1)
 
                             if blue_flag:
+                                print(f"timer v:{timer_v:.2f} time:{time.time():.2f} ")
                                 while True:
+                                    print( f" time: {time.time() - timer_v}reversing servo {head.value:.2f} {heading_angle} diff: {abs(corr):.2f} rev_diff: {(head.value - heading_angle) - 360:.2f} {counts.value} x:{x:.2f} y:{y:.2f}  head_r :{tfmini.distance_right:.2f} head_d:{tfmini.distance_head:.2f}" )
                                     if abs(corr) < 5:
                                         print("break because corr less than 5")
                                         break   
@@ -1248,7 +1268,6 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                         print("break because timer is more than 2.5")
                                         break
                                     norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
-                                    print( f" time: {time.time() - timer_v}reversing servo {head.value:.2f} {heading_angle} diff: {abs(corr):.2f} rev_diff: {(head.value - heading_angle) - 360:.2f} {counts.value} x:{x:.2f} y:{y:.2f}  head_r :{tfmini.distance_right:.2f} head_d:{tfmini.distance_head:.2f}" )
                                     x, y = enc.get_position( head.value, counts.value)
                                     tfmini.getTFminiData()
                                     correctReverseAngle( heading_angle, head.value, 2)
@@ -1256,7 +1275,10 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     prev_power = 0
                                     runMotor(power, 0)
                             elif orange_flag:
+                                print(f"timer v:{timer_v:.2f} time:{time.time():.2f} ")
                                 while True:
+                                    print( f"time: {time.time() - timer_v} reversing servo {head.value:.2f} {heading_angle} diff: {abs(corr):.2f}  {counts.value} x:{x:.2f} y:{y:.2f}  head_r :{tfmini.distance_right:.2f} head_d:{tfmini.distance_head:.2f}" )
+
                                     if abs(corr) < 5:
                                         print("break because corr less than 5")
                                         break   
@@ -1264,7 +1286,6 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                         print("break because timer is more than 2.5")
                                         break
                                     norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
-                                    print( f"time: {time.time() - timer_v} reversing servo {head.value:.2f} {heading_angle} diff: {abs(corr):.2f}  {counts.value} x:{x:.2f} y:{y:.2f}  head_r :{tfmini.distance_right:.2f} head_d:{tfmini.distance_head:.2f}" )
                                     x, y = enc.get_position( head.value, counts.value)
                                     tfmini.getTFminiData()
                                     correctReverseAngle( heading_angle, head.value, 2)
