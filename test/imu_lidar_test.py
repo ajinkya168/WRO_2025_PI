@@ -41,7 +41,8 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu):
                     distance = float(angle_part[3])
                     #print(f"📍 Angle: {angle:.2f}°, Distance: {distance:.2f} mm")
                 except Exception as e:
-                    print("⚠️ Parse error:", e)
+                    pass
+                    #print("⚠️ Parse error:", e)
             else:
                 print("ℹ️", line)
 
@@ -65,7 +66,7 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu):
                         dist_270 = lidar_distance.value
                     avg  = dist_90 + dist_270
                     avg = avg / 2
-                    print(f"angles: {specific_angle} imu: {imu.value} total:{imu.value + lidar_angle.value} avg:{avg}")
+                    #print(f"angles: {specific_angle} imu: {imu.value} total:{imu.value + lidar_angle.value} avg:{avg}")
                    
                 if(distance != 0): 
                     with lidar_angle.get_lock(), lidar_distance.get_lock(), previous_angle.get_lock(), imu.get_lock():
@@ -84,7 +85,7 @@ def read_lidar(lidar_angle, lidar_distance, previous_angle, imu):
                             dist_270 = lidar_distance.value 
                         avg  = dist_90 + dist_270
                         avg = avg / 2
-                        print(f"angles: {specific_angle}, imu: {imu.value} total:{imu_r + lidar_angle.value} avg:{avg}")
+                        #print(f"angles: {specific_angle}, imu: {imu.value} total:{imu_r + lidar_angle.value} avg:{avg}")
                         #print(f"angle: {lidar_angle.value} distance:{rplidar[int(lidar_angle.value)]}")
 
     except KeyboardInterrupt:
@@ -119,17 +120,22 @@ if __name__ == '__main__':
     esp_angle = 0.0
     try:
         while True:
-            line = ser.readline().decode().strip()
-            esp_data = line.split(" ")
+            line = ser.readline().decode("utf-8", errors="ignore").strip()
+            esp_data = line.split()
         
-            esp_data.append(1)
             #print(esp_data)
-            if esp_data[1].isdigit() :
-                esp_angle = float(esp_data[0])
-                count = int(esp_data[1])
+            if len(esp_data) >= 2:
+                try:
+                    esp_angle = float(esp_data[0])
+                    count = int(esp_data[1])
+                except ValueError:
+                    print(f"⚠️ Malformed ESP data: {esp_data}")
+            else:
+                print(f"⚠️ Incomplete ESP data: {esp_data}")
            
             imu.value = esp_angle
-            #print(f"count: {count} angle: {esp_angle} imu: {imu.value}")
+            
+            print(f"count: {count} angle: {esp_angle} imu: {imu.value}")
             #print(f"imu: {imu.value}")
 
 

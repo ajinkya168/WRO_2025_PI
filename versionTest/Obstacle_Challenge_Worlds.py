@@ -103,6 +103,7 @@ lidar_right = 0
 #########  MULTIPROCESSING VARIABLE ###########
 
 counts = multiprocessing.Value('i', 0)
+lane_counter = multiprocessing.Value('i', 0)
 color_b = multiprocessing.Value('b', False)
 red_b = multiprocessing.Value('b', False)
 green_b = multiprocessing.Value('b', False)
@@ -227,7 +228,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     prevError = error
     tfmini.getTFminiData()
-    if setPoint == 0 and abs(corr) < 25:
+    if setPoint == 0 and abs(corr) < -1:
         if blue:
             print("Correcting wall to right")
             correctWall(45, tfmini.distance_right, head, heading, orange, blue, pink_l, counter, False, True)
@@ -532,7 +533,7 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red
         cv2.destroyAllWindows()
 
 
-def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, head, sp_angle, turn_trigger, lidar_f, lidar_l, lidar_r, left_f, right_f,):
+def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, head, sp_angle, turn_trigger, lidar_f, lidar_l, lidar_r, left_f, right_f, lane_counter):
 
     pwm = pigpio.pi()
     global imu, corr, corr_pos
@@ -1162,7 +1163,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
 
                             if blue_flag:
                                 while True:
-                                    if time.time() - timer_t > 1:
+                                    if time.time() - timer_t > 1.5:
                                         break
                                     
                                     if abs(corr) < 10 or tfmini.distance_head < 60:
@@ -1499,7 +1500,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                     
                 print(f"{time.time() - prev_time}")
                 prev_time = time.time()
-                
+                lane_counter.value = counter
                 print(f"centr_x.value: {centr_x.value} centr_y.value: {centr_y.value} centr_red: {centr_x_red.value} centr_y_red:{centr_y_red.value} centr_pink: {centr_x_pink.value}")
                 print(f"left_b.value:{left_f.value} right_b.value:{right_f.value} orange_flag:{orange_flag} blue_flag:{blue_flag}")
                 print(f"trigger:{trigger} turn_trigger: {turn_trigger.value} reset_f:{reset_f} counter: {counter}, imu:{head.value:2f}")
@@ -1596,7 +1597,7 @@ def reset_coordinates_lidar(distance, lane, orange, blue, x, y):
             return x, ((500 - distance) / 10)
 
 
-def runEncoder(counts, head):
+def runEncoder(counts, head, lane_counter, left_f, right_f):
     pwm = pigpio.pi()
     print("Encoder Process Started")
     time.sleep(2)
@@ -1607,7 +1608,13 @@ def runEncoder(counts, head):
             # print(f"esp_data: {esp_data}")
             if len(esp_data) >= 2:
                 try:
-                    head.value = float(esp_data[0])
+                    #head.value = float(esp_data[0]) 
+                    if right_f.value:
+                        head.value = float(esp_data[0]) + (0.55 * lane_counter.value)
+                    elif left_f.value:
+                        head.value = float(esp_data[0]) - (0.55 * lane_counter.value)
+                    else:
+                        head.value = float(esp_data[0]) 
                     counts.value = int(esp_data[1])
                 except ValueError:
                     print(f"⚠️ Malformed ESP data: {esp_data}")
@@ -1723,8 +1730,8 @@ if __name__ == '__main__':
     try:
         print("Starting process")
         P = multiprocessing.Process( target=Live_Feed, args=( red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink ))
-        S = multiprocessing.Process( target=servoDrive, args=( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, head, sp_angle, turn_trigger, lidar_f, lidar_l, lidar_r, left_f, right_f ))
-        E = multiprocessing.Process(target=runEncoder, args=(counts, head))
+        S = multiprocessing.Process( target=servoDrive, args=( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, head, sp_angle, turn_trigger, lidar_f, lidar_l, lidar_r, left_f, right_f, lane_counter ))
+        E = multiprocessing.Process(target=runEncoder, args=(counts, head, lane_counter, left_f, right_f))
         lidar_proc = multiprocessing.Process( target=read_lidar, args=(lidar_angle, lidar_distance, sp_angle, turn_trigger, lidar_f, lidar_l, lidar_r, left_f, right_f, head))  # noqa  # Launch the lidar reader process  # C = multiprocessing.Process(target=color_SP, args=(blue_c, orange_c, white_c))
 
         P.start()
