@@ -701,7 +701,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                 if not finished:
                     if orange_flag:
                         if parking_right:
-                            finish_thresh = 1100
+                            finish_thresh = 1000
                             before_finish = 2000
                             target_count = counts.value + 28000  # 22000 - finish too late in the section
                         elif parking_left:
@@ -1073,7 +1073,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 heading_angle = heading_angle + 90
                                 parking_distance = tfmini.distance_right
                             correctReverseAngle(heading_angle, head.value, 3)
-                            while (parking_distance > 50) or abs(corr) > 15:
+                            while (parking_distance > 20) or abs(corr) > 10:
                                 itr_prev_time = time.time()
                                 tfmini.getTFminiData()
                                 if parking_right:
@@ -1094,7 +1094,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 heading_angle = heading_angle + 90
                                 parking_distance = tfmini.distance_right
                             correctReverseAngle(heading_angle, head.value, 3)
-                            while (parking_distance > 50) or abs(corr) > 15:
+                            while (parking_distance > 20) or abs(corr) > 10:
                                 itr_prev_time = time.time()
                                 tfmini.getTFminiData()
                                 if parking_right:
@@ -1121,7 +1121,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     parking_distance = tfmini.distance_left
                                 final_park = time.time()
                                 correctReverseAngle(heading_angle, head.value, 3)
-                                while ((parking_distance > 20) or abs(corr) > 3) and (time.time() - final_park < parking_timeout):
+                                while ((parking_distance > 20) or abs(corr) > 5) and (time.time() - final_park < parking_timeout):
                                     itr_prev_time = time.time()
                                     tfmini.getTFminiData()
                                     if parking_right:
