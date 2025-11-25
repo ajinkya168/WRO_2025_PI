@@ -634,6 +634,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
     finish_thresh = 1000
     before_finish = 0
     last_counter_timer = 0
+    initBot = True
     try:
 
         while True:
@@ -651,7 +652,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
             tf_r = tfmini.distance_right
 
             if not init:
-                if tf_h > 0 and head.value > 0 and pink_b.value:
+                if (tf_h > 0 and head.value > 0 ) or pink_b.value or green_b.value or red_b.value:
                     correctAngle(heading_angle, head.value, 1.5)
                     init = True
                 else:
@@ -905,7 +906,9 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
             ##################### BUTTON STARTS THE CODE ##################
             if button:  # THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
                 # time.sleep(0.01)
-
+                if initBot:
+                    time.sleep(0.5)
+                    initBot = False
                 print("-------------------------------------------------")
 
                 x, y = enc.get_position(imu_head, counts.value)
