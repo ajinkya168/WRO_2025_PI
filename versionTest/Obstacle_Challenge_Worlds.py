@@ -214,10 +214,19 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     n_head = normalize_angle(heading, blue, orange, lane)
     if (setPoint <= -35) and (lidar_l.value <= 250):
         print(f"Correcting Green Wall Orange")
-        correction = 0
+        if counter == 4:
+            print("12th count no correction")
+            correction = 15
+        else:
+            correction = 0
+        
     elif (setPoint >= 35) and (lidar_r.value <= 250):
         print(f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
-        correction = 0
+        if counter == 4:
+            print("12th count no correction")
+            correction = -15
+        else:
+            correction = 0
     else:
         print("No wall detected...")
         pass
@@ -228,6 +237,11 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
 
     prevError = error
     tfmini.getTFminiData()
+    
+    
+        
+        
+    
     if setPoint == 0 and abs(corr) < -1:
         if blue:
             print("Correcting wall to right")
@@ -732,6 +746,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                     pink_b.value = False
                     power = 70
                     prev_power = 0
+                    
                     lap_finish = True
 
                     print(f"Vehicle is stopped...")
@@ -1159,8 +1174,6 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 print(f"corr:{abs(corr)} head:{tfmini.distance_head} left:{tfmini.distance_left}")
                                 print("Reversing backward...")
                                 runMotor(36, 0)
-                                
-                        	
                                 correctReverseAngle(heading_angle, head.value, 3)
 
                         STATE = 3
@@ -1204,7 +1217,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     parking_distance = tfmini.distance_left
                                 final_park = time.time()
                                 correctReverseAngle(heading_angle, head.value, 3)
-                                while ((abs(corr) > 5)) and ((abs(corr) > 15) or lidar_f.value < 100):
+                                while ((abs(corr) > 8)) and ((abs(corr) > 15) or lidar_f.value < 90):
                                     itr_prev_time = time.time()
                                     tfmini.getTFminiData()
                                     if parking_right:
@@ -1219,7 +1232,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     # Set duty cycle to 50% (128/255)
                                     # Set pin 20 high
                             correctAngle(heading_angle + 2, head.value, 1)
-                            while abs(corr) > 10 or lidar_f.value > 90:
+                            while abs(corr) > 15 or lidar_f.value > 80:
                                 correctAngle(heading_angle + 2, head.value, 1)
                                 print(f"Absolute correction is {abs(corr)}")
                                 power = 15
@@ -1487,7 +1500,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 g_flag = True
                                 if green_b.value:
                                     green_time = time.time()
-                                avoid_thres = 2
+                                avoid_thres = 1.9
                                 if counter % 4 != pink_wall_lane:
                                     if (tf_r <= 20 and tf_r > 0 ) or (time.time() - green_time > avoid_thres):
                                         g_flag = False
