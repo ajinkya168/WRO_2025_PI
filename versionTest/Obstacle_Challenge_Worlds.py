@@ -629,7 +629,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
     forward_time = time.time()
     reset_lane = 0
     final_park = time.time()
-    front_thresh = 972
+    front_thresh = 960
     parking_timeout = 1.3
     finish_thresh = 1000
     before_finish = 0
