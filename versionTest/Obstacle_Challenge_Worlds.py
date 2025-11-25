@@ -1188,7 +1188,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             correctAngle(heading_angle + 2, head.value, 1)
                             while abs(corr) > 10 or lidar_f.value > 90:
                                 correctAngle(heading_angle + 2, head.value, 1)
-                                print("Absolute correction is", abs(corr))
+                                print(f"Absolute correction is {abs(corr)}")
                                 power = 15
                                 prev_power = 0
                                 runMotor(power, 1)
