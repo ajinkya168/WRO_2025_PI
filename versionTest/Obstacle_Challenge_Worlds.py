@@ -1181,14 +1181,14 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     correctReverseAngle(heading_angle, head.value, 3)
                                     # Set duty cycle to 50% (128/255)
                                     # Set pin 20 high
-                            correctAngle(heading_angle, head.value, 1)
-                            while abs(corr) > 7 and lidar_f.value > 70:
+                            correctAngle(heading_angle + 2, head.value, 1)
+                            while abs(corr) > 10 or lidar_f.value > 70:
                                 correctAngle(heading_angle + 2, head.value, 1)
                                 power = 15
                                 prev_power = 0
                                 runMotor(power, 1)
                                 tfmini.getTFminiData()
-                                print(f"Approaching wall to stop...{tfmini.distance_head}")      
+                                print(f"Approaching wall to stop. {lidar_f.value} corr:{abs(corr)}")      
                         STATE = 4
 
                     if STATE == 4:
@@ -1462,6 +1462,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                             g_flag = False
                                             g_past = False
                                     elif blue_flag:
+                                        avoid_thresh = 1.2
                                         if (time.time() - green_time > avoid_thres):
                                             g_flag = False
                                             g_past = False
@@ -1494,6 +1495,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                         r_past = False
                                 elif counter % 4 == pink_wall_lane:
                                     if orange_flag:
+                                        avoid_thres = 1.2
                                         if (time.time() - red_time > avoid_thres):
                                             print('Obstacle STATE changed to 1')
                                             r_flag = False
