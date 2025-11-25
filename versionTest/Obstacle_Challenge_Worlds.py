@@ -705,9 +705,9 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                 if not finished:
                     if orange_flag:
                         if parking_right:
-                            finish_thresh = 1000
-                            before_finish = 2500
-                            target_count = counts.value + 31000  # 22000 - finish too late in the section
+                            finish_thresh = 1200
+                            before_finish = 1000
+                            target_count = counts.value + 27000  # 22000 - finish too late in the section
                         elif parking_left:
                             before_finish = 1000
                             finish_thresh = 1500
@@ -718,9 +718,9 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             before_finish = 1000
                             target_count = counts.value + 22500
                         elif parking_left:
-                            finish_thresh = 1000
-                            before_finish = 2500
-                            target_count = counts.value + 31000
+                            finish_thresh = 1200
+                            before_finish = 1000
+                            target_count = counts.value + 27000
                     finished = True
 
                 if (counts.value >= target_count) or (counts.value >= target_count - before_finish and lidar_f.value < finish_thresh):
@@ -1166,7 +1166,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     # Set duty cycle to 50% (128/255)
                                     # Set pin 20 high
                             correctAngle(heading_angle, head.value, 1)
-                            while abs(corr) > 7 and lidar_f.value > 70:
+                            while abs(corr) > 7 and lidar_f.value > 80:
                                 correctAngle(heading_angle, head.value, 1)
                                 power = 10
                                 prev_power = 0
