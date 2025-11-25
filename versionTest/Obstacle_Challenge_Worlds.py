@@ -629,7 +629,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
     forward_time = time.time()
     reset_lane = 0
     final_park = time.time()
-    front_thresh = 940
+    front_thresh = 970
     parking_timeout = 1.3
     finish_thresh = 1000
     before_finish = 0
@@ -710,11 +710,11 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             target_count = counts.value + 27000  # 22000 - finish too late in the section
                         elif parking_left:
                             before_finish = 1000
-                            finish_thresh = 1500
+                            finish_thresh = 1400
                             target_count = counts.value + 22500
                     elif blue_flag:
                         if parking_right:
-                            finish_thresh = 1500
+                            finish_thresh = 1400
                             before_finish = 1000
                             target_count = counts.value + 22500
                         elif parking_left:
