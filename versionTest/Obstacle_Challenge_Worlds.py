@@ -283,6 +283,10 @@ def correctWall( setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, cou
         print("correction 0 is 45")
         correction = 0
 
+    if setPoint_distance == 60 and dist > 100:
+        print("dist greater than 100")
+        correction = 0
+
     print(f"dist is {dist}")
 
     prevError_d = error_d
@@ -702,8 +706,8 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                     if orange_flag:
                         if parking_right:
                             finish_thresh = 1000
-                            before_finish = 2000
-                            target_count = counts.value + 28000  # 22000 - finish too late in the section
+                            before_finish = 1000
+                            target_count = counts.value + 29000  # 22000 - finish too late in the section
                         elif parking_left:
                             before_finish = 1000
                             finish_thresh = 1500
@@ -714,9 +718,9 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             before_finish = 1000
                             target_count = counts.value + 22500
                         elif parking_left:
-                            finish_thresh = 1100
-                            before_finish = 4000
-                            target_count = counts.value + 28000
+                            finish_thresh = 1000
+                            before_finish = 1000
+                            target_count = counts.value + 29000
                     finished = True
 
                 if (counts.value >= target_count) or (counts.value >= target_count - before_finish and lidar_f.value < finish_thresh):
@@ -920,7 +924,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             tfmini.getTFminiData()
                             runMotor(70, 1)
                             print("moving forward slightly")
-                        while tfmini.distance_head > 35:
+                        while tfmini.distance_head > 30:
                             itr_prev_time = time.time()
                             x, y = enc.get_position(head.value, counts.value)
                             if orange_flag:
@@ -930,7 +934,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             tfmini.getTFminiData()
                             runMotor(20, 1)
                             print("approaching wall")
-                        while tfmini.distance_head < 35:
+                        while tfmini.distance_head < 30:
                             itr_prev_time = time.time()
                             x, y = enc.get_position(head.value, counts.value)
                             if orange_flag:
@@ -1121,7 +1125,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     parking_distance = tfmini.distance_left
                                 final_park = time.time()
                                 correctReverseAngle(heading_angle, head.value, 3)
-                                while ((parking_distance > 20) or abs(corr) > 5) and (time.time() - final_park < parking_timeout):
+                                while ((parking_distance > 20) or abs(corr) > 5) or (time.time() - final_park < parking_timeout):
                                     itr_prev_time = time.time()
                                     tfmini.getTFminiData()
                                     if parking_right:
@@ -1147,7 +1151,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     parking_distance = tfmini.distance_left
                                 final_park = time.time()
                                 correctReverseAngle(heading_angle, head.value, 3)
-                                while ((parking_distance > 20) or abs(corr) > 5) and (time.time() - final_park < parking_timeout):
+                                while ((parking_distance > 20) or abs(corr) > 5) or (time.time() - final_park < parking_timeout):
                                     itr_prev_time = time.time()
                                     tfmini.getTFminiData()
                                     if parking_right:
