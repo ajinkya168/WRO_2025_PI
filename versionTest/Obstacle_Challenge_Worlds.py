@@ -1399,7 +1399,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                         print( f"lidar_f:{lidar_f.value} right: {lidar_l.value} prev_distance: {prev_distance}, distance_right: {tfmini.distance_right} diff: {prev_distance - tfmini.distance_right} diff_flag:{(prev_distance - tfmini.distance_right) >= 10}" )
                                         p_flag = True
                                         if parking_right:
-                                            if lidar_f.value < 910 :
+                                            if lidar_f.value < 900 :
                                                 p_pass = 2
                                                 if p_pass == 2:
                                                     p_past = False
@@ -1407,7 +1407,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                                     print( 'Pink Avoidance Complete...')
                                             prev_distance = tfmini.distance_right
                                         elif parking_left:
-                                            if lidar_f.value < 910 :
+                                            if lidar_f.value < 900 :
                                                 p_pass = 2
                                                 if p_pass == 2:
                                                     p_past = False
