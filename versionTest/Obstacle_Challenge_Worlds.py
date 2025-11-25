@@ -1650,6 +1650,8 @@ def reset_coordinates(distance, lane, orange, blue, x, y):
             return x, (distance - 50) + 5
         elif blue:
             return x, (50 - distance) - 5
+        else:
+            return x, y
 
 
 def reset_coordinates_lidar(distance, lane, orange, blue, x, y):
