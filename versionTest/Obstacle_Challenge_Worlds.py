@@ -276,7 +276,7 @@ def correctWall( setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, cou
     if dist < 30 and setPoint_distance == 35:
         print("correction 0 35")
         correction = 0
-    if setPoint_distance == 60 and dist < 25 and dist > 100:
+    if setPoint_distance == 60 and dist <= 25 and dist < 100:
         print("correction 0 60")
         correction = 0
     if setPoint_distance == 45 and dist < 20:
@@ -1417,7 +1417,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                         print( f"lidar_f:{lidar_f.value} right: {lidar_l.value} prev_distance: {prev_distance}, distance_right: {tfmini.distance_right} diff: {prev_distance - tfmini.distance_right} diff_flag:{(prev_distance - tfmini.distance_right) >= 10}" )
                                         p_flag = True
                                         if parking_right:
-                                            if lidar_f.value < 900 :
+                                            if lidar_f.value < 900 and lidar_l.value > 1000 :
                                                 p_pass = 2
                                                 if p_pass == 2:
                                                     p_past = False
@@ -1425,7 +1425,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                                     print( 'Pink Avoidance Complete...')
                                             prev_distance = tfmini.distance_right
                                         elif parking_left:
-                                            if lidar_f.value < 900 :
+                                            if lidar_f.value < 900 and lidar_r.value > 1000 :
                                                 p_pass = 2
                                                 if p_pass == 2:
                                                     p_past = False
