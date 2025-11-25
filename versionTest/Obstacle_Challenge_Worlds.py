@@ -629,7 +629,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
     forward_time = time.time()
     reset_lane = 0
     final_park = time.time()
-    front_thresh = 910
+    front_thresh = 920
     parking_timeout = 1.3
     finish_thresh = 1000
     before_finish = 0
@@ -850,8 +850,8 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                     if centr_x_red.value < 200 and centr_x_red.value > 0:
                         red_b.value = False
                 elif blue_flag:
-                    print(f"correction: {abs(corr)} centr_x_red: {centr_x_red.value}")
-                    if centr_x_red.value > 390 and abs(corr) > 15:
+                    print(f"correction: {abs(heading_angle - head.value)} centr_x_red: {centr_x_red.value}")
+                    if centr_x_red.value > 390 and abs(heading_angle - head.value) > 10:
                         red_b.value = False
 
             if g_flag and not continue_parking:
