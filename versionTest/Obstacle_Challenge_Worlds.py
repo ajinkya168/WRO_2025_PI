@@ -654,6 +654,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
             if not init:
                 if (tf_h > 0 and head.value > 0 ) or pink_b.value or green_b.value or red_b.value:
                     correctAngle(heading_angle, head.value, 1.5)
+                    print("servo corrected...")
                     init = True
                 else:
                     servo.setAngle(45)
@@ -673,14 +674,14 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
 
             if not inParkingatStart and not left_f.value and not right_f.value:
                 print("Starting Parking at Start...")
-                if tf_l < 25 and tf_h < 250 and tf_l > 0 and tf_h > 0 and lidar_l.value > 0 and pink_b.value:
+                if tf_l < 25 and tf_h < 250 and tf_l > 0 and tf_h > 0 and lidar_l.value > 0:
                     print("Right side parking")
                     enc.x = 0
                     enc.y = (lidar_l.value - 400) / 10
                     # enc.y = 50 - tfmini.distance_right #-40
                     right_f.value = True
                     inParkingatStart = True
-                elif tf_r < 25 and tf_h < 250 and tf_h > 0 and tf_r > 0 and lidar_r.value > 0 and pink_b.value:
+                elif tf_r < 25 and tf_h < 250 and tf_h > 0 and tf_r > 0 and lidar_r.value > 0 :
                     enc.x = 0
                     enc.y = (400 - lidar_r.value) / 10
                     # enc.y = tfmini.distance_left - 50#40
