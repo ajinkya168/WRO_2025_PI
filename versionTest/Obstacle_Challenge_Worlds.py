@@ -629,7 +629,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
     forward_time = time.time()
     reset_lane = 0
     final_park = time.time()
-    front_thresh = 960
+    front_thresh = 950
     parking_timeout = 1.3
     finish_thresh = 1000
     before_finish = 0
@@ -741,9 +741,8 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                     
                 correctAngle(heading_angle, head.value, 1)
                 
-                
                 if orange_flag:
-                    while lidar_f.value > 1150:
+                    while lidar_f.value > 1100:
                         itr_prev_time = time.time()
                         power = 50
                         prev_power = 0
@@ -1049,8 +1048,21 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                         calc_time = True
                     # time_p = 0.3 #0
                     # full_park = True
+                    
                     if STATE == 1:
                         if blue_flag or orange_flag:
+                            while lidar_l.value < 1200:
+                                itr_prev_time = time.time()
+                                tfmini.getTFminiData()
+
+                                power = 10
+                                prev_power = 0
+                                correctAngle(heading_angle, head.value, 1)
+                                # Set duty cycle to 50% (128/255)
+                                runMotor(power, 1)
+                                prev_time = time.time()
+                            runMotor(0, 1)              
+                            time.sleep(1000)
                             while lidar_f.value < front_thresh:
                                 itr_prev_time = time.time()
                                 tfmini.getTFminiData()
@@ -1425,7 +1437,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                         print( f"lidar_f:{lidar_f.value} right: {lidar_l.value} prev_distance: {prev_distance}, distance_right: {tfmini.distance_right} diff: {prev_distance - tfmini.distance_right} diff_flag:{(prev_distance - tfmini.distance_right) >= 10}" )
                                         p_flag = True
                                         if parking_right:
-                                            if lidar_l.value > 1000:
+                                            if lidar_f.value < 1200:
                                                 p_pass = 2
                                                 if p_pass == 2:
                                                     p_past = False
@@ -1433,7 +1445,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                                     print( 'Pink Avoidance Complete...')
                                             prev_distance = tfmini.distance_right
                                         elif parking_left:
-                                            if lidar_r.value > 1000:
+                                            if lidar_l.value > 1000:
                                                 p_pass = 2
                                                 if p_pass == 2:
                                                     p_past = False
