@@ -573,7 +573,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
     setPointC = 0
     power = 95
     prev_power = 0
-    last_counter = 12
+    last_counter = 4
     counter = turn_t = current_time = gp_time = rp_time = buff = c_time = 0
     heading_angle = 0
     lap_finish_time = ( prev_distance ) = turn_trigger_distance = target_count = offset = button_STATE = exit_STATE = 0
@@ -1228,7 +1228,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     x, y = enc.get_position( head.value, counts.value)
                                     tfmini.getTFminiData()
                                     correctAngle( heading_angle, head.value, 1.5)
-                                    power = 50
+                                    power = 60
                                     prev_power = 0
                                     runMotor(power, 1)
                             elif orange_flag:
@@ -1239,7 +1239,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     x, y = enc.get_position( head.value, counts.value)
                                     tfmini.getTFminiData()
                                     correctAngle( heading_angle, head.value, 1.5)
-                                    power = 50
+                                    power = 60
                                     prev_power = 0
                                     runMotor(power, 1)
                             RESET_STATE = 2
