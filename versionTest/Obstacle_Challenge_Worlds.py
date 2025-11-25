@@ -1055,7 +1055,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 itr_prev_time = time.time()
                                 tfmini.getTFminiData()
 
-                                power = 10
+                                power = 20
                                 prev_power = 0
                                 correctAngle(heading_angle, head.value, 1)
                                 # Set duty cycle to 50% (128/255)
@@ -1080,7 +1080,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             parking_count_current = counts.value
                             tfmini.getTFminiData()
                             if orange_flag or blue_flag:
-                                parking_count = 6000  # 300
+                                parking_count = 4000  # 300
                             while counts.value <= parking_count_current + parking_count:
                                 itr_prev_time = time.time()
                                 if blue_flag or orange_flag:
@@ -1090,11 +1090,10 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     # Set duty cycle to 50% (128/255)
                                     tfmini.getTFminiData()
                                     prev_time = time.time()
-                            runMotor(0, 1)              
-                            time.sleep(1000)
+
                         full_park = True
                         if full_park:
-                            parking_count_current = counts.value
+                            '''parking_count_current = counts.value
                             tfmini.getTFminiData()
                             if orange_flag or blue_flag:
                                 parking_count = 0  # 300
@@ -1113,7 +1112,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     # Set duty cycle to 50% (128/255)
                                     tfmini.getTFminiData()
                                     runMotor(28, 0)
-                                    prev_time = time.time()
+                                    prev_time = time.time()'''
                         else:
                             print("Going for a partial park")
                             pass
