@@ -845,12 +845,13 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
             ################# LANE 0 DECISIONS #####################
 
             if counter % 4 == pink_wall_lane:  # DECIDES SETPOINT WHENEVER PINK IS IN THE FRAME
-                # print(f"PINK IS DETECTED...")
+                print(f"")
                 if orange_flag:
                     if centr_x_red.value < 200 and centr_x_red.value > 0:
                         red_b.value = False
                 elif blue_flag:
-                    if centr_x_red.value > 390:
+                    print(f"correction: {abs(corr)} centr_x_red: {centr_x_red.value}")
+                    if centr_x_red.value > 390 and abs(corr) > 15:
                         red_b.value = False
 
             if g_flag and not continue_parking:
@@ -907,7 +908,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
             if button:  # THIS BLOCK OF CODE WHEN BUTTON IS PRESSED
                 # time.sleep(0.01)
                 if initBot:
-                    time.sleep(0.5)
+                    time.sleep(0.2)
                     initBot = False
                 print("-------------------------------------------------")
 
