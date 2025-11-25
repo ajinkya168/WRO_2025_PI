@@ -571,7 +571,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
     setPointC = 0
     power = 95
     prev_power = 0
-    last_counter = 12
+    last_counter = 4
     counter = turn_t = current_time = gp_time = rp_time = buff = c_time = 0
     heading_angle = 0
     lap_finish_time = ( prev_distance ) = turn_trigger_distance = target_count = offset = button_STATE = exit_STATE = 0
@@ -702,7 +702,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                     if orange_flag:
                         if parking_right:
                             finish_thresh = 1100
-                            before_finish = 4000
+                            before_finish = 2000
                             target_count = counts.value + 28000  # 22000 - finish too late in the section
                         elif parking_left:
                             before_finish = 1000
@@ -1302,7 +1302,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     prev_power = 0
                                     runMotor(power, 0)
                             
-                            if counter == 12:
+                            if counter == last_counter:
                                 last_counter_timer = time.time()
                                 while time.time() - last_counter_timer < 1.5:
                                     itr_prev_time = time.time()
