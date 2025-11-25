@@ -276,16 +276,14 @@ def correctWall( setPoint_distance, dist, sp_h, imu_h, orange, blue, pink_l, cou
     if dist < 30 and setPoint_distance == 35:
         print("correction 0 35")
         correction = 0
-    if setPoint_distance == 60 and dist < 20:
+    if setPoint_distance == 60 and dist < 25 and dist > 100:
         print("correction 0 60")
         correction = 0
     if setPoint_distance == 45 and dist < 20:
         print("correction 0 is 45")
         correction = 0
 
-    if setPoint_distance == 60 and dist > 100:
-        print("dist greater than 100")
-        correction = 0
+
 
     print(f"dist is {dist}")
 
@@ -745,7 +743,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                 
                 
                 if orange_flag:
-                    while lidar_f.value > 1000:
+                    while lidar_f.value > 1200:
                         itr_prev_time = time.time()
                         power = 50
                         prev_power = 0
@@ -800,7 +798,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                         pink_time = time.time()
 
                 elif blue_flag:
-                    while lidar_f.value > 1600:
+                    while lidar_f.value > 1700:
                         itr_prev_time = time.time()
                         power = 60
                         prev_power = 0
