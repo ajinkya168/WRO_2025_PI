@@ -1182,7 +1182,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     # Set duty cycle to 50% (128/255)
                                     # Set pin 20 high
                             correctAngle(heading_angle, head.value, 1)
-                            while abs(corr) > 7 and lidar_f.value > 90:
+                            while abs(corr) > 7 and lidar_f.value > 70:
                                 correctAngle(heading_angle + 2, head.value, 1)
                                 power = 15
                                 prev_power = 0

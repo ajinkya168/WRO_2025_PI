@@ -1168,7 +1168,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                             if thresh_distance > 45:
                                 timer_t = time.time()
                                 if blue_flag:
-                                    correctAngle(heading_angle + 20, head.value, 1.5)
+                                    correctAngle(heading_angle + 30, head.value, 1.5)
                                     while ( tfmini.distance_head > 25 or abs( corr) > 5 ) and time.time() - timer_t < 1.5:
                                         tfmini.getTFminiData()
                                         print( f"moving ahead blue to correct heading timer {time.time() - timer_t} x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} distance_right:{tfmini.distance_right:.2f} distance_head:{tfmini.distance_head:.2f} corr:{abs(corr)}" )
@@ -1179,7 +1179,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                         x, y = enc.get_position( head.value, counts.value )
 
                                 elif orange_flag:
-                                    correctAngle(heading_angle - 20, head.value, 1.5)
+                                    correctAngle(heading_angle - 30, head.value, 1.5)
                                     while (tfmini.distance_head > 25 or abs(corr)> 5) and (time.time() - timer_t < 1.5):
                                         tfmini.getTFminiData()
                                         print(f"moving ahead to correct heading x:{x:.2f} y:{y:.2f} lidar_f:{lidar_f.value:.2f} counter:{counter} imu:{head.value} {tfmini.distance_head:.2f} corr:{abs(corr)}")
@@ -1230,7 +1230,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     print( f"reversing servo {head.value:.2f} {heading_angle} diff: {(heading_angle - head.value) + 360:.2f} rev_diff: {(head.value - heading_angle) - 360:.2f} {counts.value} x:{x:.2f} y:{y:.2f}  head_r :{tfmini.distance_right:.2f} head_d:{tfmini.distance_head:.2f}" )
                                     x, y = enc.get_position( head.value, counts.value)
                                     tfmini.getTFminiData()
-                                    correctReverseAngle( heading_angle, head.value, 1)
+                                    correctReverseAngle( heading_angle, head.value, 2)
                                     power = 90
                                     prev_power = 0
                                     runMotor(power, 0)
@@ -1240,7 +1240,7 @@ def servoDrive(red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, ce
                                     print( f"reversing servo counter:{counter} imu:{head.value:.2f} diff:{abs(norm_head - heading_angle):.2f} tfmini head: {tfmini.distance_head:.2f} tfmini left:{tfmini.distance_left}" )
                                     x, y = enc.get_position( head.value, counts.value)
                                     tfmini.getTFminiData()
-                                    correctReverseAngle( heading_angle, head.value, 1)
+                                    correctReverseAngle( heading_angle, head.value, 2)
                                     power = 90
                                     prev_power = 0
                                     runMotor(power, 0)
