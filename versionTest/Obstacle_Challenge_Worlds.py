@@ -1004,7 +1004,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                 if red_b.value or green_b.value:
                     power = 50
                 elif not red_b.value and not green_b.value:
-                    power = 70
+                    power = 85
 
                 while time.time() < avoided_time:
                     pwm.set_PWM_dutycycle(pwm_pin, 0)
