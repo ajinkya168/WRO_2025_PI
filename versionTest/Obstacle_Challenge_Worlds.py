@@ -1449,7 +1449,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 g_flag = True
                                 if green_b.value:
                                     green_time = time.time()
-                                avoid_thres = 1.5
+                                avoid_thres = 1.9
                                 if counter % 4 != pink_wall_lane:
                                     if (tf_r <= 20 and tf_r > 0 ) or (time.time() - green_time > avoid_thres):
                                         g_flag = False
@@ -1487,7 +1487,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 r_flag = True
                                 if red_b.value:
                                     red_time = time.time()
-                                avoid_thres = 1.5
+                                avoid_thres = 1.9
                                 if counter % 4 != pink_wall_lane:
                                     if (tf_l <= 20 and tf_l > 0 ) or (time.time() - red_time > avoid_thres):
                                         r_flag = False
