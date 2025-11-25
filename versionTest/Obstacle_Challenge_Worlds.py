@@ -1125,7 +1125,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     parking_distance = tfmini.distance_left
                                 final_park = time.time()
                                 correctReverseAngle(heading_angle, head.value, 3)
-                                while ((parking_distance > 20) or abs(corr) > 5) or (time.time() - final_park < parking_timeout):
+                                while ((parking_distance > 20) or abs(corr) > 10) or (time.time() - final_park < parking_timeout):
                                     itr_prev_time = time.time()
                                     tfmini.getTFminiData()
                                     if parking_right:
@@ -1151,7 +1151,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     parking_distance = tfmini.distance_left
                                 final_park = time.time()
                                 correctReverseAngle(heading_angle, head.value, 3)
-                                while ((parking_distance > 20) or abs(corr) > 5) or (time.time() - final_park < parking_timeout):
+                                while ((parking_distance > 20) or abs(corr) > 10) or (time.time() - final_park < parking_timeout):
                                     itr_prev_time = time.time()
                                     tfmini.getTFminiData()
                                     if parking_right:
@@ -1165,11 +1165,16 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     correctReverseAngle(heading_angle, head.value, 3)
                                     # Set duty cycle to 50% (128/255)
                                     # Set pin 20 high
-                            STATE = 4
-                        else:
-                            print("Partial Park done")
-                            STATE = 4
-                            pass
+                            correctAngle(heading_angle, head.value, 1)
+                            while tfmini.distance_head > 6:
+                                correctAngle(heading_angle, head.value, 1)
+                                power = 10
+                                prev_power = 0
+                                runMotor(power, 1)
+                                tfmini.getTFminiData()
+                                print(f"Approaching wall to stop...{tfmini.distance_head}")      
+                        STATE = 4
+
                     if STATE == 4:
                         power = 0
                         prev_power = 0
