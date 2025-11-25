@@ -1006,7 +1006,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                 if red_b.value or green_b.value:
                     power = 50
                 elif not red_b.value and not green_b.value:
-                    power = 80
+                    power = 75
 
                 while time.time() < avoided_time:
                     pwm.set_PWM_dutycycle(pwm_pin, 0)
@@ -1080,7 +1080,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             parking_count_current = counts.value
                             tfmini.getTFminiData()
                             if orange_flag or blue_flag:
-                                parking_count = 4000  # 300
+                                parking_count = 4500  # 300
                             while counts.value <= parking_count_current + parking_count:
                                 itr_prev_time = time.time()
                                 if blue_flag or orange_flag:
