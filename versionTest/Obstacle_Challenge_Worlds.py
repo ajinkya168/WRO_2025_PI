@@ -1166,7 +1166,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     # Set duty cycle to 50% (128/255)
                                     # Set pin 20 high
                             correctAngle(heading_angle, head.value, 1)
-                            while tfmini.distance_head > 4:
+                            while tfmini.distance_head > 4 and abs(corr) > 5:
                                 correctAngle(heading_angle, head.value, 1)
                                 power = 10
                                 prev_power = 0
