@@ -1125,7 +1125,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     parking_distance = tfmini.distance_left
                                 final_park = time.time()
                                 correctReverseAngle(heading_angle, head.value, 3)
-                                while ((parking_distance > 20) or abs(corr) > 15) or (time.time() - final_park < parking_timeout):
+                                while (abs(corr) > 15) or (time.time() - final_park < parking_timeout) or lidar_f.value < 120:
                                     itr_prev_time = time.time()
                                     tfmini.getTFminiData()
                                     if parking_right:
@@ -1151,7 +1151,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     parking_distance = tfmini.distance_left
                                 final_park = time.time()
                                 correctReverseAngle(heading_angle, head.value, 3)
-                                while ((parking_distance > 20) or abs(corr) > 15) or (time.time() - final_park < parking_timeout):
+                                while (abs(corr) > 15) or (time.time() - final_park < parking_timeout) or lidar_f.value < 120:
                                     itr_prev_time = time.time()
                                     tfmini.getTFminiData()
                                     if parking_right:
@@ -1166,7 +1166,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     # Set duty cycle to 50% (128/255)
                                     # Set pin 20 high
                             correctAngle(heading_angle, head.value, 1)
-                            while tfmini.distance_head > 4 and abs(corr) > 5:
+                            while abs(corr) > 5 and lidar_f.value > 65:
                                 correctAngle(heading_angle, head.value, 1)
                                 power = 10
                                 prev_power = 0
