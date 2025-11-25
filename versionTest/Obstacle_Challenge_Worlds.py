@@ -1051,7 +1051,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                     
                     if STATE == 1:
                         if blue_flag or orange_flag:
-                            while lidar_l.value < 1200:
+                            while tfmini.distance_right > 20:
                                 itr_prev_time = time.time()
                                 tfmini.getTFminiData()
 
@@ -1061,9 +1061,9 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 # Set duty cycle to 50% (128/255)
                                 runMotor(power, 1)
                                 prev_time = time.time()
-                            runMotor(0, 1)              
-                            time.sleep(1000)
-                            while lidar_f.value < front_thresh:
+                               
+                    
+                            '''while lidar_f.value < front_thresh:
                                 itr_prev_time = time.time()
                                 tfmini.getTFminiData()
                                 parking_count_current = counts.value
@@ -1076,7 +1076,22 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 correctReverseAngle(heading_angle, head.value, 1)
                                 # Set duty cycle to 50% (128/255)
                                 runMotor(power, 0)
-                                prev_time = time.time()
+                                prev_time = time.time()'''
+                            parking_count_current = counts.value
+                            tfmini.getTFminiData()
+                            if orange_flag or blue_flag:
+                                parking_count = 6000  # 300
+                            while counts.value <= parking_count_current + parking_count:
+                                itr_prev_time = time.time()
+                                if blue_flag or orange_flag:
+                                    print(f"Reversing backward full park...{counts.value} {parking_count_current - parking_count}")
+                                    runMotor(28, 1)
+                                    correctAngle(heading_angle, head.value, 1)
+                                    # Set duty cycle to 50% (128/255)
+                                    tfmini.getTFminiData()
+                                    prev_time = time.time()
+                            runMotor(0, 1)              
+                            time.sleep(1000)
                         full_park = True
                         if full_park:
                             parking_count_current = counts.value
@@ -1145,6 +1160,8 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 print(f"corr:{abs(corr)} head:{tfmini.distance_head} left:{tfmini.distance_left}")
                                 print("Reversing backward...")
                                 runMotor(36, 0)
+                                
+                        	
                                 correctReverseAngle(heading_angle, head.value, 3)
 
                         STATE = 3
@@ -1437,7 +1454,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                         print( f"lidar_f:{lidar_f.value} right: {lidar_l.value} prev_distance: {prev_distance}, distance_right: {tfmini.distance_right} diff: {prev_distance - tfmini.distance_right} diff_flag:{(prev_distance - tfmini.distance_right) >= 10}" )
                                         p_flag = True
                                         if parking_right:
-                                            if lidar_f.value < 1200:
+                                            if lidar_f.value < 1600:
                                                 p_pass = 2
                                                 if p_pass == 2:
                                                     p_past = False
@@ -1445,7 +1462,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                                     print( 'Pink Avoidance Complete...')
                                             prev_distance = tfmini.distance_right
                                         elif parking_left:
-                                            if lidar_l.value > 1000:
+                                            if lidar_r.value > 1000:
                                                 p_pass = 2
                                                 if p_pass == 2:
                                                     p_past = False
