@@ -928,9 +928,9 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             elif blue_flag:
                                 correctAngle(heading_angle - 90, head.value, 3)
                             tfmini.getTFminiData()
-                            runMotor(70, 1)
+                            runMotor(35, 1)
                             print("approaching wall")
-                        while tfmini.distance_head < 35:
+                        while tfmini.distance_head < 40:
                             itr_prev_time = time.time()
                             x, y = enc.get_position(head.value, counts.value)
                             if orange_flag:
@@ -938,7 +938,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                             elif blue_flag:
                                 correctAngle(heading_angle - 90, head.value, 3)
                             tfmini.getTFminiData()
-                            runMotor(40, 0)
+                            runMotor(20, 0)
                             print("reverse approaching wall")
                         STATE_INIT = 2
                     if STATE_INIT == 2:
