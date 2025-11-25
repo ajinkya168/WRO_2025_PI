@@ -850,8 +850,8 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                     if centr_x_red.value < 200 and centr_x_red.value > 0:
                         red_b.value = False
                 elif blue_flag:
-                    norm_head = normalize_angle( head.value, blue_flag, orange_flag, lane_reset )
-                    print(f"n_head:{norm_head} head.value:{head.value} abs(heading_angle - norm_head): {abs(heading_angle - norm_head)} centr_x_red: {centr_x_red.value}")
+                    norm_head = normalize_angle( head.value, blue_flag, orange_flag, 0 )
+                    print(f"lane_reset:{lane_reset} n_head:{norm_head} head.value:{head.value} abs(heading_angle - norm_head): {abs(heading_angle - norm_head)} centr_x_red: {centr_x_red.value}")
                     if centr_x_red.value > 390 and abs(heading_angle - norm_head) > 10 and not r_flag:
                         red_b.value = False
 
@@ -1146,14 +1146,14 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     parking_distance = tfmini.distance_left
                                 final_park = time.time()
                                 correctReverseAngle(heading_angle, head.value, 3)
-                                while ((abs(corr) > 15) or (time.time() - final_park < parking_timeout) or lidar_f.value < 100) :
+                                while ((abs(corr) > 5)) and ((abs(corr) > 15) or lidar_f.value < 100) :
                                     itr_prev_time = time.time()
                                     tfmini.getTFminiData()
                                     if parking_right:
                                         parking_distance = tfmini.distance_right
                                     elif parking_left:
                                         parking_distance = tfmini.distance_left
-                                    print(f"corr:{abs(corr)} head:{tfmini.distance_head} left:{tfmini.distance_right}")
+                                    print(f"corr:{abs(corr)} head:{lidar_f.value} left:{tfmini.distance_right}")
                                     print(f"Reversing backward... {time.time() - final_park}")
                                     runMotor(36, 0)
 
@@ -1172,14 +1172,14 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     parking_distance = tfmini.distance_left
                                 final_park = time.time()
                                 correctReverseAngle(heading_angle, head.value, 3)
-                                while ((abs(corr) > 15) or (time.time() - final_park < parking_timeout) or lidar_f.value < 100):
+                                while ((abs(corr) > 5)) and ((abs(corr) > 15) or lidar_f.value < 100):
                                     itr_prev_time = time.time()
                                     tfmini.getTFminiData()
                                     if parking_right:
                                         parking_distance = tfmini.distance_right
                                     elif parking_left:
                                         parking_distance = tfmini.distance_left
-                                    print(f"corr:{abs(corr)} head:{tfmini.distance_head} left:{tfmini.distance_right}")
+                                    print(f"corr:{abs(corr)} head:{lidar_f.value} left:{tfmini.distance_right}")
                                     print(f"Reversing forward... {time.time() - final_park}")
                                     runMotor(36, 0)
 
