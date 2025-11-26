@@ -1526,7 +1526,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 pwm.write(green_led, 0)
                                 print('1')
 
-                            elif (g_past) and not continue_parking and not reset_f and not lap_finish:
+                            elif (g_past) and not continue_parking and not reset_f and not lap_finish: #green avoidance
                                 g_flag = True
                                 if green_b.value:
                                     green_time = time.time()
@@ -1543,7 +1543,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                             g_flag = False
                                             g_past = False
                                     elif blue_flag:
-                                        avoid_thresh = 0.90
+                                        avoid_thresh = 1.0
                                         if (time.time() - green_time > avoid_thres):
                                             g_flag = False
                                             g_past = False
@@ -1565,7 +1565,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
 
                                 print('3')
 
-                            elif (r_past) and not continue_parking and not reset_f and not lap_finish:
+                            elif (r_past) and not continue_parking and not reset_f and not lap_finish: #red avoidance
                                 r_flag = True
                                 if red_b.value:
                                     red_time = time.time()
@@ -1577,7 +1577,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                         r_past = False
                                 elif counter % 4 == pink_wall_lane:
                                     if orange_flag:
-                                        avoid_thres = 0.9
+                                        avoid_thres = 1
                                         if (time.time() - red_time > avoid_thres):
                                             print('Obstacle STATE changed to 1')
                                             r_flag = False
