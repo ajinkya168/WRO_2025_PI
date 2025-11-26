@@ -1530,9 +1530,9 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 g_flag = True
                                 if green_b.value:
                                     green_time = time.time()
-                                avoid_thres = 2
+                                avoid_thres = 1.8   
                                 if counter % 4 != pink_wall_lane:
-                                    if (tf_r <= 20 and tf_r > 0 ) or (time.time() - green_time > avoid_thres):
+                                    if (tf_r <= 25 and tf_r > 0 and not green_b.value) or (time.time() - green_time > avoid_thres):
                                         g_flag = False
                                         g_past = False
                                 elif counter % 4 == pink_wall_lane:
@@ -1569,9 +1569,10 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 r_flag = True
                                 if red_b.value:
                                     red_time = time.time()
-                                avoid_thres = 2
+                                avoid_thres = 1.8
                                 if counter % 4 != pink_wall_lane:
-                                    if (tf_l <= 20 and tf_l > 0 ) or (time.time() - red_time > avoid_thres):
+                                    print(f"rred time{time.time() - red_time} tf_l: {tf_l}")
+                                    if (tf_l <= 25 and tf_l > 0 and not red_b.value ) or (time.time() - red_time > avoid_thres):
                                         r_flag = False
                                         r_past = False
                                 elif counter % 4 == pink_wall_lane:
@@ -1584,7 +1585,7 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     elif blue_flag:
                                         avoid_thres = 0.75
                                         print(f"avoid thresh : {avoid_thres}")
-                                        if (tf_l <= 20 and tf_l > 0 ) or ( time.time() - red_time > avoid_thres):
+                                        if (tf_l <= 25 and tf_l > 0 ) or ( time.time() - red_time > avoid_thres):
                                             r_flag = False
                                             r_past = False
 
@@ -1616,10 +1617,11 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 else:
                                     correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr), last_counter)
                             else:
-                                if tfmini.distance_right + tfmini.distance_left < 110:                                    
-                                    setPointC = int((tfmini.distance_right - tfmini.distance_left)/2)
+                                '''if ((tfmini.distance_right + tfmini.distance_left < 110) and abs(corr_pos) < 8):                                    
+                                    setPointC = int((tfmini.distance_right - tfmini.distance_left)/2) 
+                                    print("tf mini straight")
                                 else:
-                                    setPointC = 0
+                                    setPointC = 0'''
                                 print("Going straight")
                                 '''if blue_flag:
                                     correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
