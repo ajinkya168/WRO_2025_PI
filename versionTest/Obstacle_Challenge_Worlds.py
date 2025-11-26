@@ -254,18 +254,22 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
             else:
                 correctAngle(head + correction, heading, 1.5)'''            
         if blue:
-            if tfmini.distance_right > 40 and tfmini.distance_right < tfmini.distance_left:
+            correctWall(45, tfmini.distance_right, head, heading, orange, blue, pink_l, counter, False, True)
+
+            '''if tfmini.distance_right > 40  and tfmini.distance_right < tfmini.distance_left:
                 print("Correcting wall to right when setpoint 0")
                 correctWall(45, tfmini.distance_right, head, heading, orange, blue, pink_l, counter, False, True)
             else:
                 print("Correcting wall when setpoint not 0")
-
+                pass
                 if counter % 4 == pink_l:
                     correctAngle(head + correction, heading, 1)
                 else:
-                    correctAngle(head + correction, heading, 1.5)                
+                    correctAngle(head + correction, heading, 1.5)'''                
         elif orange:
-            if tfmini.distance_left > 40 and tfmini.distance_left < tfmini.distance_right:
+            correctWall(45, tfmini.distance_left, head, heading, orange, blue, pink_l, counter, True, False)
+
+            '''if tfmini.distance_left > 40 and tfmini.distance_left < tfmini.distance_right:
                 print("Correcting wall to left when setpoint 0")
                 correctWall(45, tfmini.distance_left, head, heading, orange, blue, pink_l, counter, True, False)
             else:
@@ -274,7 +278,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
                 if counter % 4 == pink_l:
                     correctAngle(head + correction, heading, 1)
                 else:
-                    correctAngle(head + correction, heading, 1.5) 
+                    correctAngle(head + correction, heading, 1.5)''' 
     else:
         print("setPoint is not 0")
         if counter % 4 == pink_l:
