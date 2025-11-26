@@ -240,7 +240,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
     
         
     
-    if setPoint == 0:
+    if setPoint == 0 and abs(corr) < -1:
         
         '''if tfmini.distance_left > 40 and tfmini.distance_left < tfmini.distance_right:
             correctWall(45, tfmini.distance_left, head, heading, orange, blue, pink_l, counter, True, False)
@@ -280,7 +280,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
                 else:
                     correctAngle(head + correction, heading, 1.5)''' 
     else:
-        print("setPoint is not 0")
+        print("setPoint is 0")
         if counter % 4 == pink_l:
             correctAngle(head + correction, heading, 1)
         else:
@@ -1618,11 +1618,11 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                     correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr), last_counter)
                             else:
                                 print("Going straight")
-                                if blue_flag:
+                                '''if blue_flag:
                                     correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
                                 elif orange_flag:
-                                    correctWall(45, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, True, False)
-                                #correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr), last_counter)
+                                    correctWall(45, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, True, False)'''
+                                correctPosition(setPointC, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr), last_counter)
 
                 total_power = (power * 0.1) + (prev_power * 0.9)
                 prev_power = total_power
