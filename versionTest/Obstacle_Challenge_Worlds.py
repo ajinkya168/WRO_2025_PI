@@ -216,7 +216,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         print(f"Correcting Green Wall Orange")
         if counter == last_c:
             print("12th count no correction")
-            correction = 20
+            correction = 25
         else:
             correction = 0
         
@@ -224,7 +224,7 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
         print(f"Correcting Red Wall... diff:{(n_head - head):.2f} heading:{heading:.2f} n_head:{n_head:.2f} head:{head} right {distance_r} head_d:{tfmini.distance_head}")
         if counter == last_c:
             print("12th count no correction")
-            correction = -20
+            correction = -25
         else:
             correction = 0
     else:
@@ -1477,7 +1477,6 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 if blue_flag:
                                     if parking_right:
                                         correctWall(60, tfmini.distance_left, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, True, False)
-
                                     elif parking_left:
                                         correctWall(60, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
 
@@ -1617,6 +1616,10 @@ def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, c
                                 else:
                                     correctPosition(setPointR, heading_angle, x, y, counter, blue_flag, orange_flag, head.value, centr_x_pink.value, centr_x_red.value, centr_x.value, centr_y.value, centr_y_red.value, centr_y_pink.value, tf_h, tf_l, tf_r, red_b.value, green_b.value, pink_wall_lane, abs(corr), last_counter)
                             else:
+                                if tfmini.distance_right + tfmini.distance_left < 110:                                    
+                                    setPointC = int((tfmini.distance_right - tfmini.distance_left)/2)
+                                else:
+                                    setPointC = 0
                                 print("Going straight")
                                 '''if blue_flag:
                                     correctWall(45, tfmini.distance_right, heading_angle, head.value, orange_flag, blue_flag, pink_wall_lane, counter, False, True)
