@@ -247,7 +247,11 @@ def correctPosition( setPoint, head, x, y, counter, blue, orange, heading, centr
             correctWall(45, tfmini.distance_left, head, heading, orange, blue, pink_l, counter, True, False)
         elif tfmini.distance_right > 40 and tfmini.distance_right < tfmini.distance_left:
             correctWall(45, tfmini.distance_right, head, heading, orange, blue, pink_l, counter, False, True)
-
+        else:
+            if counter % 4 == pink_l:
+                correctAngle(head + correction, heading, 1)
+            else:
+                correctAngle(head + correction, heading, 1.5)            
         '''if blue:
             print("Correcting wall to right")
             correctWall(45, tfmini.distance_right, head, heading, orange, blue, pink_l, counter, False, True)
