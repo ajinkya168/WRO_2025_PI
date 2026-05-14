@@ -244,7 +244,7 @@ def servoDrive(distance, block, pwm, counts, head, lidar_f, sp_angle, turn_trigg
     button = False
     reset_servo = False
     start_time = 0
-    power = 50
+    power = 75
     prev_power = 0
     count = 0
     turn_flag = False
