@@ -89,6 +89,14 @@ while True:
             cv2.inRange(hsv, lower, upper),
             cv2.inRange(hsv, np.array([170, sl, vl]), np.array([180, sh, vh]))
         )
+        # Live pink exclusion preview — subtract saved pink range from red mask
+        _pk = COLOURS["3_PINK"]
+        mask_pink = cv2.inRange(hsv,
+                                np.array(_pk["lower"], dtype=np.uint8),
+                                np.array(_pk["upper"], dtype=np.uint8))
+        _ex_k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+        mask_pink_dilated = cv2.dilate(mask_pink, _ex_k, iterations=1)
+        mask = cv2.bitwise_and(mask, cv2.bitwise_not(mask_pink_dilated))
     else:
         mask = cv2.inRange(hsv, lower, upper)
 
