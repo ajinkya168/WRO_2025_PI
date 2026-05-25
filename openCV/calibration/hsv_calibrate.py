@@ -85,10 +85,7 @@ while True:
 
     # RED wraps — combine two masks when in RED mode
     if current == "1_RED":
-        mask = cv2.bitwise_or(
-            cv2.inRange(hsv, lower, upper),
-            cv2.inRange(hsv, np.array([170, sl, vl]), np.array([180, sh, vh]))
-        )
+        mask = cv2.bitwise_or(cv2.inRange(hsv, lower, upper),cv2.inRange(hsv, np.array([170, sl, vl]), np.array([180, sh, vh])))
     else:
         mask = cv2.inRange(hsv, lower, upper)
 
