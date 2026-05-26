@@ -422,6 +422,7 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red
     if LABELS:
         try:
             labels = read_label_file(LABELS)  # {id: "name"}
+            
         except Exception as e:
             print("Label load warn:", e)
     FPS = 120
@@ -440,6 +441,7 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red
     x1 = x2 = y1 = y2 = cx = cy = 0
     try:
         while True:
+            print(labels)
             ok, frame_bgr = cap.read()
             if not ok:
                 break
@@ -455,9 +457,10 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red
             # Decode detections
             # get_objects returns list of Obj with bbox in input space (iw, ih)
             objs = detect.get_objects(interpreter, score_threshold=CONF_TH)
-
             det = []
             for obj in objs:
+                #print(f"Label ID: {obj.id}, Name: {labels.get(obj.id, str(obj.id))}")
+
                 bbox = obj.bbox
                 x1 = int(bbox.xmin * scale_x)
                 y1 = int(bbox.ymin * scale_y)
@@ -569,15 +572,37 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red
             now = time.time()
             fps = 1.0 / max(1e-3, (now - t_prev))
             t_prev = now
+            frame_bgr = draw_detections(frame_bgr, objs, labels, scale_x, scale_y)
+            cv2.imshow("Coral SSD Live", frame_bgr)
 
-            # cv2.imshow("Coral SSD Live", frame_bgr)
             if cv2.waitKey(1) & 0xFF == ord("q"):  # ESC
                 break
+            elif cv2.waitKey(1) & 0xFF == ord("s"):
+                cv2.imwrite("/home/pi/WRO_2025_PI/videos/image.png", frame_bgr)
     except KeyboardInterrupt:
         pass
     finally:
         cap.release()
         cv2.destroyAllWindows()
+
+def draw_detections(frame, objs, labels, scale_x, scale_y):
+    for obj in objs:
+        bbox = obj.bbox
+        x1 = int(bbox.xmin * scale_x)
+        y1 = int(bbox.ymin * scale_y)
+        x2 = int(bbox.xmax * scale_x)
+        y2 = int(bbox.ymax * scale_y)
+        name = labels.get(obj.id, str(obj.id))
+
+        color = (0, 255, 0) if name == "green" else \
+                (0, 0, 255) if name == "red" else \
+                (255, 0, 255) if name == "pink" else \
+                (200, 200, 200)
+
+        cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
+        cv2.putText(frame, name, (x1, y1 - 8),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+    return frame
 
 
 def servoDrive( red_b, green_b, pink_b, counts, centr_y, centr_x, centr_y_red, centr_x_red, centr_x_pink, centr_y_pink, head, sp_angle, turn_trigger, lidar_f, lidar_l, lidar_r, left_f, right_f, lane_counter):
@@ -1895,7 +1920,7 @@ if __name__ == '__main__':
 
         P.start()
         E.start()
-        lidar_proc.start()
+        #lidar_proc.start()
         S.start()
 
     except KeyboardInterrupt:
