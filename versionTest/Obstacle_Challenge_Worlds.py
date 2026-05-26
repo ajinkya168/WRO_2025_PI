@@ -45,11 +45,13 @@ import pigpio
 from Encoder import EncoderCounter
 from Servo import Servo
 from TFmini import TFmini
+from datetime import datetime
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  LOGGING  (set up FIRST so even daemon errors are captured)
 # ─────────────────────────────────────────────────────────────────────────────
-timestamp = datetime.datetime.now().strftime('%d%m%y_%H%M')
+timestamp = datetime.now().strftime('%d%m%y_%H%M')
 LOG_DIR   = '/home/pi/WRO_2025_PI/logs'
 os.makedirs(LOG_DIR, exist_ok=True)
 
@@ -333,6 +335,17 @@ def Live_Feed_OpenCV(red_b, green_b, pink_b,
     cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25)
     cap.set(cv2.CAP_PROP_EXPOSURE,      -6)
     cap.set(cv2.CAP_PROP_BUFFERSIZE,    1)
+    date_str = datetime.now().strftime("%d-%m-%y")
+    actual_w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    actual_h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    print(f"Actual resolution: {actual_w}x{actual_h}")
+
+    recorder = cv2.VideoWriter(
+        f"/home/pi/WRO_2025_PI/videos/obstacle_challenge_{date_str}.avi",
+        cv2.VideoWriter_fourcc(*"MJPG"),
+        20.0,
+        (actual_w, actual_h),  # use actual size, not hardcoded
+    )
 
     if SHOW_WINDOW:                                              # ← SSH: comment
         WIN = "WRO 2025 — OpenCV Detection  |  Q quit"          # ← SSH: comment
@@ -405,11 +418,13 @@ def Live_Feed_OpenCV(red_b, green_b, pink_b,
             t_prev = t_now
             fps_hist.append(fps)
             avg = sum(fps_hist) / len(fps_hist)
+            canvas = frame_bgr.copy()                           # ← SSH: comment
+            _draw_detections(canvas, raw_dets, fps, avg)        # ← SSH: comment
+
+            recorder.write(canvas)
 
             # ── optional window ──────────────────────────────────── SSH NOTE ──
             if SHOW_WINDOW:                                          # ← SSH: comment
-                canvas = frame_bgr.copy()                           # ← SSH: comment
-                _draw_detections(canvas, raw_dets, fps, avg)        # ← SSH: comment
                 cv2.imshow(WIN, canvas)                             # ← SSH: comment
                 if cv2.waitKey(1) & 0xFF in (ord('q'), 27):        # ← SSH: comment
                     break                                           # ← SSH: comment
