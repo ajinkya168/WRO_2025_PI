@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from itertools import combinations
 from pycoral.utils.dataset import read_label_file
 from pycoral.adapters import common, detect
@@ -26,7 +26,7 @@ os.system('sudo pigpiod')
 
 time.sleep(5)
 
-timestamp = datetime.datetime.now().strftime('%d%m%y_%H%M')
+timestamp = datetime.now().strftime('%d%m%y_%H%M')
 log_dir = '/home/pi/WRO_2025_PI/logs'
 
 log_file = open(f"{log_dir}/obstacle_{timestamp}.txt", 'w')
@@ -439,6 +439,10 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red
     pairs = []
     dets = []
     x1 = x2 = y1 = y2 = cx = cy = 0
+    
+    recording = False
+    date_str = datetime.now().strftime("%d-%m-%y_%H-%M-%S")
+    recorder = None
     try:
         while True:
             print(labels)
@@ -575,10 +579,34 @@ def Live_Feed(red_b, green_b, pink_b, centr_y, centr_x, centr_y_red, centr_x_red
             frame_bgr = draw_detections(frame_bgr, objs, labels, scale_x, scale_y)
             cv2.imshow("Coral SSD Live", frame_bgr)
 
-            if cv2.waitKey(1) & 0xFF == ord("q"):  # ESC
+            key = cv2.waitKey(1) & 0xFF
+            if key == ord('q'):
                 break
-            elif cv2.waitKey(1) & 0xFF == ord("s"):
+            elif key == ord('s'):
                 cv2.imwrite("/home/pi/WRO_2025_PI/videos/image.png", frame_bgr)
+                print("Snapshot saved!")
+            elif key == ord('r') and not recording:
+                actual_w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                actual_h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                print(f"Actual resolution: {actual_w}x{actual_h}")
+                recorder = cv2.VideoWriter(
+                    f"/home/pi/WRO_2025_PI/videos/obstacle_challenge_{date_str}.avi",
+                    cv2.VideoWriter_fourcc(*"MJPG"),
+                    20.0,
+                    (actual_w, actual_h),  # use actual size, not hardcoded
+                )
+                recording = True
+                print("Recording started!")
+            elif key == ord('t') and recording:
+                  recorder.release()
+                  recorder = None
+                  recording = False
+                  print("Recording stopped and saved")
+              
+            if recording and recorder is not None:
+                  recorder.write(frame_bgr)
+
+            
     except KeyboardInterrupt:
         pass
     finally:
